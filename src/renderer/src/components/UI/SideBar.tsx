@@ -28,9 +28,6 @@ export default function SideBar(props: propsType) {
           )}
           {props.user.permisos.includes('Fruta sin procesar') && (
             <li className="mb-2">
-              <hr />
-              Inventario
-              <hr />
               <div>
                 <button
                   className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}`}
@@ -49,6 +46,18 @@ export default function SideBar(props: propsType) {
                   onClick={() => props.seleccionWindow('Descarte')}
                 >
                   Descarte
+                </button>
+              </div>
+            </li>
+          )}
+            {props.user.permisos.includes('Desverdizado') && (
+            <li className="mb-2">
+              <div>
+                <button
+                  className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}`}
+                  onClick={() => props.seleccionWindow('Desverdizado')}
+                >
+                  Desverdizado
                 </button>
               </div>
             </li>

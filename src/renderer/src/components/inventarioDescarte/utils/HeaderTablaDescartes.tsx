@@ -2,7 +2,7 @@ type propsType = {
     theme: string
 }
 
-export default function HeaderTableHistorialProcesado(props:propsType) {
+export default function HeaderTablaDescartes(props:propsType) {
     return (
         <>
             <div className=" col-span-1 bg-blue-400 shadow-lg border-b-2 p-2 flex justify-center items-center text-sm">

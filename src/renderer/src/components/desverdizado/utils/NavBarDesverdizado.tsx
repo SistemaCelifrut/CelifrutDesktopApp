@@ -7,7 +7,7 @@ type propsType = {
   handleSectionSelect: (data:string) => void
 }
 
-export default function NavBarDescartes(props:propsType) {
+export default function NavBarDesverdizado(props:propsType) {
     const [search, setSearch] = useState<string>('')
     const [isOpen, setIsOpen] = useState<boolean>(false)
 
@@ -36,15 +36,10 @@ export default function NavBarDescartes(props:propsType) {
           onClick={() => setIsOpen(false)}
         >
           <div 
-           className='absolute overflow-hidden left-48 top-40 w-64 rounded-md shadow-lg ml-2 bg-white z-10 flex flex-col'
+           className='absolute left-48 top-40 w-64 rounded-md shadow-lg ml-2 bg-white z-10 flex flex-col'
             onClick={(e) => e.stopPropagation()}
           >
-            <button onClick={() => handleMenu('Descartes')} className='pb-1 hover:bg-slate-400' >
-              Descartes
-            </button>
-            <button onClick={() => handleMenu('Historial descartes')} className='pb-1 hover:bg-slate-400' >
-              Historial descartes
-            </button>
+       
           </div>
         </div>
       )}

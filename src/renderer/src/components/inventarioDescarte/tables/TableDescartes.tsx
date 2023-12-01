@@ -1,13 +1,14 @@
+
+
 type propsType = {
-    theme: string
-    user: string
+  theme: string
+  user: string
 }
 
-
-export default function TableDescartes(props:propsType) {
+export default function TableDescartes(props: propsType) {
   return (
     <div>
-        
+   
     </div>
   )
 }

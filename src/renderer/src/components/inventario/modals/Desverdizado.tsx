@@ -65,9 +65,7 @@ export default function Desverdizado(props: vaciadoType) {
       </div>
       <div className="flex justify-center pb-10">
         <input
-          type="number"
-          min="0"
-          step="1"
+          type="text"
           className="border-2 border-gray-200 rounded-md p-2"
           onChange={(e) => setCuartoDesverdizado(e.target.value)}
         />
@@ -78,7 +76,7 @@ export default function Desverdizado(props: vaciadoType) {
           onClick={vaciar}
         >
           {loading && <span className="loader"></span>}
-          Vaciar
+          Aceptar
         </button>
         <button
           className={`border-2 border-gray-200 rounded-md px-4 py-2 ${props.theme === 'Dark' ? 'bg-slate-800 text-white' : 'bg-white text-black'} `}

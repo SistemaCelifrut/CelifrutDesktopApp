@@ -24,6 +24,9 @@ const api = {
     const response = await ipcRenderer.invoke('inventario', datos)
     return response
   },
+  descartes: (channel, callback) => {
+    ipcRenderer.on(channel, (event, ...args) => callback(...args))
+  },
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

@@ -8,6 +8,7 @@ import { userType } from './types/login'
 import IngresoFruta from './components/ingresoFruta/IngresoFruta'
 import InventarioFrutaSinProcesar from './components/inventario/InventarioFrutaSinProcesar'
 import Descarte from './components/inventarioDescarte/Descarte'
+import Desverdizado from './components/desverdizado/Desverdizado'
 
 function App(): JSX.Element {
   const [isLogin, setIsLogin] = useState<boolean>(false)
@@ -73,6 +74,7 @@ function App(): JSX.Element {
             {section === 'Ingreso de fruta' && <IngresoFruta theme={theme}/>}
             {section === 'Fruta sin procesar' && <InventarioFrutaSinProcesar theme={theme} user={user.user}/>}
             {section === 'Descarte' && <Descarte theme={theme} user={user.user}/>}
+            {section === 'Desverdizado' && <Desverdizado theme={theme} user={user.user}/>}
           </div>
         </>
       )}

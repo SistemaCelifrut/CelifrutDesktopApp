@@ -7,7 +7,6 @@ import TableHistorialDirectoNacional from '../tables/TableHistorialDirectoNacion
 import BotonesAccionHistorialFrutaProcesada from '../utils/BotonesAccionHistorialFrutaProcesada'
 import ModificarHistorialDirecto from '../modals/ModificarHistorialDirecto'
 
-
 type propsType = {
   theme: string
   user: string
@@ -18,7 +17,7 @@ export default function HistorialDirectoNacional(props: propsType) {
   const [datosOriginales, setDatosOriginales] = useState([])
   const [titleTable, setTitleTable] = useState('Lotes Procesados')
   const [showModal, setShowModal] = useState<boolean>(false)
-  const [propsModal, setPropsModal] = useState({ nombre: '', canastillas: 0, enf: '', id:'' })
+  const [propsModal, setPropsModal] = useState({ nombre: '', canastillas: 0, enf: '', id: '' })
   const [showModificar, setShowModificar] = useState<boolean>(false)
 
   const [table, dispatch] = useReducer(reducerHistorial, INITIAL_STATE_HISTORIAL_PROCESO)
@@ -61,7 +60,6 @@ export default function HistorialDirectoNacional(props: propsType) {
     asyncFunction()
   }, [showModal])
 
-
   const closeModal = () => {
     setShowModal(!showModal)
   }
@@ -79,7 +77,7 @@ export default function HistorialDirectoNacional(props: propsType) {
       }))
       if (e.target.checked) {
         setTitleTable(lote?.enf + ' ' + lote?.nombre)
-        if(format(new Date(lote?.fecha), 'MM/dd/yyyy') == format(new Date(), 'MM/dd/yyyy')){
+        if (format(new Date(lote?.fecha), 'MM/dd/yyyy') == format(new Date(), 'MM/dd/yyyy')) {
           setShowModificar(true)
         } else {
           setShowModificar(false)
@@ -102,13 +100,17 @@ export default function HistorialDirectoNacional(props: propsType) {
         closeModal={closeModal}
         modificar={showModificar}
       />
-      <TableHistorialDirectoNacional table={table} theme={props.theme} clickLote={clickLote}/>
+      <TableHistorialDirectoNacional table={table} theme={props.theme} clickLote={clickLote} />
 
       {showModal &&
-          createPortal(
-            <ModificarHistorialDirecto closeModal={closeModal} propsModal={propsModal} theme={props.theme} />,
-            document.body
-          )}
+        createPortal(
+          <ModificarHistorialDirecto
+            closeModal={closeModal}
+            propsModal={propsModal}
+            theme={props.theme}
+          />,
+          document.body
+        )}
     </div>
   )
 }

@@ -17,7 +17,7 @@ export default function TableHistorialProcesado(props: propsType) {
           <HeaderTableHistorialProcesado theme={props.theme} />
         </div>
         <div className="grid grid-cols-8 gap-0 mt-0">
-          {props.table.map((item, index) => (
+          {props.table && props.table.map((item, index) => (
             <React.Fragment key={item._id}>
 
             <div
@@ -82,7 +82,7 @@ export default function TableHistorialProcesado(props: propsType) {
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {item.rendimiento.toFixed(2) + '%'}
+              {item.rendimiento && item.rendimiento.toFixed(2) + '%'}
             </div>
 
             </React.Fragment>

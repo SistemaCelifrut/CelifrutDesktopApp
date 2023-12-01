@@ -1,3 +1,4 @@
+import HistorialDescarte from "./components/HistorialDescarte"
 import InventarioDescartes from "./components/InventarioDescartes"
 import NavBarDescartes from "./utils/NavBarDescartes"
 import { useState } from 'react'
@@ -9,7 +10,7 @@ type propsType = {
 
 export default function Descarte(props:propsType) {
   const [filtro, setFiltro] = useState<string>('')
-  const [seccion, setSeccion] = useState<string>('Fruta sin procesar')
+  const [seccion, setSeccion] = useState<string>('Descartes')
   
   const handleFilter = (data:string) =>{
     setFiltro(data)
@@ -21,7 +22,9 @@ export default function Descarte(props:propsType) {
   return (
     <div>
       <NavBarDescartes handleFilter={handleFilter} handleSectionSelect={handleSectionSelect} />
-      {seccion === 'Descartes' && <InventarioDescartes theme={props.theme} user={props.user} />}
+      {seccion === 'Descartes' && <InventarioDescartes theme={props.theme} user={props.user} filtro={filtro}/>}
+      {seccion === 'Historial descartes' && <HistorialDescarte theme={props.theme} user={props.user} filtro={filtro}/>}
+   
     </div>
   )
 }

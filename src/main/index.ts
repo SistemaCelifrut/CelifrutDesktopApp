@@ -1,7 +1,6 @@
 import { app, shell, BrowserWindow, nativeTheme, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
 import { io } from 'socket.io-client'
 
 let theme: 'Dark' | 'Ligth' = 'Ligth'
@@ -14,7 +13,7 @@ function createWindow(): void {
     height: 670,
     show: false,
     autoHideMenuBar: false,
-    ...(process.platform === 'linux' ? { icon } : {}),
+
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
@@ -40,6 +39,13 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  socket.on('descartesInfo2', (data) => {
+    console.log(data)
+    if (data.status === 200) mainWindow.webContents.send('descartes', data.data)
+    else console.log('error')
+  })
+
 }
 
 // This method will be called when Electron has finished
