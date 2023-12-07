@@ -31,10 +31,21 @@ export default function HistorialDescarte(props: propsType) {
     }
     asyncFunction()
   }, [])
+
+  useEffect(() => {
+    console.log(props.filtro)
+    dispatch({ type: 'filter', data: datosOriginales, filtro: props.filtro })
+  }, [props.filtro])
+
+
   return (
     <div>
-      <div>
-        <TarjetaHistorialDescartes theme={props.theme} user={props.user} />
+      <div className=' w-3/3 flex flex-row flex-wrap mt-2 p-0 gap-2 '>
+        {table && 
+          table.map(lote => (
+            <TarjetaHistorialDescartes theme={props.theme} user={props.user} lote={lote} />
+          ))
+        }
       </div>
     </div>
   )

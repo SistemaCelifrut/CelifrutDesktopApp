@@ -63,6 +63,7 @@ export default function Vaciado(props: vaciadoType) {
           Vaciar
         </button>
         <button
+          disabled = {loading}
           className={`border-2 border-gray-200 rounded-md px-4 py-2 ${props.theme === 'Dark' ? 'bg-slate-800 text-white' : 'bg-white text-black'} `}
           onClick={props.closeVaciado}
         >

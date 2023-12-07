@@ -1,10 +1,13 @@
-import { app, shell, BrowserWindow, nativeTheme, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, nativeTheme, ipcMain, autoUpdater } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { io } from 'socket.io-client'
 
 let theme: 'Dark' | 'Ligth' = 'Ligth'
 //let userGlobal: userType = { user: '', permisos: [''] }
+
+autoUpdater.setFeedURL({url: 'http://192.168.0.172:3001'})
+
 
 function createWindow(): void {
   // Create the browser window.
@@ -46,7 +49,15 @@ function createWindow(): void {
     else console.log('error')
   })
 
+  socket.on('listaEmpaqueInfo', (data) => {
+    console.log("no entiendo ")
+    console.log(data)
+    if (data.status === 200) mainWindow.webContents.send('listaEmpaqueInfo', data)
+    else console.log('error')
+  })
+
 }
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -82,7 +93,11 @@ app.whenReady().then(() => {
       theme = 'Ligth'
     }
   })
+
+autoUpdater.checkForUpdates();
+
 })
+
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -172,3 +187,73 @@ ipcMain.handle('inventario', async (event, data) => {
     return { status: 400 }
   }
 })
+
+ipcMain.handle('contenedores', async (event, data) => {
+  try {
+    event.preventDefault()
+    const request = { data: data, id: socket.id }
+    console.log(request)
+    const response = await new Promise((resolve) => {
+      socket.emit('contenedoresService', request, (serverResponse) => {
+        if (typeof serverResponse === 'object') {
+          resolve(serverResponse)
+        } else {
+          resolve({ status: 400 })
+        }
+      })
+    })
+    console.log(response)
+    return response
+  } catch (e) {
+    return { status: 400 }
+  }
+})
+
+// funcion encargada para enviar y tecibir los datos del area de calidad
+ipcMain.handle('calidad', async (event, data) => {
+  try {
+    event.preventDefault()
+    const request = { data: data, id: socket.id }
+    console.log(request)
+    const response = await new Promise((resolve) => {
+      socket.emit('calidad', request, (serverResponse) => {
+        if (typeof serverResponse === 'object') {
+          resolve(serverResponse)
+        } else {
+          resolve({ status: 400 })
+        }
+      })
+    })
+    console.log(response)
+    return response
+  } catch (e) {
+    return { status: 400 }
+  }
+})
+
+// funcion encargada para proveedores
+ipcMain.handle('proveedores', async (event, data) => {
+  try {
+    event.preventDefault()
+    const request = { data: data, id: socket.id }
+    console.log(request)
+    const response = await new Promise((resolve) => {
+      socket.emit('proveedores', request, (serverResponse) => {
+        if (serverResponse.status === 200) {
+          resolve(serverResponse)
+        } else {
+          resolve({ status: 400, data:{}})
+        }
+      })
+    })
+    console.log(response)
+    return response
+  } catch (e) {
+    return { status: 400, data:{} }
+  }
+})
+
+// const socket = io('ws://localhost:3000/',{
+//   rejectUnauthorized: false,
+// });
+

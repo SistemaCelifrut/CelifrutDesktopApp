@@ -11,6 +11,10 @@ export interface Api {
   ingresoFruta: (data:any) => Promise<responseIngresarPredio[]>
   inventario: (data:any) => Promise<any>
   descartes: (channel: string, callback: DescartesCallback) => void;
+  contenedores: (data:any) => Promise<any>
+  calidad: (data:any) => Promise<any>
+  listaEmpaqueInfo: (data:any, callback:any) => any
+  proveedores: (data:any) => Promise<any>
 }
 
 declare global {

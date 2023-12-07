@@ -4,11 +4,13 @@ type propsType = {
   procesar: (data: string) => void
   propsModal: { action: string; data: any }
   theme: string
-  unCheck: (data:boolean) => void
+  unCheck: (data: boolean) => void
+  reset: () => void
 }
 
 export default function ModalConfirmarProcesoDescarte(props: propsType) {
   const [cliente, setCliente] = useState<string>('')
+  console.log(props.propsModal)
   const finalizar = async () => {
     if (props.propsModal.action === 'Enviar descarte') {
       const datos = [props.propsModal.data, cliente]
@@ -17,8 +19,7 @@ export default function ModalConfirmarProcesoDescarte(props: propsType) {
       console.log(response)
       if (response.status == 200) {
         alert('Descarte enviado con exito')
-        props.unCheck(true)
-        props.procesar('')
+        propsAction()
       } else {
         alert('Error al enviar el descarte')
         props.unCheck(false)
@@ -30,8 +31,7 @@ export default function ModalConfirmarProcesoDescarte(props: propsType) {
 
       if (response.status == 200) {
         alert('Reproceso Celifrut')
-        props.procesar('')
-        props.unCheck(true)
+        propsAction()
       } else {
         alert('Error a reproceso Celifrut')
         props.unCheck(false)
@@ -43,14 +43,19 @@ export default function ModalConfirmarProcesoDescarte(props: propsType) {
       console.log(response)
       if (response.status == 200) {
         alert('Lote reprocesado')
-        props.unCheck(true)
-        props.procesar('')
+        propsAction()
       } else {
         alert('Error al reprocesar predio')
         props.unCheck(false)
         props.procesar('')
       }
     }
+  }
+
+  const propsAction = () => {
+    props.unCheck(true)
+    props.procesar('')
+    props.reset()
   }
 
   return (

@@ -1,4 +1,5 @@
 import { descarteType } from "../types/descartes";
+import { historialDescarteType } from "../types/historialDescartes";
 
 export const sumatoriaDescartes = (data:descarteType[]) => {
     if(!data) return 0
@@ -23,5 +24,22 @@ export const sumatoriaDescarteSeleccionado = (enfObj:any) => {
 
     const sumatoria = Object.keys(enfObj).reduce((acu, item) => acu += enfObj[item], 0)
     console.log("funcion sumar", sumatoria)
+    return sumatoria
+}
+
+export const sumatoriaHistorialDescartes = (lote:historialDescarteType) => {
+    const sumatoria = Object.keys(lote.predios).reduce((acu, enf) => {
+        if(enf !== 'fecha'){ 
+            const descarteLavado = lote.predios[enf].descarteLavado ? 
+                                Object.values(lote.predios[enf].descarteLavado).reduce((acuD:number, descarte:any) => acuD += descarte , 0) : 0
+            const descarteEncerado = lote.predios[enf].descarteEncerado ? 
+                                 Object.values(lote.predios[enf].descarteEncerado).reduce((acuD:number, descarte:any) => acuD += descarte , 0) : 0
+
+          acu += descarteEncerado + descarteLavado
+          return acu
+        } else{
+            return acu += 0
+        }
+    }, 0)
     return sumatoria
 }

@@ -1,6 +1,7 @@
 
 
 
+import { format } from "date-fns";
 import { descarteType, stateUseReducerTypeDescarteInventario } from "../types/descartes";
 import { historialDescarteType, stateUseReducerTypeHistorialDescarteInventario } from "../types/historialDescartes";
 
@@ -27,6 +28,11 @@ export const reducerHistorial = (state: historialDescarteType[], action:stateUse
     switch(action.type){
         case 'initialData':
             state = action.data
+            return state
+        case 'filter':
+            state = action.data.filter(item => (item.tipoFruta.toLowerCase().indexOf(action.filtro.toLowerCase()) !== -1 ||
+                                                item.accion.toLowerCase().indexOf(action.filtro.toLowerCase()) !== -1 ||
+                                                format(new Date(item.fecha), 'dd-MM-yyyy').indexOf(action.filtro)) !== -1)
             return state
         default:
             return state

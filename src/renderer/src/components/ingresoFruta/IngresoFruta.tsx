@@ -227,7 +227,7 @@ export default function IngresoFruta(props: propsType) {
       <div className="col-span-2"></div>
       <div className="col-span-8 mt-3">
         <label htmlFor="" className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          Canastillas vacias
+          Observaciones
         </label>
         <textarea
           onChange={(e) => setObservaciones(e.target.value)}

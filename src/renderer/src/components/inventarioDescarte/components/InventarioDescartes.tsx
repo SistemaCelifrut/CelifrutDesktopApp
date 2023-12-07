@@ -80,7 +80,7 @@ export default function InventarioDescartes(props: propsType) {
     const enf = keys.map((item) => item.split('/')[0])
     const setEnfs = new Set(enf)
     const arrayEnf = [...setEnfs]
-    console.log(arrayEnf)
+    console.log(enfObj)
     if (arrayEnf.length === 1) {
       setReprocesar(true)
     } else {
@@ -99,7 +99,7 @@ export default function InventarioDescartes(props: propsType) {
     }
     isProcesar(enfObj)
     setRender(!render)
-    //console.log(enfObj)
+    console.log(enfObj)
   }
 
   const seleccionarVariosItems = (items) => {
@@ -128,6 +128,10 @@ export default function InventarioDescartes(props: propsType) {
 
   const unCheck = (data:boolean) => {
     setRespawn(data)
+  }
+
+  const reset = () =>{
+    enfObj = {}
   }
 
   useEffect(() => {
@@ -165,6 +169,7 @@ export default function InventarioDescartes(props: propsType) {
             propsModal={propsModal}
             theme={props.theme}
             unCheck={unCheck}
+            reset={reset}
           />,
           document.body
         )}

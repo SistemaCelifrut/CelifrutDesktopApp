@@ -9,6 +9,10 @@ import IngresoFruta from './components/ingresoFruta/IngresoFruta'
 import InventarioFrutaSinProcesar from './components/inventario/InventarioFrutaSinProcesar'
 import Descarte from './components/inventarioDescarte/Descarte'
 import Desverdizado from './components/desverdizado/Desverdizado'
+import CrearContenedor from './components/crearContenedor/CrearContenedor'
+import ListaDeEmpaque from './components/listaDeEmpaque/ListaDeEmpaque'
+import CalidadInterna from './components/calidadInterna/CalidadInterna'
+import ClasificacionCalidad from './components/clasificacionCalidad/ClasificacionCalidad'
 
 function App(): JSX.Element {
   const [isLogin, setIsLogin] = useState<boolean>(false)
@@ -75,6 +79,11 @@ function App(): JSX.Element {
             {section === 'Fruta sin procesar' && <InventarioFrutaSinProcesar theme={theme} user={user.user}/>}
             {section === 'Descarte' && <Descarte theme={theme} user={user.user}/>}
             {section === 'Desverdizado' && <Desverdizado theme={theme} user={user.user}/>}
+            {section === 'Crear contenedor' && <CrearContenedor theme={theme} user={user.user}/>}
+            {section === 'Lista de empaque' && <ListaDeEmpaque theme={theme} user={user.user}/>}
+            {section === 'Calidad interna' && <CalidadInterna theme={theme} user={user.user}/>}
+            {section === 'Clasificacion calidad' && <ClasificacionCalidad theme={theme} user={user.user}/>}
+
           </div>
         </>
       )}
