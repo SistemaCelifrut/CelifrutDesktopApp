@@ -24,19 +24,22 @@ export default function TablePrediosListaEmpaque(props: propsType) {
 
   useEffect(() => {
     const funcionAuxiliar = async () => {
+      console.log(props.filtro)
       const response: outObjtype = ObtenerInfoPrediosListaEmpaque(props.contenedor, props.filtro)
       //const predios = ObtenerPrediosContenedor(props.contenedor)
-      const request = { action: 'obtenerRendimiento' }
       console.log(response)
+      const request = { action: 'obtenerRendimiento' }
       const rendimientoReq = await window.api.ingresoFruta(request)
-      setRendimiento(rendimientoReq.data)
+      //console.log(rendimientoReq)
+
+      setRendimiento(rendimientoReq['data'])
       setTabla(response)
     }
     funcionAuxiliar()
     window.api.listaEmpaqueInfo('listaEmpaqueInfo', (response: any) => {
       setRendimiento(response.rendimiento)
     })
-  }, [props.contenedor])
+  }, [props.contenedor, props.filtro])
 
   return (
     <div>
@@ -51,16 +54,49 @@ export default function TablePrediosListaEmpaque(props: propsType) {
                 {enf}
               </p>
               <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-blue-500'} font-bold`}>
-                {tabla[enf][Object.keys(tabla[enf])[0]].length > 0 ?
-                  tabla[enf][Object.keys(tabla[enf])[0]][0][0] : null}
+                {tabla[enf][Object.keys(tabla[enf])[0]][0].nombre}
               </p>
               {rendimiento && (
                 <p
                   className={`${props.theme === 'Dark' ? 'text-white' : 'text-blue-500'} font-bold`}
                 >
-                  {rendimiento[enf].toFixed(2) + '%'}
+                  {rendimiento[enf] + '%'}
                 </p>
               )}
+              <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-blue-500'} font-bold`}>
+                {Object.keys(tabla[enf]).reduce(
+                  (acu, pallet) =>
+                    (acu += Object.keys(tabla[enf][pallet]).reduce(
+                      (acu1, item) => (acu1 += tabla[enf][pallet][item].cajas),
+                      0
+                    )),
+                  0
+                )}{' '}
+                Cajas
+              </p>
+              <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-blue-500'} font-bold`}>
+                {Object.keys(tabla[enf]).reduce(
+                  (acu, pallet) =>
+                    (acu += Object.keys(tabla[enf][pallet]).reduce(
+                      (acu1, item) =>
+
+                      { 
+                    const tipoCaja = tabla[enf][pallet][item].tipoCaja.replace('.', '_');
+                        
+                        acu1 +=
+                        tabla[enf][pallet][item].cajas * 
+                        props.contenedor.infoContenedor.pesoCaja[
+                          tipoCaja
+                        ]
+                      return acu1
+                      }
+                       ,
+                      0
+                    )),
+                  0
+                )}{' '}
+                Kg
+              </p>
             </div>
             <ul>
               {Object.keys(tabla[enf]).map((pallet) => (
@@ -75,21 +111,19 @@ export default function TablePrediosListaEmpaque(props: propsType) {
                   </div>
                   <div>
                     {Object.keys(tabla[enf][pallet]).map((item) => {
-                      if (tabla[enf][pallet][item].length > 0) {
-                        return (
-                          <div className="flex gap-4" key={item + 'div'}>
-                            <p key={item + 'cajas'}>Cajas: {tabla[enf][pallet][item][1]}</p>
-                            <p key={item + 'tipocaja'}>Tipo caja: {tabla[enf][pallet][item][2]}</p>
-                            <p key={item + 'calibre'}>Calibre: {tabla[enf][pallet][item][3]}</p>
-                            <p key={item + 'calidad'}>Calidad: {tabla[enf][pallet][item][4]}</p>
-                            <p key={item + 'fecha'}>
-                              Fecha: {format(new Date(tabla[enf][pallet][item][5]), 'dd-MM-yyyy')}
-                            </p>
-                          </div>
-                        )
-                      } else {
-                        return null
-                      }
+                      return (
+                        <div className="flex gap-4" key={item + 'div'}>
+                          <p key={item + 'cajas'}>Cajas: {tabla[enf][pallet][item].cajas}</p>
+                          <p key={item + 'tipocaja'}>
+                            Tipo caja: {tabla[enf][pallet][item].tipoCaja}
+                          </p>
+                          <p key={item + 'calibre'}>Calibre: {tabla[enf][pallet][item].calibre}</p>
+                          <p key={item + 'calidad'}>Calidad: {tabla[enf][pallet][item].calidad}</p>
+                          <p key={item + 'fecha'}>
+                            Fecha: {format(new Date(tabla[enf][pallet][item].fecha), 'dd-MM-yyyy')}
+                          </p>
+                        </div>
+                      )
                     })}
                   </div>
                 </li>

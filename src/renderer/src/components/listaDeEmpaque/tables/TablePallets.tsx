@@ -14,7 +14,9 @@ export default function TablePallets(props: propsType) {
   const [tabla, setTabla] = useState({})
 
   useEffect(() => {
+
     const response = InfoPalletsListaEmpaque(props.contenedor, props.filtro)
+    console.log(response)
     setTabla(response)
   }, [props.contenedor, props.filtro])
 
@@ -32,10 +34,18 @@ export default function TablePallets(props: propsType) {
                                     font-bold text-xl mb-4`}
             >
               {props.contenedor.infoContenedor?.tipoEmpaque === 'Caja' ? 'Pallet: ' : 'Estiba: '}
-              {pallet}
+              {pallet} -- {(tabla[pallet].reduce((acu, item) => acu += item.cajas, 0))} cajas
+              ---
+              {(tabla[pallet].reduce((acu, item) => {
+                    const tipoCaja = item.tipoCaja.replace('.', '_');
+
+                acu += item.cajas * props.contenedor.infoContenedor.pesoCaja[tipoCaja]
+                return acu
+              }, 0))}Kg
+              {console.log()}
             </div>
             <ul className="ml-4">
-              {Object.keys(tabla[pallet]).map((enf) => (
+              {tabla[pallet].map((enf) => (
                 <li
                   className={`${
                     props.theme === 'Dark' ? 'bg-slate-900 text-white' : 'bg-slate-200 text-black'
@@ -48,44 +58,51 @@ export default function TablePallets(props: propsType) {
                         props.theme === 'Dark' ? 'text-white' : 'text-blue-500'
                       } font-bold`}
                     >
-                      {enf}
+                      {enf.id}
                     </p>
                     <p
                       className={`${
                         props.theme === 'Dark' ? 'text-white' : 'text-blue-500'
                       } font-bold`}
                     >
-                      {tabla[pallet][enf].length > 0 ? tabla[pallet][enf][0][0] : null} :
+                      {enf.nombre}
+                    </p>
+                    <p
+                      className={`${
+                        props.theme === 'Dark' ? 'text-white' : 'text-blue-500'
+                      } font-bold`}
+                    >
+                      {enf.cajas} Cajas
+                    </p>
+                    <p
+                      className={`${
+                        props.theme === 'Dark' ? 'text-white' : 'text-blue-500'
+                      } font-bold`}
+                    >
+                      {enf.tipoCaja}
+                    </p>
+                    <p
+                      className={`${
+                        props.theme === 'Dark' ? 'text-white' : 'text-blue-500'
+                      } font-bold`}
+                    >
+                      Calibre: {enf.calibre}
+                    </p>
+                    <p
+                      className={`${
+                        props.theme === 'Dark' ? 'text-white' : 'text-blue-500'
+                      } font-bold`}
+                    >
+                      Calidad:{enf.calidad}
+                    </p>
+                    <p
+                      className={`${
+                        props.theme === 'Dark' ? 'text-white' : 'text-blue-500'
+                      } font-bold`}
+                    >
+                      {format(new Date(enf.fecha), 'dd-MM-yyyy')}
                     </p>
                   </div>
-                  {Object.keys(tabla[pallet][enf]).map((item) => {
-                    if (tabla[pallet][enf].length > 0) {
-                      return (
-                        <div className="flex flex-row gap-5 items-center">
-                          <p>
-                            {props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
-                              ? 'Cajas: '
-                              : 'Sacos: '}
-                            {tabla[pallet][enf][item][1]}
-                          </p>
-                          <p>
-                            Tipo{' '}
-                            {props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
-                              ? 'Cajas: '
-                              : 'Sacos: '}{' '}
-                            {tabla[pallet][enf][item][2]}
-                          </p>
-                          <p>Calibre: {tabla[pallet][enf][item][3]}</p>
-                          <p>Calidad: {tabla[pallet][enf][item][4]}</p>
-                          <p>
-                            Fecha: {format(new Date(tabla[pallet][enf][item][5]), 'dd-MM-yyyy')}
-                          </p>
-                        </div>
-                      )
-                    } else {
-                      return null
-                    }
-                  })}
                 </li>
               ))}
             </ul>

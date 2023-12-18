@@ -3,7 +3,7 @@ import { HiOutlineViewList } from 'react-icons/hi'
 import { ContenedoresObj } from '../types/types'
 
 type propsType = {
-  contenedores: ContenedoresObj
+  contenedores: ContenedoresObj[]
   handleChange: (e: any) => void
 }
 
@@ -34,9 +34,9 @@ export default function NavBarListaEmpaque(props: propsType) {
                           ${'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '}`}
       >
         <option>Contenedores</option>
-        {Object.keys(props.contenedores).map((item, index) => (
-          <option key={item + index} value={item}>
-            {item} - {props.contenedores[item].infoContenedor?.nombreCliente}
+        {props.contenedores.length > 0 && props.contenedores.map((item, index) => (
+          <option key={item._id} value={item._id}>
+            {item._id} - {item.infoContenedor ? item.infoContenedor.nombreCliente : 'Nombre no disponible'}
           </option>
         ))}
       </select>

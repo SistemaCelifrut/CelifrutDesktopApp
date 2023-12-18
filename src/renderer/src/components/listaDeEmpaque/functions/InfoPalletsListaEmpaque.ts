@@ -1,37 +1,34 @@
-import { ContenedoresObj } from "../types/types"
-
+import { ContenedoresObj } from '../types/types'
 
 type outObjtype = {
-    [key: string]: enfType
-} 
+  [key: number]: enfType
+}
 
 type enfType = {
-    [key: string] : []
+  [key: string]: []
 }
 
-export default function(contenedores: ContenedoresObj|'', filtro:string): outObjtype{
-    try{
-        let outObj: outObjtype = {}
-        Object.keys(contenedores).forEach(pallet => {
-            if(pallet !== 'infoContenedor'){
-                outObj[pallet] = {}
-                Object.keys(contenedores[pallet]).forEach(enf =>{
-                    if (['listaLiberarPallet', 'settings', 'cajasTotal', 'liberado'].includes(enf)) return;
-                    outObj[pallet][enf] = contenedores[pallet][enf]
-                })
-            }
-        })
+export default function (contenedores: ContenedoresObj, filtro: string): outObjtype {
+  try {
+    let outObj: outObjtype = {}
+    Object.keys(contenedores.pallets).map((pallet) => {
+      outObj[pallet] = []
+      contenedores.pallets[pallet].EF1.forEach((item) => {
+        outObj[pallet].push(item)
+      })
+    })
 
-        if(filtro !== ''){
-            Object.keys(outObj).map(pallet => {
-                if(pallet !== filtro){
-                    delete outObj[pallet]
-                }
-            })
+    if (filtro !== '') {
+      Object.keys(outObj).map((pallet) => {
+        if (pallet !== filtro) {
+          delete outObj[pallet]
         }
-
-        return outObj
-    } catch(e){
-        return {}
+      })
     }
+
+    return outObj
+  } catch (e) {
+    return {}
+  }
 }
+

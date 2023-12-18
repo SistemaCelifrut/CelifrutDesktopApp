@@ -4,7 +4,7 @@ import PrincipalGeneral from '../functions/PrincipalGeneral'
 import { themeType } from '@renderer/env'
 
 type propsType = {
-  contenedor: ContenedoresObj
+  contenedor: ContenedoresObj 
   theme: themeType
 }
 type calidadType = {
@@ -26,7 +26,7 @@ export default function TablePrincipalGeneral(props: propsType) {
 
   useEffect(() => {
     const result = PrincipalGeneral(props.contenedor)
-
+     console.log(result)
     if (Array.isArray(result)) {
       const [total, calidad, calibre, tipoCaja]: PrincipalGeneralType = result
       setTotal(total)
@@ -74,20 +74,20 @@ export default function TablePrincipalGeneral(props: propsType) {
             <div>
               <span className='font-bold'>Calidad 1:</span> {calidad[1]}{' '}
               {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
-                ? 'Cajas: '
-                : 'Sacos: '}
+                ? 'Cajas '
+                : 'Sacos '}
             </div>
             <div>
               <span className='font-bold'>Calidad 1.5:</span> {calidad['1.5']}{' '}
               {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
-                ? 'Cajas: '
-                : 'Sacos: '}
+                ? 'Cajas '
+                : 'Sacos '}
             </div>
             <div>
               <span className='font-bold'>Calidad 2:</span> {calidad['2']}{' '}
               {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
-                ? 'Cajas: '
-                : 'Sacos: '}
+                ? 'Cajas '
+                : 'Sacos '}
             </div>
           </div>
         </div>
@@ -107,8 +107,8 @@ export default function TablePrincipalGeneral(props: propsType) {
             <div>
               {calibre[item]}{' '}
               {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
-                ? 'Cajas: '
-                : 'Sacos: '}
+                ? 'Cajas '
+                : 'Sacos '}
             </div>
           </div>
         ))}
@@ -125,19 +125,19 @@ export default function TablePrincipalGeneral(props: propsType) {
           className={`${
             props.theme === 'Dark' ? 'bg-slate-900 text-white' : 'bg-slate-200 text-black'
           }
-          p-4 rounded-md mb-2 flex`}
+          p-4 rounded-md mb-2 flex gap-4`}
           >
             <div className='font-bold'>
               Tipo de{' '}
               {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
-                ? 'Cajas '
-                : 'Sacos '}{' '}
+                ? 'Cajas: '
+                : 'Sacos: '}{' '}
               {item}
             </div>
             <div>
               {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
-                ? 'Cajas: '
-                : 'Sacos: '}
+                ? 'Cajas '
+                : 'Sacos '}
               {tipoCaja[item]}
             </div>
           </div>

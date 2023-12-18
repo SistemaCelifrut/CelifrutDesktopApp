@@ -4,6 +4,12 @@
   "description": "An Electron application with React and TypeScript",
   "main": "./out/main/index.js",
   "author": "example.com",
+  "publish": [
+    {
+      "provider": "generic",
+      "url": "http://192.168.0.172:3001"
+    }
+  ],
   "homepage": "https://www.electronjs.org",
   "scripts": {
     "format": "prettier --write .",

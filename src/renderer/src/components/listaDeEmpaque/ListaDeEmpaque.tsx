@@ -6,6 +6,7 @@ import FiltrosListaEmpaque from './utils/FiltrosListaEmpaque'
 import TablePrincipalGeneral from './tables/TablePrincipalGeneral'
 import TablePallets from './tables/TablePallets'
 import TablePrediosListaEmpaque from './tables/TablePrediosListaEmpaque'
+import { initialContenedor } from './functions/initialContenedor'
 
 type propsType = {
   theme: themeType
@@ -13,7 +14,8 @@ type propsType = {
 }
 
 export default function ListaDeEmpaque(props: propsType) {
-  const [contenedores, setContenedores] = useState<ContenedoresObj>({})
+  const [contenedores, setContenedores] = useState<ContenedoresObj[]>([])
+  const [contenedor, setContenedor] = useState<ContenedoresObj>(initialContenedor)
   const [contenedorSelect, setContenedorSelect] = useState<string>('')
   const [filtro, setFiltro] = useState<string>('')
   const [filtro2, setFiltro2] = useState<string>('')
@@ -21,9 +23,8 @@ export default function ListaDeEmpaque(props: propsType) {
   useEffect(() => {
     const obtenerDatos = async () => {
       try {
-        const request = { action: 'obtenerListaEmpaque' }
+        const request = { action: 'obtenerListaEmpaque2' }
         const response = await window.api.contenedores(request)
-        console.log(response)
         setContenedores(response.data)
       } catch (e) {
         console.log(e)
@@ -37,8 +38,14 @@ export default function ListaDeEmpaque(props: propsType) {
   }, [])
 
   const handleChange = (event: any) => {
-    setContenedorSelect(event.target.value as string)
+    setContenedorSelect((event.target.value as string))
   }
+  useEffect(()=>{
+    const cont = contenedores.find(item => item._id === Number(contenedorSelect))
+    if(cont){
+      setContenedor(cont)
+    }
+  },[contenedorSelect])
 
   useEffect(() => {
     setFiltro2('')
@@ -50,20 +57,20 @@ export default function ListaDeEmpaque(props: propsType) {
     <div>
       <NavBarListaEmpaque contenedores={contenedores} handleChange={handleChange} />
       <FiltrosListaEmpaque
-        contenedor={contenedores[contenedorSelect]}
+        contenedor={contenedor}
         setFiltro={setFiltro}
         setFiltro2={setFiltro2}
         theme={props.theme}
       />
       <div>
         {filtro === '' ? (
-          <TablePrincipalGeneral contenedor={contenedores[contenedorSelect]} theme={props.theme} />
+          <TablePrincipalGeneral contenedor={contenedor} theme={props.theme} />
         ) : null}
       </div>
       <div>
         {filtro === 'pallet' ? (
           <TablePallets
-            contenedor={contenedores[contenedorSelect]}
+            contenedor={contenedor}
             filtro={filtro2}
             theme={props.theme}
           />
@@ -72,7 +79,7 @@ export default function ListaDeEmpaque(props: propsType) {
           {filtro === 'predio' ? (
             <TablePrediosListaEmpaque
               theme={props.theme}
-              contenedor={contenedores[contenedorSelect]}
+              contenedor={contenedor}
               filtro={filtro2}
             />
           ) : null}

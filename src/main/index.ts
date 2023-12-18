@@ -1,12 +1,12 @@
-import { app, shell, BrowserWindow, nativeTheme, ipcMain, autoUpdater } from 'electron'
+
+import { app, shell, BrowserWindow, nativeTheme, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { io } from 'socket.io-client'
 
-let theme: 'Dark' | 'Ligth' = 'Ligth'
-//let userGlobal: userType = { user: '', permisos: [''] }
 
-autoUpdater.setFeedURL({url: 'http://192.168.0.172:3001'})
+
+let theme: 'Dark' | 'Ligth' = 'Ligth'
 
 
 function createWindow(): void {
@@ -59,6 +59,7 @@ function createWindow(): void {
 }
 
 
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -94,9 +95,10 @@ app.whenReady().then(() => {
     }
   })
 
-autoUpdater.checkForUpdates();
 
 })
+
+
 
 
 // Quit when all windows are closed, except on macOS. There, it's common

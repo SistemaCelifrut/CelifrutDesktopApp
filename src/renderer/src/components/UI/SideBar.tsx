@@ -1,5 +1,7 @@
+import { themeContext, userContext } from '@renderer/App'
 import { themeType } from '@renderer/env'
 import { userType } from '@renderer/types/login'
+import { useContext } from 'react'
 
 type propsType = {
   theme: themeType
@@ -8,108 +10,30 @@ type propsType = {
 }
 
 export default function SideBar(props: propsType) {
+  const theme = useContext(themeContext)
+  const user = useContext(userContext)
   return (
     <aside
-      className={`${props.theme === 'Dark' ? 'bg-primary shadow-white' : 'bg-white shadow-lg'} text-sm`}
+      className={`${
+        props.theme === 'Dark' ? 'bg-primary shadow-white' : 'bg-white shadow-lg'
+      } text-sm`}
     >
-      <div className="mx-auto px-2 py-2 flex justify-between items-center h-max">
-        <ul className="m-1">
-          {props.user.permisos.includes('Ingreso de fruta') && (
-            <li className="mb-2">
-              <div>
-                <button
-                  className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}`}
-                  onClick={() => props.seleccionWindow('Ingreso de fruta')}
-                >
-                  Ingreso de fruta
-                </button>
-              </div>
-            </li>
-          )}
-          {props.user.permisos.includes('Fruta sin procesar') && (
-            <li className="mb-2">
-              <div>
-                <button
-                  className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}`}
-                  onClick={() => props.seleccionWindow('Fruta sin procesar')}
-                >
-                  Fruta sin procesar
-                </button>
-              </div>
-            </li>
-          )}
-             {props.user.permisos.includes('Descarte') && (
-            <li className="mb-2">
-              <div>
-                <button
-                  className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}`}
-                  onClick={() => props.seleccionWindow('Descarte')}
-                >
-                  Descarte
-                </button>
-              </div>
-            </li>
-          )}
-            {props.user.permisos.includes('Desverdizado') && (
-            <li className="mb-2">
-              <div>
-                <button
-                  className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}`}
-                  onClick={() => props.seleccionWindow('Desverdizado')}
-                >
-                  Desverdizado
-                </button>
-              </div>
-            </li>
-          )}
-           {props.user.permisos.includes('Crear contenedor') && (
-            <li className="mb-2">
-              <div>
-                <button
-                  className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}`}
-                  onClick={() => props.seleccionWindow('Crear contenedor')}
-                >
-                  Crear contenedor
-                </button>
-              </div>
-            </li>
-          )}
-            {props.user.permisos.includes('Lista de empaque') && (
-            <li className="mb-2">
-              <div>
-                <button
-                  className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}`}
-                  onClick={() => props.seleccionWindow('Lista de empaque')}
-                >
-                  Lista de empaque
-                </button>
-              </div>
-            </li>
-          )}
-               {props.user.permisos.includes('Calidad interna') && (
-            <li className="mb-2">
-              <div>
-                <button
-                  className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}`}
-                  onClick={() => props.seleccionWindow('Calidad interna')}
-                >
-                  Calidad interna
-                </button>
-              </div>
-            </li>
-          )}
-                  {props.user.permisos.includes('Clasificacion calidad') && (
-            <li className="mb-2">
-              <div>
-                <button
-                  className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}`}
-                  onClick={() => props.seleccionWindow('Clasificacion calidad')}
-                >
-                  Clasificacion calidad
-                </button>
-              </div>
-            </li>
-          )}
+      <div className="mx-auto px-2 py-2 flex justify-between items-center h-max ml-0">
+        <ul className=" w-full">
+          {user.permisos.map(permiso => (
+         
+              <li className={`${theme === 'Dark' ? 'hover:bg-slate-950' : 'hover:bg-slate-200'} p-1`}>
+                <div >
+                  <button
+                    className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} hover:underline w-full text-left `}
+                    onClick={() => props.seleccionWindow(permiso)}
+                  >
+                    {permiso}
+                  </button>
+                </div>
+              </li>
+            
+          ))}
         </ul>
       </div>
     </aside>

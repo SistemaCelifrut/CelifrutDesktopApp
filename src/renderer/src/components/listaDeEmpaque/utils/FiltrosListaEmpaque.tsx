@@ -12,7 +12,6 @@ type propsType = {
 
 export default function FiltrosListaEmpaque(props: propsType) {
   const [value1, setValue1] = useState<string>('')
-  const [value2, setValue2] = useState<string>('')
 
   const [predios, setPredios] = useState<string[]>([])
 
@@ -23,7 +22,6 @@ export default function FiltrosListaEmpaque(props: propsType) {
 
   const handleFiltro2 = (e) => {
     props.setFiltro2(e.target.value)
-    setValue2(e.target.value)
   }
 
   useEffect(() => {
@@ -57,22 +55,19 @@ export default function FiltrosListaEmpaque(props: propsType) {
         </select>
 
         <select
-        onChange={handleFiltro2}
+          onChange={handleFiltro2}
           className={`border focus:outline-none appearance-none w-38 mr-5 rounded-md h-10 pl-5 pr-10
                           ${'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '}`}
         >
           <option value={''}>None</option>
           {props.contenedor && value1 === 'pallet'
-            ? Object.keys(props.contenedor).map((pallet) => {
-                if (pallet !== 'infoContenedor') {
-                  return (
-                    <option key={pallet} value={pallet}>
-                      {pallet}
-                    </option>
-                  )
-                }
-              })
+            ? Object.keys(props.contenedor.pallets).map((pallet) => (
+                <option key={pallet} value={pallet}>
+                  {pallet}
+                </option>
+              ))
             : null}
+
           {props.contenedor && value1 === 'predio'
             ? predios.map((enf) => (
                 <option key={enf} value={enf}>
