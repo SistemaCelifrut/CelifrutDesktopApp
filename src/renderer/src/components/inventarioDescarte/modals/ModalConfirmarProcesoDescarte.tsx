@@ -1,21 +1,22 @@
+/* eslint-disable prettier/prettier */
 import { useState } from 'react'
 
 type propsType = {
   procesar: (data: string) => void
-  propsModal: { action: string; data: any }
+  propsModal: { action: string; data: object }
   theme: string
   unCheck: (data: boolean) => void
   reset: () => void
 }
 
-export default function ModalConfirmarProcesoDescarte(props: propsType) {
+export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Element {
   const [cliente, setCliente] = useState<string>('')
   console.log(props.propsModal)
-  const finalizar = async () => {
+  const finalizar = async (): Promise<void> => {
     if (props.propsModal.action === 'Enviar descarte') {
       const datos = [props.propsModal.data, cliente]
       const request = { action: 'eliminarFrutaDescarte', data: datos }
-      const response = await window.api.inventario(request)
+      const response = await window.api.proceso(request)
       console.log(response)
       if (response.status == 200) {
         alert('Descarte enviado con exito')
@@ -27,7 +28,7 @@ export default function ModalConfirmarProcesoDescarte(props: propsType) {
       }
     } else if (props.propsModal.action === 'Reprocesar como Celifrut') {
       const request = { action: 'ReprocesarDescarteCelifrut', data: props.propsModal.data }
-      const response = await window.api.inventario(request)
+      const response = await window.api.proceso(request)
 
       if (response.status == 200) {
         alert('Reproceso Celifrut')
@@ -39,7 +40,7 @@ export default function ModalConfirmarProcesoDescarte(props: propsType) {
       }
     } else if (props.propsModal.action === 'Reprocesar el lote') {
       const request = { action: 'reprocesarDescarteUnPredio', data: props.propsModal.data }
-      const response = await window.api.inventario(request)
+      const response = await window.api.proceso(request)
       console.log(response)
       if (response.status == 200) {
         alert('Lote reprocesado')
@@ -52,7 +53,7 @@ export default function ModalConfirmarProcesoDescarte(props: propsType) {
     }
   }
 
-  const propsAction = () => {
+  const propsAction = (): void => {
     props.unCheck(true)
     props.procesar('')
     props.reset()
@@ -80,7 +81,7 @@ export default function ModalConfirmarProcesoDescarte(props: propsType) {
             <input
               type="text"
               className="border-2 border-gray-200 rounded-md p-2"
-              onChange={(e) => setCliente(e.target.value)}
+              onChange={(e): void => setCliente(e.target.value)}
             />
           </div>
         )}
@@ -90,7 +91,7 @@ export default function ModalConfirmarProcesoDescarte(props: propsType) {
           </button>
           <button
             className="border border-gray-300 px-4 py-2 rounded-md"
-            onClick={() => props.procesar('')}
+            onClick={(): void => props.procesar('')}
           >
             Cancelar
           </button>

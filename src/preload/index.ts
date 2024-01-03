@@ -1,15 +1,21 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { LogType } from 'vite'
 const { ipcRenderer } = require('electron')
 
 // Custom APIs for renderer
 const api = {
-  obtenerTheme: async () => {
+  obtenerTheme: async (): Promise<'Dark' | 'Light'> => {
     const response = await ipcRenderer.invoke('obtenerTheme')
     return response
   },
-  logIn: async (datos) => {
+  logIn: async (datos): Promise<LogType> => {
     const response = await ipcRenderer.invoke('logIn', datos)
+    return response
+  },
+  proceso: async (datos) => {
+    const response = await ipcRenderer.invoke('proceso', datos)
     return response
   },
   obtenerSesion: async () => {

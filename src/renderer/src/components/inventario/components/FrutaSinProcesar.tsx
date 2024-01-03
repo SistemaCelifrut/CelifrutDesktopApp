@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import TableFrutaSinProcesar from '../tables/TableFrutaSinProcesar'
 import { useEffect, useReducer, useState } from 'react'
 import { INITIAL_STATE, reducer } from '../functions/reducer'
@@ -14,7 +15,7 @@ type propsType = {
   filtro:string
 }
 
-export default function FrutaSinProcesar(props: propsType) {
+export default function FrutaSinProcesar(props: propsType): JSX.Element {
   const [propsModal, setPropsModal] = useState({ nombre: '', canastillas: 0, enf: '' })
 
 
@@ -30,10 +31,10 @@ export default function FrutaSinProcesar(props: propsType) {
   const [table, dispatch] = useReducer(reducer, INITIAL_STATE)
 
   useEffect(() => {
-    const asyncFunction = async () => {
+    const asyncFunction = async (): Promise<void> => {
       try {
-        const request = { action: 'obtenerFrutaActual2' }
-        const frutaActual = await window.api.inventario(request)
+        const request = { action: 'obtenerFrutaActual' }
+        const frutaActual = await window.api.proceso(request)
         console.log(frutaActual)
         if (frutaActual.status === 200) {
           setDatosOriginales(frutaActual.data)
@@ -41,18 +42,18 @@ export default function FrutaSinProcesar(props: propsType) {
         } else {
           alert('error obteniendo datos del servidor')
         }
-      } catch (e: any) {
-        alert(`Fruta actual ${e.name}: ${e.message}`)
+      } catch (e: unknown) {
+        alert(`Fruta actual ${e}`)
       }
     }
     asyncFunction()
   }, [])
 
   useEffect(() => {
-    const asyncFunction = async () => {
+    const asyncFunction = async (): Promise<void> => {
       try {
-        const request = { action: 'obtenerFrutaActual2' }
-        const frutaActual = await window.api.inventario(request)
+        const request = { action: 'obtenerFrutaActual' }
+        const frutaActual = await window.api.proceso(request)
         console.log(frutaActual)
         if (frutaActual.status === 200) {
           setDatosOriginales(frutaActual.data)
@@ -60,15 +61,15 @@ export default function FrutaSinProcesar(props: propsType) {
         } else {
           alert('error obteniendo datos del servidor')
         }
-      } catch (e: any) {
-        alert(`Fruta actual ${e.name}: ${e.message}`)
+      } catch (e: unknown) {
+        alert(`Fruta actual ${e}`)
       }
     }
     asyncFunction()
   }, [showVaciarModal, showDirectoModal, showDesverdizadoModal])
 
-  const clickLote = (e) => {
-    let id = e.target.value
+  const clickLote = (e): void => {
+    const id = e.target.value
     const lote: prediosType | undefined = table.find((item) => item._id === id)
     if (lote !== undefined) {
       setPropsModal(() => ({
@@ -87,13 +88,13 @@ export default function FrutaSinProcesar(props: propsType) {
     }
   }
   //funciones que cierra los modales
-  const closeVaciado = () => {
+  const closeVaciado = (): void => {
     setShowVaciarModal(!showVaciarModal)
   }
-  const closeDirecto = () => {
+  const closeDirecto = (): void => {
     setShowDirectoModal(!showDirectoModal)
   }
-  const closeDesverdizado = () => {
+  const closeDesverdizado = (): void => {
     setShowDesverdizadoModal(!showDesverdizadoModal)
   }
   //

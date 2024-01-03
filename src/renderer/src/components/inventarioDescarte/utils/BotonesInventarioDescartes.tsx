@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { descarteType } from '../types/descartes'
 import {
   sumatoriaDescarteEspecifico,
@@ -12,12 +13,12 @@ type propsType = {
   theme: string
   user: string
   table: descarteType[]
-  enfObj: any
+  enfObj: object
   reprocesar: boolean
   procesar: (action:string) => void
 }
 
-export default function BotonesInventarioDescartes(props: propsType) {
+export default function BotonesInventarioDescartes(props: propsType): JSX.Element {
   useEffect(() => {
     console.log(props.enfObj)
   }, [props.enfObj])
@@ -37,7 +38,7 @@ export default function BotonesInventarioDescartes(props: propsType) {
             </h2>
             {props.reprocesar && (
               <button
-              onClick={() => props.procesar("Reprocesar el lote")}
+              onClick={(): void => props.procesar("Reprocesar el lote")}
                 className={
                   props.user === 'recepcion' || props.user === 'admin'
                     ? 'group relative inline-flex w-40 h-10 items-center overflow-hidden rounded bg-blue-700 px-8 py-3 text-white focus:outline-none active:bg-blue-900 active:border-blue-700'
@@ -55,7 +56,7 @@ export default function BotonesInventarioDescartes(props: propsType) {
             )}
             {!props.reprocesar && (
               <button
-              onClick={() => props.procesar("Reprocesar como Celifrut")}
+              onClick={(): void => props.procesar("Reprocesar como Celifrut")}
                 className={
                   props.user === 'recepcion' || props.user === 'admin'
                     ? 'group relative inline-flex w-40 h-10 items-center overflow-hidden rounded bg-blue-700 px-8 py-3 text-white focus:outline-none active:bg-blue-900 active:border-blue-700'
@@ -72,7 +73,7 @@ export default function BotonesInventarioDescartes(props: propsType) {
               </button>
             )}
             <button
-            onClick={() => props.procesar("Enviar descarte")}
+            onClick={(): void => props.procesar("Enviar descarte")}
               className={
                 props.user === 'recepcion' || props.user === 'admin'
                   ? 'group relative inline-flex w-40 h-10 items-center overflow-hidden rounded bg-blue-700 px-8 py-3 text-white focus:outline-none active:bg-blue-900 active:border-blue-700'

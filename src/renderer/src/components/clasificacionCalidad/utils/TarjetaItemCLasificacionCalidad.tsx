@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { themeType } from '@renderer/env'
 import { formularioType } from '../types/clasificacionTypes'
 import { useContext, useEffect } from 'react'
@@ -11,7 +12,7 @@ type propsType = {
   tipoFruta: string
 }
 
-function TarjetaItemCLasificacionCalidad(props: propsType) {
+function TarjetaItemCLasificacionCalidad(props: propsType): JSX.Element {
   const formulario = props.tipoFruta === 'Limon' ? useContext(formLimonContext) : useContext(formNaranjaContext)
   useEffect(() => {
   }, [formulario])
@@ -39,7 +40,7 @@ function TarjetaItemCLasificacionCalidad(props: propsType) {
           </div>
           <input
             value={formulario[props.index].lavado}
-            onChange={(e) => props.handleChange(e.target.value, 'lavado', props.cardInfo.id)}
+            onChange={(e): void => props.handleChange(e.target.value, 'lavado', props.cardInfo.id)}
             className={`h-8  rounded-md pl-2 my-2 border-2 border-Celifrut-green`}
             type="number"
             placeholder="Lavado"
@@ -54,7 +55,7 @@ function TarjetaItemCLasificacionCalidad(props: propsType) {
           </div>
           <input
             value={formulario[props.index].proceso}
-            onChange={(e) => props.handleChange(e.target.value, 'proceso', props.cardInfo.id)}
+            onChange={(e): void => props.handleChange(e.target.value, 'proceso', props.cardInfo.id)}
             className={`h-8  rounded-md pl-2 my-2 border-2 border-Celifrut-green`}
             type="number"
             placeholder="Proceso"

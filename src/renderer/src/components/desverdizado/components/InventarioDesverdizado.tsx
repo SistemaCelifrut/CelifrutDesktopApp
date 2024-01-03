@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useEffect, useReducer, useState } from 'react'
 import { INITIAL_STATE, reducer } from '../functions/reduce'
 import TableInventarioDesverdizado from '../tables/TableInventarioDesverdizado'
@@ -14,7 +15,7 @@ type propsType = {
   filtro: string
 }
 
-export default function InventarioDesverdizado(props: propsType) {
+export default function InventarioDesverdizado(props: propsType): JSX.Element {
   const [datosOriginales, setDatosOriginales] = useState([])
   const [propsModal, setPropsModal] = useState({ nombre: '', canastillas: 0, enf: '' })
   const [titleTable, setTitleTable] = useState('Lotes')
@@ -27,10 +28,10 @@ export default function InventarioDesverdizado(props: propsType) {
   const [table, dispatch] = useReducer(reducer, INITIAL_STATE)
 
   useEffect(() => {
-    const asyncFunction = async () => {
+    const asyncFunction = async (): Promise<void> => {
       try {
-        const request = { action: 'obtenerFrutaDesverdizando2' }
-        const frutaActual = await window.api.inventario(request)
+        const request = { action: 'obtenerFrutaDesverdizando' }
+        const frutaActual = await window.api.proceso(request)
         console.log(frutaActual)
 
         if (frutaActual.status === 200) {
@@ -39,19 +40,19 @@ export default function InventarioDesverdizado(props: propsType) {
         } else {
           alert('error obteniendo datos del servidor')
         }
-      } catch (e: any) {
-        alert(`Fruta actual ${e.name}: ${e.message}`)
+      } catch (e: unknown) {
+        alert(`Fruta actual ${e}`)
       }
     }
     asyncFunction()
   }, [])
 
   useEffect(() => {
-    const asyncFunction = async () => {
+    const asyncFunction = async (): Promise<void> => {
       try {
         setRender(!render)
-        const request = { action: 'obtenerFrutaDesverdizando2' }
-        const frutaActual = await window.api.inventario(request)
+        const request = { action: 'obtenerFrutaDesverdizando' }
+        const frutaActual = await window.api.proceso(request)
         console.log(frutaActual)
 
         if (frutaActual.status === 200) {
@@ -60,15 +61,15 @@ export default function InventarioDesverdizado(props: propsType) {
         } else {
           alert('error obteniendo datos del servidor')
         }
-      } catch (e: any) {
-        alert(`Fruta actual ${e.name}: ${e.message}`)
+      } catch (e: unknown) {
+        alert(`Fruta actual ${e}`)
       }
     }
     asyncFunction()
   }, [showModalFinalizar, showModalParametros, showModalProcesar])
 
-  const clickLote = (e) => {
-    let enf = e.target.value
+  const clickLote = (e): void => {
+    const enf = e.target.value
     console.log(enf)
     const lote: prediosDesverdizadoType | undefined = table.find((item) => item.enf === enf)
     if (lote !== undefined) {
@@ -88,15 +89,15 @@ export default function InventarioDesverdizado(props: propsType) {
     }
   }
 
-  const closeParametros = () => {
+  const closeParametros = (): void => {
     setShowModalParametros(!showModalParametros)
   }
 
-  const closeFinalizarDesverdizado = () => {
+  const closeFinalizarDesverdizado = (): void => {
     setShowModalFinalizar(!showModalFinalizar)
   }
 
-  const closeProcesarDesverdizado = () => {
+  const closeProcesarDesverdizado = (): void => {
     setShowModalProcesar(!showModalProcesar)
   }
 

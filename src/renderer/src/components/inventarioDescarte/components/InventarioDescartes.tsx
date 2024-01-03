@@ -1,8 +1,8 @@
+/* eslint-disable prettier/prettier */
 import { INITIAL_STATE, reducer } from '../function/reducer'
 import { useEffect, useReducer, useState } from 'react'
 import TarjetaInvetarioDescartes from '../utils/TarjetaInvetarioDescartes'
 import TableDescartes from '../tables/TableDescartes'
-import { descarteType } from '../types/descartes'
 import BotonesInventarioDescartes from '../utils/BotonesInventarioDescartes'
 import { createPortal } from 'react-dom'
 import ModalConfirmarProcesoDescarte from '../modals/ModalConfirmarProcesoDescarte'
@@ -15,7 +15,7 @@ type propsType = {
 
 let enfObj = {}
 
-export default function InventarioDescartes(props: propsType) {
+export default function InventarioDescartes(props: propsType): JSX.Element {
   const [datosOriginales, setDatosOriginales] = useState([])
   const [render, setRender] = useState<boolean>(false)
   const [reprocesar, setReprocesar] = useState<boolean>(true)
@@ -26,10 +26,10 @@ export default function InventarioDescartes(props: propsType) {
   const [table, dispatch] = useReducer(reducer, INITIAL_STATE)
 
   useEffect(() => {
-    const asyncFunction = async () => {
+    const asyncFunction = async (): Promise<void> => {
       try {
-        const request = { action: 'obtenerDescarte2' }
-        const frutaActual = await window.api.inventario(request)
+        const request = { action: 'obtenerDescarte' }
+        const frutaActual = await window.api.proceso(request)
         console.log(frutaActual)
 
         if (frutaActual.status === 200) {
@@ -38,23 +38,26 @@ export default function InventarioDescartes(props: propsType) {
         } else {
           alert('error obteniendo datos del servidor')
         }
-      } catch (e: any) {
-        alert(`Fruta actual ${e.name}: ${e.message}`)
+      } catch (e: unknown) {
+        alert(`Fruta actual ${e}`)
       }
     }
     asyncFunction()
 
-    window.api.descartes('descartes', (data: descarteType[]) => {
+    window.api.descartes('descartes', async (data) => {
       console.log(data)
-      dispatch({ type: 'initialData', data: data, filtro: '' })
+      const request = { action: 'obtenerDescarte' }
+      const descartesEvent =  await window.api.proceso(request)
+      setDatosOriginales(descartesEvent.data)
+      dispatch({ type: 'initialData', data: descartesEvent.data, filtro: '' })
     })
   }, [])
 
   useEffect(() => {
-    const asyncFunction = async () => {
+    const asyncFunction = async (): Promise<void> => {
       try {
-        const request = { action: 'obtenerDescarte2' }
-        const frutaActual = await window.api.inventario(request)
+        const request = { action: 'obtenerDescarte' }
+        const frutaActual = await window.api.proceso(request)
         console.log(frutaActual)
 
         if (frutaActual.status === 200) {
@@ -63,19 +66,19 @@ export default function InventarioDescartes(props: propsType) {
         } else {
           alert('error obteniendo datos del servidor')
         }
-      } catch (e: any) {
-        alert(`Fruta actual ${e.name}: ${e.message}`)
+      } catch (e: unknown) {
+        alert(`Fruta actual ${e}`)
       }
     }
     asyncFunction()
 
-    window.api.descartes('descartes', (data: descarteType[]) => {
-      console.log(data)
-      dispatch({ type: 'initialData', data: data, filtro: '' })
-    })
+    // window.api.descartes('descartes', (data: descarteType[]) => {
+    //   console.log(data)
+    //   dispatch({ type: 'initialData', data: data, filtro: '' })
+    // })
   }, [modal])
 
-  const isProcesar = (data) => {
+  const isProcesar = (data): void => {
     const keys = Object.keys(data)
     const enf = keys.map((item) => item.split('/')[0])
     const setEnfs = new Set(enf)
@@ -88,10 +91,10 @@ export default function InventarioDescartes(props: propsType) {
     }
   }
 
-  const seleccionarItems = (e) => {
-    let id = e.target.value
+  const seleccionarItems = (e): void => {
+    const id = e.target.value
     const [enf, descarte, tipoDescarte] = e.target.value.split('/')
-    const lote = table.find((lote) => enf === lote.enf)
+    const lote = table.find((lote) => enf === lote._id)
     if (e.target.checked && lote) {
       enfObj[id] = lote[descarte][tipoDescarte]
     } else if (!e.target.checked && lote) {
@@ -102,11 +105,11 @@ export default function InventarioDescartes(props: propsType) {
     console.log(enfObj)
   }
 
-  const seleccionarVariosItems = (items) => {
-    for (let i of items) {
-      let id = i.value
+  const seleccionarVariosItems = (items): void => {
+    for (const i of items) {
+      const id = i.value
       const [enf, descarte, tipoDescarte] = i.value.split('/')
-      const lote = table.find((lote) => enf === lote.enf)
+      const lote = table.find((lote) => enf === lote._id)
       if (i.checked && lote) {
         enfObj[id] = lote[descarte][tipoDescarte]
       } else if (!i.checked && lote) {
@@ -117,7 +120,7 @@ export default function InventarioDescartes(props: propsType) {
     isProcesar(enfObj)
   }
 
-  const procesar = (data: string) => {
+  const procesar = (data: string): void => {
     if (modal === true) {
       setModal(!modal)
     } else {
@@ -126,11 +129,11 @@ export default function InventarioDescartes(props: propsType) {
     }
   }
 
-  const unCheck = (data:boolean) => {
+  const unCheck = (data:boolean): void => {
     setRespawn(data)
   }
 
-  const reset = () =>{
+  const reset = (): void =>{
     enfObj = {}
   }
 
@@ -151,7 +154,7 @@ export default function InventarioDescartes(props: propsType) {
       />
       {table &&
         table.map((lote) => (
-          <div key={lote.enf}>
+          <div key={lote._id}>
             <TarjetaInvetarioDescartes
               theme={props.theme}
               user={props.user}

@@ -1,14 +1,9 @@
-
-
+/* eslint-disable prettier/prettier */
 type propsType = {
   theme: string
   user: string
 }
 
 export default function TableDescartes(props: propsType) {
-  return (
-    <div>
-   
-    </div>
-  )
+  return <div></div>
 }

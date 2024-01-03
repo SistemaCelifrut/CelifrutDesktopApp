@@ -1,3 +1,11 @@
+/* eslint-disable prettier/prettier */
+
+export type serverInfoContenedoresType = {
+  data:ContenedoresObj[]
+  status:number
+  type:string
+}
+
 export interface ContenedoresObj {
   pallets: palletType[]
   infoContenedor: infoContenedorType

@@ -1,5 +1,6 @@
+/* eslint-disable prettier/prettier */
 import { themeType } from '@renderer/env'
-import { useEffect, useState, useReducer } from 'react'
+import React, { useEffect, useState, useReducer } from 'react'
 import NavCalidadInternaForm from './utils/NavCalidadInternaForm'
 import ContenidoZumo from './components/ContenidoZumo'
 import { INITIAL_STATE, reducer } from './functions/reduce'
@@ -10,14 +11,14 @@ type propsType = {
   user: string
 }
 
-export default function CalidadInterna(props: propsType) {
+export default function CalidadInterna(props: propsType): JSX.Element {
   const [lotesData, setLotesData] = useState([])
   const [lote, setLote] = useState<string>('')
   const [mensajeGuardado, setMensajeGuardado] = useState('')
   const [formulario, dispatch] = useReducer(reducer, INITIAL_STATE)
 
   useEffect(() => {
-    const interval = async () => {
+    const interval = async (): Promise<void> => {
       try {
         const request = { action: 'obtenerLotesCalidadInterna' }
         const lotes = await window.api.calidad(request)
@@ -30,16 +31,16 @@ export default function CalidadInterna(props: propsType) {
     interval()
   }, [])
 
-  const handleChange = (data: any, action: string) => {
+  const handleChange = (data: React.ChangeEvent<HTMLInputElement>, action: string): void => {
     if (action === 'semillas') {
-      dispatch({ type: action, data: data.target.checked })
+      dispatch({ type: action, data: String(data.target.checked) })
     } else {
       dispatch({ type: action, data: data.target.value })
     }
     console.log(formulario)
   }
 
-  const guardar = async () => {
+  const guardar = async (): Promise<void> => {
     const requestLotes = {
       action: 'guardarCalidadInterna',
       data: {
@@ -57,11 +58,10 @@ export default function CalidadInterna(props: propsType) {
           Number(formulario.brix3) / Number(formulario.acidez3)) / 3
       }
     }
-    console.log(requestLotes)
-    const response = await window.api.calidad(requestLotes)
-    console.log(response)
+    await window.api.calidad(requestLotes)
     const requestLotes2 = { action: 'obtenerLotesCalidadInterna' }
     const datos = await window.api.calidad(requestLotes2)
+    console.log(datos);
     setLotesData(datos.data)
 
     setMensajeGuardado('Los datos se han guardado correctamente')

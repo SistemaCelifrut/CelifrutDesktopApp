@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState } from 'react'
 import { GiSave } from 'react-icons/gi'
 
@@ -7,17 +8,17 @@ type vaciadoType = {
   theme: string
 }
 
-export default function DesverdizadoSetParametrosModal(props: vaciadoType) {
+export default function DesverdizadoSetParametrosModal(props: vaciadoType): JSX.Element {
   const [temperatura, setTemperatura] = useState<number>(0)
   const [etileno, setEtileno] = useState<number>(0)
   const [dioxido, setDioxido] = useState<number>(0)
   const [humedad, setHumedad] = useState<number>(0)
   const [loading, setLoading] = useState<boolean>(false)
 
-  const guardar = async () => {
+  const guardar = async (): Promise<void> => {
     try {
       setLoading(true)
-      let request = {
+      const request = {
         temperatura: temperatura,
         etileno: etileno,
         carbono: dioxido,
@@ -26,18 +27,18 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType) {
         action: 'setParametrosDesverdizado'
       }
 
-      const response = await window.api.inventario(request)
+      const response = await window.api.proceso(request)
       console.log(response)
       if (response.status === 200) {
-        alert('Desverdizado con exito')
+        alert('Parametros guardados con exito')
         props.closeParametros()
       } else if (response.status === 400) {
         alert(response.data)
       } else {
         alert(response)
       }
-    } catch (e: any) {
-      alert(`${e.name}:${e.message}`)
+    } catch (e: unknown) {
+      alert(`${e}`)
     } finally {
       setLoading(false)
       props.closeParametros()
@@ -73,7 +74,7 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType) {
             min="0"
             step="1"
             className="border-2 border-gray-200 rounded-md p-2"
-            onChange={(e) => setTemperatura(Number(e.target.value))}
+            onChange={(e): void => setTemperatura(Number(e.target.value))}
           />
         </div>
         <div className="flex justify-center pb-2">
@@ -87,7 +88,7 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType) {
             min="0"
             step="1"
             className="border-2 border-gray-200 rounded-md p-2"
-            onChange={(e) => setEtileno(Number(e.target.value))}
+            onChange={(e): void => setEtileno(Number(e.target.value))}
           />
         </div>
         <div className="flex justify-center pb-2">
@@ -101,7 +102,7 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType) {
             min="0"
             step="1"
             className="border-2 border-gray-200 rounded-md p-2"
-            onChange={(e) => setDioxido(Number(e.target.value))}
+            onChange={(e): void => setDioxido(Number(e.target.value))}
           />
         </div>
         <div className="flex justify-center pb-2">
@@ -115,7 +116,7 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType) {
             min="0"
             step="1"
             className="border-2 border-gray-200 rounded-md p-2"
-            onChange={(e) => setHumedad(Number(e.target.value))}
+            onChange={(e): void => setHumedad(Number(e.target.value))}
           />
         </div>
         <div className="flex justify-center gap-4">

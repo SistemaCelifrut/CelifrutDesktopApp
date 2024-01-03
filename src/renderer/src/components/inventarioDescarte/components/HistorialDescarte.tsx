@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { INITIAL_STATE_HISTORIAL_DESCARTE, reducerHistorial } from '../function/reducer'
 import TarjetaHistorialDescartes from '../utils/TarjetaHistorialDescartes'
 import { useEffect, useReducer, useState } from 'react'
@@ -8,16 +9,16 @@ type propsType = {
   filtro: string
 }
 
-export default function HistorialDescarte(props: propsType) {
+export default function HistorialDescarte(props: propsType): JSX.Element {
   const [datosOriginales, setDatosOriginales] = useState([])
 
   const [table, dispatch] = useReducer(reducerHistorial, INITIAL_STATE_HISTORIAL_DESCARTE)
   //useEffect donde se obtiene la informacion de el Main
   useEffect(() => {
-    const asyncFunction = async () => {
+    const asyncFunction = async (): Promise<void> => {
       try {
         const request = { action: 'obtenerHistorialDescarte' }
-        const descarte = await window.api.inventario(request)
+        const descarte = await window.api.proceso(request)
         console.log(descarte)
         if (descarte.status === 200) {
           setDatosOriginales(descarte.data)
@@ -25,8 +26,8 @@ export default function HistorialDescarte(props: propsType) {
         } else {
           alert('error obteniendo datos del servidor')
         }
-      } catch (e: any) {
-        alert(`Fruta actual ${e.name}: ${e.message}`)
+      } catch (e: unknown) {
+        alert(`Fruta actual ${e}`)
       }
     }
     asyncFunction()
@@ -42,8 +43,8 @@ export default function HistorialDescarte(props: propsType) {
     <div>
       <div className=' w-3/3 flex flex-row flex-wrap mt-2 p-0 gap-2 '>
         {table && 
-          table.map(lote => (
-            <TarjetaHistorialDescartes theme={props.theme} user={props.user} lote={lote} />
+          table.map((lote, index) => (
+            <TarjetaHistorialDescartes theme={props.theme} user={props.user} lote={lote} key={index}/>
           ))
         }
       </div>

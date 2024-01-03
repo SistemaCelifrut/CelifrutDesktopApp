@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useEffect, useState } from 'react'
 import { ContenedoresObj } from '../types/types'
 import PrincipalGeneral from '../functions/PrincipalGeneral'
@@ -18,7 +19,7 @@ type calibreType = {
 
 type PrincipalGeneralType = [number, calidadType, calibreType, calibreType]
 
-export default function TablePrincipalGeneral(props: propsType) {
+export default function TablePrincipalGeneral(props: propsType): JSX.Element {
   const [total, setTotal] = useState<number>(0)
   const [calidad, setCalidad] = useState<calidadType>({ 1: 0, 1.5: 0, 2: 0 })
   const [calibre, setCalibre] = useState<calibreType>({})
@@ -26,7 +27,6 @@ export default function TablePrincipalGeneral(props: propsType) {
 
   useEffect(() => {
     const result = PrincipalGeneral(props.contenedor)
-     console.log(result)
     if (Array.isArray(result)) {
       const [total, calidad, calibre, tipoCaja]: PrincipalGeneralType = result
       setTotal(total)
@@ -122,6 +122,7 @@ export default function TablePrincipalGeneral(props: propsType) {
       {tipoCaja !== null &&
         Object.keys(tipoCaja).map((item) => (
           <div
+          key={item}
           className={`${
             props.theme === 'Dark' ? 'bg-slate-900 text-white' : 'bg-slate-200 text-black'
           }

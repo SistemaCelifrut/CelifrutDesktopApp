@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useEffect, useReducer, useState } from 'react'
 import { INITIAL_STATE_HISTORIAL_PROCESO, reducerHistorial } from '../functions/reducer'
 import { createPortal } from 'react-dom'
@@ -13,7 +14,7 @@ type propsType = {
   filtro: string
 }
 
-export default function HistorialDirectoNacional(props: propsType) {
+export default function HistorialDirectoNacional(props: propsType): JSX.Element {
   const [datosOriginales, setDatosOriginales] = useState([])
   const [titleTable, setTitleTable] = useState('Lotes Procesados')
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -23,10 +24,10 @@ export default function HistorialDirectoNacional(props: propsType) {
   const [table, dispatch] = useReducer(reducerHistorial, INITIAL_STATE_HISTORIAL_PROCESO)
 
   useEffect(() => {
-    const asyncFunction = async () => {
+    const asyncFunction = async ():Promise<void> => {
       try {
-        const request = { action: 'estoEsUnaPutaMIerda' }
-        const frutaActual = await window.api.inventario(request)
+        const request = { action: 'obtenerHistorialDirectoNacional' }
+        const frutaActual = await window.api.proceso(request)
 
         if (frutaActual.status === 200) {
           setDatosOriginales(frutaActual.data)
@@ -34,18 +35,18 @@ export default function HistorialDirectoNacional(props: propsType) {
         } else {
           alert('error obteniendo datos del servidor')
         }
-      } catch (e: any) {
-        alert(`Fruta actual ${e.name}: ${e.message}`)
+      } catch (e: unknown) {
+        alert(`Fruta actual ${e}`)
       }
     }
     asyncFunction()
   }, [])
 
   useEffect(() => {
-    const asyncFunction = async () => {
+    const asyncFunction = async ():Promise<void> => {
       try {
-        const request = { action: 'obtenerHistorialDirectoNacional2' }
-        const frutaActual = await window.api.inventario(request)
+        const request = { action: 'obtenerHistorialDirectoNacional' }
+        const frutaActual = await window.api.proceso(request)
 
         if (frutaActual.status === 200) {
           setDatosOriginales(frutaActual.data)
@@ -53,19 +54,19 @@ export default function HistorialDirectoNacional(props: propsType) {
         } else {
           alert('error obteniendo datos del servidor')
         }
-      } catch (e: any) {
-        alert(`Fruta actual ${e.name}: ${e.message}`)
+      } catch (e: unknown) {
+        alert(`Fruta actual ${e}`)
       }
     }
     asyncFunction()
   }, [showModal])
 
-  const closeModal = () => {
+  const closeModal = (): void => {
     setShowModal(!showModal)
   }
 
-  const clickLote = (e) => {
-    let id = e.target.value
+  const clickLote = (e): void => {
+    const id = e.target.value
     console.log(id)
     const lote: historialProcesoType | undefined = table.find((item) => item._id === id)
     if (lote !== undefined) {

@@ -1,7 +1,8 @@
+/* eslint-disable prettier/prettier */
 import { themeType } from '@renderer/env'
 import { useState, useEffect } from 'react'
 import NavBarListaEmpaque from './utils/NavBarListaEmpaque'
-import { ContenedoresObj } from './types/types'
+import { ContenedoresObj, serverInfoContenedoresType } from './types/types'
 import FiltrosListaEmpaque from './utils/FiltrosListaEmpaque'
 import TablePrincipalGeneral from './tables/TablePrincipalGeneral'
 import TablePallets from './tables/TablePallets'
@@ -13,7 +14,7 @@ type propsType = {
   user: string
 }
 
-export default function ListaDeEmpaque(props: propsType) {
+export default function ListaDeEmpaque(props: propsType): JSX.Element {
   const [contenedores, setContenedores] = useState<ContenedoresObj[]>([])
   const [contenedor, setContenedor] = useState<ContenedoresObj>(initialContenedor)
   const [contenedorSelect, setContenedorSelect] = useState<string>('')
@@ -21,10 +22,11 @@ export default function ListaDeEmpaque(props: propsType) {
   const [filtro2, setFiltro2] = useState<string>('')
 
   useEffect(() => {
-    const obtenerDatos = async () => {
+    const obtenerDatos = async (): Promise<void> => {
       try {
-        const request = { action: 'obtenerListaEmpaque2' }
+        const request = { action: 'obtenerDataContenedor' }
         const response = await window.api.contenedores(request)
+        console.log(response)
         setContenedores(response.data)
       } catch (e) {
         console.log(e)
@@ -32,12 +34,13 @@ export default function ListaDeEmpaque(props: propsType) {
     }
     obtenerDatos()
 
-    window.api.listaEmpaqueInfo('listaEmpaqueInfo', (response: any) => {
-      setContenedores(response.listaEmpaque)
+    window.api.listaEmpaqueInfo('listaEmpaqueInfo', (response: serverInfoContenedoresType) => {
+      setContenedores(response.data)
+      console.log(response);
     })
   }, [])
 
-  const handleChange = (event: any) => {
+  const handleChange = (event:React.ChangeEvent<HTMLInputElement>): void => {
     setContenedorSelect((event.target.value as string))
   }
   useEffect(()=>{
@@ -45,7 +48,7 @@ export default function ListaDeEmpaque(props: propsType) {
     if(cont){
       setContenedor(cont)
     }
-  },[contenedorSelect])
+  },[contenedorSelect, contenedores])
 
   useEffect(() => {
     setFiltro2('')

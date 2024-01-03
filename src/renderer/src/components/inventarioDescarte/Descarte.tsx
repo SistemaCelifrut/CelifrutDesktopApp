@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import HistorialDescarte from "./components/HistorialDescarte"
 import InventarioDescartes from "./components/InventarioDescartes"
 import NavBarDescartes from "./utils/NavBarDescartes"
@@ -8,15 +9,15 @@ type propsType = {
   user: string
 }
 
-export default function Descarte(props:propsType) {
+export default function Descarte(props:propsType): JSX.Element {
   const [filtro, setFiltro] = useState<string>('')
   const [seccion, setSeccion] = useState<string>('Descartes')
   
-  const handleFilter = (data:string) =>{
+  const handleFilter = (data:string): void =>{
     setFiltro(data)
   }
 
-  const handleSectionSelect = (data:string) => {
+  const handleSectionSelect = (data:string): void => {
     setSeccion(data)
   }
   return (

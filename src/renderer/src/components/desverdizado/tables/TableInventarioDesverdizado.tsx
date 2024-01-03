@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useEffect } from 'react'
 import { prediosDesverdizadoType } from '../type/type'
 import HeaderTableDesverdizado from '../utils/HeaderTableInventarioDesverdizado'
@@ -6,14 +7,14 @@ import { format } from 'date-fns'
 type propsType = {
   table: prediosDesverdizadoType[]
   theme: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   clickLote: (e: any) => void
   render: boolean
 }
 
-export default function TableInventarioDesverdizado(props: propsType) {
+export default function TableInventarioDesverdizado(props: propsType):JSX.Element {
   useEffect(() => {
-    console.log("render")
-    let radios: HTMLCollectionOf<HTMLInputElement> = document.getElementsByClassName(
+    const radios: HTMLCollectionOf<HTMLInputElement> = document.getElementsByClassName(
       'myRadioButtons'
     ) as HTMLCollectionOf<HTMLInputElement>
 

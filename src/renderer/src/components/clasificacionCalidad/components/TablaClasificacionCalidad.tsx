@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { themeType } from '@renderer/env'
 import { lotesInventarioType, serverResponse } from '../types/clasificacionTypes'
 import FormClasificacionCalidadLimon from './FormClasificacionCalidadLimon'
@@ -19,18 +20,18 @@ type propsType = {
 export const formLimonContext = createContext(INITIAL_STATE_LIMON)
 export const formNaranjaContext = createContext(INITIAL_STATE_NARANJA)
 
-export default function TablaClasificacionCalidad(props: propsType) {
+export default function TablaClasificacionCalidad(props: propsType): JSX.Element {
   const [totalPorcentaje, setTotalPorcentaje] = useState(0)
   const [formularioLimon, dispatchLimon] = useReducer(reducerLimon, INITIAL_STATE_LIMON)
   const [formularioNaranja, dispatchNaranja] = useReducer(reducerNaranja, INITIAL_STATE_NARANJA)
 
-  const handleGuardar = async () => {
+  const handleGuardar = async (): Promise<void> => {
     try {
       if (totalPorcentaje !== 100) {
         alert('Error: el porcentaje debe ser igual a 100%')
         return
       }
-      let objRes = { lote: '' }
+      const objRes = { lote: '' }
       if (props.lote.tipoFruta === 'Limon') {
         formularioLimon.forEach((item) => {
           objRes[item.key] = (Number(item.lavado) + Number(item.proceso)) / 2
@@ -47,7 +48,7 @@ export default function TablaClasificacionCalidad(props: propsType) {
       })
       const requestLotes = { action: 'obtenerLotesClasificacionCalidad' }
       await window.api.calidad(requestLotes)
-
+      console.log(response)
       if (response.status === 200) {
         alert('Guardado exitoso')
         if(props.lote.tipoFruta === 'Limon'){
@@ -58,16 +59,16 @@ export default function TablaClasificacionCalidad(props: propsType) {
       } else {
         alert('Error al guardar los datos')
       }
-    } catch (e: any) {
-      alert(`${e.name}:${e.message}`)
+    } catch (e: unknown) {
+      alert(`${e}`)
     }
   }
 
-  const handleChangeLimon = (data: string, type: string, dataCard: string) => {
+  const handleChangeLimon = (data: string, type: string, dataCard: string): void => {
     dispatchLimon({ type: type, data: data, cardData: dataCard })
   }
 
-  const handleChangeNaranja = (data: string, type: string, dataCard: string) => {
+  const handleChangeNaranja = (data: string, type: string, dataCard: string): void => {
     dispatchNaranja({ type: type, data: data, cardData: dataCard })
   }
 
@@ -77,7 +78,7 @@ export default function TablaClasificacionCalidad(props: propsType) {
   }, [])
 
   useEffect(()=>{
-    console.log(props.lote)
+    console.log("aqui aqui", props.lote.tipoFruta)
   },[props.lote])
 
   useEffect(() => {

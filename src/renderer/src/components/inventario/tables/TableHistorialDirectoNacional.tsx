@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { format } from 'date-fns'
 import { historialProcesoType } from '../types/types'
 import React from 'react'
@@ -6,10 +7,11 @@ import HeaderTableHistorialDirecto from '../utils/HeaderTableHistorialDirecto'
 type propsType = {
   table: historialProcesoType[]
   theme: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   clickLote: (e:any) => void
 }
 
-export default function TableHistorialDirectoNacional(props: propsType) {
+export default function TableHistorialDirectoNacional(props: propsType): JSX.Element {
   return (
     <>
       <div>

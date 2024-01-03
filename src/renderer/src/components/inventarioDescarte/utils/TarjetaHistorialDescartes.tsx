@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { format } from 'date-fns'
 import { historialDescarteType } from '../types/historialDescartes'
 import { sumatoriaHistorialDescartes } from '../function/sumatorias'
@@ -11,7 +12,7 @@ type propsType = {
   lote: historialDescarteType
 }
 
-export default function TarjetaHistorialDescartes(props: propsType) {
+export default function TarjetaHistorialDescartes(props: propsType): JSX.Element {
   const [showDetails, setShowDetails] = useState<boolean>(false)
   if (props.lote) {
     return (
@@ -85,7 +86,7 @@ export default function TarjetaHistorialDescartes(props: propsType) {
                   {Object.keys(props.lote.predios).map((enf) => {
                     if (enf !== 'fecha') {
                       return (
-                        <div className='mt-2'>
+                        <div className='mt-2' key={enf}>
                           <div className='flex flex-row gap-2'>
                             <h2 className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-sm font-bold`}>
                               {enf}
@@ -101,7 +102,7 @@ export default function TarjetaHistorialDescartes(props: propsType) {
                             <div className='flex flex-row'>
                             {props.lote.predios[enf].descarteLavado && 
                               Object.keys(props.lote.predios[enf].descarteLavado).map(item => (
-                                <div className='flex flex-row gap-2'>
+                                <div className='flex flex-row gap-2' key={item}>
                                 <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-sm`}>
                                   {item}:
                                 </p>
@@ -118,7 +119,7 @@ export default function TarjetaHistorialDescartes(props: propsType) {
                              <div className='flex flex-row gap-2'>
                              {props.lote.predios[enf].descarteEncerado && 
                               Object.keys(props.lote.predios[enf].descarteEncerado).map(item => (
-                                <div className='flex flex-row gap-2'>
+                                <div className='flex flex-row gap-2' key={item}>
                                 <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-sm`}>
                                   {item}:
                                 </p>
@@ -141,7 +142,7 @@ export default function TarjetaHistorialDescartes(props: propsType) {
             )}
           </div>
           <div
-            onClick={() => setShowDetails(!showDetails)}
+            onClick={(): void => setShowDetails(!showDetails)}
             className={`${
               props.theme !== 'Dark'
                 ? 'text-black hover:bg-slate-300 active:bg-white'
@@ -155,6 +156,6 @@ export default function TarjetaHistorialDescartes(props: propsType) {
       </div>
     )
   } else {
-    return null
+    return <div></div>
   }
 }

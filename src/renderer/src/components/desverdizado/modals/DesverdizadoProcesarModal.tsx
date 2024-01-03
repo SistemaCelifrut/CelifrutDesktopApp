@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 
 import { useState } from 'react'
 
@@ -7,11 +8,11 @@ type propsType = {
   theme: string
 }
 
-export default function DesverdizadoProcesarModal(props: propsType) {
+export default function DesverdizadoProcesarModal(props: propsType): JSX.Element {
   const [canastillas, setCanastillas] = useState<number>(0)
   const [loading, setLoading] = useState<boolean>(false)
 
-  const vaciar = async () => {
+  const vaciar = async (): Promise<void> => {
     try {
       setLoading(true)
       const canastillasInt = canastillas
@@ -21,7 +22,7 @@ export default function DesverdizadoProcesarModal(props: propsType) {
         alert('Error en el numero de canastillas')
       } else {
         const obj = { canastillas: canastillas, enf: props.propsModal.enf, action: 'procesarDesverdizado' }
-        const response = await window.api.inventario(obj)
+        const response = await window.api.proceso(obj)
         if (response.status === 200) {
           alert('Vaciado con exito')
           props.closeProcesarDesverdizado()
@@ -31,8 +32,8 @@ export default function DesverdizadoProcesarModal(props: propsType) {
           alert(response)
         }
       }
-    } catch (e: any) {
-      alert(`${e.name}:${e.message}`)
+    } catch (e: unknown) {
+      alert(`${e}`)
     } finally {
       setLoading(false)
     }
@@ -66,7 +67,7 @@ export default function DesverdizadoProcesarModal(props: propsType) {
             min="0"
             step="1"
             className="border-2 border-gray-200 rounded-md p-2"
-            onChange={(e) => setCanastillas(Number(e.target.value))}
+            onChange={(e): void => setCanastillas(Number(e.target.value))}
           />
         </div>
         <div className="flex justify-center gap-4">

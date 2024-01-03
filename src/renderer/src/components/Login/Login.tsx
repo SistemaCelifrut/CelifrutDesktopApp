@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react'
 import logo from '../../assets/CELIFRUT.png'
 import { sendLogInType, userType } from '@renderer/types/login'
@@ -7,7 +8,7 @@ type propsType = {
   getUser: (data:userType) => void
 }
 
-export default function Login(props: propsType) {
+export default function Login(props: propsType): JSX.Element {
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [errUser, setErrUser] = useState<boolean>(false)
@@ -15,15 +16,14 @@ export default function Login(props: propsType) {
   const [animation, setAnimation] = useState<boolean>(false)
   const [fade, setFade] = useState<boolean>(false)
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event):Promise<void> => {
     event.preventDefault()
-    let datosLogIn: sendLogInType = {
+    const datosLogIn: sendLogInType = {
       user: username,
       password: password
     }
     const response = await window.api.logIn(datosLogIn)
-    console.log(response.data)
-    console.log("sdadasd")
+    console.log(response)
     props.getUser(response.data)
     if (response.status === 200) {
       setAnimation(true)
@@ -65,7 +65,7 @@ export default function Login(props: propsType) {
           id="username"
           type="text"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e):void => setUsername(e.target.value)}
         />
         <p className="text-red-700 text-sm">{errUser && 'Usuario incorrecto'}</p>
       </div>
@@ -85,9 +85,9 @@ export default function Login(props: propsType) {
           id="password"
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e):void => setPassword(e.target.value)}
         />
-        <p className="text-red-700 text-sm">{errPass && 'Usuario incorrecto'}</p>
+        <p className="text-red-700 text-sm">{errPass && 'Clave incorrecto'}</p>
       </div>
       <div className="flex items-center justify-between">
         <button

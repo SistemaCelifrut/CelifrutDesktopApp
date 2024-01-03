@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { calidadInternaType, stateUseReducerTypeCalidadInterna } from '../types/calidadInterna'
 
 export const INITIAL_STATE: calidadInternaType = {
@@ -12,7 +13,7 @@ export const INITIAL_STATE: calidadInternaType = {
   acidez3: ''
 }
 
-export const reducer = (state: calidadInternaType, action: stateUseReducerTypeCalidadInterna) => {
+export const reducer = (state: calidadInternaType, action: stateUseReducerTypeCalidadInterna): calidadInternaType => {
   switch (action.type) {
     case 'initialData':
       return state

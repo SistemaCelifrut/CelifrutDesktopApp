@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { format } from 'date-fns'
 import { prediosType } from '../types/types'
 import HeaderTableFurtaSinProcesar from '../utils/HeaderTableFurtaSinProcesar'
@@ -6,10 +7,10 @@ import React from 'react'
 type propsType = {
   table: prediosType[]
   theme: string
-  clickLote: (e:any) => void
+  clickLote: (e) => void
 }
 
-export default function TableFrutaSinProcesar(props: propsType) {
+export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
   return (
     <div>
       <div className="grid grid-cols-9 gap-0 mt-0">

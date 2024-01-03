@@ -1,6 +1,7 @@
+/* eslint-disable prettier/prettier */
 import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
-import { ContenedoresObj } from '../types/types'
+import { ContenedoresObj, serverInfoContenedoresType } from '../types/types'
 import { themeType } from '@renderer/env'
 import ObtenerInfoPrediosListaEmpaque from '../functions/ObtenerInfoPrediosListaEmpaque'
 
@@ -15,36 +16,36 @@ type outObjtype = {
 }
 
 type enfType = {
-  [key: string]: {}
+  [key: string]: object
 }
 
-export default function TablePrediosListaEmpaque(props: propsType) {
+export default function TablePrediosListaEmpaque(props: propsType): JSX.Element {
   const [tabla, setTabla] = useState<outObjtype>({})
   const [rendimiento, setRendimiento] = useState<object>({})
 
   useEffect(() => {
-    const funcionAuxiliar = async () => {
+    const funcionAuxiliar = async (): Promise<void> => {
       console.log(props.filtro)
       const response: outObjtype = ObtenerInfoPrediosListaEmpaque(props.contenedor, props.filtro)
       //const predios = ObtenerPrediosContenedor(props.contenedor)
       console.log(response)
-      const request = { action: 'obtenerRendimiento' }
-      const rendimientoReq = await window.api.ingresoFruta(request)
+      //const request = { action: 'obtenerRendimiento' }
+      //const rendimientoReq = await window.api.proceso(request)
       //console.log(rendimientoReq)
 
-      setRendimiento(rendimientoReq['data'])
+      //setRendimiento(rendimientoReq['data'])
       setTabla(response)
     }
     funcionAuxiliar()
-    window.api.listaEmpaqueInfo('listaEmpaqueInfo', (response: any) => {
-      setRendimiento(response.rendimiento)
+    window.api.listaEmpaqueInfo('listaEmpaqueInfo', (response: serverInfoContenedoresType) => {
+      setRendimiento(response.data)
     })
   }, [props.contenedor, props.filtro])
 
   return (
     <div>
       {Object.keys(tabla).map((enf) => (
-        <ul
+        <ul key={enf}
           className={`${props.theme === 'Dark' ? 'bg-slate-700' : 'bg-slate-100'}
                    list-none ml-2 mr-2 mb-5 border border-gray-300 rounded shadow-md p-2`}
         >
@@ -94,13 +95,13 @@ export default function TablePrediosListaEmpaque(props: propsType) {
                       0
                     )),
                   0
-                )}{' '}
+                ).toFixed(2)}{' '}
                 Kg
               </p>
             </div>
             <ul>
               {Object.keys(tabla[enf]).map((pallet) => (
-                <li
+                <li key={pallet}
                   className={`${
                     props.theme === 'Dark' ? 'bg-slate-900 text-white' : 'bg-slate-200 text-black'
                   }

@@ -1,13 +1,9 @@
-
 import { app, shell, BrowserWindow, nativeTheme, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { io } from 'socket.io-client'
 
-
-
 let theme: 'Dark' | 'Ligth' = 'Ligth'
-
 
 function createWindow(): void {
   // Create the browser window.
@@ -43,22 +39,18 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 
-  socket.on('descartesInfo2', (data) => {
+  socket.on('descartesInfo', (data) => {
     console.log(data)
-    if (data.status === 200) mainWindow.webContents.send('descartes', data.data)
+    if (data.status === 200) mainWindow.webContents.send('descartes', data)
     else console.log('error')
   })
 
   socket.on('listaEmpaqueInfo', (data) => {
-    console.log("no entiendo ")
     console.log(data)
     if (data.status === 200) mainWindow.webContents.send('listaEmpaqueInfo', data)
     else console.log('error')
   })
-
 }
-
-
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -94,12 +86,7 @@ app.whenReady().then(() => {
       theme = 'Ligth'
     }
   })
-
-
 })
-
-
-
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -117,14 +104,18 @@ app.on('window-all-closed', () => {
 ipcMain.handle('obtenerTheme', async () => {
   try {
     return theme
-  } catch (e: any) {
-    return `${e.name}:${e.message}`
+  } catch (e: unknown) {
+    return `${e}`
   }
 })
 
-const socket = io('ws://192.168.0.172:3001/', {
+const socket = io('ws://192.168.0.172:3003/', {
   rejectUnauthorized: false
 })
+
+// const socket = io('ws://localhost:3003/', {
+//   rejectUnauthorized: false
+// })
 
 //la funcion que loguea la cuenta
 ipcMain.handle('logIn', async (event, datos) => {
@@ -142,8 +133,30 @@ ipcMain.handle('logIn', async (event, datos) => {
     })
     console.log(user)
     return user
-  } catch (e: any) {
-    return `${e.name}:${e.message}`
+  } catch (e: unknown) {
+    return `${e}`
+  }
+})
+// funcion encargada del proceso de la fruta
+ipcMain.handle('proceso', async (event, data) => {
+  try {
+    event.defaultPrevented
+    console.log(data)
+    const request = { data: data, id: socket.id }
+    const response = await new Promise((resolve) => {
+      socket.emit('proceso', request, (serverResponse) => {
+        if (typeof serverResponse === 'object') {
+          resolve(serverResponse)
+        } else {
+          resolve({ status: 400 })
+        }
+      })
+    })
+    console.log(response)
+    return response
+  } catch (e: unknown) {
+    console.log(`${e}`)
+    return { status: 400, data: [{ _id: '', PREDIO: '' }] }
   }
 })
 // funcion encargada para enviar y recibir los datos de ingreso de fruta
@@ -163,9 +176,9 @@ ipcMain.handle('ingresoFruta', async (event, data) => {
     })
     console.log(response)
     return response
-  } catch (e:any) {
-    console.log(`${e.name}:${e.message}`)
-    return {status:400, data:[{_id:'', PREDIO:''}]}
+  } catch (e: unknown) {
+    console.log(`${e}`)
+    return { status: 400, data: [{ _id: '', PREDIO: '' }] }
   }
 })
 //seccion inventario
@@ -244,18 +257,17 @@ ipcMain.handle('proveedores', async (event, data) => {
         if (serverResponse.status === 200) {
           resolve(serverResponse)
         } else {
-          resolve({ status: 400, data:{}})
+          resolve({ status: 400, data: {} })
         }
       })
     })
     console.log(response)
     return response
   } catch (e) {
-    return { status: 400, data:{} }
+    return { status: 400, data: {} }
   }
 })
 
 // const socket = io('ws://localhost:3000/',{
 //   rejectUnauthorized: false,
 // });
-

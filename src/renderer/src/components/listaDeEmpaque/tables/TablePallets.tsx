@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import { ContenedoresObj } from '../types/types'
@@ -10,7 +11,7 @@ type propsType = {
   theme: themeType
 }
 
-export default function TablePallets(props: propsType) {
+export default function TablePallets(props: propsType):JSX.Element {
   const [tabla, setTabla] = useState({})
 
   useEffect(() => {
@@ -41,12 +42,12 @@ export default function TablePallets(props: propsType) {
 
                 acu += item.cajas * props.contenedor.infoContenedor.pesoCaja[tipoCaja]
                 return acu
-              }, 0))}Kg
-              {console.log()}
+              }, 0)).toFixed(2)}Kg
             </div>
             <ul className="ml-4">
               {tabla[pallet].map((enf) => (
                 <li
+                  key={enf}
                   className={`${
                     props.theme === 'Dark' ? 'bg-slate-900 text-white' : 'bg-slate-200 text-black'
                   }

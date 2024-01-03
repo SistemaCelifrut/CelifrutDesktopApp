@@ -17,22 +17,34 @@ import Formatos from './components/Formatos/Formatos'
 import Informes from './components/informes/Informes'
 
 export const themeContext = createContext<themeType>('Ligth')
-export const userContext = createContext({ user: '', permisos: [''] })
+export const userContext = createContext<userType>({
+  user: '',
+  password: '',
+  permisos: [],
+  cargo: '',
+  rol: ''
+})
 
 function App(): JSX.Element {
   const [isLogin, setIsLogin] = useState<boolean>(false)
   const [theme, setTheme] = useState<themeType>('Ligth')
-  const [user, setUser] = useState<userType>({ user: '', permisos: [''] })
+  const [user, setUser] = useState<userType>({
+    user: '',
+    permisos: [],
+    cargo: '',
+    rol: '',
+    password: ''
+  })
   const [section, setSection] = useState<string>('main')
 
   //useEffect que obtiene el theme del quipo
   useEffect(() => {
-    const funcionAuxiliar = async () => {
+    const funcionAuxiliar = async (): Promise<void> => {
       try {
         const response = await window.api.obtenerTheme()
         setTheme(response)
-      } catch (e: any) {
-        alert(`${e.name}:${e.message}`)
+      } catch (e: unknown) {
+        alert(`${e}`)
       }
     }
     funcionAuxiliar()
@@ -43,16 +55,16 @@ function App(): JSX.Element {
     else setTheme('Ligth')
   }
 
-  const loggin = (data: boolean) => {
+  const loggin = (data: boolean): void => {
     setIsLogin(data)
   }
 
-  const getUser = (data: userType) => {
+  const getUser = (data: userType): void => {
     console.log(data)
     setUser(data)
   }
 
-  const seleccionWindow = (data: string) => {
+  const seleccionWindow = (data: string): void => {
     setSection(data)
   }
 
@@ -80,18 +92,16 @@ function App(): JSX.Element {
                   <NavBar theme={theme} changeTheme={changeTheme} />
                 </div>
                 <div className="col-span-2">
-                  <SideBar theme={theme} user={user} seleccionWindow={seleccionWindow} />
+                  <SideBar seleccionWindow={seleccionWindow} />
                 </div>
                 <div className="col-span-10 overflow-auto">
-                  {section === 'Ingreso de fruta' && <IngresoFruta theme={theme} />}
+                  {section === 'Ingreso de fruta' && <IngresoFruta />}
                   {section === 'Fruta sin procesar' && (
                     <InventarioFrutaSinProcesar theme={theme} user={user.user} />
                   )}
                   {section === 'Descarte' && <Descarte theme={theme} user={user.user} />}
                   {section === 'Desverdizado' && <Desverdizado theme={theme} user={user.user} />}
-                  {section === 'Crear contenedor' && (
-                    <CrearContenedor theme={theme} user={user.user} />
-                  )}
+                  {section === 'Crear contenedor' && <CrearContenedor />}
                   {section === 'Lista de empaque' && (
                     <ListaDeEmpaque theme={theme} user={user.user} />
                   )}
@@ -101,12 +111,8 @@ function App(): JSX.Element {
                   {section === 'Clasificacion calidad' && (
                     <ClasificacionCalidad theme={theme} user={user.user} />
                   )}
-                   {section === 'Formatos' && (
-                    <Formatos />
-                  )}
-                   {section === 'Informes' && (
-                    <Informes />
-                  )}
+                  {section === 'Formatos' && <Formatos />}
+                  {section === 'Informes' && <Informes />}
                 </div>
               </>
             )}
