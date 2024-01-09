@@ -168,7 +168,7 @@ try {
 
 var country_from = {
   x: '20',
-  y: '20',
+  y: '40',
   fonttype: '1',
   rotation: '0',
   xmul: '1',
@@ -177,7 +177,7 @@ var country_from = {
 }
 const destino = {
   x: '20',
-  y: '40',
+  y: '60',
   fonttype: '1',
   rotation: '0',
   xmul: '1',
@@ -186,17 +186,35 @@ const destino = {
 }
 const product = {
   x: '20',
-  y: '60',
+  y: '80',
   fonttype: '1',
   rotation: '0',
   xmul: '1',
   ymul: '1',
   text: 'PRODUCT: ACID LIME TAHITI (Citrus latifolla)'
 }
+const pesoNeto_label = {
+  x: '500',
+  y: '80',
+  fonttype: '1',
+  rotation: '0',
+  xmul: '1',
+  ymul: '1',
+  text: 'NET WEIGHT: '
+}
+const pesoTotal_label = {
+  x: '500',
+  y: '100',
+  fonttype: '1',
+  rotation: '0',
+  xmul: '1',
+  ymul: '1',
+  text: 'GROSS WEIGHT: '
+}
 
 const client_code = {
   x: '20',
-  y: '80',
+  y: '100',
   fonttype: '1',
   rotation: '0',
   xmul: '1',
@@ -205,22 +223,84 @@ const client_code = {
 }
 const farm_code = {
   x: '20',
-  y: '100',
+  y: '120',
   fonttype: '1',
   rotation: '0',
   xmul: '1',
   ymul: '1',
   text: 'FARM CODE: '
 }
-
 const ICA_code = {
   x: '20',
-  y: '120',
+  y: '140',
   fonttype: '1',
   rotation: '0',
   xmul: '1',
   ymul: '1',
   text: 'FARM ICA CODE: '
+}
+const GGN_code = {
+  x: '20',
+  y: '160',
+  fonttype: '1',
+  rotation: '0',
+  xmul: '1',
+  ymul: '1',
+  text: 'GGN: '
+}
+const CoC_code = {
+  x: '20',
+  y: '180',
+  fonttype: '1',
+  rotation: '0',
+  xmul: '1',
+  ymul: '1',
+  text: 'CoC: '
+}
+const cont_ef1 = {
+  x: '20',
+  y: '200',
+  fonttype: '1',
+  rotation: '0',
+  xmul: '1',
+  ymul: '1',
+  text: ''
+}
+const cliente = {
+  x: '100',
+  y: '260',
+  fonttype: '2',
+  rotation: '0',
+  xmul: '1',
+  ymul: '1',
+  text: ''
+}
+const clienteID = {
+  x: '100',
+  y: '280',
+  fonttype: '2',
+  rotation: '0',
+  xmul: '1',
+  ymul: '1',
+  text: 'ID: '
+}
+const clienteTelefono = {
+  x: '100',
+  y: '300',
+  fonttype: '2',
+  rotation: '0',
+  xmul: '1',
+  ymul: '1',
+  text: 'CELL PHONE: '
+}
+const clienteCorreo = {
+  x: '100',
+  y: '320',
+  fonttype: '2',
+  rotation: '0',
+  xmul: '1',
+  ymul: '1',
+  text: ''
 }
 
 var label_variable = { quantity: '1', copy: '1' }
@@ -235,27 +315,85 @@ const label_setup = {
   offset: '1'
 }
 
+let pesoNeto
+let pesoTotal
+
 process.parentPort.once('message', (e) => {
-  console.log(e)
-  destino.text = destino.text + e.data.destino;
-  client_code.text = client_code.text + e.data.codigoCliente;
-  farm_code.text = farm_code.text +e.data.codigoPredio;
 
+  destino.text = destino.text + e.data.destino
+  client_code.text = client_code.text + e.data.codigoCliente
+  farm_code.text = farm_code.text + e.data.codigoPredio
+  ICA_code.text = ICA_code.text + e.data.codigoICA
+  cliente.text = e.data.cliente
+  clienteID.text = clienteID.text + e.data.clienteID
+  clienteTelefono.text =  clienteTelefono.text + e.data.telefono
+  clienteCorreo.text =  e.data.correo
+  label_variable.copy = String(e.data.cajas)
+  cont_ef1.text = e.data.contenedor + '- ' + e.data.ef1
 
+  if (e.data.codigoGGN === undefined) {
+    GGN_code.text = GGN_code.text + 'N/A'
+  } else {
+    GGN_code.text = GGN_code.text + e.data.codigoGGN
+  }
+  if (e.data.codigoCoC === undefined) {
+    CoC_code.text = CoC_code.text + 'N/A'
+  } else {
+    CoC_code.text = CoC_code.text + e.data.codigoGGN
+  }
+  if(e.data.tipoFruta === 'Naranja'){
+    product.text = 'PRODUCT: ORANGE (CITRUS SINESIS)'
+  }
+
+  switch (e.data.tipoCaja) {
+    case "G-37":
+    case "B-37":
+      pesoNeto = '16'
+      pesoTotal = '17'
+      break;
+    case "G-4.5":
+      pesoNeto = '4.5'
+      pesoTotal = '4.8'
+      break;
+    case "B-30":
+    case "G-30":
+      pesoNeto = '13'
+      pesoTotal = '14'
+      break;
+    case "B-40":
+    case "G-40":
+      pesoNeto = '18'
+      pesoTotal = '19'
+      break
+    }
+
+    pesoNeto_label.text = pesoNeto_label.text + pesoNeto;
+    pesoTotal_label.text = pesoTotal_label.text + pesoTotal;
   openport('TSC TE200', true)
 
   setup(label_setup, true)
 
   clearbuffer('', true)
 
-  sendcommand('BAR 15, 15, 800,2')
+  sendcommand('BAR 15, 20, 800,2')
+  sendcommand('BAR 15, 230, 800,2')
   printerfont(country_from, true)
   printerfont(destino, true)
   printerfont(product, true)
+  printerfont(pesoNeto_label, true)
+  printerfont(pesoTotal_label, true)
   printerfont(client_code, true)
   printerfont(farm_code, true)
   printerfont(ICA_code, true)
+  printerfont(GGN_code, true)
+  printerfont(CoC_code, true)
+  printerfont(cont_ef1, true)
+  printerfont(cliente, true)
+  printerfont(clienteID, true)
+  printerfont(clienteTelefono, true)
+  printerfont(clienteCorreo, true)
   printlabel(label_variable, true)
+
 
   closeport('', true)
 })

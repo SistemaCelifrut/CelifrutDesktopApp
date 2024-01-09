@@ -2,8 +2,10 @@ import { app, shell, BrowserWindow, nativeTheme, ipcMain, utilityProcess } from 
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { io } from 'socket.io-client'
+import { responseLoginType } from './types/login'
 
 let theme: 'Dark' | 'Ligth' = 'Ligth'
+let cargo = ''
 
 function createWindow(): void {
   // Create the browser window.
@@ -48,18 +50,31 @@ function createWindow(): void {
   socket.on('listaEmpaqueInfo', (data) => {
     console.log(data)
     if (data.status === 200) mainWindow.webContents.send('listaEmpaqueInfo', data)
-    if (data.imprimir) {
-      const child = utilityProcess.fork(join(__dirname, 'imprimir.js'))
-      child.postMessage({
-        destino: data.dataImpresion.cliente.destino,
-        codigoCliente: data.dataImpresion.cliente.code,
-        codigoPredio: data.dataImpresion.proveedor.code,
-        codigoICA: data.dataImpresion.proveedor.ICA
-      })
-      child.stdout?.on('data', (data) => {
-        console.log(data)
-      })
-    } else console.log('error')
+    if (cargo === 'auxiliar_lista_de_empaque' || cargo === 'admin') {
+      if (data.imprimir) {
+        const child = utilityProcess.fork(join(__dirname, 'imprimir.js'))
+        child.postMessage({
+          destino: data.dataImpresion.cliente.destino,
+          codigoCliente: data.dataImpresion.cliente.code,
+          codigoPredio: data.dataImpresion.proveedor.code,
+          codigoICA: data.dataImpresion.proveedor.ICA,
+          codigoGGN: data.dataImpresion.proveedor.GGN,
+          codigoCoC: undefined,
+          contenedor: data.dataIngreso.contenedor,
+          ef1: data.dataIngreso.id,
+          cliente: data.dataImpresion.cliente.cliente,
+          clienteID: data.dataImpresion.cliente.clienteID,
+          telefono: data.dataImpresion.cliente.telefono,
+          correo: data.dataImpresion.cliente.correo,
+          cajas: data.dataIngreso.cajas,
+          tipoFruta: data.dataImpresion.tipoFruta,
+          tipoCaja: data.dataIngreso.tipoCaja
+        })
+        child.stdout?.on('data', (data) => {
+          console.log(data)
+        })
+      } else console.log('error')
+    }
   })
 }
 
@@ -133,16 +148,20 @@ ipcMain.handle('logIn', async (event, datos) => {
   try {
     event.defaultPrevented
     const request = { data: datos, id: socket.id }
-    const user = await new Promise((resolve) => {
+    const user: responseLoginType = await new Promise((resolve) => {
       socket.emit('logIn', request, (response) => {
         if (typeof response === 'object') {
           resolve(response)
         } else {
-          resolve({ status: 400, user: '', permisos: [] })
+          resolve({
+            status: 400,
+            data: { user: '', password: '', rol: '', cargo: '', permisos: [''] }
+          })
         }
       })
     })
     console.log(user)
+    cargo = user.data.cargo
     return user
   } catch (e: unknown) {
     return `${e}`
