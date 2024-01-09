@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, nativeTheme, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, nativeTheme, ipcMain, utilityProcess } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { io } from 'socket.io-client'
@@ -44,11 +44,22 @@ function createWindow(): void {
     if (data.status === 200) mainWindow.webContents.send('descartes', data)
     else console.log('error')
   })
-
+  socket.off('listaEmpaqueInfo')
   socket.on('listaEmpaqueInfo', (data) => {
     console.log(data)
     if (data.status === 200) mainWindow.webContents.send('listaEmpaqueInfo', data)
-    else console.log('error')
+    if (data.imprimir) {
+      const child = utilityProcess.fork(join(__dirname, 'imprimir.js'))
+      child.postMessage({
+        destino: data.dataImpresion.cliente.destino,
+        codigoCliente: data.dataImpresion.cliente.code,
+        codigoPredio: data.dataImpresion.proveedor.code,
+        codigoICA: data.dataImpresion.proveedor.ICA
+      })
+      child.stdout?.on('data', (data) => {
+        console.log(data)
+      })
+    } else console.log('error')
   })
 }
 
@@ -271,3 +282,9 @@ ipcMain.handle('proveedores', async (event, data) => {
 // const socket = io('ws://localhost:3000/',{
 //   rejectUnauthorized: false,
 // });
+
+// const child = utilityProcess.fork(join(__dirname, 'imprimir.js'))
+// child.postMessage({ message: 'hello' })
+// child.stdout?.on('data', (data) => {
+//   console.log(data)
+// })

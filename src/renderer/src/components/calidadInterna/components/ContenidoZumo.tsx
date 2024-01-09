@@ -1,15 +1,16 @@
+/* eslint-disable prettier/prettier */
 import { themeType } from '@renderer/env'
 import { calidadInternaType } from '../types/calidadInterna'
 
 type propsType = {
   theme: themeType
   user: string
-  handleChange: (data: any, action: string) => void
+  handleChange: (data: React.ChangeEvent<HTMLInputElement>, action: string) => void
   formulario: calidadInternaType
 }
 
-export default function ContenidoZumo(props: propsType) {
-  const calcularPorcentaje = () => {
+export default function ContenidoZumo(props: propsType): JSX.Element {
+  const calcularPorcentaje = (): string => {
     const pesoInicial = parseFloat(props.formulario.pesoInicial)
     const pesoZumo = parseFloat(props.formulario.zumo)
     if (isNaN(pesoInicial) || isNaN(pesoZumo) || pesoInicial === 0) {
@@ -34,14 +35,14 @@ export default function ContenidoZumo(props: propsType) {
         className={`rounded-lg h-10 pl-2`}
         type="number"
         placeholder="Peso inicial muestra (gr)"
-        onChange={(e) => props.handleChange(e, 'pesoInicial')}
+        onChange={(e): void => props.handleChange(e, 'pesoInicial')}
         value={props.formulario.pesoInicial}
       />
       <input
         className="rounded-lg h-10 pl-2"
         type="number"
         placeholder="Peso zumo (gr)"
-        onChange={(e) => props.handleChange(e, 'zumo')}
+        onChange={(e): void => props.handleChange(e, 'zumo')}
         value={props.formulario.zumo}
       />
       <div className="checkBoxContainer">
@@ -56,7 +57,7 @@ export default function ContenidoZumo(props: propsType) {
           id="semillas"
           type="checkbox"
           className="w-10 h-4"
-          onChange={(e) => props.handleChange(e, 'semillas')}
+          onChange={(e): void => props.handleChange(e, 'semillas')}
         />
       </div>
       <p

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { themeType } from '@renderer/env'
 import { calidadInternaType } from '../types/calidadInterna'
 
@@ -5,11 +6,11 @@ import { calidadInternaType } from '../types/calidadInterna'
 type propsType = {
   theme: themeType
   user: string
-  handleChange: (data: any, action: string) => void
+  handleChange: (data: React.ChangeEvent<HTMLInputElement>, action: string) => void
   formulario: calidadInternaType
 }
 
-export default function PruebasPlataforma(props: propsType) {
+export default function PruebasPlataforma(props: propsType):JSX.Element {
   return (
     <div
       className={`${props.theme === 'Dark' ? 'bg-slate-500' : 'bg-slate-100'} 
@@ -33,14 +34,14 @@ export default function PruebasPlataforma(props: propsType) {
           className={`rounded-lg h-10 pl-2`}
           type="number"
           placeholder="Brix"
-          onChange={(e) => props.handleChange(e, 'brix1')}
+          onChange={(e): void => props.handleChange(e, 'brix1')}
           value={props.formulario.brix1}
         />
         <input
           className={`rounded-lg h-10 pl-2`}
           type="number"
           placeholder="Acidez"
-          onChange={(e) => props.handleChange(e, 'acidez1')}
+          onChange={(e): void => props.handleChange(e, 'acidez1')}
           value={props.formulario.acidez1}
         />
       </div>
@@ -56,14 +57,14 @@ export default function PruebasPlataforma(props: propsType) {
           className={`rounded-lg h-10 pl-2`}
           type="number"
           placeholder="Brix"
-          onChange={(e) => props.handleChange(e, 'brix2')}
+          onChange={(e): void => props.handleChange(e, 'brix2')}
           value={props.formulario.brix2}
         />
         <input
           className={`rounded-lg h-10 pl-2`}
           type="number"
           placeholder="Acidez"
-          onChange={(e) => props.handleChange(e, 'acidez2')}
+          onChange={(e): void => props.handleChange(e, 'acidez2')}
           value={props.formulario.acidez2}
         />
       </div>
@@ -79,14 +80,14 @@ export default function PruebasPlataforma(props: propsType) {
           className={`rounded-lg h-10 pl-2`}
           type="number"
           placeholder="Brix"
-          onChange={(e) => props.handleChange(e, 'brix3')}
+          onChange={(e): void => props.handleChange(e, 'brix3')}
           value={props.formulario.brix3}
         />
         <input
           className={`rounded-lg h-10 pl-2`}
           type="number"
           placeholder="Acidez"
-          onChange={(e) => props.handleChange(e, 'acidez3')}
+          onChange={(e): void => props.handleChange(e, 'acidez3')}
           value={props.formulario.acidez3}
         />
       </div>

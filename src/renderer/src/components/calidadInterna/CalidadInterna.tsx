@@ -20,7 +20,7 @@ export default function CalidadInterna(props: propsType): JSX.Element {
   useEffect(() => {
     const interval = async (): Promise<void> => {
       try {
-        const request = { action: 'obtenerLotesCalidadInterna' }
+        const request = { action: 'obtenerLotesCalidadInterna', query:'proceso' }
         const lotes = await window.api.calidad(request)
         console.log(lotes.data)
         setLotesData(lotes.data)
@@ -43,6 +43,7 @@ export default function CalidadInterna(props: propsType): JSX.Element {
   const guardar = async (): Promise<void> => {
     const requestLotes = {
       action: 'guardarCalidadInterna',
+      query:'proceso',
       data: {
         lote: lote,
         zumo: Number(formulario.zumo),
@@ -59,7 +60,7 @@ export default function CalidadInterna(props: propsType): JSX.Element {
       }
     }
     await window.api.calidad(requestLotes)
-    const requestLotes2 = { action: 'obtenerLotesCalidadInterna' }
+    const requestLotes2 = { action: 'obtenerLotesCalidadInterna', query:'proceso' }
     const datos = await window.api.calidad(requestLotes2)
     console.log(datos);
     setLotesData(datos.data)

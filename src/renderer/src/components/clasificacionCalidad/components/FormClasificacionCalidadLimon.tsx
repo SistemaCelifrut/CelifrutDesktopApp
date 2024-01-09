@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { themeType } from '@renderer/env'
 import { useContext } from 'react'
 import TarjetaItemCLasificacionCalidad from '../utils/TarjetaItemCLasificacionCalidad'
@@ -9,7 +10,7 @@ type propsType = {
   tipoFuta: string
 }
 
-export default function FormClasificacionCalidadLimon(props: propsType) {
+export default function FormClasificacionCalidadLimon(props: propsType): JSX.Element {
   const formulario = useContext(formLimonContext)
   return (
     <div
@@ -18,6 +19,7 @@ export default function FormClasificacionCalidadLimon(props: propsType) {
     >
       {formulario.map((item, index) => (
         <TarjetaItemCLasificacionCalidad
+        key={index}
         tipoFruta={props.tipoFuta}
           theme={props.theme}
           index={index}

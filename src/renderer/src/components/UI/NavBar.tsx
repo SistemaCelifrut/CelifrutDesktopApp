@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState } from 'react'
 import { themeType } from '@renderer/env'
 import logo from '../../assets/CELIFRUT.png'
@@ -7,7 +8,7 @@ type propsType = {
   changeTheme: (choose: boolean) => void
 }
 
-export default function NavBar(props: propsType) {
+export default function NavBar(props: propsType):JSX.Element {
   const [darkMode, setDarkMode] = useState<boolean>(false)
 
   return (
@@ -22,7 +23,7 @@ export default function NavBar(props: propsType) {
             className={`w-10 h-4 flex items-center bg-gray-300 rounded-full p-1 duration-300 ease-in-out ${
               darkMode ? 'justify-end' : ''
             }`}
-            onClick={() => {
+            onClick={(): void => {
               console.log(props.theme)
               setDarkMode(!darkMode)
               props.changeTheme(darkMode)

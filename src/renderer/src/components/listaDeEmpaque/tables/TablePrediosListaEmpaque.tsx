@@ -1,9 +1,10 @@
 /* eslint-disable prettier/prettier */
 import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
-import { ContenedoresObj, serverInfoContenedoresType } from '../types/types'
+import { ContenedoresObj, rendimientoType } from '../types/types'
 import { themeType } from '@renderer/env'
 import ObtenerInfoPrediosListaEmpaque from '../functions/ObtenerInfoPrediosListaEmpaque'
+import ObtenerPrediosContenedor from '../functions/ObtenerPrediosContenedor'
 
 type propsType = {
   contenedor: ContenedoresObj
@@ -21,24 +22,32 @@ type enfType = {
 
 export default function TablePrediosListaEmpaque(props: propsType): JSX.Element {
   const [tabla, setTabla] = useState<outObjtype>({})
-  const [rendimiento, setRendimiento] = useState<object>({})
+  const [rendimiento, setRendimiento] = useState<rendimientoType[]>([])
 
   useEffect(() => {
     const funcionAuxiliar = async (): Promise<void> => {
       console.log(props.filtro)
       const response: outObjtype = ObtenerInfoPrediosListaEmpaque(props.contenedor, props.filtro)
-      //const predios = ObtenerPrediosContenedor(props.contenedor)
-      console.log(response)
-      //const request = { action: 'obtenerRendimiento' }
-      //const rendimientoReq = await window.api.proceso(request)
-      //console.log(rendimientoReq)
+      const predios = ObtenerPrediosContenedor(props.contenedor)
+      //console.log(response)
+      const request = { action: 'obtenerRendimiento', data:predios }
+      const rendimientoReq = await window.api.contenedores(request)
+      console.log("obtener rendimiento", rendimientoReq)
 
-      //setRendimiento(rendimientoReq['data'])
+      setRendimiento(rendimientoReq['data'])
       setTabla(response)
     }
     funcionAuxiliar()
-    window.api.listaEmpaqueInfo('listaEmpaqueInfo', (response: serverInfoContenedoresType) => {
+    window.api.listaEmpaqueInfo('listaEmpaqueInfo', (response) => {
       setRendimiento(response.data)
+    })
+    window.api.descartes('descartes', async () => {
+      const predios = ObtenerPrediosContenedor(props.contenedor)
+      const request = { action: 'obtenerRendimiento', data:predios }
+      const rendimientoReq = await window.api.contenedores(request)
+      console.log("obtener rendimiento", rendimientoReq)
+
+      setRendimiento(rendimientoReq['data'])
     })
   }, [props.contenedor, props.filtro])
 
@@ -57,11 +66,11 @@ export default function TablePrediosListaEmpaque(props: propsType): JSX.Element 
               <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-blue-500'} font-bold`}>
                 {tabla[enf][Object.keys(tabla[enf])[0]][0].nombre}
               </p>
-              {rendimiento && (
+              {rendimiento && rendimiento.find(item => item._id === enf) && (
                 <p
                   className={`${props.theme === 'Dark' ? 'text-white' : 'text-blue-500'} font-bold`}
                 >
-                  {rendimiento[enf] + '%'}
+                  {rendimiento.find(item => item._id === enf)?.rendimiento.toFixed(2) + '%'}
                 </p>
               )}
               <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-blue-500'} font-bold`}>

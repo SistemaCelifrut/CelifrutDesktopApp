@@ -44,9 +44,10 @@ export default function TablaClasificacionCalidad(props: propsType): JSX.Element
       objRes.lote = props.lote.id
       const response: serverResponse = await window.api.calidad({
         action: 'guardarClasificacionCalidad',
+        query:'proceso',
         data: objRes
       })
-      const requestLotes = { action: 'obtenerLotesClasificacionCalidad' }
+      const requestLotes = { action: 'obtenerLotesClasificacionCalidad', query:'proceso' }
       await window.api.calidad(requestLotes)
       console.log(response)
       if (response.status === 200) {

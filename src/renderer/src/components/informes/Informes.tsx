@@ -1,7 +1,5 @@
-import React from 'react'
+/* eslint-disable prettier/prettier */
 
-export default function Informes() {
-  return (
-    <div>Informes</div>
-  )
+export default function Informes(): JSX.Element {
+  return <div>Informes</div>
 }

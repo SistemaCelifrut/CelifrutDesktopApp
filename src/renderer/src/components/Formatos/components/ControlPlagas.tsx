@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useContext, useEffect, useState } from 'react'
 import { AreaSchema } from '../types/controlPlagas'
 import { themeContext } from '@renderer/App'
@@ -6,32 +7,32 @@ import ColumnasControlPlagas from '../utils/ColumnasControlPlagas'
 import { getAreaName } from '../functions/llavesControlDePlagas'
 import { filtroArea } from '../functions/filtroControlDePlagas'
 
-export default function ControlPlagas() {
+export default function ControlPlagas(): JSX.Element {
   const theme = useContext(themeContext)
   const [table, setTable] = useState<AreaSchema[]>([])
   const [data, setData] = useState<AreaSchema[]>([])
   const [area, setArea] = useState<string>('')
 
   useEffect(() => {
-    const asyncFunction = async () => {
+    const asyncFunction = async (): Promise<void> => {
       try {
-        const request = { action: 'obtenerRegistroControlPlagas' }
+        const request = { action: 'obtenerRegistroControlPlagas', query:'personal' }
         const response = await window.api.calidad(request)
         setTable(response.data)
         setData(response.data)
-      } catch (e: any) {
-        alert(`${e.name}: ${e.message}`)
+      } catch (e: unknown) {
+        alert(`${e}`)
       }
     }
     asyncFunction()
   }, [])
 
-  const handleArea = (e) =>{
+  const handleArea = (e): void =>{
     setArea(e.target.value)
   }
 
-  const handleChangeFiltroFecha = async (e) => {
-    const request = { action: 'obtenerRegistroControlPlagas', data:e.target.value }
+  const handleChangeFiltroFecha = async (e): Promise<void> => {
+    const request = { action: 'obtenerRegistroControlPlagas', data:e.target.value, query:'personal' }
     const response = await window.api.calidad(request)
     setTable(response.data)
     setData(response.data)

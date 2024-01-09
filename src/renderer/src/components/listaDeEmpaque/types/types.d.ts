@@ -65,3 +65,8 @@ interface settingsType {
   calidad:number
   tipoCaja:string
 }
+
+export type rendimientoType = {
+  _id:string,
+  rendimiento: number
+} 

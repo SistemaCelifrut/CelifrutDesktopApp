@@ -4,7 +4,15 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
+    build: {
+      rollupOptions: {
+        input: {
+          index: resolve(__dirname, 'src/main/index.ts'),
+          imprimir: resolve(__dirname, 'src/main/imprimir.js')
+        }
+      }
+    }
   },
   preload: {
     plugins: [externalizeDepsPlugin()]
@@ -12,11 +20,9 @@ export default defineConfig({
   renderer: {
     resolve: {
       alias: {
-        '@renderer': resolve('src/renderer/src'),
-
+        '@renderer': resolve('src/renderer/src')
       }
     },
-    plugins: [
-      react()]
+    plugins: [react()]
   }
 })

@@ -1,20 +1,21 @@
+/* eslint-disable prettier/prettier */
 import { themeContext } from '@renderer/App'
-import { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { higienePersonalType, serverResponseHigienePersonalType } from '../types/higienePersonal'
 import { format } from 'date-fns'
 import { FcOk } from 'react-icons/fc'
 import { FcCancel } from 'react-icons/fc'
 import { filtroColaborador } from '../functions/filtroHigienePersonal'
 
-export default function HigienePersonal() {
+export default function HigienePersonal(): JSX.Element {
   const theme = useContext(themeContext)
   const [table, setTable] = useState<higienePersonalType[]>([])
   const [dataOriginal, setDataOriginal] = useState<higienePersonalType[]>([])
   const [filtroNombre, setFiltroNombre] = useState<string>('')
 
   useEffect(() => {
-    const asyncFunction = async () => {
-      const request = { action: 'obtenerRegistroHigiene' }
+    const asyncFunction = async (): Promise<void> => {
+      const request = { action: 'obtenerRegistroHigiene', query:'personal' }
       const response: serverResponseHigienePersonalType = await window.api.calidad(request)
       setTable(response.data)
       setDataOriginal(response.data)
@@ -22,7 +23,7 @@ export default function HigienePersonal() {
     asyncFunction()
   }, [])
 
-  const formatText = (key) => {
+  const formatText = (key): string => {
     // Convierte el nombre de la propiedad a un texto más legible y el valor booleano a "Cumple" o "No Cumple"
     switch (key) {
       case 'unasCortas':
@@ -36,12 +37,12 @@ export default function HigienePersonal() {
     }
   }
 
-  const handleChangeFiltroColaborador = (e: any) => {
+  const handleChangeFiltroColaborador = (e:React.ChangeEvent<HTMLInputElement>): void => {
     setFiltroNombre(e.target.value)
   }
 
-  const handleChangeFiltroFecha = async (e) => {
-    const request = { action: 'obtenerRegistroHigiene', data:e.target.value }
+  const handleChangeFiltroFecha = async (e): Promise<void> => {
+    const request = { action: 'obtenerRegistroHigiene', data:e.target.value, query:'personal' }
     const response: serverResponseHigienePersonalType = await window.api.calidad(request)
     console.log(response)
     setTable(response.data)
@@ -114,11 +115,13 @@ export default function HigienePersonal() {
                   {Object.entries(item.elementosHigiene).map(([key, value]) => {
                     if (key !== '_id') {
                       return (
-                        <div className="border-2 border-slate-300 flex flex-row mt-1 mb-1 gap-2 items-center p-1">
+                        <div key={key + "div"} className="border-2 border-slate-300 flex flex-row mt-1 mb-1 gap-2 items-center p-1">
                           <p key={key}>{formatText(key)}:</p>
                           <div> {value ? <FcOk /> : <FcCancel />}</div>
                         </div>
                       )
+                    }else{
+                      return <div key={key}></div>
                     }
                   })}
                 </div>

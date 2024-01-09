@@ -24,7 +24,7 @@ export default function ClasificacionCalidad(props: propsType): JSX.Element {
   useEffect(() => {
     const interval = async (): Promise<void> => {
       try {
-        const request = { action: 'obtenerLotesClasificacionCalidad' }
+        const request = { action: 'obtenerLotesClasificacionCalidad', query:"proceso"}
         const lotes = await window.api.calidad(request)
         setLotesData(lotes.data)
       } catch (e) {
