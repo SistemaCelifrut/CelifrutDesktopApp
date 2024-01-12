@@ -110,11 +110,9 @@ useEffect(() =>{
           title={titleTable}
           table={table}
           tipoFruta={tipoFruta}
-          theme={props.theme}
           closeVaciado={closeVaciado}
           closeDirecto={closeDirecto}
           closeDesverdizado={closeDesverdizado}
-          user={props.user}
         />
         <TableFrutaSinProcesar table={table} theme={props.theme} clickLote={clickLote} />
 
@@ -130,7 +128,7 @@ useEffect(() =>{
           )}
            {showDesverdizadoModal &&
           createPortal(
-            <Desverdizado closeDesverdizado={closeDesverdizado} propsModal={propsModal} theme={props.theme} />,
+            <Desverdizado closeDesverdizado={closeDesverdizado} propsModal={propsModal} />,
             document.body
           )}
       </div>

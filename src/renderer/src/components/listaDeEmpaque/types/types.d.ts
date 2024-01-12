@@ -70,3 +70,5 @@ export type rendimientoType = {
   _id:string,
   rendimiento: number
 } 
+
+export type serverResponse<T> = { status: number; data: T }

@@ -143,7 +143,7 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
 
   return (
     <div>
-      <TableDescartes theme={props.theme} user={props.user} />
+      <TableDescartes />
       <BotonesInventarioDescartes
         theme={props.theme}
         user={props.user}

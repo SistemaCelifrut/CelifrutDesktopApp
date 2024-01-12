@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow, nativeTheme, ipcMain, utilityProcess } from 
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { io } from 'socket.io-client'
-import { responseLoginType } from './types/login'
+import { responseLoginType, clientesServerResponseType } from './types/login'
 
 let theme: 'Dark' | 'Ligth' = 'Ligth'
 let cargo = ''
@@ -139,17 +139,14 @@ const socket = io('ws://192.168.0.172:3003/', {
   rejectUnauthorized: false
 })
 
-// const socket = io('ws://localhost:3003/', {
-//   rejectUnauthorized: false
-// })
-
 //la funcion que loguea la cuenta
-ipcMain.handle('logIn', async (event, datos) => {
+ipcMain.handle('user', async (event, datos) => {
   try {
     event.defaultPrevented
+    console.log(datos)
     const request = { data: datos, id: socket.id }
     const user: responseLoginType = await new Promise((resolve) => {
-      socket.emit('logIn', request, (response) => {
+      socket.emit('user', request, (response) => {
         if (typeof response === 'object') {
           resolve(response)
         } else {
@@ -161,7 +158,9 @@ ipcMain.handle('logIn', async (event, datos) => {
       })
     })
     console.log(user)
-    cargo = user.data.cargo
+    if (datos.action === 'logIn') {
+      cargo = user.data.cargo
+    }
     return user
   } catch (e: unknown) {
     return `${e}`
@@ -295,6 +294,67 @@ ipcMain.handle('proveedores', async (event, data) => {
     return response
   } catch (e) {
     return { status: 400, data: {} }
+  }
+})
+
+ipcMain.handle('imprimirRotulos', async (event, data) => {
+  try {
+    event.preventDefault()
+    if (data.tipoRotulo === 'rotuloCaja') {
+      console.log('entra aqui')
+      const request = {
+        data: {
+          action: 'obtenerInfoRotulosCajas',
+          data: { cliente: data.cliente, nombrePredio: data.nombrePredio, enf: data.enf }
+        },
+        id: socket.id
+      }
+      const response: clientesServerResponseType = await new Promise((resolve) => {
+        socket.emit('contenedoresService', request, (serverResponse) => {
+          if (typeof serverResponse === 'object') {
+            resolve(serverResponse)
+          }
+        })
+      })
+      console.log(response)
+
+      if (cargo === 'auxiliar_lista_de_empaque') {
+        const child = utilityProcess.fork(join(__dirname, 'imprimir.js'))
+        child.postMessage({
+          destino: response.data.cliente.PAIS_DESTINO,
+          codigoCliente: response.data.cliente.CODIGO,
+          codigoPredio: response.data.proveedor['CODIGO INTERNO'],
+          codigoICA: response.data.proveedor.ICA,
+          codigoGGN: response.data.proveedor.GGN,
+          codigoCoC: undefined,
+          contenedor: data.contenedor,
+          ef1: response.data.lote._id,
+          cliente: response.data.cliente.CLIENTE,
+          clienteID: response.data.cliente.ID,
+          telefono: response.data.cliente.TELEFONO,
+          correo: response.data.cliente.CORREO,
+          cajas: data.cajas,
+          tipoFruta: response.data.lote.tipoFruta,
+          tipoCaja: data.tipoCaja
+        })
+        child.stdout?.on('data', (data) => {
+          console.log(data)
+        })
+      }
+    } else if (data.tipoRotulo === 'rotuloPallet') {
+      console.log(data)
+      if (cargo === 'auxiliar_lista_de_empaque') {
+        const child = utilityProcess.fork(join(__dirname, 'imprimirPallet.js'))
+        child.postMessage({
+          pallet: data.pallet
+        })
+        child.stdout?.on('data', (data) => {
+          console.log(data)
+        })
+      }
+    }
+  } catch (e) {
+    console.error(e)
   }
 })
 

@@ -211,7 +211,6 @@ const pesoTotal_label = {
   ymul: '1',
   text: 'GROSS WEIGHT: '
 }
-
 const client_code = {
   x: '20',
   y: '100',

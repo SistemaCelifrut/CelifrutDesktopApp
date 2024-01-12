@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React from "react";
 
 type Props = {
@@ -7,10 +8,6 @@ type Props = {
 
 class ErrorBoundary extends React.Component<Props> {
     state = { hasError: false}
-
-    static getDerivedStateFromError(error) {
-        return { hasError: true}
-    } 
 
     componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
         console.log(error, errorInfo)

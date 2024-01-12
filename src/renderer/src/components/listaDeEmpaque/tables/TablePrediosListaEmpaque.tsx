@@ -1,10 +1,14 @@
 /* eslint-disable prettier/prettier */
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import { ContenedoresObj, rendimientoType } from '../types/types'
 import { themeType } from '@renderer/env'
 import ObtenerInfoPrediosListaEmpaque from '../functions/ObtenerInfoPrediosListaEmpaque'
 import ObtenerPrediosContenedor from '../functions/ObtenerPrediosContenedor'
+import { userContext } from '@renderer/App'
+import { FaPrint } from "react-icons/fa6";
+import ModalImprimirRotulocaja from '../modal/ModalImprimirRotuloCaja'
+import { isServerResponse } from '../functions/comprobarTypes'
 
 type propsType = {
   contenedor: ContenedoresObj
@@ -21,20 +25,25 @@ type enfType = {
 }
 
 export default function TablePrediosListaEmpaque(props: propsType): JSX.Element {
+  const user = useContext(userContext);
   const [tabla, setTabla] = useState<outObjtype>({})
   const [rendimiento, setRendimiento] = useState<rendimientoType[]>([])
+  const [openModal, setOpenModal] = useState<boolean>(false)
+  const [dataModal, setDataModal] = useState<enfType>({})
 
   useEffect(() => {
     const funcionAuxiliar = async (): Promise<void> => {
-      console.log(props.filtro)
       const response: outObjtype = ObtenerInfoPrediosListaEmpaque(props.contenedor, props.filtro)
       const predios = ObtenerPrediosContenedor(props.contenedor)
       //console.log(response)
       const request = { action: 'obtenerRendimiento', data:predios }
       const rendimientoReq = await window.api.contenedores(request)
       console.log("obtener rendimiento", rendimientoReq)
-
-      setRendimiento(rendimientoReq['data'])
+      if(isServerResponse(rendimientoReq)){
+        setRendimiento(rendimientoReq.data)
+      } else{
+        alert("error al obtener el rendimiento")
+      }
       setTabla(response)
     }
     funcionAuxiliar()
@@ -45,11 +54,23 @@ export default function TablePrediosListaEmpaque(props: propsType): JSX.Element 
       const predios = ObtenerPrediosContenedor(props.contenedor)
       const request = { action: 'obtenerRendimiento', data:predios }
       const rendimientoReq = await window.api.contenedores(request)
-      console.log("obtener rendimiento", rendimientoReq)
 
-      setRendimiento(rendimientoReq['data'])
+      if(isServerResponse(rendimientoReq)){
+        setRendimiento(rendimientoReq.data)
+      } else{
+        alert("error al obtener el rendimiento")
+      }
     })
   }, [props.contenedor, props.filtro])
+
+  const closeModal = (): void => {
+    setOpenModal(false)
+  }
+
+  const clickpenModal = (e): void => {
+    setDataModal(e)
+    setOpenModal(true)
+  }
 
   return (
     <div>
@@ -58,7 +79,9 @@ export default function TablePrediosListaEmpaque(props: propsType): JSX.Element 
           className={`${props.theme === 'Dark' ? 'bg-slate-700' : 'bg-slate-100'}
                    list-none ml-2 mr-2 mb-5 border border-gray-300 rounded shadow-md p-2`}
         >
-          <li>
+          <li >
+
+          <div className='flex flex-row justify-between m-2'>
             <div className="flex flex-row gap-5 items-center ml-4">
               <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-blue-500'} font-bold`}>
                 {enf}
@@ -107,6 +130,27 @@ export default function TablePrediosListaEmpaque(props: propsType): JSX.Element 
                 ).toFixed(2)}{' '}
                 Kg
               </p>
+             
+            </div>
+            
+            {user.cargo === 'auxiliar_lista_de_empaque' && 
+            <button
+            onClick={(): void => clickpenModal(tabla[enf])}
+            className={
+              user.cargo === 'auxiliar_lista_de_empaque' || user.cargo === 'admin' 
+                ? 'group relative inline-flex w-40 h-10 items-center overflow-hidden rounded bg-red-700 px-8 py-3 text-white focus:outline-none active:bg-red-900 active:border-red-700'
+                : 'invisible group relative inline-flex w-40 h-10 items-center overflow-hidden'
+            }
+          >
+            <span className="absolute  -end-full transition-all group-hover:end-4">
+            <FaPrint />
+            </span>
+    
+            <span className="text-sm font-medium transition-all group-hover:me-4">
+              Imprimir Rotulo
+            </span>
+          </button>
+            }
             </div>
             <ul>
               {Object.keys(tabla[enf]).map((pallet) => (
@@ -142,6 +186,8 @@ export default function TablePrediosListaEmpaque(props: propsType): JSX.Element 
           </li>
         </ul>
       ))}
+      {openModal && <ModalImprimirRotulocaja closeModal={closeModal} contenedor={props.contenedor} predio={dataModal}/>}
+
     </div>
   )
 }

@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react'
 import logo from '../../assets/CELIFRUT.png'
-import { sendLogInType, userType } from '@renderer/types/login'
+import { sendLogInType, serverResponse, userType } from '@renderer/types/login'
+import { isServerResponse } from './functions/comprobarDatos'
 
 type propsType = {
   loggin: (data: boolean) => void
@@ -20,24 +21,33 @@ export default function Login(props: propsType): JSX.Element {
     event.preventDefault()
     const datosLogIn: sendLogInType = {
       user: username,
-      password: password
+      password: password,
+      action: 'logIn',
+      query: 'personal'
     }
-    const response = await window.api.logIn(datosLogIn)
-    console.log(response)
-    props.getUser(response.data)
-    if (response.status === 200) {
-      setAnimation(true)
-      setTimeout(() => {
-        setFade(true)
+    const response: serverResponse<userType> = await window.api.user(datosLogIn)
+    if (isServerResponse(response)) {
+      // Ahora puedes usar 'response' como 'serverResponse<responseLoginType>'
+      const result: serverResponse<userType> = response;
+      console.log(result)
+      props.getUser(result.data)
+      if (result.status === 200) {
+        setAnimation(true)
         setTimeout(() => {
-          props.loggin(true)
+          setFade(true)
+          setTimeout(() => {
+            props.loggin(true)
+          }, 600)
         }, 600)
-      }, 600)
-    } else if (response.status === 401) {
-      setErrUser(true)
-    } else if (response.status === 402) {
-      setErrPass(true)
-    }
+      } else if (response.status === 401) {
+        setErrUser(true)
+      } else if (response.status === 402) {
+        setErrPass(true)
+      }
+  } else {
+      // Manejar el caso en que 'result' no sea del tipo 'serverResponse<responseLoginType>'
+      throw new Error('La respuesta del servidor no es del tipo esperado.');
+  }
   }
 
   useEffect(() => {

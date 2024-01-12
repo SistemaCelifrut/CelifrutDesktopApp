@@ -1,13 +1,14 @@
+/* eslint-disable prettier/prettier */
 import { useState } from 'react'
 import { HiOutlineViewList } from 'react-icons/hi'
 import { ContenedoresObj } from '../types/types'
 
 type propsType = {
   contenedores: ContenedoresObj[]
-  handleChange: (e: any) => void
+  handleChange: (e) => void
 }
 
-export default function NavBarListaEmpaque(props: propsType) {
+export default function NavBarListaEmpaque(props: propsType): JSX.Element {
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   return (
@@ -15,15 +16,15 @@ export default function NavBarListaEmpaque(props: propsType) {
       className={`w-[100%] h-16 flex justify-between items-center bg-Celifrut-green rounded-t-sm m-0 border-1 border-Celifrut-green-dark pl-5`}
     >
       <div className="flex justify-center items-center  hover:bg-Celifrut-green-dark rounded-full p-2">
-        <button className={` text-3xl text-white`} onClick={() => setIsOpen(!isOpen)}>
+        <button className={` text-3xl text-white`} onClick={(): void => setIsOpen(!isOpen)}>
           <HiOutlineViewList />
         </button>
 
         {isOpen && (
-          <div className={` fixed inset-0 `} onClick={() => setIsOpen(false)}>
+          <div className={` fixed inset-0 `} onClick={(): void => setIsOpen(false)}>
             <div
               className="absolute left-48 top-40 w-64 rounded-md shadow-lg ml-2 bg-white z-10 flex flex-col"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e): void => e.stopPropagation()}
             ></div>
           </div>
         )}
@@ -34,7 +35,7 @@ export default function NavBarListaEmpaque(props: propsType) {
                           ${'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '}`}
       >
         <option>Contenedores</option>
-        {props.contenedores.length > 0 && props.contenedores.map((item, index) => (
+        {props.contenedores.length > 0 && props.contenedores.map((item) => (
           <option key={item._id} value={item._id}>
             {item._id} - {item.infoContenedor ? item.infoContenedor.nombreCliente : 'Nombre no disponible'}
           </option>

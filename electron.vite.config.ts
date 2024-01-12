@@ -9,7 +9,8 @@ export default defineConfig({
       rollupOptions: {
         input: {
           index: resolve(__dirname, 'src/main/index.ts'),
-          imprimir: resolve(__dirname, 'src/main/imprimir.js')
+          imprimir: resolve(__dirname, 'src/main/imprimir.js'),
+          imprimirPallet: resolve(__dirname, 'src/main/imprimirPallet.js')
         }
       }
     }

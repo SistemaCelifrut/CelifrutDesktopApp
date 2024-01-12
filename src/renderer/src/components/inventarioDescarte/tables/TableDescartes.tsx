@@ -1,9 +1,6 @@
 /* eslint-disable prettier/prettier */
-type propsType = {
-  theme: string
-  user: string
-}
 
-export default function TableDescartes(props: propsType) {
+
+export default function TableDescartes(): JSX.Element {
   return <div></div>
 }

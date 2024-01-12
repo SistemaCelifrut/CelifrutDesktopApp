@@ -2,6 +2,8 @@
 export type sendLogInType = {
   user: string
   password: string
+  action: logIn
+  query: string
 }
 
 export type responseLoginType = {
@@ -10,10 +12,10 @@ export type responseLoginType = {
 }
 
 interface userType {
+  _id: string
   user: string
   password:string
   permisos: string[]
-  rol:string
   cargo:string
 }
 

@@ -15,14 +15,16 @@ import CalidadInterna from './components/calidadInterna/CalidadInterna'
 import ClasificacionCalidad from './components/clasificacionCalidad/ClasificacionCalidad'
 import Formatos from './components/Formatos/Formatos'
 import Informes from './components/informes/Informes'
+import CrearCuenta from './components/crearCuentas/CrearCuenta'
+import VolanteCalidad from './components/volanteCalidad/VolanteCalidad'
 
 export const themeContext = createContext<themeType>('Ligth')
 export const userContext = createContext<userType>({
+  _id: '',
   user: '',
   password: '',
   permisos: [],
-  cargo: '',
-  rol: ''
+  cargo: ''
 })
 
 function App(): JSX.Element {
@@ -32,8 +34,8 @@ function App(): JSX.Element {
     user: '',
     permisos: [],
     cargo: '',
-    rol: '',
-    password: ''
+    password: '',
+    _id: ''
   })
   const [section, setSection] = useState<string>('main')
 
@@ -113,6 +115,8 @@ function App(): JSX.Element {
                   )}
                   {section === 'Formatos' && <Formatos />}
                   {section === 'Informes' && <Informes />}
+                  {section === 'Crear cuenta' && <CrearCuenta />}
+                  {section === 'Volante calidad' && <VolanteCalidad />}
                 </div>
               </>
             )}

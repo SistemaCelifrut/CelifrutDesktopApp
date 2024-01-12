@@ -1,21 +1,22 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
 import { descarteType } from '@renderer/components/inventarioDescarte/types/descartes'
-import { responseLoginType, sendLogInType, userType } from '@renderer/types/login'
+import { serverResponse, userType } from '@renderer/types/login'
 import { responseIngresarPredio } from '@renderer/types/predios'
-import { ipcRenderer } from 'electron'
 
 export interface Api {
   obtenerTheme: () => Promise<'Dark' | 'Ligth'>
-  logIn: (datos: sendLogInType) => Promise<responseLoginType>
+  user: (datos) => Promise<serverResponse>
   obtenerSesion: () => Promise<userType>
   proceso: (datos) => Promise<serverResponse>
-  ingresoFruta: (data: any) => Promise<responseIngresarPredio[]>
-  inventario: (data: any) => Promise<any>
+  imprimirRotulos: (datos) => Promise<void>
+
+  ingresoFruta: (data) => Promise<responseIngresarPredio[]>
+  inventario: (data) => Promise<unknown>
   descartes: (channel: string, callback: DescartesCallback) => void
-  contenedores: (data: any) => Promise<any>
-  calidad: (data: any) => Promise<any>
-  listaEmpaqueInfo: (data: any, callback: any) => any
-  proveedores: (data: any) => Promise<any>
+  contenedores: (data) => Promise<unknown>
+  calidad: (data) => Promise<unknown>
+  listaEmpaqueInfo: (data, callback) => unknown
+  proveedores: (data) => Promise<unknown>
 }
 
 declare global {

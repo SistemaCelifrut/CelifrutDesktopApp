@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { LogType } from 'vite'
 const { ipcRenderer } = require('electron')
 
 // Custom APIs for renderer
@@ -10,12 +9,16 @@ const api = {
     const response = await ipcRenderer.invoke('obtenerTheme')
     return response
   },
-  logIn: async (datos): Promise<LogType> => {
-    const response = await ipcRenderer.invoke('logIn', datos)
+  user: async (datos): Promise<unknown> => {
+    const response = await ipcRenderer.invoke('user', datos)
     return response
   },
   proceso: async (datos) => {
     const response = await ipcRenderer.invoke('proceso', datos)
+    return response
+  },
+  imprimirRotulos: async (datos) => {
+    const response = await ipcRenderer.invoke('imprimirRotulos', datos)
     return response
   },
   obtenerSesion: async () => {
@@ -43,10 +46,16 @@ const api = {
     return response
   },
   descartes: (channel, callback) => {
-    ipcRenderer.on(channel, (event, ...args) => callback(...args))
+    ipcRenderer.on(channel, (event, ...args) => {
+      event.preventDefault
+      return callback(...args)
+    })
   },
   listaEmpaqueInfo: (channel, callback) => {
-    ipcRenderer.on(channel, (event, ...args) => callback(...args))
+    ipcRenderer.on(channel, (event, ...args) => {
+      event.preventDefault
+      return callback(...args)
+    })
   }
 }
 
