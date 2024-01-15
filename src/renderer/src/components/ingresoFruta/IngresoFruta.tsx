@@ -2,9 +2,11 @@
 import { themeContext } from '@renderer/App'
 import { useContext, useEffect, useState } from 'react'
 import { serverResponseType } from './types/types';
+import SuccessModal from '@renderer/errors/modal/SuccessModal';
+import ErrorModal from '@renderer/errors/modal/ErrorModal';
 
 
-export default function IngresoFruta():JSX.Element {
+export default function IngresoFruta(): JSX.Element {
   const theme = useContext(themeContext);
   const [prediosDatos, setPrediosData] = useState<string[]>([''])
   const [nombrePredio, setNombrePredio] = useState('')
@@ -14,15 +16,19 @@ export default function IngresoFruta():JSX.Element {
   const [kilos, setKilos] = useState('')
   const [placa, setPlaca] = useState('')
   const [observaciones, setObservaciones] = useState('')
+  const [enf, setEnf] = useState(0)
+  const [showSuccess, setShowSuccess] = useState<boolean>(false);
+  const [showError, setShowError] = useState<boolean>(false);
+  const [messageError, setMessageError] = useState<string>('Error al crear Lote')
 
   useEffect(() => {
     const obtenerPredios = async (): Promise<void> => {
       const request = { action: 'obtenerProveedores' }
       const response: serverResponseType = await window.api.proceso(request);
-
       if (Array.isArray(response.data)) {
         const nombrePredio = response.data.map((item) => item.PREDIO)
         setPrediosData(nombrePredio)
+        setEnf(response.enf)
       } else {
         alert('Error con los datos de los predios')
       }
@@ -30,15 +36,15 @@ export default function IngresoFruta():JSX.Element {
     obtenerPredios()
   }, [])
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log("render")
-  },[canastillas])
+  }, [canastillas])
 
   const handlePrediosChange = (event): void => {
     setNombrePredio(event.target.value)
   }
 
-  const guardarLote:React.FormEventHandler<HTMLFormElement>  = async (event) => {
+  const guardarLote: React.FormEventHandler<HTMLFormElement> = async (event) => {
     try {
       event.preventDefault()
       const datos = {
@@ -52,27 +58,46 @@ export default function IngresoFruta():JSX.Element {
         canastillasVacias: canastillasVacias
       }
 
-      if (datos.promedio < 15) {
-        alert('Error, los kilos no corresponden a las canastillas')
+      if (datos.promedio < 15 || datos.promedio > 30) {
+        setMessageError('Error, los kilos no corresponden a las canastillas')
+        setShowError(true)
+        setTimeout(() => {
+          setShowError(false);
+        }, 5000);
         return
       }
 
       if (!datos.tipoFruta) {
-        alert('Seleccione el tipo de fruta del lote')
+        setMessageError('Seleccione el tipo de fruta del lote')
+        setShowError(true)
+        setTimeout(() => {
+          setShowError(false);
+        }, 5000);
         return
       }
       const request = { action: 'guardarLote', data: datos }
       const response: serverResponseType = await window.api.proceso(request)
 
       if (response.status === 200) {
-        alert('Guardado con exito')
+        setShowSuccess(true)
+        setTimeout(() => {
+          setShowSuccess(false);
+        }, 5000);
       } else {
-        alert('Error al guardar el dato')
+        setMessageError('Error al guardar el dato')
+        setShowError(true)
+        setTimeout(() => {
+          setShowError(false);
+        }, 5000);
       }
 
       reiniciarCampos()
     } catch (e) {
-      console.log('Recepcion' + e)
+      setMessageError('Recepcion' + e)
+      setShowError(true)
+      setTimeout(() => {
+        setShowError(false);
+      }, 5000);
     }
   }
 
@@ -85,30 +110,38 @@ export default function IngresoFruta():JSX.Element {
     setCanastillasVacias('')
   }
 
+  const closeSuccess = (): void => {
+    setShowSuccess(false)
+  }
+  const closeError = (): void => {
+    setShowError(false)
+  }
+
   return (
     <form className="grid grid-cols-12 gap-2 w-full h-max" onSubmit={guardarLote}>
-      <div className="col-span-12 w-full flex justify-center items-center mt-4">
+      <div className="col-span-12 w-full flex flex-col justify-center items-center mt-4">
         <h2 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-2xl`}>
           Recepción
         </h2>
+        <h3 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-xl`}>
+          EF1-{new Date().getFullYear().toString().slice(-2)}{(new Date().getMonth() + 1).toString().padStart(2, '0')}{enf}
+        </h3>
       </div>
       <div className="col-span-2"></div>
       {/*Ingreso de Predios*/}
       <div
-        className={`col-span-8 relative inline-flex first-letter ${
-          theme === 'Dark' ? 'bg-dark-primary' : 'bg-white'
-        } mt-3`}
+        className={`col-span-8 relative inline-flex first-letter ${theme === 'Dark' ? 'bg-dark-primary' : 'bg-white'
+          } mt-3`}
       >
         <select
           onChange={handlePrediosChange}
           required
           value={nombrePredio}
           className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
-                            ${
-                              theme === 'Dark'
-                                ? 'border-white bg-slate-800 text-white'
-                                : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-                            }`}
+                            ${theme === 'Dark'
+              ? 'border-white bg-slate-800 text-white'
+              : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
+            }`}
         >
           <option>Predios</option>
           {prediosDatos.map((item, index) => (
@@ -123,17 +156,16 @@ export default function IngresoFruta():JSX.Element {
           Numero de canastillas
         </label>
         <input
-        value={canastillas}
+          value={canastillas}
           type="number"
           min={0}
           onChange={(e): void => setCanastillas(e.target.value)}
           required
           className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
-                            ${
-                              theme === 'Dark'
-                                ? 'border-white bg-slate-800 text-white'
-                                : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-                            }`}
+                            ${theme === 'Dark'
+              ? 'border-white bg-slate-800 text-white'
+              : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
+            }`}
         />
       </div>
       <div className="col-span-4 mt-3">
@@ -141,18 +173,17 @@ export default function IngresoFruta():JSX.Element {
           Kilos
         </label>
         <input
-        value={kilos}
+          value={kilos}
           type="number"
           onChange={(e): void => setKilos(e.target.value)}
           min={0}
           step={0.1}
           required
           className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
-                            ${
-                              theme === 'Dark'
-                                ? 'border-white bg-slate-800 text-white'
-                                : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-                            }`}
+                            ${theme === 'Dark'
+              ? 'border-white bg-slate-800 text-white'
+              : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
+            }`}
         />
       </div>
       <div className="col-span-2"></div>
@@ -162,18 +193,17 @@ export default function IngresoFruta():JSX.Element {
           Placa
         </label>
         <input
-        value={placa}
+          value={placa}
           type="text"
           onChange={(e): void => setPlaca(e.target.value)}
           pattern="^[A-Za-z]{3}[0-9]{3}$"
           title="Por favor, introduce 3 letras seguidas de 3 números."
           required
           className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
-                            ${
-                              theme === 'Dark'
-                                ? 'border-white bg-slate-800 text-white'
-                                : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-                            }`}
+                            ${theme === 'Dark'
+              ? 'border-white bg-slate-800 text-white'
+              : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
+            }`}
         />
       </div>
       <div className="col-span-4 mt-3">
@@ -186,11 +216,10 @@ export default function IngresoFruta():JSX.Element {
           onChange={(e): void => setCanastillasVacias(e.target.value)}
           required
           className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
-                            ${
-                              theme === 'Dark'
-                                ? 'border-white bg-slate-800 text-white'
-                                : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-                            }`}
+                            ${theme === 'Dark'
+              ? 'border-white bg-slate-800 text-white'
+              : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
+            }`}
         />
       </div>
       <div className="col-span-2"></div>
@@ -232,11 +261,10 @@ export default function IngresoFruta():JSX.Element {
           required
           value={observaciones}
           className={`border focus:outline-none appearance-none w-full rounded-md h-20 pl-5 pr-10 mt-2 pt-2
-                            ${
-                              theme === 'Dark'
-                                ? 'border-white bg-slate-800 text-white'
-                                : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-                            }`}
+                            ${theme === 'Dark'
+              ? 'border-white bg-slate-800 text-white'
+              : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
+            }`}
         />
       </div>
       <div className="col-span-2"></div>
@@ -249,6 +277,17 @@ export default function IngresoFruta():JSX.Element {
           Guardar
         </button>
       </div>
+      {showSuccess &&
+        <div className='fixed bottom-0 right-0 flex items-center justify-center'>
+          <SuccessModal theme={theme} message={"Guardado con Exito"} closeModal={closeSuccess} />
+        </div>
+      }
+      {showError &&
+        <div className='fixed bottom-0 right-0 flex items-center justify-center'>
+          <ErrorModal theme={theme} closeModal={closeError} message={messageError} />
+        </div>
+      }
+
     </form>
   )
 }

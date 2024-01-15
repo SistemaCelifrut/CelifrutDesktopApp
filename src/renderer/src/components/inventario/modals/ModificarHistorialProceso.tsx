@@ -24,7 +24,6 @@ export default function ModificarHistorialProceso(props: vaciadoType): JSX.Eleme
         const obj = { canastillas: canastillas, enf: props.propsModal.enf, id:props.propsModal.id, action: 'modificarHistorialVaciado'}
         const response = await window.api.proceso(obj)
         if (response.status === 200) {
-          alert('Modificado con exito')
           props.closeModal()
         } else if (response.status === 400) {
           alert(response.data)

@@ -24,7 +24,6 @@ export default function DesverdizadoProcesarModal(props: propsType): JSX.Element
         const obj = { canastillas: canastillas, enf: props.propsModal.enf, action: 'procesarDesverdizado' }
         const response = await window.api.proceso(obj)
         if (response.status === 200) {
-          alert('Vaciado con exito')
           props.closeProcesarDesverdizado()
         } else if (response.status === 400) {
           alert(response.data)

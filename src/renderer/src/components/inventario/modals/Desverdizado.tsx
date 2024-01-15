@@ -29,7 +29,6 @@ export default function Desverdizado(props: vaciadoType): JSX.Element {
         const response = await window.api.proceso(obj)
         console.log(response)
         if (response.status === 200) {
-          alert('Desverdizado con exito')
           props.closeDesverdizado()
         } else if (response.status === 400) {
           alert(response.data)

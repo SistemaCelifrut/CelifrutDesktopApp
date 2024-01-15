@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { MdOutlineSettingsInputComponent } from 'react-icons/md'
 import { prediosDesverdizadoType } from '../type/type'
 import { IoCheckmarkDoneSharp } from 'react-icons/io5'
@@ -14,7 +15,7 @@ type propsType = {
   closeProcesarDesverdizado: () => void
 }
 
-export default function BotonesInventarioDesverdizado(props: propsType) {
+export default function BotonesInventarioDesverdizado(props: propsType): JSX.Element {
   return (
     <div
       className={`flex justify-between items-center m-4 

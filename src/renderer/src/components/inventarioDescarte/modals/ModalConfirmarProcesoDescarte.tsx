@@ -19,7 +19,6 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
       const response = await window.api.proceso(request)
       console.log(response)
       if (response.status == 200) {
-        alert('Descarte enviado con exito')
         propsAction()
       } else {
         alert('Error al enviar el descarte')
@@ -31,7 +30,6 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
       const response = await window.api.proceso(request)
 
       if (response.status == 200) {
-        alert('Reproceso Celifrut')
         propsAction()
       } else {
         alert('Error a reproceso Celifrut')
@@ -43,7 +41,6 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
       const response = await window.api.proceso(request)
       console.log(response)
       if (response.status == 200) {
-        alert('Lote reprocesado')
         propsAction()
       } else {
         alert('Error al reprocesar predio')

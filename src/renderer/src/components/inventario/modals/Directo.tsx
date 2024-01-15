@@ -23,7 +23,6 @@ export default function Directo(props: vaciadoType): JSX.Element {
         const obj = { canastillas: canastillas, enf: props.propsModal.enf, action: 'directoNacional' }
         const response = await window.api.proceso(obj)
         if (response.status === 200) {
-          alert('Directo nacional con exito')
           props.closeDirecto()
         } else if (response.status === 400) {
           alert(response.data)

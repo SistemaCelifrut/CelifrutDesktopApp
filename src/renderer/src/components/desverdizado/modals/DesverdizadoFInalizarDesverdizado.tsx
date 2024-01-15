@@ -11,7 +11,6 @@ export default function DesverdizadoFInalizarDesverdizado(props: propsType): JSX
     const response = await window.api.proceso(request)
 
     if (response.status == 200) {
-      alert('Lote desverdizado finalizado')
       props.closeFinalizarDesverdizado()
     } else {
       alert('Error al finalizar el desverdizado')

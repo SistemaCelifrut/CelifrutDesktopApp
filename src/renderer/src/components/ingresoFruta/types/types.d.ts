@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 export type serverResponseType = {
     status: number
+    enf: number
     data: proveedoresType[]
   }
 

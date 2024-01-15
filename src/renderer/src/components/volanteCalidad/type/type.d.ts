@@ -11,3 +11,7 @@ export type registrosType = {
   unidades: string
 }
 
+export type promedioOperarioType = {
+  operario: string
+  porcentaje: number
+}

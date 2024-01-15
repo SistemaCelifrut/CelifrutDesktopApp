@@ -65,7 +65,7 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {lote.KilosActual}
+              {lote.KilosActual.toFixed(2)}
             </div>
             <div
  

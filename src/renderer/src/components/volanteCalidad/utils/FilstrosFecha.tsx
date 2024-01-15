@@ -7,6 +7,7 @@ import { obtenerDiasSemana } from "../functions/functions";
 type propsType = {
     setFechaInicio: (e: Date) => void
     setFechaFin: (e: Date) => void
+    setTipoFruta: (e: string) => void
 }
 
 export default function FilstrosFecha(props: propsType): JSX.Element {
@@ -103,16 +104,20 @@ export default function FilstrosFecha(props: propsType): JSX.Element {
 
         }
     }
+    const handleTipoFruta = (e): void => {
+        props.setTipoFruta(e.target.value)
+    }
 
 
     return (
         <div className={`${theme === 'Dark' ? 'bg-slate-600' : 'bg-slate-200'} p-4 rounded-xl shadow-lg m-2 flex flex-row flex-wrap gap-4`}>
             <label className={`flex flex-col gap-2 ${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
                 Filtro tipo fruta
-                <select className={`border-solid border-2 border-blue-200 rounded-lg p-2  ${theme === 'Dark' ? 'text-white bg-slate-950' : 'text-black'}`}>
+                <select onChange={handleTipoFruta}
+                className={`border-solid border-2 border-blue-200 rounded-lg p-2  ${theme === 'Dark' ? 'text-white bg-slate-950' : 'text-black'}`}>
                     <option value="">Tipo de fruta</option>
-                    <option value="Naranja">Naranja</option>
-                    <option value="Limon">Limon</option>
+                    <option value="naranja">Naranja</option>
+                    <option value="limon">Limon</option>
                 </select>
             </label>
             <label className={`flex flex-col gap-2 ${theme === 'Dark' ? 'text-white' : 'text-black'}`}>

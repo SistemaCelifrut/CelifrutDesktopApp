@@ -30,7 +30,6 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType): JSX.
       const response = await window.api.proceso(request)
       console.log(response)
       if (response.status === 200) {
-        alert('Parametros guardados con exito')
         props.closeParametros()
       } else if (response.status === 400) {
         alert(response.data)

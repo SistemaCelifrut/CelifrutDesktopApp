@@ -11,12 +11,12 @@ export interface Api {
   imprimirRotulos: (datos) => Promise<void>
 
   ingresoFruta: (data) => Promise<responseIngresarPredio[]>
-  inventario: (data) => Promise<unknown>
+  inventario: (data) => Promise<any>
   descartes: (channel: string, callback: DescartesCallback) => void
-  contenedores: (data) => Promise<unknown>
-  calidad: (data) => Promise<unknown>
-  listaEmpaqueInfo: (data, callback) => unknown
-  proveedores: (data) => Promise<unknown>
+  contenedores: (data) => Promise<any>
+  calidad: (data) => Promise<any>
+  listaEmpaqueInfo: (data, callback) => any
+  proveedores: (data) => Promise<any>
 }
 
 declare global {

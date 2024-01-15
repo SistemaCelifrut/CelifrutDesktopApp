@@ -7,10 +7,10 @@ type propsType = {
     data: registrosType[]
 }
 export default function TablaVolantecalidad(props: propsType): JSX.Element {
-    return (
-        <div className="pr-2 m-2">
-            <table className={`mr-2 ml-2 w-full mt-2 border-2 m-2 rounded-t-lg overflow-hidden`}>
-                <thead className={`bg-Celifrut-green`} >
+    return ( 
+        <div className="pr-2 ">
+            <table className={`mr-2 ml-2 w-full mt-2 border-2 m-2 rounded-t-lg overflow-hidden border-solid border-t-4 border-white`}>
+                <thead className={`bg-Celifrut-green `} >
                     <tr className="h-14 broder-2 ">
                         <th className="text-white">Fecha</th>
                         <th className="text-white">Tipo de fruta</th>

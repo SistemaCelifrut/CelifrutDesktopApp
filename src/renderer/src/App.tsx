@@ -17,6 +17,7 @@ import Formatos from './components/Formatos/Formatos'
 import Informes from './components/informes/Informes'
 import CrearCuenta from './components/crearCuentas/CrearCuenta'
 import VolanteCalidad from './components/volanteCalidad/VolanteCalidad'
+import Lotes from './components/lotes/Lotes'
 
 export const themeContext = createContext<themeType>('Ligth')
 export const userContext = createContext<userType>({
@@ -117,6 +118,7 @@ function App(): JSX.Element {
                   {section === 'Informes' && <Informes />}
                   {section === 'Crear cuenta' && <CrearCuenta />}
                   {section === 'Volante calidad' && <VolanteCalidad />}
+                  {section === 'Lotes' && <Lotes />}
                 </div>
               </>
             )}

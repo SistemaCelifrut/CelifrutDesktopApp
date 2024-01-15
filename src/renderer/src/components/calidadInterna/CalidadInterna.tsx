@@ -22,7 +22,6 @@ export default function CalidadInterna(props: propsType): JSX.Element {
       try {
         const request = { action: 'obtenerLotesCalidadInterna', query:'proceso' }
         const lotes = await window.api.calidad(request)
-        console.log(lotes.data)
         setLotesData(lotes.data)
       } catch (e) {
         alert(e)

@@ -1,4 +1,7 @@
 /* eslint-disable prettier/prettier */
+import { promedioOperarioType, registrosType } from "../type/type"
+
+/* eslint-disable prettier/prettier */
 export const obtenerDiasSemana = (data: string): number[] => {
   // Dividir la cadena de entrada en año y semana
   const parts = data.split('-W')
@@ -21,4 +24,24 @@ export const obtenerDiasSemana = (data: string): number[] => {
     )
   }
   return weekDays;
+}
+export const obtenerOperarios = (data:registrosType[]): promedioOperarioType[]=> {
+  const operariosFromData = data.map(item => item.operario)
+  const operariosSet = new Set(operariosFromData);
+  const operarios = [...operariosSet];
+  const out: promedioOperarioType[] = []
+  for(const operario of operarios){
+    const totalPorcentaje = data.filter(item => {
+      if(item.operario === operario){
+        return item
+      } else {
+        return null
+      }
+    })
+    const promedio = totalPorcentaje.reduce((acu, item) => acu += ((Number(item.defecto) / Number(item.unidades) * 100)), 0) / totalPorcentaje.length
+    out.push({operario:operario, porcentaje:promedio})
+
+  }
+  return out
+
 }

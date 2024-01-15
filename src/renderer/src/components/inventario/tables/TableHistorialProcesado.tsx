@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { format } from 'date-fns'
 import { historialProcesoType } from '../types/types'
 import HeaderTableHistorialProcesado from '../utils/HeaderTableHistorialProcesado'
@@ -6,10 +7,10 @@ import React from 'react'
 type propsType = {
   table: historialProcesoType[]
   theme: string
-  clickLote: (e:any) => void
+  clickLote: (e) => void
 }
 
-export default function TableHistorialProcesado(props: propsType) {
+export default function TableHistorialProcesado(props: propsType): JSX.Element {
   return (
     <>
       <div>

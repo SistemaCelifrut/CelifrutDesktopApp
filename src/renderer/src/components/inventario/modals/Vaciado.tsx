@@ -23,7 +23,6 @@ export default function Vaciado(props: vaciadoType): JSX.Element {
         const obj = { canastillas: canastillas, enf: props.propsModal.enf, action: 'vaciarLote' }
         const response = await window.api.proceso(obj)
         if (response.status === 200) {
-          alert('Vaciado con exito')
           props.closeVaciado()
         } else if (response.status === 400) {
           alert(response.data)
