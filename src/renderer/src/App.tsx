@@ -18,6 +18,7 @@ import Informes from './components/informes/Informes'
 import CrearCuenta from './components/crearCuentas/CrearCuenta'
 import VolanteCalidad from './components/volanteCalidad/VolanteCalidad'
 import Lotes from './components/lotes/Lotes'
+import Proveedores from './components/proveedores/Proveedores'
 
 export const themeContext = createContext<themeType>('Ligth')
 export const userContext = createContext<userType>({
@@ -119,6 +120,7 @@ function App(): JSX.Element {
                   {section === 'Crear cuenta' && <CrearCuenta />}
                   {section === 'Volante calidad' && <VolanteCalidad />}
                   {section === 'Lotes' && <Lotes />}
+                  {section === 'Proveedores' && <Proveedores />}
                 </div>
               </>
             )}

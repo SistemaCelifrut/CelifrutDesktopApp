@@ -31,10 +31,10 @@ export default function BotonesInventarioDescartes(props: propsType): JSX.Elemen
         <div>
           <div className="flex flex-row justify-between">
             <h2 className={`${props.theme === 'Dark' ? 'text-white' : 'texy-black'} font-bold`}>
-              Kilos Totales: {sumatoriaDescartes(props.table)} Kg
+              Kilos Totales: {sumatoriaDescartes(props.table).toFixed(2)} Kg
             </h2>
             <h2 className={`${props.theme === 'Dark' ? 'text-white' : 'texy-black'} font-bold`}>
-              Kilos seleccionados: {sumatoriaDescarteSeleccionado(props.enfObj)} Kg
+              Kilos seleccionados: {sumatoriaDescarteSeleccionado(props.enfObj).toFixed(2)} Kg
             </h2>
             {props.reprocesar && (
               <button
@@ -123,7 +123,7 @@ export default function BotonesInventarioDescartes(props: propsType): JSX.Elemen
                       className={`${props.theme === 'Dark' ? 'text-white' : 'texy-black'}`}
                       key={item}
                     >
-                      {item}: {sumatoriaDescarteEspecifico(props.table, 'descarteEncerado', item)}{' '}
+                      {item}: {sumatoriaDescarteEspecifico(props.table, 'descarteEncerado', item).toFixed(2)}{' '}
                       Kg
                     </h4>
                   ))}
