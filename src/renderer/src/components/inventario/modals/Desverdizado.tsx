@@ -5,6 +5,9 @@ import { useContext, useState } from 'react'
 type vaciadoType = {
     closeDesverdizado: () => void
     propsModal: { nombre: string, canastillas: number, enf:string}
+    setShowSuccess: (e) => void 
+    setShowError: (e) => void
+    setMessage: (e) => void
   }
 
 export default function Desverdizado(props: vaciadoType): JSX.Element {
@@ -18,7 +21,11 @@ export default function Desverdizado(props: vaciadoType): JSX.Element {
       const propsCanastillasInt = props.propsModal.canastillas
 
       if (canastillasInt > propsCanastillasInt) {
-        alert('Error en el numero de canastillas')
+        props.setShowError(true)
+        props.setMessage("Error en el numero de canastillas!")
+        setInterval(() => {
+          props.setShowError(false)
+        }, 5000)
       } else {
         const obj = {
             canastillas: canastillas,
@@ -30,10 +37,23 @@ export default function Desverdizado(props: vaciadoType): JSX.Element {
         console.log(response)
         if (response.status === 200) {
           props.closeDesverdizado()
+          props.setShowSuccess(true)
+          props.setMessage("Fruta puesta a desverdizar!")
+          setInterval(() => {
+            props.setShowSuccess(false)
+          }, 5000)
         } else if (response.status === 400) {
-          alert(response.data)
+          props.setShowError(true)
+          props.setMessage("Error al poner a desverdiar la fruta!")
+          setInterval(() => {
+            props.setShowError(false)
+          }, 5000)
         } else {
-          alert(response)
+          props.setShowError(true)
+          props.setMessage("Error al poner a desverdiar la fruta!")
+          setInterval(() => {
+            props.setShowError(false)
+          }, 5000)
         }
       }
     } catch (e: unknown) {

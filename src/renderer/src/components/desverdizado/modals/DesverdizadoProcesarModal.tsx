@@ -3,9 +3,12 @@
 import { useState } from 'react'
 
 type propsType = {
-    closeProcesarDesverdizado: () => void
+  closeProcesarDesverdizado: () => void
   propsModal: { nombre: string; canastillas: number; enf: string }
   theme: string
+  setShowSuccess: (e) => void
+  setShowError: (e) => void
+  setMessage: (e) => void
 }
 
 export default function DesverdizadoProcesarModal(props: propsType): JSX.Element {
@@ -25,10 +28,23 @@ export default function DesverdizadoProcesarModal(props: propsType): JSX.Element
         const response = await window.api.proceso(obj)
         if (response.status === 200) {
           props.closeProcesarDesverdizado()
+          props.setShowSuccess(true)
+          props.setMessage("Lote vaciado con exito!")
+          setInterval(() => {
+            props.setShowSuccess(false)
+          }, 5000)
         } else if (response.status === 400) {
-          alert(response.data)
+          props.setShowError(true)
+          props.setMessage("Error enviando los datos a el servidor!")
+          setInterval(() => {
+            props.setShowError(false)
+          }, 5000)
         } else {
-          alert(response)
+          props.setShowError(true)
+          props.setMessage("Error enviando los datos a el servidor!")
+          setInterval(() => {
+            props.setShowError(false)
+          }, 5000)
         }
       }
     } catch (e: unknown) {

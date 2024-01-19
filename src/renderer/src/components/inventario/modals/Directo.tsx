@@ -5,6 +5,9 @@ type vaciadoType = {
   closeDirecto: () => void
     propsModal: { nombre: string, canastillas: number, enf:string}
     theme:string
+    setShowSuccess: (e) => void
+    setShowError: (e) => void
+    setMessage: (e) => void
   }
 
 export default function Directo(props: vaciadoType): JSX.Element {
@@ -18,16 +21,33 @@ export default function Directo(props: vaciadoType): JSX.Element {
       const propsCanastillasInt = props.propsModal.canastillas
 
       if (canastillasInt > propsCanastillasInt) {
-        alert('Error en el numero de canastillas')
+        props.setShowError(true)
+          props.setMessage("Error en el numero de canastillas!")
+          setInterval(() => {
+            props.setShowError(false)
+          }, 5000)
       } else {
         const obj = { canastillas: canastillas, enf: props.propsModal.enf, action: 'directoNacional' }
         const response = await window.api.proceso(obj)
         if (response.status === 200) {
           props.closeDirecto()
+          props.setShowSuccess(true)
+          props.setMessage("Fruta enviada a directo nacional!")
+          setInterval(() => {
+            props.setShowSuccess(false)
+          }, 5000)
         } else if (response.status === 400) {
-          alert(response.data)
+          props.setShowError(true)
+          props.setMessage("Error enviando los datos a el servidor!")
+          setInterval(() => {
+            props.setShowError(false)
+          }, 5000)
         } else {
-          alert(response)
+          props.setShowError(true)
+          props.setMessage("Error vaciando los datos desde el servidor!")
+          setInterval(() => {
+            props.setShowError(false)
+          }, 5000)
         }
       }
     } catch (e: unknown) {

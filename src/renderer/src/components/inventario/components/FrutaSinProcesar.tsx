@@ -12,7 +12,10 @@ import Desverdizado from '../modals/Desverdizado'
 type propsType = {
   theme: string
   user: string
-  filtro:string
+  filtro: string
+  setShowSuccess: (e) => void
+  setShowError: (e) => void
+  setMessage: (e) => void
 }
 
 export default function FrutaSinProcesar(props: propsType): JSX.Element {
@@ -38,7 +41,7 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
         console.log(frutaActual)
         if (frutaActual.status === 200) {
           setDatosOriginales(frutaActual.data)
-          dispatch({ type: 'initialData', data: frutaActual.data, filtro:'' })
+          dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
         } else {
           alert('error obteniendo datos del servidor')
         }
@@ -57,7 +60,7 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
         console.log(frutaActual)
         if (frutaActual.status === 200) {
           setDatosOriginales(frutaActual.data)
-          dispatch({ type: 'initialData', data: frutaActual.data, filtro:'' })
+          dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
         } else {
           alert('error obteniendo datos del servidor')
         }
@@ -98,14 +101,14 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
     setShowDesverdizadoModal(!showDesverdizadoModal)
   }
   //
-useEffect(() =>{
-  dispatch({type:'filter', data:datosOriginales, filtro:props.filtro})
-},[props.filtro])
+  useEffect(() => {
+    dispatch({ type: 'filter', data: datosOriginales, filtro: props.filtro })
+  }, [props.filtro])
 
   return (
     <>
       <div className='flex flex-col'>
-       
+
         <BotonesAccionFrutaSinProcesar
           title={titleTable}
           table={table}
@@ -118,17 +121,35 @@ useEffect(() =>{
 
         {showVaciarModal &&
           createPortal(
-            <Vaciado closeVaciado={closeVaciado} propsModal={propsModal} theme={props.theme} />,
+            <Vaciado 
+              closeVaciado={closeVaciado} 
+              propsModal={propsModal} 
+              theme={props.theme} 
+              setMessage={props.setMessage} 
+              setShowSuccess={props.setShowSuccess} 
+              setShowError={props.setShowError} />,
             document.body
           )}
+
         {showDirectoModal &&
           createPortal(
-            <Directo closeDirecto={closeDirecto} propsModal={propsModal} theme={props.theme} />,
+            <Directo 
+              closeDirecto={closeDirecto} 
+              propsModal={propsModal} 
+              theme={props.theme}
+              setMessage={props.setMessage} 
+              setShowSuccess={props.setShowSuccess} 
+              setShowError={props.setShowError} />,
             document.body
           )}
-           {showDesverdizadoModal &&
+        {showDesverdizadoModal &&
           createPortal(
-            <Desverdizado closeDesverdizado={closeDesverdizado} propsModal={propsModal} />,
+            <Desverdizado 
+              closeDesverdizado={closeDesverdizado} 
+              propsModal={propsModal} 
+              setMessage={props.setMessage} 
+              setShowSuccess={props.setShowSuccess} 
+              setShowError={props.setShowError} />,
             document.body
           )}
       </div>
