@@ -6,6 +6,9 @@ type vaciadoType = {
   closeParametros: () => void
   propsModal: { nombre: string; enf: string }
   theme: string
+  setShowSuccess: (e) => void
+  setShowError: (e) => void
+  setMessage: (e) => void
 }
 
 export default function DesverdizadoSetParametrosModal(props: vaciadoType): JSX.Element {
@@ -31,10 +34,23 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType): JSX.
       console.log(response)
       if (response.status === 200) {
         props.closeParametros()
+        props.setShowSuccess(true)
+        props.setMessage("Parametros guardados con exito!")
+        setInterval(() => {
+          props.setShowSuccess(false)
+        }, 5000)
       } else if (response.status === 400) {
-        alert(response.data)
+        props.setShowError(true)
+        props.setMessage("Error enviando los datos a el servidor!")
+        setInterval(() => {
+          props.setShowError(false)
+        }, 5000)
       } else {
-        alert(response)
+        props.setShowError(true)
+        props.setMessage("Error enviando los datos a el servidor!")
+        setInterval(() => {
+          props.setShowError(false)
+        }, 5000)
       }
     } catch (e: unknown) {
       alert(`${e}`)

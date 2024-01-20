@@ -6,6 +6,9 @@ type vaciadoType = {
     closeModal: () => void
     propsModal: { nombre: string, canastillas: number, enf:string, id:string}
     theme:string
+    setShowSuccess: (e) => void 
+    setShowError: (e) => void
+    setMessage: (e) => void
   }
 
 export default function ModificarHistorialDirecto(props: vaciadoType): JSX.Element {
@@ -19,16 +22,33 @@ export default function ModificarHistorialDirecto(props: vaciadoType): JSX.Eleme
       const propsCanastillasInt = props.propsModal.canastillas
 
       if (canastillasInt > propsCanastillasInt) {
-        alert('Error en el numero de canastillas')
+        props.setShowError(true)
+        props.setMessage("Error en el numero de canastillas!")
+        setInterval(() => {
+          props.setShowError(false)
+        }, 5000)
       } else {
         const obj = { canastillas: canastillas, enf: props.propsModal.enf, id:props.propsModal.id, action: 'modificarHistorialDirectoNacional'}
         const response = await window.api.proceso(obj)
         if (response.status === 200) {
           props.closeModal()
+          props.setShowSuccess(true)
+          props.setMessage("Historial modificado con exito!")
+          setInterval(() => {
+            props.setShowSuccess(false)
+          }, 5000)
         } else if (response.status === 400) {
-          alert(response.data)
+          props.setShowError(true)
+          props.setMessage("Error modificando los datos desde el servidor!")
+          setInterval(() => {
+            props.setShowError(false)
+          }, 5000)
         } else {
-          alert(response)
+          props.setShowError(true)
+          props.setMessage("Error modificando los datos desde el servidor!")
+          setInterval(() => {
+            props.setShowError(false)
+          }, 5000)
         }
       }
     } catch (e: unknown) {

@@ -6,6 +6,7 @@ import ContenidoZumo from './components/ContenidoZumo'
 import { INITIAL_STATE, reducer } from './functions/reduce'
 import PruebasPlataforma from './components/PruebasPlataforma'
 
+
 type propsType = {
   theme: themeType
   user: string
@@ -16,6 +17,7 @@ export default function CalidadInterna(props: propsType): JSX.Element {
   const [lote, setLote] = useState<string>('')
   const [mensajeGuardado, setMensajeGuardado] = useState('')
   const [formulario, dispatch] = useReducer(reducer, INITIAL_STATE)
+
 
   useEffect(() => {
     const interval = async (): Promise<void> => {
@@ -101,6 +103,7 @@ export default function CalidadInterna(props: propsType): JSX.Element {
           Guardar
         </button>
       </div>
+
     </div>
   )
 }

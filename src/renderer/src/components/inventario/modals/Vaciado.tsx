@@ -5,6 +5,9 @@ type vaciadoType = {
     closeVaciado: () => void
     propsModal: { nombre: string, canastillas: number, enf:string}
     theme:string
+    setShowSuccess: (e) => void 
+    setShowError: (e) => void
+    setMessage: (e) => void
   }
 
 export default function Vaciado(props: vaciadoType): JSX.Element {
@@ -18,20 +21,42 @@ export default function Vaciado(props: vaciadoType): JSX.Element {
       const propsCanastillasInt = props.propsModal.canastillas
 
       if (canastillasInt > propsCanastillasInt) {
-        alert('Error en el numero de canastillas')
+        props.closeVaciado()
+        props.setShowError(true)
+        props.setMessage("Error en el numero de canastillas!")
+        setInterval(() => {
+          props.setShowError(false)
+        }, 5000)
       } else {
         const obj = { canastillas: canastillas, enf: props.propsModal.enf, action: 'vaciarLote' }
         const response = await window.api.proceso(obj)
         if (response.status === 200) {
           props.closeVaciado()
+          props.setShowSuccess(true)
+          props.setMessage("Fruta vaciada!")
+          setInterval(() => {
+            props.setShowSuccess(false)
+          }, 5000)
         } else if (response.status === 400) {
-          alert(response.data)
+          props.setShowError(true)
+          props.setMessage("Error vaciando los datos desde el servidor!")
+          setInterval(() => {
+            props.setShowError(false)
+          }, 5000)
         } else {
-          alert(response)
+          props.setShowError(true)
+          props.setMessage("Error vaciando los datos desde el servidor!")
+          setInterval(() => {
+            props.setShowError(false)
+          }, 5000)
         }
       }
     } catch (e: unknown) {
-      alert(`${e}`)
+      props.setShowError(true)
+      props.setMessage(e)
+      setInterval(() => {
+        props.setShowError(false)
+      }, 5000)
     } finally{
         setLoading(false)
     }

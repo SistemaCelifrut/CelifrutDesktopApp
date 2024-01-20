@@ -13,6 +13,9 @@ type propsType = {
   theme: string
   user: string
   filtro: string
+  setShowSuccess: (e) => void
+  setShowError: (e) => void
+  setMessage: (e) => void
 }
 
 export default function InventarioDesverdizado(props: propsType): JSX.Element {
@@ -130,6 +133,9 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
             closeParametros={closeParametros}
             propsModal={propsModal}
             theme={props.theme}
+            setMessage={props.setMessage} 
+            setShowSuccess={props.setShowSuccess} 
+            setShowError={props.setShowError} 
           />,
           document.body
         )}
@@ -139,6 +145,9 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
             closeFinalizarDesverdizado={closeFinalizarDesverdizado}
             propsModal={propsModal}
             theme={props.theme}
+            setMessage={props.setMessage} 
+            setShowSuccess={props.setShowSuccess} 
+            setShowError={props.setShowError} 
           />,
           document.body
         )}
@@ -148,6 +157,9 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
             closeProcesarDesverdizado={closeProcesarDesverdizado}
             propsModal={propsModal}
             theme={props.theme}
+            setMessage={props.setMessage} 
+            setShowSuccess={props.setShowSuccess} 
+            setShowError={props.setShowError} 
           />,
           document.body
         )}

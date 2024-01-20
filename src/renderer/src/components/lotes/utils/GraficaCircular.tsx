@@ -3,9 +3,9 @@
 /* eslint-disable prettier/prettier */
 import Chart from 'chart.js/auto';
 import { LoteDataType } from '../type/types';
-import { useContext, useEffect, useRef } from 'react';
-import { themeContext } from '@renderer/App';
-import { datosGraficaDona, datosGraficas } from '../functions/functions';
+import {  useEffect, useRef } from 'react';
+
+import { datosGraficaDona } from '../functions/functions';
 
 type propsType = {
   data: LoteDataType[]

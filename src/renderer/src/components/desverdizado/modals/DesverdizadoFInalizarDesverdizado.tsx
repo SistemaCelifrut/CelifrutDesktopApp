@@ -3,6 +3,9 @@ type propsType = {
   closeFinalizarDesverdizado: () => void
   propsModal: { nombre: string; enf: string }
   theme: string
+  setShowSuccess: (e) => void
+  setShowError: (e) => void
+  setMessage: (e) => void
 }
 
 export default function DesverdizadoFInalizarDesverdizado(props: propsType): JSX.Element {
@@ -12,8 +15,17 @@ export default function DesverdizadoFInalizarDesverdizado(props: propsType): JSX
 
     if (response.status == 200) {
       props.closeFinalizarDesverdizado()
+      props.setShowSuccess(true)
+      props.setMessage("Desverdizado finalizado!")
+      setInterval(() => {
+        props.setShowSuccess(false)
+      }, 5000)
     } else {
-      alert('Error al finalizar el desverdizado')
+      props.setShowError(true)
+      props.setMessage("Error enviando los datos a el servidor!")
+      setInterval(() => {
+        props.setShowError(false)
+      }, 5000)
       props.closeFinalizarDesverdizado()
     }
   }

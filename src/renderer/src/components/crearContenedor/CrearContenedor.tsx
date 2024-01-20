@@ -1,5 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { themeContext } from '@renderer/App'
+import ErrorModal from '@renderer/errors/modal/ErrorModal'
+import SuccessModal from '@renderer/errors/modal/SuccessModal'
 import { useContext, useEffect, useState } from 'react'
 
 
@@ -25,6 +27,9 @@ export default function CrearContenedor(): JSX.Element {
   const [desverdizado, setDesverdizado] = useState<boolean>(false)
   const [observaciones, setObservaciones] = useState<string>('')
   const [clientesDatos, setClientesDatos] = useState<clientesType[]>([])
+  const [message, setMessage] = useState<string>('')
+  const [showSuccess, setShowSuccess] = useState<boolean>(false)
+  const [showError, setShowError] = useState<boolean>(false)
 
   useEffect(() => {
     const obtenerDatos = async (): Promise<void> => {
@@ -41,8 +46,6 @@ export default function CrearContenedor(): JSX.Element {
     }
     obtenerDatos()
   }, [])
-
-
   const guardarDatos: React.FormEventHandler<HTMLFormElement> = async (event) => {
     try {
       event.preventDefault()
@@ -60,9 +63,17 @@ export default function CrearContenedor(): JSX.Element {
       console.log(request)
       const response = await window.api.contenedores(request)
       if (response.status == 200) {
-        alert("datos guardados correctamente")
+        setShowSuccess(true)
+        setMessage("Contenedor creado con exito!")
+        setInterval(() => {
+          setShowSuccess(false)
+        }, 5000)
       } else {
-        alert("Error al guardar los datos: " + response.data)
+        setShowError(true)
+        setMessage("Error enviando los datos a el servidor!")
+        setInterval(() => {
+          setShowError(false)
+        }, 5000)
       }
       reiniciarCampos()
     } catch (e: unknown) {
@@ -70,7 +81,6 @@ export default function CrearContenedor(): JSX.Element {
       alert("Error: " + e)
     }
   }
-
   const reiniciarCampos = (): void => {
     setCliente('')
     setNumeroContenedor('')
@@ -78,11 +88,12 @@ export default function CrearContenedor(): JSX.Element {
     setDesverdizado(false)
     setObservaciones('')
   }
-
   const handlePrediosChange = (event): void => {
     setCliente(event.target.value)
   }
-
+  const closeModal = (): void => {
+    setShowError(false)
+  }
   return (
     <form className="grid grid-cols-12 gap-2 w-full h-max" onSubmit={guardarDatos}>
       <div className="col-span-12 w-full flex justify-center items-center mt-4">
@@ -266,6 +277,10 @@ export default function CrearContenedor(): JSX.Element {
         >
           Guardar
         </button>
+      </div>
+      <div className='fixed bottom-0 right-0 flex items-center justify-center'>
+        {showError && <ErrorModal message={message} closeModal={closeModal} theme={theme} />}
+        {showSuccess && <SuccessModal message={message} closeModal={closeModal} theme={theme} />}
       </div>
     </form>
   )
