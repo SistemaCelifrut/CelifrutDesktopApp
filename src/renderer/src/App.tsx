@@ -19,6 +19,7 @@ import CrearCuenta from './components/crearCuentas/CrearCuenta'
 import VolanteCalidad from './components/volanteCalidad/VolanteCalidad'
 import Lotes from './components/lotes/Lotes'
 import Proveedores from './components/proveedores/Proveedores'
+import InspeccionMulas from './components/inspeccionMulas/InspeccionMulas'
 
 export const themeContext = createContext<themeType>('Ligth')
 export const userContext = createContext<userType>({
@@ -121,6 +122,9 @@ function App(): JSX.Element {
                   {section === 'Volante calidad' && <VolanteCalidad />}
                   {section === 'Lotes' && <Lotes />}
                   {section === 'Proveedores' && <Proveedores />}
+                  {section === 'Inspeccion mula' && (
+                    <InspeccionMulas theme={theme} user={user.user} />
+                  )}
                 </div>
               </>
             )}
