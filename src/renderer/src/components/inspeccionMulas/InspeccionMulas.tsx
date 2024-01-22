@@ -1,12 +1,14 @@
 /* eslint-disable prettier/prettier */
 import FormularioMulas from './components/FormularioMulas'
-import HistorialFormulario from './components/HistorialFormulario'
 import NavBarMulas from './utils/NavBarMulas'
 import { useState } from 'react'
 
+type propsType = {
+  theme: string
+  user: string
+}
 
-
-export default function InspeccionMulas(): JSX.Element {
+export default function InspeccionMulas(props: propsType): JSX.Element {
   const [filtro, setFiltro] = useState<string>('')
   const [seccion, setSeccion] = useState<string>('Formulario Mulas')
 
@@ -24,9 +26,9 @@ export default function InspeccionMulas(): JSX.Element {
       {seccion === 'Formulario Mulas' && (
         <FormularioMulas />
       )}
-      {seccion === 'Historial Formulario' && (
-        <HistorialFormulario />
-      )} 
+      {/* {seccion === 'Historial proceso' && (
+        <HistorialProcesado user={props.user} theme={props.theme} filtro={filtro} />
+      )} */}
     </div>
   )
 }
