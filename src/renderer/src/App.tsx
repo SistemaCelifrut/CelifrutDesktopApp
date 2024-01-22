@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { createContext, useEffect, useState } from 'react'
 import NavBar from './components/UI/NavBar'
 import './index.css'
@@ -41,6 +42,7 @@ function App(): JSX.Element {
     _id: ''
   })
   const [section, setSection] = useState<string>('main')
+  const [showSideBar, setShowSideBar] = useState<boolean>(true);
 
   //useEffect que obtiene el theme del quipo
   useEffect(() => {
@@ -72,6 +74,9 @@ function App(): JSX.Element {
   const seleccionWindow = (data: string): void => {
     setSection(data)
   }
+  const handleSideBarWidth = (): void => {
+    setShowSideBar(!showSideBar);
+  }
 
   return (
     <main
@@ -96,10 +101,10 @@ function App(): JSX.Element {
                 <div className="col-span-12">
                   <NavBar theme={theme} changeTheme={changeTheme} />
                 </div>
-                <div className="col-span-2">
-                  <SideBar seleccionWindow={seleccionWindow} />
+                <div className={`transition-all ease-in-out duration-1000 ${showSideBar ? 'col-span-2': 'w-2'}`}>
+                  <SideBar seleccionWindow={seleccionWindow} handleSideBarWidth={handleSideBarWidth} showSideBar={showSideBar} />
                 </div>
-                <div className="col-span-10 overflow-auto">
+                <div className={`overflow-auto  ${showSideBar ? 'col-span-10 ': 'col-span-11 '}`}>
                   {section === 'Ingreso de fruta' && <IngresoFruta />}
                   {section === 'Fruta sin procesar' && (
                     <InventarioFrutaSinProcesar theme={theme} user={user.user} />
@@ -122,7 +127,7 @@ function App(): JSX.Element {
                   {section === 'Volante calidad' && <VolanteCalidad />}
                   {section === 'Lotes' && <Lotes />}
                   {section === 'Proveedores' && <Proveedores />}
-                  {section === 'Inspeccion mula' && (
+                  {section === 'Inspeccion tractomulas' && (
                     <InspeccionMulas theme={theme} user={user.user} />
                   )}
                 </div>

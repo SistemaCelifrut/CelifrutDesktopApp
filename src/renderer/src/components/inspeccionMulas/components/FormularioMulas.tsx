@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import '@fortawesome/fontawesome-free/css/all.css';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';

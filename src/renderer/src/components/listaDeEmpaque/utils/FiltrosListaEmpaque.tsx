@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react'
 import { themeType } from '@renderer/env'
 import { ContenedoresObj } from '../types/types'
@@ -10,17 +11,17 @@ type propsType = {
   setFiltro2: (data: string) => void
 }
 
-export default function FiltrosListaEmpaque(props: propsType) {
+export default function FiltrosListaEmpaque(props: propsType): JSX.Element {
   const [value1, setValue1] = useState<string>('')
 
   const [predios, setPredios] = useState<string[]>([])
 
-  const handleFiltro1 = (e) => {
+  const handleFiltro1 = (e): void => {
     props.setFiltro(e.target.value)
     setValue1(e.target.value)
   }
 
-  const handleFiltro2 = (e) => {
+  const handleFiltro2 = (e): void => {
     props.setFiltro2(e.target.value)
   }
 

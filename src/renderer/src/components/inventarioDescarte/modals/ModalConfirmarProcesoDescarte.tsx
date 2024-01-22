@@ -11,7 +11,11 @@ type propsType = {
 
 export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Element {
   const [cliente, setCliente] = useState<string>('')
-  console.log(props.propsModal)
+  const [placa, setPlaca] = useState<string>('')
+  const [nombreConductor, setNombreConductor] = useState<string>('')
+  const [telefono, setTelefono] = useState<string>('')
+  const [cedula, setCedula] = useState<string>('')
+  const [remision, setRemision] = useState<string>('')
   const finalizar = async (): Promise<void> => {
     if (props.propsModal.action === 'Enviar descarte') {
       const datos = [props.propsModal.data, cliente]
@@ -59,9 +63,8 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div
-        className={`bg-white rounded-xl  w-96 h-44 ${
-          props.propsModal.action === 'Enviar descarte' && 'h-60'
-        }`}
+        className={`bg-white rounded-xl  w-96 h-auto pb-4 ${props.propsModal.action === 'Enviar descarte' && 'h-60'
+          }`}
       >
         <div className="flex justify-between items-center bg-Celifrut-green p-2 rounded-t-xl">
           <h1 className="text-white">
@@ -74,12 +77,45 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
         </div>
         {props.propsModal.action === 'Enviar descarte' && (
           <div className="flex justify-center flex-col p-2">
-            <label htmlFor="">Nombre del cliente</label>
+            <label>Nombre del cliente</label>
             <input
               type="text"
               className="border-2 border-gray-200 rounded-md p-2"
               onChange={(e): void => setCliente(e.target.value)}
             />
+            <label >Placa</label>
+            <input
+              type="text"
+              value={placa}
+              maxLength={6}
+              className="border-2 border-gray-200 rounded-md p-2"
+              onChange={(e): void => setPlaca(e.target.value)}
+            />
+            <label >Nombre conductor</label>
+            <input
+              type="text"
+              className="border-2 border-gray-200 rounded-md p-2"
+              onChange={(e): void => setNombreConductor(e.target.value)}
+            />
+            <label >Telefono</label>
+            <input
+              type="text"
+              className="border-2 border-gray-200 rounded-md p-2"
+              onChange={(e): void => setTelefono(e.target.value)}
+            />
+                 <label >Cedula</label>
+            <input
+              type="number"
+              className="border-2 border-gray-200 rounded-md p-2"
+              onChange={(e): void => setCedula(e.target.value)}
+            />
+                      <label >Remision</label>
+            <input
+              type="number"
+              className="border-2 border-gray-200 rounded-md p-2"
+              onChange={(e): void => setRemision(e.target.value)}
+            />
+
           </div>
         )}
         <div className="flex justify-center gap-4 mt-4">

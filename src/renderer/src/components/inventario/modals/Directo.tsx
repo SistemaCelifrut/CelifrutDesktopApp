@@ -12,6 +12,11 @@ type vaciadoType = {
 
 export default function Directo(props: vaciadoType): JSX.Element {
   const [canastillas, setCanastillas] = useState<number>(0)
+  const [placa, setPlaca] = useState<string>('')
+  const [nombreConductor, setNombreConductor] = useState<string>('')
+  const [telefono, setTelefono] = useState<string>('')
+  const [cedula, setCedula] = useState<string>('')
+  const [remision, setRemision] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
 
   const vaciar = async (): Promise<void> => {
@@ -27,7 +32,16 @@ export default function Directo(props: vaciadoType): JSX.Element {
             props.setShowError(false)
           }, 5000)
       } else {
-        const obj = { canastillas: canastillas, enf: props.propsModal.enf, action: 'directoNacional' }
+        const obj = { 
+          canastillas: canastillas, 
+          enf: props.propsModal.enf,
+          placa: placa,
+          nombreConductor: nombreConductor,
+          telefono: telefono,
+          cedula: cedula,
+          remision: remision, 
+          action: 'directoNacional' 
+        }
         const response = await window.api.proceso(obj)
         if (response.status === 200) {
           props.closeDirecto()
@@ -65,14 +79,64 @@ export default function Directo(props: vaciadoType): JSX.Element {
       <div className="flex justify-center pb-5">
         <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>Numero de canastillas en inventario: {props.propsModal.canastillas}</p>
       </div>
-      <div className="flex justify-center pb-10">
+      <div className="flex flex-col mx-5 justify-center pb-10">
+        <label className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} flex flex-col`}>
+          Canastillas
         <input
           type="number"
           min="0"
           step="1"
-          className="border-2 border-gray-200 rounded-md p-2"
+          className="border-2 border-gray-200 rounded-md p-2 text-black"
           onChange={(e): void => setCanastillas(Number(e.target.value))}
         />
+        </label>
+        <label className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} flex flex-col`}>
+          Placa
+        <input
+          type="text"
+          value={placa}
+          maxLength={6}
+          pattern="[A-Z]{3}[0-9]{3}"
+          className="border-2 border-gray-200 rounded-md p-2 text-black"
+          onChange={(e): void => setPlaca(e.target.value)}
+        />
+        </label>
+        <label className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} flex flex-col`}>
+          Nombre conductor
+        <input
+          type="text"
+          value={nombreConductor}
+          className="border-2 border-gray-200 rounded-md p-2 text-black"
+          onChange={(e): void => setNombreConductor(e.target.value)}
+        />
+        </label>
+        <label className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} flex flex-col`}>
+          Telefono
+        <input
+          type="text"
+          value={telefono}
+          className="border-2 border-gray-200 rounded-md p-2 text-black"
+          onChange={(e): void => setTelefono(e.target.value)}
+        />
+        </label>
+        <label className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} flex flex-col`}>
+          Cedula
+        <input
+          type="text"
+          value={cedula}
+          className="border-2 border-gray-200 rounded-md p-2 text-black"
+          onChange={(e): void => setCedula(e.target.value)}
+        />
+        </label>
+        <label className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} flex flex-col`}>
+          Remision
+        <input
+          type="text"
+          value={remision}
+          className="border-2 border-gray-200 rounded-md p-2 text-black"
+          onChange={(e): void => setRemision(e.target.value)}
+        />
+        </label>
       </div>
       <div className="flex justify-center gap-4">
         <button
