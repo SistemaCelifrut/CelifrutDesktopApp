@@ -128,7 +128,7 @@ function App(): JSX.Element {
                   {section === 'Lotes' && <Lotes />}
                   {section === 'Proveedores' && <Proveedores />}
                   {section === 'Inspeccion tractomulas' && (
-                    <InspeccionMulas theme={theme} user={user.user} />
+                    <InspeccionMulas />
                   )}
                 </div>
               </>

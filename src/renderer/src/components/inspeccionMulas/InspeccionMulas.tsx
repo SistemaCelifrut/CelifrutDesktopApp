@@ -4,12 +4,9 @@ import FormularioMulas from './components/FormularioMulas'
 import NavBarMulas from './utils/NavBarMulas'
 import { useState } from 'react'
 
-type propsType = {
-  theme: string
-  user: string
-}
 
-export default function InspeccionMulas(props: propsType): JSX.Element {
+
+export default function InspeccionMulas(): JSX.Element {
   const [filtro, setFiltro] = useState<string>('')
   const [seccion, setSeccion] = useState<string>('Formulario Mulas')
 
