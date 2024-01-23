@@ -19,7 +19,14 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
   const finalizar = async (): Promise<void> => {
     if (props.propsModal.action === 'Enviar descarte') {
       const datos = [props.propsModal.data, cliente]
-      const request = { action: 'eliminarFrutaDescarte', data: datos }
+      const request = { 
+        action: 'eliminarFrutaDescarte', 
+        data: datos,
+        nombreConductor: nombreConductor,
+        telefono: telefono,
+        cedula: cedula,
+        remision: remision
+      }
       const response = await window.api.proceso(request)
       console.log(response)
       if (response.status == 200) {

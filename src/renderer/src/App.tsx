@@ -21,6 +21,8 @@ import VolanteCalidad from './components/volanteCalidad/VolanteCalidad'
 import Lotes from './components/lotes/Lotes'
 import Proveedores from './components/proveedores/Proveedores'
 import InspeccionMulas from './components/inspeccionMulas/InspeccionMulas'
+import Contenedores from './components/contenedores/Contenedores'
+import ProbarFunciones from './components/probarFunciones/ProbarFunciones'
 
 export const themeContext = createContext<themeType>('Ligth')
 export const userContext = createContext<userType>({
@@ -130,6 +132,9 @@ function App(): JSX.Element {
                   {section === 'Inspeccion tractomulas' && (
                     <InspeccionMulas />
                   )}
+                  {section === 'Contenedores' && <Contenedores />}
+                  {section === 'probarFunciones' && <ProbarFunciones />}
+
                 </div>
               </>
             )}

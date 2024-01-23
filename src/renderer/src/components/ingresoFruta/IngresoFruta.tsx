@@ -4,6 +4,8 @@ import { useContext, useEffect, useState } from 'react'
 import { serverResponseType } from './types/types';
 import SuccessModal from '@renderer/errors/modal/SuccessModal';
 import ErrorModal from '@renderer/errors/modal/ErrorModal';
+import { createPortal } from 'react-dom';
+import ModificarEF1 from './modals/ModificarEF1';
 
 
 export default function IngresoFruta(): JSX.Element {
@@ -20,6 +22,7 @@ export default function IngresoFruta(): JSX.Element {
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
   const [messageError, setMessageError] = useState<string>('Error al crear Lote')
+  const [showModalModificarEF1, setShowModalModificarEF1] = useState<boolean>(false)
 
   useEffect(() => {
     const obtenerPredios = async (): Promise<void> => {
@@ -116,7 +119,9 @@ export default function IngresoFruta(): JSX.Element {
   const closeError = (): void => {
     setShowError(false)
   }
-
+  const closeModal = (): void => {
+    setShowModalModificarEF1(false)
+  }
   return (
     <form className="grid grid-cols-12 gap-2 w-full h-max" onSubmit={guardarLote}>
       <div className="col-span-12 w-full flex flex-col justify-center items-center mt-4">
@@ -126,6 +131,13 @@ export default function IngresoFruta(): JSX.Element {
         <h3 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-xl`}>
           EF1-{new Date().getFullYear().toString().slice(-2)}{(new Date().getMonth() + 1).toString().padStart(2, '0')}{enf}
         </h3>
+        {/* <button
+        onClick={(): void => setShowModalModificarEF1(true)}
+          type="button"
+          className="py-1 px-1 inline-flex items-center gap-x-2 text-[8px] font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+        >
+          Modificar  EF1
+        </button> */}
       </div>
       <div className="col-span-2"></div>
       {/*Ingreso de Predios*/}
@@ -287,6 +299,17 @@ export default function IngresoFruta(): JSX.Element {
           <ErrorModal theme={theme} closeModal={closeError} message={messageError} />
         </div>
       }
+
+{showModalModificarEF1 &&
+          createPortal(
+            <ModificarEF1 
+              closeModal={closeModal} 
+              setMessageSuccess={setShowSuccess} 
+              setMessageError={setMessageError}
+              setShowSuccess={setShowSuccess} 
+              setShowError={setShowError} />,
+            document.body
+          )}
 
     </form>
   )
