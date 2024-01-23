@@ -63,7 +63,7 @@ const InspeccionFormulario: React.FC = () => {
     const obtenerNumeroContenedor = async () => {
       try {
         const request = {
-          action: 'obtenerDataContenedor',
+          action: 'obtenerDataContenedorFormularioInspeccionMulas',
         };
 
         const response = await window.api.contenedores(request);
@@ -156,7 +156,7 @@ const InspeccionFormulario: React.FC = () => {
   };
 
   const handleContenedorChange = (contenedorId: string) => {
-    const contenedorSeleccionado = state.contenedores[contenedorId];
+    const contenedorSeleccionado = state.contenedores.find((contenedor) => contenedor._id === contenedorId);
     setState((prev) => ({ ...prev, numContenedor: contenedorId, contenedorSeleccionado }));
   };
 
@@ -190,44 +190,51 @@ const InspeccionFormulario: React.FC = () => {
     }
   
     try {
-      setIsLoading(true); // Activar el indicador de carga
+      setIsLoading(true);
   
+      // Declarar criteriosSinTitulos aquí
       const criteriosSinTitulos = state.criterios.filter((criterio) => criterio.type !== 'titulo');
-      const response = await enviarDatosAlServidor({
+  
+      // Obtener la fecha y hora actuales
+      const fecha = new Date();
+  
+      const enviarDatosResponse = await enviarDatosAlServidor({
         action: 'enviarDatosFormularioInspeccionMulas',
         data: {
           placa: state.placa,
           conductor: state.conductor,
           empresaTransportadora: state.empresaTransportadora,
-          tipoFruta: state.tipoFruta,
           numContenedor: state.numContenedor,
           criterios: criteriosSinTitulos,
           cumpleRequisitos: state.cumpleRequisitos,
+          fecha: fecha.toISOString(), // Convertir a formato ISO para enviar al servidor
         },
       });
   
-      if (response.status === 'success') {
-        const request = {
-          action: 'obtenerDataContenedor',
-        };
-        const contenedoresResponse = await window.api.contenedores(request);
+      if (enviarDatosResponse.status === 'success') {
+        // Actualizar el estado con los nuevos contenedores
+        const obtenerContenedoresResponse = await window.api.contenedores({
+          action: 'obtenerDataContenedorFormularioInspeccionMulas',
+        });
   
-        if (contenedoresResponse.status === 200 && contenedoresResponse.data) {
-          setState((prev) => ({ ...prev, contenedores: contenedoresResponse.data }));
+        if (obtenerContenedoresResponse.status === 200 && obtenerContenedoresResponse.data) {
+         
+          
+          // Esperar 500 milisegundos antes de resetear el formulario
+          setTimeout(() => {
+            setSuccessMessage('');
+            resetearFormulario();
+            formRef.current?.querySelector('input')?.focus();
+            setState((prev) => ({ ...prev, contenedores: obtenerContenedoresResponse.data }));
+          }, 500);
         } else {
-          console.error('Error al obtener la lista de contenedores:', contenedoresResponse);
+          console.error('Error al obtener la lista de contenedores:', obtenerContenedoresResponse);
         }
   
         setSuccessMessage('¡Datos enviados con éxito!');
         setErrorMessage('');
-  
-        setTimeout(() => {
-          setSuccessMessage('');
-          resetearFormulario();
-          formRef.current?.querySelector('input')?.focus();
-        }, 3000); // Mostrar el mensaje de éxito durante 3 segundos (ajusta según tus necesidades)
       } else {
-        console.error('Error en la respuesta del servidor:', response);
+        console.error('Error en la respuesta del servidor:', enviarDatosResponse);
         setErrorMessage('Hubo un error al enviar los datos. Por favor, inténtelo de nuevo.');
         setSuccessMessage('');
       }
@@ -236,13 +243,13 @@ const InspeccionFormulario: React.FC = () => {
       setErrorMessage('Hubo un error al enviar los datos. Por favor, inténtelo de nuevo.');
       setSuccessMessage('');
     } finally {
-      setIsLoading(false); // Desactivar el indicador de carga
+      setIsLoading(false);
     }
   };
   
   const enviarDatosAlServidor = async (datos: any) => {
     try {
-      const response = await window.api.proceso(datos);
+      const response = await window.api.contenedores(datos);
       const success = response.status === 200 && response.response === 'success';
   
       if (success) {
@@ -319,23 +326,25 @@ const InspeccionFormulario: React.FC = () => {
         </div>
 
         <div className="mb-4">
-          <label className="block font-bold mb-2">
-            <i className="fas fa-box mr-2"></i> Número de Contenedor:
-          </label>
-          <select
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 text-black"
-            value={state.numContenedor}
-            onChange={(e) => handleContenedorChange(e.target.value)}
-            required
-          >
-            <option value="">Seleccione...</option>
-            {Object.entries(state.contenedores).map(([contenedorId, contenedorData]) => (
-              <option key={contenedorId} value={contenedorId}>
-                {`${contenedorId} - ${contenedorData.infoContenedor.nombreCliente}`}
-              </option>
-            ))}
-          </select>
-        </div>
+  <label className="block font-bold mb-2">
+    <i className="fas fa-box mr-2"></i> Número de Contenedor:
+  </label>
+  <select
+    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 text-black"
+    value={state.numContenedor}
+    onChange={(e) => handleContenedorChange(e.target.value)}
+    required
+  >
+    <option value="">Seleccione...</option>
+    {Array.isArray(state.contenedores) &&
+      state.contenedores.map((contenedorData) => (
+        <option key={contenedorData._id} value={contenedorData._id}>
+          {`${contenedorData._id} - ${contenedorData.infoContenedor.nombreCliente}`}
+        </option>
+      ))}
+  </select>
+</div>
+
   
         {state.successMessage && (
           <div className="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md" role="alert">
