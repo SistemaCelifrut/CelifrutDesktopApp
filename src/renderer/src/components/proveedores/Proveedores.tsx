@@ -7,6 +7,7 @@ import { proveedoresType, serverResponse } from "./type/type";
 import TableProveedores from "./table/TableProveedores";
 import IngresarProveedor from "./forms/IngresarProveedor";
 import { predioInicial } from "./functions/functions";
+import NavBarProveedores from "./utils/NavBarProveedores";
 
 export default function Proveedores(): JSX.Element {
     const theme = useContext(themeContext)
@@ -60,6 +61,9 @@ export default function Proveedores(): JSX.Element {
     }
     return (
         <div className="p-1">
+            <div>
+                <NavBarProveedores />
+            </div>
             <div className="flex justify-center mt-3 text-2xl font-bold">
                 <h2 className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>Proveedores</h2>
             </div>
