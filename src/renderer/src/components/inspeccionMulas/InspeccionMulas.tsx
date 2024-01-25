@@ -7,7 +7,7 @@ import { useState } from 'react'
 
 
 export default function InspeccionMulas(): JSX.Element {
-  const [filtro, setFiltro] = useState<string>('')
+  const [, setFiltro] = useState<string>('')
   const [seccion, setSeccion] = useState<string>('Formulario Mulas')
 
   const handleFilter = (data: string): void => {

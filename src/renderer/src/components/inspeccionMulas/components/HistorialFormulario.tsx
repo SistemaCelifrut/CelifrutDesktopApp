@@ -10,7 +10,8 @@ const TuComponente: React.FC = () => {
   const [filtroTipoFruta, setFiltroTipoFruta] = useState<string>('');
   const [fechaInicio, setFechaInicio] = useState<Date | null>(null);
   const [fechaFin, setFechaFin] = useState<Date | null>(null);
-  const theme = useContext(themeContext)
+  const theme = useContext(themeContext);
+
   useEffect(() => {
     const obtenerHistorialData = async () => {
       try {
@@ -88,6 +89,7 @@ const TuComponente: React.FC = () => {
             <option value="">Todos</option>
             <option value="Naranja">Naranja</option>
             <option value="Limon">Limon</option>
+            <option value="Mixto">Mixto</option>
           </select>
         </div>
         <div className="mb-4 md:mr-4">
@@ -173,4 +175,3 @@ const TuComponente: React.FC = () => {
 };
 
 export default TuComponente;
-

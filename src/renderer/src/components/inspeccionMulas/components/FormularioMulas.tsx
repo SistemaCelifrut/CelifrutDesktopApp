@@ -5,7 +5,6 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { themeContext } from '@renderer/App';
 
-
 const InspeccionFormulario: React.FC = () => {
   const [state, setState] = useState(generarEstadoInicial());
   const theme = useContext (themeContext)
@@ -22,11 +21,11 @@ const InspeccionFormulario: React.FC = () => {
   };
   
   
-  const [conductorHistory, setConductorHistory] = useState<string[]>(getHistorialDesdeLocalStorage('conductor'));
-  const [empresaTransportadoraHistory, setEmpresaTransportadoraHistory] = useState<string[]>(getHistorialDesdeLocalStorage('empresaTransportadora'));
+  const [conductorHistory] = useState<string[]>(getHistorialDesdeLocalStorage('conductor'));
+  const [empresaTransportadoraHistory] = useState<string[]>(getHistorialDesdeLocalStorage('empresaTransportadora'));
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string>('');
-  const [successMessage, setSuccessMessage] = useState<string>('');
+  const [, setErrorMessage] = useState<string>('');
+  const [, setSuccessMessage] = useState<string>('');
 
   function generarEstadoInicial() {
     return {
@@ -82,7 +81,6 @@ const InspeccionFormulario: React.FC = () => {
   }, []);
 
   const MAX_HISTORIAL_LENGTH = 10;
-  const HISTORIAL_EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000; // 7 días en milisegundos
   
   const handleConductorChange = (e: React.FocusEvent<HTMLInputElement>) => {
     const newConductor = e.target.value;
@@ -124,12 +122,6 @@ const InspeccionFormulario: React.FC = () => {
     handleBlur('empresaTransportadora', e.target.value);
   };
 
-  const removeExpiredHistorial = (campo: string) => {
-    const historial = getHistorialDesdeLocalStorage(campo);
-    const now = new Date().getTime();
-    const newHistorial = historial.filter((item) => item.timestamp && now - item.timestamp <= HISTORIAL_EXPIRATION_TIME);
-    setHistorialEnLocalStorage(campo, newHistorial);
-  };
   
   const handleCriterioChange = (index: number, cumplimiento: 'C' | 'NC') => {
     setState((prev) => {
@@ -145,10 +137,6 @@ const InspeccionFormulario: React.FC = () => {
       nuevosCriterios[index].observaciones = observaciones;
       return { ...prev, criterios: nuevosCriterios };
     });
-  };
-
-  const handleTipoFrutaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setState((prev) => ({ ...prev, tipoFruta: e.target.value }));
   };
 
   const handleCumpleRequisitosChange = (value: string) => {
@@ -344,8 +332,6 @@ const InspeccionFormulario: React.FC = () => {
       ))}
   </select>
 </div>
-
-  
         {state.successMessage && (
           <div className="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md" role="alert">
             {state.successMessage}
@@ -436,8 +422,8 @@ const InspeccionFormulario: React.FC = () => {
     >
       Enviar
     </button>
-    
   )}
+
 </div>
       </form>
     </div>

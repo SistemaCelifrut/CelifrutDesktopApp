@@ -17,5 +17,6 @@ type infoContenedorType = {
     tipoFruta: string
     pesoCaja: object
     fechaSalida: string
-
+    fechaFinalizado: string
+    urlInforme: string
 }
