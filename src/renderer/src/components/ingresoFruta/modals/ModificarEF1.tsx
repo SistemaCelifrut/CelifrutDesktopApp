@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { themeContext } from '@renderer/App'
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 
 type vaciadoType = {
     closeModal: () => void
@@ -12,8 +12,6 @@ type vaciadoType = {
 
 export default function ModificarEF1(props: vaciadoType): JSX.Element {
     const theme = useContext(themeContext)
-    const [loading, setLoading] = useState<boolean>(false)
-    const [ef1, setEf1] = useState<string>('')
 
 
     return (
@@ -37,14 +35,12 @@ export default function ModificarEF1(props: vaciadoType): JSX.Element {
                 </div>
                 <div className="flex justify-center gap-4">
                     <button
-                        className={`flex items-center justify-center ${loading ? 'bg-blue-500' : 'bg-blue-600'} text-white rounded-md px-4 py-2`}
+                        className={`flex items-center justify-center bg-blue-600 text-white rounded-md px-4 py-2`}
                     
                     >
-                        {loading && <span className="loader"></span>}
                         Guardar
                     </button>
                     <button
-                        disabled={loading}
                         className={`border-2 border-gray-200 rounded-md px-4 py-2 ${theme === 'Dark' ? 'bg-slate-800 text-white' : 'bg-white text-black'} `}
                         onClick={props.closeModal}
                     >
