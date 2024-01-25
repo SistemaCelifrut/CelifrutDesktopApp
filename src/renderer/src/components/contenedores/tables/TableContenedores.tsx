@@ -26,7 +26,7 @@ export default function TableContenedores(props: propsType): JSX.Element {
   };
 
   const datosFiltrados = props.data
-    .filter((_, index) => index < props.cantidadMostrar) // Filtrar los primeros 'cantidadMostrar' datos
+    .filter((_, index) => index < props.cantidadMostrar)  
     .filter(contenedor => {
       return (
         contenedor._id.toString().includes(props.filtroContenedor) &&
@@ -62,8 +62,8 @@ export default function TableContenedores(props: propsType): JSX.Element {
               <td className="p-2 text-sm  text-center">{contenedor._id}</td>
               <td className="p-2 text-sm  text-center">{contenedor.infoContenedor.nombreCliente}</td>
               <td className="p-2 text-sm  text-center">{formatFecha(contenedor.infoContenedor.fechaCreacion)}</td>
-              <td className="p-2 text-sm  text-center">{formatFecha(contenedor.infoContenedor.fechaSalida)}</td>
               <td className="p-2 text-sm  text-center">{formatFecha(contenedor.infoContenedor.fechaFinalizado)}</td>
+              <td className="p-2 text-sm  text-center">{formatFecha(contenedor.infoContenedor.fechaSalida)}</td>
               <td className="p-2 text-sm  text-center">{contenedor.infoContenedor.tipoFruta}</td>
               <td className="p-2 text-sm  text-center">
                 <div className="flex justify-center items-center">

@@ -144,7 +144,7 @@ const InspeccionFormulario: React.FC = () => {
   };
 
   const handleContenedorChange = (contenedorId: string) => {
-    const contenedorSeleccionado = state.contenedores.find((contenedor) => contenedor._id === contenedorId);
+    const contenedorSeleccionado = (state.contenedores as any[]).find((contenedor) => contenedor._id === contenedorId);
     setState((prev) => ({ ...prev, numContenedor: contenedorId, contenedorSeleccionado }));
   };
 

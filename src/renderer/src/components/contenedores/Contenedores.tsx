@@ -42,7 +42,7 @@ export default function Contenedores(): JSX.Element {
           },
         };
         const response = await window.api.contenedores(request);
-  
+        console.log(response.data)
         if (response.status === 200) {
           setData(response.data);
           const clientesArray = response.data.map(contenedor => contenedor.infoContenedor.nombreCliente);
@@ -125,7 +125,7 @@ export default function Contenedores(): JSX.Element {
             </select>
           </div>
           <div className="flex flex-col">
-            <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm mb-1`}>Tipo de Fecha a Filtrar:</label>
+            <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm mb-1`}>Fechas:</label>
             <select
               value={tipoFechaFiltrar}
               onChange={(e) => setTipoFechaFiltrar(e.target.value)}
