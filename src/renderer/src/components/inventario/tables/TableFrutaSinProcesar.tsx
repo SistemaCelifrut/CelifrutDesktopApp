@@ -17,7 +17,7 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
         <HeaderTableFurtaSinProcesar theme={props.theme} />
       </div>
       <div className="grid grid-cols-9 gap-0 mt-0">
-        {props.table.map((lote, index) => (
+        {props.table.sort().map((lote, index) => (
           <React.Fragment key={lote._id}>
             <div
 

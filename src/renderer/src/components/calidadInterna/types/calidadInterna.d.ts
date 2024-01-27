@@ -21,3 +21,32 @@ export type stateUseReducerTypeCalidadInterna = {
   type: string
   data: string
 }
+
+export type dataHistorialCalidadInterna = {
+  _id: string
+  nombrePredio: string
+  tipoFruta: string
+  calidad: calidadHistorialType
+}
+
+type calidadHistorialType = {
+  calidadInterna: {
+    acidez:number
+    brix:number
+    peso:number
+    ratio:number
+    zumo:number
+    fecha: string
+  }
+}
+
+export type filtroType ={
+  tipoFruta: string
+  fechaIngreso: fechaIngresoType
+  cantidad: string
+}
+
+type fechaIngresoType = {
+  $gte: null | Date
+  $lt: null | Date
+}

@@ -14,3 +14,10 @@ export type proveedoresType = {
 }
 
 export type serverResponse<T> = { status: number; data: T }
+
+
+export type filtroTypes = {
+  predio: string[]
+  fechaInicio: string
+  fechaFin: string
+}

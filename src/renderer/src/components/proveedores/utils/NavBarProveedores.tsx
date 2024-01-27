@@ -16,17 +16,17 @@ export default function NavBarProveedores(props: propsType): JSX.Element {
       }
   return (
     <div
-    className={`w-[100%] h-16 flex justify-start items-center bg-Celifrut-green rounded-t-sm m-0 border-1 border-Celifrut-green-dark pl-5`}
+    className={`z-50 w-[100%] h-16 flex justify-start items-center bg-Celifrut-green rounded-t-sm m-0 border-1 border-Celifrut-green-dark pl-5`}
   >
-    <div className="flex justify-center flex-row items-center  hover:bg-Celifrut-green-dark rounded-full p-2">
+    <div className=" z-50 flex justify-center flex-row items-center  hover:bg-Celifrut-green-dark rounded-full p-2">
       <button className={` text-3xl text-white`} onClick={(): void => setIsOpen(!isOpen)}>
         <HiOutlineViewList />
       </button>
       </div>
-      <div className={``} onClick={(): void => setIsOpen(false)}>
+      <div className={`z-50`} onClick={(): void => setIsOpen(false)}>
       
       {isOpen && (
-        <div  className=" rounded-md shadow-lg  bg-white z-10 flex flex-col mt-28 ml-[-50px] overflow-hidden"
+        <div  className=" rounded-md shadow-lg  bg-white flex flex-col mt-28 ml-[-60px] overflow-hidden z-60"
         onClick={(e): void => e.stopPropagation()}>
                 <button
                 onClick={(): void => handleMenu('Proveedores')}

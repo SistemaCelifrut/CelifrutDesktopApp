@@ -1,28 +1,30 @@
 /* eslint-disable prettier/prettier */
-import { themeType } from '@renderer/env'
-import React, { useEffect, useState, useReducer } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import NavCalidadInternaForm from './utils/NavCalidadInternaForm'
-import ContenidoZumo from './components/ContenidoZumo'
-import { INITIAL_STATE, reducer } from './functions/reduce'
-import PruebasPlataforma from './components/PruebasPlataforma'
+import PruebasCalidadInterna from './components/PruebasCalidadInterna'
+import HistorialCalidadInterna from './components/HistorialCalidadInterna'
+import { themeContext } from '@renderer/App'
+import ErrorModal from '@renderer/errors/modal/ErrorModal'
+import SuccessModal from '@renderer/errors/modal/SuccessModal'
 
 
-type propsType = {
-  theme: themeType
-  user: string
-}
-
-export default function CalidadInterna(props: propsType): JSX.Element {
+export default function CalidadInterna(): JSX.Element {
+  const theme = useContext(themeContext)
   const [lotesData, setLotesData] = useState([])
   const [lote, setLote] = useState<string>('')
-  const [mensajeGuardado, setMensajeGuardado] = useState('')
-  const [formulario, dispatch] = useReducer(reducer, INITIAL_STATE)
+  const [seccion, setSeccion] = useState<string>('Calidad interna')
+  const [showError, setShowError] = useState<boolean>(false)
+  const [showSuccess, setShowSuccess] = useState<boolean>(false)
+  const [message, setMessage] = useState<string>('')
 
-
+  const handleSectionSelect = (data: string): void => {
+    console.log(seccion)
+    setSeccion(data)
+  }
   useEffect(() => {
     const interval = async (): Promise<void> => {
       try {
-        const request = { action: 'obtenerLotesCalidadInterna', query:'proceso' }
+        const request = { action: 'obtenerLotesCalidadInterna', query: 'proceso' }
         const lotes = await window.api.calidad(request)
         setLotesData(lotes.data)
       } catch (e) {
@@ -31,79 +33,20 @@ export default function CalidadInterna(props: propsType): JSX.Element {
     }
     interval()
   }, [])
-
-  const handleChange = (data: React.ChangeEvent<HTMLInputElement>, action: string): void => {
-    if (action === 'semillas') {
-      dispatch({ type: action, data: String(data.target.checked) })
-    } else {
-      dispatch({ type: action, data: data.target.value })
-    }
-    console.log(formulario)
+  const closeModal = (): void => {
+    setShowError(false)
   }
-
-  const guardar = async (): Promise<void> => {
-    const requestLotes = {
-      action: 'guardarCalidadInterna',
-      query:'proceso',
-      data: {
-        lote: lote,
-        zumo: Number(formulario.zumo),
-        peso: Number(formulario.pesoInicial),
-        brix: (Number(formulario.brix1) + Number(formulario.brix2) + Number(formulario.brix3)) / 3,
-        acidez:
-          (Number(formulario.acidez1) + Number(formulario.acidez2) + Number(formulario.acidez3)) /
-          3,
-        semillas: Boolean(formulario.semillas),
-        ratio:
-          (Number(formulario.brix1) / Number(formulario.acidez1) +
-          Number(formulario.brix2) / Number(formulario.acidez2) +
-          Number(formulario.brix3) / Number(formulario.acidez3)) / 3
-      }
-    }
-    await window.api.calidad(requestLotes)
-    const requestLotes2 = { action: 'obtenerLotesCalidadInterna', query:'proceso' }
-    const datos = await window.api.calidad(requestLotes2)
-    console.log(datos);
-    setLotesData(datos.data)
-
-    setMensajeGuardado('Los datos se han guardado correctamente')
-
-    setTimeout(() => {
-      dispatch({ type: 'restablecer', data: '' })
-      setMensajeGuardado('')
-    }, 2000)
-  }
-
   return (
-    <div>
-      <NavCalidadInternaForm lotesData={lotesData} setLote={setLote} />
-      <div className="flex flex-col justify-center items-center">
-        <ContenidoZumo
-          theme={props.theme}
-          user={props.user}
-          handleChange={handleChange}
-          formulario={formulario}
-        />
-
-        <PruebasPlataforma
-          theme={props.theme}
-          user={props.user}
-          handleChange={handleChange}
-          formulario={formulario}
-        />
-        {mensajeGuardado && (
-          <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-            {mensajeGuardado}
-          </p>
-        )}
-        <button
-          onClick={guardar}
-          className="bg-orange-600 text-white border-none px-4 py-2 rounded-md mb-5 active:bg-orange-900 m-5"
-        >
-          Guardar
-        </button>
+    <div className='flex flex-col gap-4 p-2'>
+      <NavCalidadInternaForm lotesData={lotesData} setLote={setLote} handleSectionSelect={handleSectionSelect} />
+      <div>
+        {seccion === 'Calidad interna' && <PruebasCalidadInterna lote={lote} setLotesData={setLotesData} />}
+        {seccion === 'Historial Calidad interna' && <HistorialCalidadInterna setMessage={setMessage} setShowError={setShowError} setShowSuccess={setShowSuccess}/>}
       </div>
-
+      <div className='fixed bottom-0 right-0 flex items-center justify-center'>
+        {showError && <ErrorModal message={message} closeModal={closeModal} theme={theme} />}
+        {showSuccess && <SuccessModal message={message} closeModal={closeModal} theme={theme} />}
+      </div>
     </div>
   )
 }
