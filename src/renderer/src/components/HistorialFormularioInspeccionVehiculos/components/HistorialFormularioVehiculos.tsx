@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { themeContext } from '@renderer/App';
 import { faCheckCircle, faTimesCircle, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
 interface Contenedor {
@@ -52,6 +53,7 @@ const EjemploComponente: React.FC = () => {
   const [fechaInicioFiltro, setFechaInicioFiltro] = useState<Date | null>(null);
   const [fechaFinFiltro, setFechaFinFiltro] = useState<Date | null>(null);
   const [expandedContenedor, setExpandedContenedor] = useState<string | null>(null);
+  const theme = useContext(themeContext);
 
   useEffect(() => {
     obtenerHistorialFormularioInspeccionVehiculos();
@@ -138,8 +140,8 @@ const EjemploComponente: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-semibold mb-4">Historial Formulario Vehiculos</h1>
+    <div className={`container mx-auto p-4 ${theme === 'Dark' ? 'dark' : ''}`}>
+      <h1 className={`text-3xl font-semibold mb-4 ${theme === 'Dark' ? 'text-white' : 'text-black'}`}>Historial Formulario Vehiculos</h1>
       <div className="flex mb-4">
         <input
           type="text"
@@ -162,31 +164,31 @@ const EjemploComponente: React.FC = () => {
         />
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full table-auto border-collapse border border-gray-200">
-          <thead className="bg-gray-100">
+        <table className={`min-w-full table-auto border-collapse border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>
+          <thead className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-gray-200'}`}>
             <tr>
-              <th className="py-2 px-3 text-left">Responsable</th>
-              <th className="py-2 px-3 text-left">Fecha</th>
-              <th className="py-2 px-3 text-left">Placa</th>
-              <th className="py-2 px-3 text-left">Lugar</th>
-              <th className="py-2 px-3 text-left">Tipo de Fruta</th>
-              <th className="py-2 px-3 text-left">Nombre del Conductor</th>
-              <th className="py-2 px-3 text-left">Calificación</th>
-              <th className="py-2 px-3 text-left">Detalles</th>
+              <th className="py-2 px-3 text-left w-1/8">Responsable</th>
+              <th className="py-2 px-3 text-left w-1/8">Fecha</th>
+              <th className="py-2 px-3 text-left w-1/8">Placa</th>
+              <th className="py-2 px-3 text-left w-1/8">Lugar</th>
+              <th className="py-2 px-3 text-left w-1/8">Tipo Fruta</th>
+              <th className="py-2 px-3 text-left w-1/8">Nombre del Conductor</th>
+              <th className="py-2 px-3 text-left w-1/8">Calificación</th>
+              <th className="py-2 px-3 text-left w-1/8">Detalles</th>
             </tr>
           </thead>
           <tbody>
             {contenedores.map((contenedor, index) => (
               <React.Fragment key={index}>
                 <tr className="cursor-pointer">
-                  <td className="py-2 px-3 border border-gray-200">{contenedor.responsable}</td>
-                  <td className="py-2 px-3 border border-gray-200">{format(new Date(contenedor.fecha), 'dd/MM/yyyy')}</td>
-                  <td className="py-2 px-3 border border-gray-200">{contenedor.placa}</td>
-                  <td className="py-2 px-3 border border-gray-200">{contenedor.lugar}</td>
-                  <td className="py-2 px-3 border border-gray-200">{contenedor.tipoFruta}</td>
-                  <td className="py-2 px-3 border border-gray-200">{contenedor.nombreConductor}</td>
-                  <td className="py-2 px-3 border border-gray-200">{contenedor.calificacion}</td>
-                  <td className="py-2 px-3 border border-gray-200">
+                  <td className={`py-2 px-3 border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>{contenedor.responsable}</td>
+                  <td className={`py-2 px-3 border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>{format(new Date(contenedor.fecha), 'dd/MM/yyyy')}</td>
+                  <td className={`py-2 px-3 border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>{contenedor.placa}</td>
+                  <td className={`py-2 px-3 border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>{contenedor.lugar}</td>
+                  <td className={`py-2 px-3 border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>{contenedor.tipoFruta}</td>
+                  <td className={`py-2 px-3 border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>{contenedor.nombreConductor}</td>
+                  <td className={`py-2 px-3 border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>{contenedor.calificacion}</td>
+                  <td className={`py-2 px-3 border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>
                     <button onClick={() => toggleExpansion(contenedor._id)} className="focus:outline-none">
                       {isContenedorExpanded(contenedor._id) ? (
                         <FontAwesomeIcon icon={faChevronUp} className="text-blue-500" />
@@ -200,10 +202,10 @@ const EjemploComponente: React.FC = () => {
                   <React.Fragment>
                     {Array.from({ length: 16 }, (_, i) => i + 1).map((index) => (
                       <tr key={index}>
-                        <td colSpan={4} className="py-2 px-3 border border-gray-200">
+                        <td colSpan={4} className={`py-2 px-3 border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>
                           <strong>{getCriterioNombre(index)}:</strong> {renderizarIcono(contenedor[`criterio${index}`])}
                         </td>
-                        <td colSpan={4} className="py-2 px-3 border border-gray-200">
+                        <td colSpan={4} className={`py-2 px-3 border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>
                           <strong>Observación:</strong> {contenedor[`observaciones${index}`]}
                         </td>
                       </tr>
@@ -217,8 +219,6 @@ const EjemploComponente: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default EjemploComponente;
-
-
+  };
+  
+  export default EjemploComponente;
