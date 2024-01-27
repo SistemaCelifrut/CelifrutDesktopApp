@@ -21,6 +21,7 @@ import VolanteCalidad from './components/volanteCalidad/VolanteCalidad'
 import Lotes from './components/lotes/Lotes'
 import Proveedores from './components/proveedores/Proveedores'
 import InspeccionMulas from './components/inspeccionMulas/InspeccionMulas'
+import HistorialVehiculos from './components/HistorialFormularioInspeccionVehiculos/HistorialVehiculos'
 import Contenedores from './components/contenedores/Contenedores'
 import ProbarFunciones from './components/probarFunciones/ProbarFunciones'
 
@@ -133,6 +134,7 @@ function App(): JSX.Element {
                     <InspeccionMulas />
                   )}
                   {section === 'Contenedores' && <Contenedores />}
+                  {section === 'Historial formulario inspeccion vehiculos' && <HistorialVehiculos />}
                   {section === 'probarFunciones' && <ProbarFunciones />}
 
                 </div>

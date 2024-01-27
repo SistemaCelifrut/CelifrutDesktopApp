@@ -19,7 +19,13 @@ export default function Contenedores(): JSX.Element {
   const [filtroFechaEntrada, setFiltroFechaEntrada] = useState<Date | null>(null);
   const [filtroFechaSalida, setFiltroFechaSalida] = useState<Date | null>(null);
   const [filtroFechaFinalizado, setFiltroFechaFinalizado] = useState<Date | null>(null);
-  const [cantidadMostrar, setCantidadMostrar] = useState<number>(50); // Nuevo estado para la cantidad de datos a mostrar
+  const [cantidadMostrar, setCantidadMostrar] = useState<number>(50);
+
+  const reiniciarFiltroFecha = () => {
+    setFiltroFechaEntrada(null);
+    setFiltroFechaSalida(null);
+    setFiltroFechaFinalizado(null);
+  };
 
   useEffect(() => {
     const obtenerDataContenedor = async (): Promise<void> => {
@@ -38,7 +44,7 @@ export default function Contenedores(): JSX.Element {
               salida: formattedFechaSalida,
               finalizado: filtroFechaFinalizado ? filtroFechaFinalizado.toISOString() : null,
             },
-            cantidad: cantidadMostrar // Agregar cantidadMostrar al filtro
+            cantidad: cantidadMostrar
           },
         };
         const response = await window.api.contenedores(request);
@@ -71,8 +77,7 @@ export default function Contenedores(): JSX.Element {
     };
   
     obtenerDataContenedor();
-  }, [filtroContenedor, filtroTipoFruta, filtroCliente, filtroFechaEntrada, filtroFechaSalida, filtroFechaFinalizado, cantidadMostrar]);
-  
+  }, [filtroContenedor, filtroTipoFruta, filtroFechaEntrada, filtroCliente, filtroFechaSalida, filtroFechaFinalizado, cantidadMostrar]);
 
   const closeModal = (): void => {
     setShowError(false);
@@ -128,7 +133,10 @@ export default function Contenedores(): JSX.Element {
             <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm mb-1`}>Fechas:</label>
             <select
               value={tipoFechaFiltrar}
-              onChange={(e) => setTipoFechaFiltrar(e.target.value)}
+              onChange={(e) => {
+                setTipoFechaFiltrar(e.target.value);
+                reiniciarFiltroFecha();
+              }}
               className="border p-2 rounded"
             >
               <option value="">Seleccionar Tipo de Fecha</option>
@@ -144,7 +152,7 @@ export default function Contenedores(): JSX.Element {
                 type="date"
                 value={
                   tipoFechaFiltrar === 'finalizado' ? (filtroFechaFinalizado ? filtroFechaFinalizado.toISOString().split('T')[0] : '') :
-                  tipoFechaFiltrar === 'creacion' ? (filtroFechaEntrada ? filtroFechaEntrada.toISOString().split('T')[0] : '') :
+                  tipoFechaFiltrar === 'creacion' ? (filtroFechaEntrada ? filtroFechaEntrada.toISOString().split('T')[1] : '') :
                   tipoFechaFiltrar === 'salida' ? (filtroFechaSalida ? filtroFechaSalida.toISOString().split('T')[0] : '') : ''
                 }
                 onChange={(e) => {
@@ -179,16 +187,16 @@ export default function Contenedores(): JSX.Element {
         </div>
       </div>
       <TableContenedores
-  data={data}
-  filtroContenedor={filtroContenedor}
-  filtroTipoFruta={filtroTipoFruta}
-  filtroCliente={filtroCliente}
-  filtroFechaEntrada={filtroFechaEntrada}
-  filtroFechaSalida={filtroFechaSalida}
-  filtroFechaFinalizado={filtroFechaFinalizado}
-  cantidadMostrar={cantidadMostrar}
-  clientes={clientes}
-/>
+        data={data}
+        filtroContenedor={filtroContenedor}
+        filtroTipoFruta={filtroTipoFruta}
+        filtroCliente={filtroCliente}
+        filtroFechaEntrada={filtroFechaEntrada}
+        filtroFechaSalida={filtroFechaSalida}
+        filtroFechaFinalizado={filtroFechaFinalizado}
+        cantidadMostrar={cantidadMostrar}
+        clientes={clientes}
+      />
       <div className='fixed bottom-0 right-0 flex items-center justify-center'>
         {showError && <ErrorModal message={message} closeModal={closeModal} theme={theme} />}
         {showSuccess && <SuccessModal message="Datos obtenidos exitosamente" closeModal={closeModal} theme={theme} />}

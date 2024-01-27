@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useState } from 'react'
+
 import { HiOutlineViewList } from 'react-icons/hi'
 
 type propsType = {
@@ -7,7 +8,7 @@ type propsType = {
   handleSectionSelect: (data: string) => void
 }
 
-export default function NavBarMulas(props: propsType): JSX.Element {
+export default function NavBarHistorial(props: propsType): JSX.Element {
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const handleMenu = (data: string): void => {
@@ -31,13 +32,7 @@ export default function NavBarMulas(props: propsType): JSX.Element {
               onClick={(e): void => e.stopPropagation()}
             >
               <button
-                onClick={(): void => handleMenu('Formulario Mulas')}
-                className="pb-1 hover:bg-slate-400"
-              >
-                Formulario Mulas
-              </button>
-              <button
-                onClick={(): void => handleMenu('Historial Formulario')}
+                onClick={(): void => handleMenu('Historial Formulario Vehiculos')}
                 className="pb-1  hover:bg-slate-400"
               >
                 Historial Formulario
@@ -47,6 +42,7 @@ export default function NavBarMulas(props: propsType): JSX.Element {
         )}
       </div>
       <div className="flex justify-center">
+
       </div>
     </div>
   )

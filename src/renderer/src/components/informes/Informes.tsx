@@ -1,8 +1,8 @@
-/* eslint-disable prettier/prettier */
-
 import { useContext, useEffect, useState } from "react";
 import { informesCalidadType } from "./types/types";
 import { themeContext } from "@renderer/App";
+import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function Informes(): JSX.Element {
   const theme = useContext(themeContext);
@@ -46,24 +46,23 @@ export default function Informes(): JSX.Element {
   const handleAccederDocumento = (enlace): void => {
     window.open(enlace, '_blank');
   };
-    return (
+
+  return (
     <div className="m-2 flex flex-col justify-center">
       <h2 className={`bg-Celifrut-green text-center p-4 rounded-md shadow-md text-white font-bold`}>
         📊 INFORMES 📊
       </h2>
       <div className="flex justify-center">
-      <input
-        type="text"
-        value={filtro}
-        onChange={(e): void => setFiltro(e.target.value)}
-        placeholder="Buscador ..."
-        className={`flex justify-center m-4 border-solid border-2 border-blue-200 rounded-lg p-2 w-2/4
+        <input
+          type="text"
+          value={filtro}
+          onChange={(e): void => setFiltro(e.target.value)}
+          placeholder="Buscador ..."
+          className={`flex justify-center m-4 border-solid border-2 border-blue-200 rounded-lg p-2 w-2/4
                     ${theme === 'Dark' ? 'bg-slate-950 text-white text-lg' : ''}`}
-      />
+        />
       </div>
-      <table
-      className={`mr-2 ml-2 w-full mt-4 border-2 table-fixed`}
-      >
+      <table className={`mr-2 ml-2 w-full mt-4 border-2 table-fixed`}>
         <thead className={`${theme === 'Dark' ? 'bg-slate-700' : 'bg-slate-200'}`}>
           <tr className="h-14 broder-2">
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} w-1/4`}>📦 ENF</th>
@@ -74,10 +73,7 @@ export default function Informes(): JSX.Element {
         </thead>
         <tbody>
           {datosFiltrados.map((item, index) => (
-            <tr
-            className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'}`}
-              key={index}
-            >
+            <tr className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'}`} key={index}>
               <td className="p-2 text-sm w-1/4 text-center">{item._id}</td>
               <td className="p-2 text-sm w-1/4 text-center">{item.nombrePredio}</td>
               <td className="p-2 text-sm w-1/4 text-center">{item.tipoFruta}</td>
@@ -93,7 +89,7 @@ export default function Informes(): JSX.Element {
                   }}
                   onClick={(): void => handleAccederDocumento(item.urlInformeCalidad)}
                 >
-                  Documento
+                  <FontAwesomeIcon icon={faFileAlt} />
                 </button>
               </td>
             </tr>
@@ -103,5 +99,4 @@ export default function Informes(): JSX.Element {
     </div>
   );
 };
-
 

@@ -32,6 +32,7 @@ export default function SideBar(props: propsType): JSX.Element {
                   >
                     {permiso}
                   </button>
+                  <hr></hr>
                 </div>
               </li>
             

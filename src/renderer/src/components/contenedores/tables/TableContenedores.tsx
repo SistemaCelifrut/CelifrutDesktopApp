@@ -12,8 +12,8 @@ type propsType = {
   filtroTipoFruta: string;
   filtroCliente: string;
   filtroFechaEntrada: Date | null;
-  filtroFechaSalida: Date | null;
   filtroFechaFinalizado: Date | null;
+  filtroFechaSalida: Date | null;
   clientes: string[];
   cantidadMostrar: number;
 }
@@ -38,6 +38,7 @@ export default function TableContenedores(props: propsType): JSX.Element {
       );
     });
 
+  console.log("los datos son:", datosFiltrados);
   return (
     <div>
       <table className={`mr-2 ml-2 w-full mt-4 border-2 table-fixed`}>
@@ -46,8 +47,8 @@ export default function TableContenedores(props: propsType): JSX.Element {
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm`}>Contenedor</th>
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm`}>Cliente</th>
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm`}>Fecha de creación</th>
-            <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm`}>Fecha de salida</th>
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm`}>Fecha de finalizado</th>
+            <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm`}>Fecha de salida</th>
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm`}>Tipo de fruta</th>
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm`}>Informe</th>
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm`}>Cerrado</th>
@@ -69,7 +70,7 @@ export default function TableContenedores(props: propsType): JSX.Element {
                 <div className="flex justify-center items-center">
                   {contenedor.infoContenedor.urlInforme ? (
                     <a href={contenedor.infoContenedor.urlInforme} target="_blank" rel="noopener noreferrer">
-                      <FaFileAlt color="blue" />
+                      <FaFileAlt color="green" />
                     </a>
                   ) : (
                     <FcCancel />
@@ -80,6 +81,7 @@ export default function TableContenedores(props: propsType): JSX.Element {
               <td className="p-2 text-sm"><div className="flex justify-center items-center">{contenedor.infoContenedor.desverdizado ? <FcOk /> : <FcCancel />}</div></td>
             </tr>
           ))}
+          
         </tbody>
       </table>
     </div>
