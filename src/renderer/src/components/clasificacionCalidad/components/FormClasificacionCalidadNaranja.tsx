@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-import { themeType } from '@renderer/env'
 import { useContext } from 'react'
 import TarjetaItemCLasificacionCalidad from '../utils/TarjetaItemCLasificacionCalidad'
 import { formNaranjaContext } from './TablaClasificacionCalidad'

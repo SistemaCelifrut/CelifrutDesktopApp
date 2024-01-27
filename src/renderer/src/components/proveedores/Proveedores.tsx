@@ -12,8 +12,8 @@ export default function Proveedores(): JSX.Element {
     const theme = useContext(themeContext)
     const [seccion, setSeccion] = useState<string>('Proveedores')
     const [showError, setShowError] = useState<boolean>(false)
-    const [showSuccess, setShowSuccess] = useState<boolean>(false)
-    const [message, setMessage] = useState<string>('')
+    const [showSuccess, ] = useState<boolean>(false)
+    const [message, ] = useState<string>('')
 
     const handleSectionSelect = (data: string): void => {
         console.log(seccion)
@@ -29,7 +29,7 @@ export default function Proveedores(): JSX.Element {
             </div>
             <div className="z-0">
                 {seccion === "Proveedores" && <ProveedoresLista />}
-                {seccion === "infoPredios" && <InfoPredios setMessage={setMessage} setShowError={setShowError} setShowSuccess={setShowSuccess}/>}
+                {seccion === "infoPredios" && <InfoPredios />}
 
             </div>
             <div className='fixed bottom-0 right-0 flex items-center justify-center'>
