@@ -84,8 +84,8 @@ function App(): JSX.Element {
 
   return (
     <main
-      className={`${isLogin ? section === 'main' &&  !showSideBar ? 'h-full' : 'h-full overflow-auto min-h-screen' : 'h-screen'}
-       justify-start w-screen ${
+      className={`${isLogin ? section === 'main' &&  !showSideBar ? 'h-full' : 'h-full  min-h-screen' : 'h-screen'}
+       justify-start w-full  ${
          theme === 'Dark' ? 'bg-gray-800 shadow-white' : 'bg-white shadow-lg'
        }`}
     >

@@ -63,7 +63,7 @@ export default function ListaClientes(props: propsType): JSX.Element {
             </div>
             <div className="mt-2">
                 {showFormulario ? 
-                <FormatoAgregarCliente />:
+                <FormatoAgregarCliente setShowFormulario={setShowFormulario} />:
                 <TableListaClientes data={data} />}
             </div>
         </div>
