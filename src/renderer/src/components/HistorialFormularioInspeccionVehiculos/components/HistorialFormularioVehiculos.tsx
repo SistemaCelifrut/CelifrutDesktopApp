@@ -48,29 +48,38 @@ interface Contenedor {
 
 const EjemploComponente: React.FC = () => {
   const [contenedores, setContenedores] = useState<Contenedor[]>([]);
+  const [placaFiltro, setPlacaFiltro] = useState<string>('');
+  const [fechaInicioFiltro, setFechaInicioFiltro] = useState<Date | null>(null);
+  const [fechaFinFiltro, setFechaFinFiltro] = useState<Date | null>(null);
   const [expandedContenedor, setExpandedContenedor] = useState<string | null>(null);
 
   useEffect(() => {
-    const obtenerHistorialFormularioInspeccionVehiculos = async () => {
-      try {
-        const request = {
-          action: 'obtenerHistorialFormularioInspeccionVehiculos',
-        };
-
-        const response = await window.api.proceso(request);
-
-        if (response.status === 200 && response.data) {
-          setContenedores(response.data);
-        } else {
-          console.error('Error al obtener los datos:', response);
-        }
-      } catch (error) {
-        console.error('Error al realizar la petición:', error);
-      }
-    };
-
     obtenerHistorialFormularioInspeccionVehiculos();
-  }, []);
+  }, [placaFiltro, fechaInicioFiltro, fechaFinFiltro]);
+
+  const obtenerHistorialFormularioInspeccionVehiculos = async () => {
+    try {
+      const request = {
+        action: 'obtenerHistorialFormularioInspeccionVehiculos',
+        fechaInicio: fechaInicioFiltro,
+        fechaFin: fechaFinFiltro
+      };
+
+      const response = await window.api.proceso(request);
+
+      if (response.status === 200 && response.data) {
+        let contenedoresFiltrados = response.data;
+        if (placaFiltro) {
+          contenedoresFiltrados = contenedoresFiltrados.filter(contenedor => contenedor.placa === placaFiltro);
+        }
+        setContenedores(contenedoresFiltrados);
+      } else {
+        console.error('Error al obtener los datos:', response);
+      }
+    } catch (error) {
+      console.error('Error al realizar la petición:', error);
+    }
+  };
 
   const renderizarIcono = (valor: string) => {
     if (valor === 'C') {
@@ -89,9 +98,69 @@ const EjemploComponente: React.FC = () => {
     return expandedContenedor === contenedorId;
   };
 
+  const getCriterioNombre = (index: number) => {
+    switch (index) {
+      case 1:
+        return "Lona o Malla Antitrips";
+      case 2:
+        return "Estado de la Carrocería y Carpa";
+      case 3:
+        return "Estado del Piso del Vehículo";
+      case 4:
+        return "Piso del Vehículo Limpio";
+      case 5:
+        return "Cumplimiento de Horarios del Conductor";
+      case 6:
+        return "Vehículo Llega Completamente Carpado";
+      case 7:
+        return "Vehículo Llega con Precintos Asignados";
+      case 8:
+        return "Cumplimiento de Resguardo Estipulado";
+      case 9:
+        return "Procedimientos de Limpieza y Desinfección";
+      case 10:
+        return "Vehículo Libre de Plagas";
+      case 11:
+        return "Vehículo Libre de Olores Extraños";
+      case 12:
+        return "Vehículo Libre de Otros Insumos";
+      case 13:
+        return "Estado de Limpieza de Canastillas";
+      case 14:
+        return "Cumplimiento del Llenado de Fruta";
+      case 15:
+        return "Cumplimiento de Parámetros de Calidad";
+      case 16:
+        return "Entrega de Remisión de Carga";
+      default:
+        return `Criterio ${index}`;
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-semibold mb-4">Tabla de Contenedores</h1>
+      <h1 className="text-3xl font-semibold mb-4">Historial Formulario Vehiculos</h1>
+      <div className="flex mb-4">
+        <input
+          type="text"
+          placeholder="Placa"
+          value={placaFiltro}
+          onChange={(e) => setPlacaFiltro(e.target.value)}
+          className="p-2 mr-2 border border-gray-300"
+        />
+        <input
+          type="date"
+          value={fechaInicioFiltro ? fechaInicioFiltro.toISOString().split('T')[0] : ''}
+          onChange={(e) => setFechaInicioFiltro(e.target.value ? new Date(e.target.value + 'T00:00:00') : null)}
+          className="p-2 mr-2 border border-gray-300"
+        />
+        <input
+          type="date"
+          value={fechaFinFiltro ? fechaFinFiltro.toISOString().split('T')[0] : ''}
+          onChange={(e) => setFechaFinFiltro(e.target.value ? new Date(e.target.value + 'T23:59:59') : null)}
+          className="p-2 border border-gray-300"
+        />
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto border-collapse border border-gray-200">
           <thead className="bg-gray-100">
@@ -103,7 +172,7 @@ const EjemploComponente: React.FC = () => {
               <th className="py-2 px-3 text-left">Tipo de Fruta</th>
               <th className="py-2 px-3 text-left">Nombre del Conductor</th>
               <th className="py-2 px-3 text-left">Calificación</th>
-              <th className="py-2 px-3 text-left">Detalles</th> {/* Columna para botones de detalles */}
+              <th className="py-2 px-3 text-left">Detalles</th>
             </tr>
           </thead>
           <tbody>
@@ -132,10 +201,10 @@ const EjemploComponente: React.FC = () => {
                     {Array.from({ length: 16 }, (_, i) => i + 1).map((index) => (
                       <tr key={index}>
                         <td colSpan={4} className="py-2 px-3 border border-gray-200">
-                          <strong>Criterio {index}:</strong> {renderizarIcono(contenedor[`criterio${index}`])}
+                          <strong>{getCriterioNombre(index)}:</strong> {renderizarIcono(contenedor[`criterio${index}`])}
                         </td>
                         <td colSpan={4} className="py-2 px-3 border border-gray-200">
-                          <strong>Observación {index}:</strong> {contenedor[`observaciones${index}`]}
+                          <strong>Observación:</strong> {contenedor[`observaciones${index}`]}
                         </td>
                       </tr>
                     ))}
@@ -151,8 +220,5 @@ const EjemploComponente: React.FC = () => {
 };
 
 export default EjemploComponente;
-
-
-
 
 
