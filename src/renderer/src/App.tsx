@@ -24,6 +24,7 @@ import InspeccionMulas from './components/inspeccionMulas/InspeccionMulas'
 import HistorialVehiculos from './components/HistorialFormularioInspeccionVehiculos/HistorialVehiculos'
 import Contenedores from './components/contenedores/Contenedores'
 import ProbarFunciones from './components/probarFunciones/ProbarFunciones'
+import Clientes from './components/clientes/Clientes'
 
 export const themeContext = createContext<themeType>('Ligth')
 export const userContext = createContext<userType>({
@@ -83,7 +84,7 @@ function App(): JSX.Element {
 
   return (
     <main
-      className={`${section === 'main' ? 'h-screen ' : 'h-screen overflow-auto'}
+      className={`${isLogin ? section === 'main' &&  !showSideBar ? 'h-full' : 'h-full overflow-auto min-h-screen' : 'h-screen'}
        justify-start w-screen ${
          theme === 'Dark' ? 'bg-gray-800 shadow-white' : 'bg-white shadow-lg'
        }`}
@@ -104,7 +105,7 @@ function App(): JSX.Element {
                 <div className="col-span-12">
                   <NavBar theme={theme} changeTheme={changeTheme} />
                 </div>
-                <div className={`transition-all ease-in-out duration-1000 ${showSideBar ? 'col-span-2': 'w-2'}`}>
+                <div className={`transition-all ease-in-out duration-500 ${showSideBar ? 'col-span-2': 'w-2'}`}>
                   <SideBar seleccionWindow={seleccionWindow} handleSideBarWidth={handleSideBarWidth} showSideBar={showSideBar} />
                 </div>
                 <div className={`overflow-auto  ${showSideBar ? 'col-span-10 ': 'col-span-11 '}`}>
@@ -118,12 +119,8 @@ function App(): JSX.Element {
                   {section === 'Lista de empaque' && (
                     <ListaDeEmpaque theme={theme} user={user.user} />
                   )}
-                  {section === 'Calidad interna' && (
-                    <CalidadInterna theme={theme} user={user.user} />
-                  )}
-                  {section === 'Clasificacion calidad' && (
-                    <ClasificacionCalidad theme={theme} user={user.user} />
-                  )}
+                  {section === 'Calidad interna' && <CalidadInterna />}
+                  {section === 'Clasificacion calidad' && <ClasificacionCalidad  />}
                   {section === 'Formatos' && <Formatos />}
                   {section === 'Informes' && <Informes />}
                   {section === 'Crear cuenta' && <CrearCuenta />}
@@ -135,6 +132,7 @@ function App(): JSX.Element {
                   )}
                   {section === 'Contenedores' && <Contenedores />}
                   {section === 'Historial formulario inspeccion vehiculos' && <HistorialVehiculos />}
+                  {section === 'Clientes' && <Clientes />}
                   {section === 'probarFunciones' && <ProbarFunciones />}
 
                 </div>
