@@ -3,14 +3,19 @@
 import { themeContext } from "@renderer/App"
 import { useContext } from "react"
 
-export default function SelectPaises():JSX.Element {
+type propsType = {
+  setPais: (e) => void
+  pais: string
+}
+
+export default function SelectPaises(props:propsType):JSX.Element {
     const theme = useContext(themeContext)
   return (
     <div>
 
         <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} flex flex-col gap-1 mt-2`}>     
                     Pais destino
-        <select id="country" name="country" className="rounded-lg p-1 text-black border-solid border-2 border-Celifrut-green">
+        <select onChange={(e): void => props.setPais(e.target.value)} value={props.pais} id="country" name="country" className="rounded-lg p-1 text-black border-solid border-2 border-Celifrut-green">
             <option value="">Paises</option>
             <option value="Afghanistan">Afghanistan</option>
             <option value="Åland Islands">Åland Islands</option>

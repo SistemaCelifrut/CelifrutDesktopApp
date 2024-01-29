@@ -14,6 +14,7 @@ export default function Clientes(): JSX.Element {
     const [showSuccess, setShowSuccess] = useState<boolean>(false)
     const [message, setMessage] = useState<string>('')
 
+
     const handleSectionSelect = (data: string): void => {
         setSeccion(data)
     }

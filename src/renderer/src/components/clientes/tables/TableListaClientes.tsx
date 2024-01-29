@@ -8,6 +8,8 @@ import { RiDeleteBin5Fill } from "react-icons/ri";
 
 type propsType = {
     data: clientesType[]
+    eliminarCliente: (e) => void
+    modificarCliente: (e) => void
 }
 
 export default function TableListaClientes(props: propsType): JSX.Element {
@@ -39,8 +41,8 @@ export default function TableListaClientes(props: propsType): JSX.Element {
                             <td className="p-2 text-xs  text-center overflow-hidden">{cliente.ID}</td>
                             <td className="p-2 text-ms ">
                                 <div className="flex flex-row gap-4 justify-center items-center">
-                                    <div className="text-blue-700 cursor-pointer hover:font-bold"><PiNotePencilDuotone /></div>
-                                    <div className="text-red-600 cursor-pointer hover:font-bold"><RiDeleteBin5Fill /></div>
+                                    <div className="text-blue-700 cursor-pointer hover:font-bold" onClick={(): void => props.modificarCliente(cliente)}><PiNotePencilDuotone /></div>
+                                    <div className="text-red-600 cursor-pointer hover:font-bold" onClick={():void => props.eliminarCliente(cliente._id)}><RiDeleteBin5Fill /></div>
                                 </div>
                             </td>
                         </tr>
