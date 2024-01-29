@@ -206,7 +206,7 @@ export default function IngresarProveedor(props: propsType): JSX.Element {
                     </label>
                 </div>
                 <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} flex flex-col gap-1 mt-2`}>
-                    Documentos (Pdf)
+                    Documentos (PDF)
                     <input multiple onChange={handleFileChange} type="file" className={`rounded-lg p-1 ${theme === 'Dark' ? 'text-white' : 'text-black'}`} />
                 </label>
                 <div className="flex flex-row gap-4 justify-end">

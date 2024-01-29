@@ -77,7 +77,7 @@ export default function TableProveedores(props: propsType): JSX.Element {
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-xs w-10`}>L</th>
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-xs w-10`}>M</th>
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-xs w-auto`}>Departamento</th>
-            <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-xs w-auto`}>proveedores</th>
+            <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-xs w-auto`}>Proveedores</th>
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm w-auto`}>GGN</th>
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm w-auto`}>Fecha de vencimiento GGN</th>
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm w-auto`}>Acciones</th>
