@@ -13,7 +13,8 @@ function createWindow(): void {
     width: 900,
     height: 670,
     show: false,
-    autoHideMenuBar: false,
+    autoHideMenuBar: true,
+    fullscreen: true,
 
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -50,7 +51,7 @@ function createWindow(): void {
   socket.on('listaEmpaqueInfo', (data) => {
     console.log(data)
     if (data.status === 200) mainWindow.webContents.send('listaEmpaqueInfo', data)
-    if (cargo === 'auxiliar_lista_de_empaque' || cargo === 'admin') {
+    if (cargo === 'auxiliar_lista_de_empaque') {
       if (data.imprimir) {
         const child = utilityProcess.fork(join(__dirname, 'imprimir.js'))
         child.postMessage({

@@ -19,7 +19,7 @@ export default function SideBar(props: propsType): JSX.Element {
         theme === 'Dark' ? 'bg-primary shadow-white' : 'bg-white shadow-lg'
       } text-sm h-full relative`}
     >
-      <div className="mx-auto px-2 py-2 flex justify-between items-center h-max min-h-screen ml-0">
+      <div className="mx-auto px-2 py-2 flex justify-between h-max min-h-screen ml-0">
         {props.showSideBar ?
         <ul className="transition-all ease-in-out duration-500 opacity-100 transform scale-100">
           {user.permisos.sort().map(permiso => (

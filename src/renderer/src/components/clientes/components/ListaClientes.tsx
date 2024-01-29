@@ -52,46 +52,7 @@ export default function ListaClientes(props: propsType): JSX.Element {
         setData(dataOriginal.filter(item => item.CLIENTE.toLowerCase().includes(filtro)))
         console.log(data)
     }, [filtro])
-    const eliminarCliente = async (id): Promise<void> => {
-        try{
-            console.log(id)
-            const request = {
-                action: "eliminarCliente",
-                data:id
-            }
-            const response = await window.api.contenedores(request);
-            if(response.status === 200){
-                const request = { action: 'obtenerClientes' }
-                const response = await window.api.contenedores(request)
-                if (response.status === 200) {
-                    setData(response.data)
-                } else {
-                    props.setShowError(true)
-                    props.setMessage("Error obteniendo los datos del servidor")
-                    setInterval(() => {
-                        props.setShowError(false)
-                    }, 5000)
-                }
-                props.setShowSuccess(true)
-                props.setMessage("Cliente eliminado con exito!")
-                setInterval(() => {
-                  props.setShowSuccess(false)
-                }, 5000)
-            } else {
-                props.setShowError(true)
-                props.setMessage("Error eliminando el cliente")
-                setInterval(() => {
-                    props.setShowError(false)
-                }, 5000)
-            }
-        } catch (e) {
-            props.setShowError(true)
-            props.setMessage("Error enviando los datos al servidor" + e)
-            setInterval(() => {
-                props.setShowError(false)
-            }, 5000)
-        }
-    }
+
     const modificarCliente = (data): void =>{
         setIsModify(true);
         setClienteSeleccionado(data)
@@ -127,9 +88,13 @@ export default function ListaClientes(props: propsType): JSX.Element {
                     setShowSuccess={props.setShowSuccess}
                     setShowFormulario={setShowFormulario} />:
                 <TableListaClientes 
+                    setClienteSeleccionado={setClienteSeleccionado}
+                    clienteSeleccionado={clienteSeleccionado}
                     data={data} 
-                    eliminarCliente={eliminarCliente}
-                    modificarCliente={modificarCliente} />}
+                    modificarCliente={modificarCliente}
+                    setMessage={props.setMessage} 
+                    setShowError={props.setShowError}
+                    setShowSuccess={props.setShowSuccess} />}
             </div>
         </div>
     )
