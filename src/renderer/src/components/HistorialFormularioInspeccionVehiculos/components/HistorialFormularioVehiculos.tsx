@@ -53,27 +53,43 @@ const EjemploComponente: React.FC = () => {
   const [fechaInicioFiltro, setFechaInicioFiltro] = useState<Date | null>(null);
   const [fechaFinFiltro, setFechaFinFiltro] = useState<Date | null>(null);
   const [expandedContenedor, setExpandedContenedor] = useState<string | null>(null);
+  const [nombreFiltro, setNombreFiltro] = useState<string>('');
+  const [cantidadDatos, setCantidadDatos] = useState<number | string>(''); // Valor predeterminado
+
   const theme = useContext(themeContext);
 
   useEffect(() => {
     obtenerHistorialFormularioInspeccionVehiculos();
-  }, [placaFiltro, fechaInicioFiltro, fechaFinFiltro]);
+  }, [placaFiltro, fechaInicioFiltro, fechaFinFiltro, nombreFiltro, cantidadDatos]);
 
   const obtenerHistorialFormularioInspeccionVehiculos = async () => {
     try {
+      // Normalizar la placa ingresada por el usuario a minúsculas
+      const placaFiltroNormalizada = placaFiltro.toLowerCase();
+      // Convertir el nombre del conductor a mayúsculas
+      const nombreConductorMayusculas = nombreFiltro.toUpperCase();
       const request = {
         action: 'obtenerHistorialFormularioInspeccionVehiculos',
         fechaInicio: fechaInicioFiltro,
-        fechaFin: fechaFinFiltro
+        fechaFin: fechaFinFiltro,
+        nombreConductor: nombreConductorMayusculas, // Enviar el nombre del conductor en mayúsculas
+        cantidad: cantidadDatos === '' ? '' : parseInt(cantidadDatos as string)
       };
-
+  
       const response = await window.api.proceso(request);
-
+  
       if (response.status === 200 && response.data) {
-        let contenedoresFiltrados = response.data;
-        if (placaFiltro) {
-          contenedoresFiltrados = contenedoresFiltrados.filter(contenedor => contenedor.placa === placaFiltro);
-        }
+        // Normalizar las placas en los datos recibidos del servidor a minúsculas
+        const contenedoresNormalizados = response.data.map(contenedor => ({
+          ...contenedor,
+          placa: contenedor.placa.toLowerCase()
+        }));
+  
+        // Filtrar los contenedores según la placa normalizada
+        const contenedoresFiltrados = contenedoresNormalizados.filter(contenedor =>
+          contenedor.placa.includes(placaFiltroNormalizada)
+        );
+  
         setContenedores(contenedoresFiltrados);
       } else {
         console.error('Error al obtener los datos:', response);
@@ -144,23 +160,42 @@ const EjemploComponente: React.FC = () => {
       <h1 className={`text-3xl font-semibold mb-4 ${theme === 'Dark' ? 'text-white' : 'text-black'}`}>Historial Formulario Vehiculos</h1>
       <div className="flex mb-4">
         <input
+          id="placaFiltro"
           type="text"
           placeholder="Placa"
           value={placaFiltro}
           onChange={(e) => setPlacaFiltro(e.target.value)}
           className="p-2 mr-2 border border-gray-300"
         />
+        <label htmlFor="fechaInicioFiltro" className={`${theme === 'Dark' ? 'bg-slate-800 text-white' : 'bg-white'} mr-1`}>Fecha Inicio:</label>
         <input
+          id="fechaInicioFiltro"
           type="date"
           value={fechaInicioFiltro ? fechaInicioFiltro.toISOString().split('T')[0] : ''}
           onChange={(e) => setFechaInicioFiltro(e.target.value ? new Date(e.target.value + 'T00:00:00') : null)}
           className="p-2 mr-2 border border-gray-300"
         />
+        <label htmlFor="fechaFinFiltro"className={`${theme === 'Dark' ? 'bg-slate-800 text-white' : 'bg-white'} mr-1`}>Fecha Fin:</label>
         <input
+          id="fechaFinFiltro"
           type="date"
           value={fechaFinFiltro ? fechaFinFiltro.toISOString().split('T')[0] : ''}
           onChange={(e) => setFechaFinFiltro(e.target.value ? new Date(e.target.value + 'T23:59:59') : null)}
-          className="p-2 border border-gray-300"
+          className="p-2 mr-3 border border-gray-300"
+        />
+        <input
+          type="text"
+          placeholder="Nombre Conductor"
+          value={nombreFiltro}
+          onChange={(e) => setNombreFiltro(e.target.value)}
+          className="p-2 mr-3 border border-gray-300"
+        />
+        <input
+          type="number"
+          placeholder="Cantidad de datos"
+          value={cantidadDatos || ''}
+          onChange={(e) => setCantidadDatos(e.target.value)}
+          className="p-2 mr-2 border border-gray-300"
         />
       </div>
       <div className="overflow-x-auto">
@@ -219,6 +254,5 @@ const EjemploComponente: React.FC = () => {
       </div>
     </div>
   );
-  };
-  
-  export default EjemploComponente;
+};
+export default EjemploComponente;
