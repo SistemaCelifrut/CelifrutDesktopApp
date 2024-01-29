@@ -111,7 +111,7 @@ export default function Lotes(): JSX.Element {
             </div>
             <div className="m-2">
                 <select className="rounded-lg p-2 border-solid border-2 border-blue-200 mt-2" onChange={(e): void => setTipoGraficas(e.target.value)}>
-                    <option value="">Tipo de graficas</option>
+                    <option value="">Tipo de gráficas</option>
                     <option value="barras">Grafica de barras</option>
                     <option value="lineal">Grafica lineal</option>
                     <option value="circular">Grafica circular</option>

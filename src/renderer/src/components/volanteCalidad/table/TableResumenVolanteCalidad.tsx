@@ -11,7 +11,7 @@ export default function TableResumenVolanteCalidad(props: propsType): JSX.Elemen
         <thead className={`bg-Celifrut-green-dark `} >
           <tr className="h-14 broder-2 ">
             <th className="text-white">Operario</th>
-            <th className="text-white">Porcentage total</th>
+            <th className="text-white">Porcentaje total</th>
           </tr>
         </thead>
         <tbody className="border-2">

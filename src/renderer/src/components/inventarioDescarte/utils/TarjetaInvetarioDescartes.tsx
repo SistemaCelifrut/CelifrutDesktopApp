@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+import { llavesVisualizar } from '../function/llaves'
 import { descarteType } from '../types/descartes'
 import { useEffect } from 'react'
 
@@ -76,7 +77,7 @@ export default function TarjetaInvetarioDescartes(props: propsType): JSX.Element
                   {props.lote.descarteLavado && Object.keys(props.lote.descarteLavado).map((item) => (
                     <div className={`flex flex-row gap-4 items-center`} key={item}>
                       <p>
-                        <span className={`font-bold`}> {item}:</span>{' '}
+                        <span className={`font-bold`}> {llavesVisualizar[item]}:</span>{' '}
                         {props.lote.descarteLavado[item]} Kg
                       </p>
                       <input
@@ -95,7 +96,7 @@ export default function TarjetaInvetarioDescartes(props: propsType): JSX.Element
                   {props.lote.descarteEncerado && Object.keys(props.lote.descarteEncerado).map((item) => (
                     <div className={`flex flex-row gap-4 items-center`} key={item}>
                       <p>
-                        <span className={`font-bold`}> {item}:</span>{' '}
+                        <span className={`font-bold`}> {llavesVisualizar[item]}:</span>{' '}
                         {props.lote.descarteEncerado[item]} Kg
                       </p>
                       <input

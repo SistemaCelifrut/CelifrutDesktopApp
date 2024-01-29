@@ -132,7 +132,7 @@ export default function CrearContenedor(): JSX.Element {
       <div className="col-span-2"></div>
       <div className="col-span-4 mt-3 mr-2">
         <label htmlFor="" className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          Numero de contenedor
+          Número de contenedor
         </label>
         <input
           value={numeroContenedor}
@@ -150,7 +150,7 @@ export default function CrearContenedor(): JSX.Element {
 
       <div className="col-span-4 mt-3">
         <label htmlFor="" className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          Numero de pallets
+          Número de pallets
         </label>
         <input
           value={pallets}

@@ -8,6 +8,7 @@ import {
 import { useEffect } from 'react'
 import { ImExit } from 'react-icons/im'
 import { RiRecycleFill } from 'react-icons/ri'
+import { llavesVisualizar } from '../function/llaves'
 
 type propsType = {
   theme: string
@@ -103,7 +104,7 @@ export default function BotonesInventarioDescartes(props: propsType): JSX.Elemen
                       className={`${props.theme === 'Dark' ? 'text-white' : 'texy-black'}`}
                       key={item}
                     >
-                      {item}: {sumatoriaDescarteEspecifico(props.table, 'descarteLavado', item)} Kg
+                      {llavesVisualizar[item]}: {sumatoriaDescarteEspecifico(props.table, 'descarteLavado', item)} Kg
                     </h4>
                   ))}
               </div>
@@ -123,7 +124,7 @@ export default function BotonesInventarioDescartes(props: propsType): JSX.Elemen
                       className={`${props.theme === 'Dark' ? 'text-white' : 'texy-black'}`}
                       key={item}
                     >
-                      {item}: {sumatoriaDescarteEspecifico(props.table, 'descarteEncerado', item).toFixed(2)}{' '}
+                      {llavesVisualizar[item]}: {sumatoriaDescarteEspecifico(props.table, 'descarteEncerado', item).toFixed(2)}{' '}
                       Kg
                     </h4>
                   ))}

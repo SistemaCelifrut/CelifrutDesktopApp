@@ -3,6 +3,7 @@ import { useContext } from "react"
 import { dataHistorialCalidadClasificacion } from "../types/clasificacionTypes"
 import { themeContext } from "@renderer/App"
 import { format } from "date-fns"
+import { INITIAL_STATE_LIMON, INITIAL_STATE_NARANJA } from "../functions/reduce"
 
 type propsType = {
     lote: dataHistorialCalidadClasificacion
@@ -27,7 +28,9 @@ export default function TarjetaHistorialClasificacionCalidad(props: propsType): 
                         if(item !== 'fecha'){
                             return(
                                 <div key={index + item} > 
-                                {item} : {props.lote.calidad.clasificacionCalidad[item]}
+                                {props.lote.tipoFruta === 'Naranja' ? 
+                                INITIAL_STATE_NARANJA.find(key => key.key === item)?.id : INITIAL_STATE_LIMON.find(key => key.key === item)?.id} 
+                                : {props.lote.calidad.clasificacionCalidad[item] }
                             </div>
                             )
                         }else{

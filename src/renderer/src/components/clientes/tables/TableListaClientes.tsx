@@ -9,6 +9,8 @@ import ModalConfirmarEliminarClientes from "../modals/ModalConfirmarEliminarClie
 
 type propsType = {
     data: clientesType[]
+    setData: (e) => void
+    setDataOriginal: (e) => void
     clienteSeleccionado: clientesType
     setClienteSeleccionado: (e) => void
     modificarCliente: (e) => void
@@ -23,17 +25,27 @@ export default function TableListaClientes(props: propsType): JSX.Element {
 
     const handleEliminar = async (e): Promise<void> => {
         try {
-            console.log(props.clienteSeleccionado)
             props.modificarCliente
          if(e){
             const request = {
                 action: "eliminarCliente",
                 data: props.clienteSeleccionado._id
             }
-            console.log(request)
 
             const response = await window.api.contenedores(request);
             if (response.status === 200) {
+                const request = { action: 'obtenerClientes' }
+                const response = await window.api.contenedores(request)
+                if (response.status === 200) {
+                    props.setData(response.data)
+                    props.setDataOriginal(response.data)
+                } else {
+                    props.setShowError(true)
+                    props.setMessage("Error obteniendo los datos del servidor")
+                    setInterval(() => {
+                        props.setShowError(false)
+                    }, 5000)
+                }
                 props.setShowSuccess(true)
                 props.setMessage("Cliente eliminado con exito!")
                 setInterval(() => {

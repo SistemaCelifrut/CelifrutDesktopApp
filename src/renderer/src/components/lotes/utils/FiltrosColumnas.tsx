@@ -3,6 +3,7 @@
 import { themeContext } from "@renderer/App";
 import { useContext } from "react";
 import { filtroColumnasType } from "../type/types";
+import { KEYS_FILTROS_COL } from "../functions/constantes";
 
 type propsType = {
     columnVisibility: filtroColumnasType
@@ -19,7 +20,7 @@ export default function FiltrosColumnas(props:propsType): JSX.Element {
             {Object.keys(props.columnVisibility).map(item => (
                 <label key={item} className={`flex flex-row gap-1 ${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
                     <input type="checkbox" value={item} onClick={props.handleChange}/>
-                    <p>{item}</p>
+                    <p>{KEYS_FILTROS_COL[item]}</p>
                 </label>
             ))}
         </div>

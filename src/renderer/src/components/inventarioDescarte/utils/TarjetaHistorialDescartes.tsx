@@ -5,6 +5,7 @@ import { sumatoriaHistorialDescartes } from '../function/sumatorias'
 import { ImNext2 } from 'react-icons/im'
 import { ImPrevious2 } from 'react-icons/im'
 import { useState } from 'react'
+import { llavesVisualizar } from '../function/llaves'
 
 type propsType = {
   theme: string
@@ -63,7 +64,7 @@ export default function TarjetaHistorialDescartes(props: propsType): JSX.Element
                   Kilos:
                 </h2>
                 <h2 className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-sm`}>
-                  {sumatoriaHistorialDescartes(props.lote)} Kg
+                  {sumatoriaHistorialDescartes(props.lote).toFixed(2)} Kg
                 </h2>
               </div>
               <div>
@@ -104,7 +105,7 @@ export default function TarjetaHistorialDescartes(props: propsType): JSX.Element
                               Object.keys(props.lote.predios[enf].descarteLavado).map(item => (
                                 <div className='flex flex-row gap-2' key={item}>
                                 <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-sm`}>
-                                  {item}:
+                                  {llavesVisualizar[item]}:
                                 </p>
                                 <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-sm`}>
                                   {props.lote.predios[enf].descarteLavado[item]} Kg
@@ -121,7 +122,7 @@ export default function TarjetaHistorialDescartes(props: propsType): JSX.Element
                               Object.keys(props.lote.predios[enf].descarteEncerado).map(item => (
                                 <div className='flex flex-row gap-2' key={item}>
                                 <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-sm`}>
-                                  {item}:
+                                  {llavesVisualizar[item]}:
                                 </p>
                                 <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-sm`}>
                                   {props.lote.predios[enf].descarteEncerado[item]} Kg

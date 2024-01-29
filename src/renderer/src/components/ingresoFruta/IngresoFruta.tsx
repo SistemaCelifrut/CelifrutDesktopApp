@@ -165,7 +165,7 @@ export default function IngresoFruta(): JSX.Element {
       <div className="col-span-2"></div>
       <div className="col-span-4 mt-3 mr-2">
         <label htmlFor="" className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          Numero de canastillas
+          Número de canastillas
         </label>
         <input
           value={canastillas}
@@ -220,7 +220,7 @@ export default function IngresoFruta(): JSX.Element {
       </div>
       <div className="col-span-4 mt-3">
         <label htmlFor="" className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          Canastillas vacias
+          Canastillas vacías
         </label>
         <input
           type="text"

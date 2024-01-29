@@ -88,6 +88,8 @@ export default function ListaClientes(props: propsType): JSX.Element {
                     setShowSuccess={props.setShowSuccess}
                     setShowFormulario={setShowFormulario} />:
                 <TableListaClientes 
+                    setData={setData}
+                    setDataOriginal={setDataOriginal}
                     setClienteSeleccionado={setClienteSeleccionado}
                     clienteSeleccionado={clienteSeleccionado}
                     data={data} 

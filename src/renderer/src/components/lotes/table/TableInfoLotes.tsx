@@ -3,6 +3,7 @@ import { useContext, useState } from "react"
 import { LoteDataType, filtroColumnasType } from "../type/types"
 import { themeContext } from "@renderer/App"
 import { format } from "date-fns"
+import { KEYS_FILTROS_COL } from "../functions/constantes"
 
 type propsType = {
   data: LoteDataType[]
@@ -31,7 +32,7 @@ export default function TableInfoLotes(props: propsType): JSX.Element {
               if (props.columnVisibility[item]) {
                 return (
                   <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} flex-wrap overflow-auto text-sm`} key={item}>
-                    {item}
+                    {KEYS_FILTROS_COL[item]}
                   </th>
                 )
               } else {
