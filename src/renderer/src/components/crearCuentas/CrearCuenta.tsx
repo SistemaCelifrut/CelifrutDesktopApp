@@ -61,7 +61,7 @@ export default function CrearCuenta(): JSX.Element {
             const response = await window.api.user(request);
             console.log(response)
             if(response.status === 200){
-                console.log("nice")
+            console.log("nice")     
             } else {
                 alert('Error al crear el usuario')
             }

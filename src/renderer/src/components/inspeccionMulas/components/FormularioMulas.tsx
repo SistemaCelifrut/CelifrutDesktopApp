@@ -25,7 +25,10 @@ const InspeccionFormulario: React.FC = () => {
   const [empresaTransportadoraHistory] = useState<string[]>(getHistorialDesdeLocalStorage('empresaTransportadora'));
   const [isLoading, setIsLoading] = useState(false);
   const [, setErrorMessage] = useState<string>('');
+  const [responsable, setResponsable] = useState('');
   const [, setSuccessMessage] = useState<string>('');
+  const [responsableHistory] = useState<string[]>(getHistorialDesdeLocalStorage('responsable'));
+
 
   function generarEstadoInicial() {
     return {
@@ -150,8 +153,9 @@ const InspeccionFormulario: React.FC = () => {
 
   const resetearFormulario = () => {
     setState(generarEstadoInicial());
+    setResponsable(''); // Resetear el campo "Responsable"
   };
-
+  
   const handleEnviarYResetear = async (e: React.FormEvent) => {
     e.preventDefault();
   
@@ -166,7 +170,8 @@ const InspeccionFormulario: React.FC = () => {
       !state.placa ||
       !state.conductor ||
       !state.empresaTransportadora ||
-      !state.numContenedor
+      !state.numContenedor ||
+      !responsable
     ) {
       const errorMsg = 'Por favor, complete todos los campos obligatorios.';
       console.error(errorMsg);
@@ -186,6 +191,9 @@ const InspeccionFormulario: React.FC = () => {
       // Obtener la fecha y hora actuales
       const fecha = new Date();
   
+      // Actualizar el historial de responsables
+      handleBlur('responsable', responsable);
+  
       const enviarDatosResponse = await enviarDatosAlServidor({
         action: 'enviarDatosFormularioInspeccionMulas',
         data: {
@@ -195,6 +203,7 @@ const InspeccionFormulario: React.FC = () => {
           numContenedor: state.numContenedor,
           criterios: criteriosSinTitulos,
           cumpleRequisitos: state.cumpleRequisitos,
+          responsable: responsable, // Agregar responsable aquí
           fecha: fecha.toISOString(), // Convertir a formato ISO para enviar al servidor
         },
       });
@@ -206,8 +215,6 @@ const InspeccionFormulario: React.FC = () => {
         });
   
         if (obtenerContenedoresResponse.status === 200 && obtenerContenedoresResponse.data) {
-         
-          
           // Esperar 500 milisegundos antes de resetear el formulario
           setTimeout(() => {
             setSuccessMessage('');
@@ -313,6 +320,27 @@ const InspeccionFormulario: React.FC = () => {
           </div>
         </div>
 
+        <div className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'} mb-4`}>
+  <label className="block font-bold mb-2">
+    <i className="fas fa-user-tie mr-2"></i> Responsable:
+  </label>
+  <div className="relative">
+    <input
+      type="text"
+      className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 text-black"
+      value={responsable}
+      onChange={(e) => setResponsable(e.target.value)}
+      list="responsable-suggestions"
+      required
+    />
+    <datalist id="responsable-suggestions" className="absolute z-10 bg-white border rounded-md mt-1">
+      {responsableHistory.map((item, index) => (
+        <option key={index} value={item} className="py-1 px-3 hover:bg-blue-200 cursor-pointer" />
+      ))}
+    </datalist>
+  </div>
+</div>
+
         <div className="mb-4">
   <label className="block font-bold mb-2">
     <i className="fas fa-box mr-2"></i> Número de Contenedor:
@@ -331,6 +359,7 @@ const InspeccionFormulario: React.FC = () => {
         </option>
       ))}
   </select>
+
 </div>
         {state.successMessage && (
           <div className="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md" role="alert">
