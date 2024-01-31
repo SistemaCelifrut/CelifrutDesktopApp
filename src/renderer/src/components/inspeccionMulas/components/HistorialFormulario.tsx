@@ -116,6 +116,7 @@ const TuComponente: React.FC = () => {
           <thead>
             <tr className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-gray-200'}`}>
               <th className="py-2 px-4 border-b border-r">Contenedor</th>
+              <th className="py-2 px-4 border-b border-r">Responsable</th>
               <th className="py-2 px-4 border-b border-r">Fecha de Salida</th>
               <th className="py-2 px-4 border-b border-r">Tipo de Fruta</th>
               <th className="py-2 px-4 border-b border-r">Conductor</th>
@@ -141,6 +142,9 @@ const TuComponente: React.FC = () => {
                   {Object.values(item.formularioInspeccionMula.criterios).map((criterio: any, index) => (
                     <tr key={index} className="hover:bg-gray-100">
                       <td className="py-2 px-4 border-b border-r">{item._id}</td>
+                      {item.formularioInspeccionMula.responsable && (
+  <td className="py-2 px-4 border-b border-r">{item.formularioInspeccionMula.responsable}</td>
+)}
                       {item.infoContenedor && item.infoContenedor.fechaSalida && (
                         <td className="py-2 px-4 border-b border-r">
                           {format(new Date(item.infoContenedor.fechaSalida), 'dd/MM/yyyy')}
@@ -148,7 +152,7 @@ const TuComponente: React.FC = () => {
                       )}
                       {item.infoContenedor && item.infoContenedor.tipoFruta && (
                         <td className="py-2 px-4 border-b border-r">{item.infoContenedor.tipoFruta}</td>
-                      )}
+                      )}           
                       {item.formularioInspeccionMula.conductor && (
                         <td className="py-2 px-4 border-b border-r">{item.formularioInspeccionMula.conductor}</td>
                       )}
