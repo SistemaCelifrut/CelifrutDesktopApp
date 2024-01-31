@@ -15,3 +15,19 @@ export const KEYS_FILTROS_COL = {
     observaciones: "Observaciones",
     deshidratacion: "Deshidratación"
 }
+
+export const KEY_FILTRO_COL_CALIDAD = {
+    acidez: "Acidez",
+    brix: "Brix",
+    ratio: "Ratio",
+    peso: "Peso",
+    zumo: "Zumo"
+}
+
+export const filtrosColumnasObjCalidad = {
+    acidez: false,
+    brix: false,
+    ratio: false,
+    peso: false,
+    zumo: false
+}

@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 
-import { LoteDataType, graficaDataType, graficaDonaDataType } from '../type/types'
+import { format } from 'date-fns'
+import { LoteDataType, graficaDataType, graficaDataTypeCalidad, graficaDonaDataType } from '../type/types'
 
 export const filtrosColumnasObj = {
   canastillas: false,
@@ -84,6 +85,50 @@ export const datosGraficas = (datos: LoteDataType[]): graficaDataType[] => {
   })
   return salida
 }
+export const datosGraficasCalidad = (datos: LoteDataType[]): graficaDataTypeCalidad[] => {
+  const prediosTotal = datos.map((lote) => lote.nombrePredio)
+  const prediosSet = new Set(prediosTotal)
+  const predios = [...prediosSet]
+  const salida = predios.map((nombrepredio) => {
+    const acidezPromedio = promedioCalidad(datos.filter((item) => item.nombrePredio === nombrepredio), "acidez")
+    const brixPromedio = promedioCalidad(datos.filter((item) => item.nombrePredio === nombrepredio), "brix")
+    const ratioPromedio = promedioCalidad(datos.filter((item) => item.nombrePredio === nombrepredio), "ratio")
+    const pesoPromedio = promedioCalidad(datos.filter((item) => item.nombrePredio === nombrepredio), "peso")
+    const zumoPromedio = promedioCalidad(datos.filter((item) => item.nombrePredio === nombrepredio), "zumo")
+
+    return {
+      nombrePredio: nombrepredio,
+      acidez: acidezPromedio,
+      brix: brixPromedio,
+      ratio: ratioPromedio,
+      peso: pesoPromedio,
+      zumo: zumoPromedio
+    }
+  })
+  return salida
+}
+export const datosGraficasHistogramaCalidad = (datos: LoteDataType[]): graficaDataTypeCalidad[] => {
+  const fechaTotal = datos.map((lote) => format(new Date(lote.fechaIngreso), 'dd-MM-yyyy'))
+  const fechasSet = new Set(fechaTotal)
+  const fechas = [...fechasSet]
+  const salida = fechas.map((fecha) => {
+    const acidezPromedio = promedioCalidad(datos.filter((item) =>  format(new Date(item.fechaIngreso), 'dd-MM-yyyy') === fecha), "acidez")
+    const brixPromedio = promedioCalidad(datos.filter((item) => format(new Date(item.fechaIngreso), 'dd-MM-yyyy') === fecha), "brix")
+    const ratioPromedio = promedioCalidad(datos.filter((item) => format(new Date(item.fechaIngreso), 'dd-MM-yyyy') === fecha), "ratio")
+    const pesoPromedio = promedioCalidad(datos.filter((item) => format(new Date(item.fechaIngreso), 'dd-MM-yyyy') === fecha), "peso")
+    const zumoPromedio = promedioCalidad(datos.filter((item) => format(new Date(item.fechaIngreso), 'dd-MM-yyyy') === fecha), "zumo")
+
+    return {
+      nombrePredio: fecha,
+      acidez: acidezPromedio,
+      brix: brixPromedio,
+      ratio: ratioPromedio,
+      peso: pesoPromedio,
+      zumo: zumoPromedio
+    }
+  })
+  return salida
+}
 export const datosGraficaDona = (datos: LoteDataType[]): graficaDonaDataType => {
   const totalDescarteEncerado = datos.reduce(
     (acu, kilos) =>
@@ -138,4 +183,50 @@ export const datosGraficaDona = (datos: LoteDataType[]): graficaDonaDataType => 
     frutaNacional: porcentajeFrutaNacional,
     directoNacional:porcentajeDirectoNacionall
   }
+}
+export const promedio = (datos: LoteDataType[], llave): number => {
+  const sumatoria = datos.reduce((acu, item) => acu += Number(item[llave]), 0);
+  const promedio = sumatoria /  datos.length
+  return promedio
+}
+export const promedioDescartes = (datos: LoteDataType[], llave): number => {
+  const sumatoria = datos.reduce(
+    (acu, kilos) =>
+      (acu += Object.keys(kilos[llave]).reduce(
+        (acu2, itemdescarte) => (acu2 += kilos[llave][itemdescarte]),
+        0
+      )),
+    0
+  )
+  const promedio = sumatoria / datos.length
+  return promedio
+}
+export const promedioExportacion = (datos: LoteDataType[]): number => {
+  const sumatoria = datos.reduce(
+    (acu1, lote) =>
+      (acu1 += Object.prototype.hasOwnProperty.call(lote, 'exportacion')
+        ? Object.keys(lote.exportacion).reduce(
+            (acu2, contenedor) =>
+              (acu2 += Object.keys(lote.exportacion[contenedor]).reduce(
+                (acu3, calidad) => (acu3 += lote.exportacion[contenedor][calidad]),
+                0
+              )),
+            0
+          )
+        : 0),
+    0
+  )
+  const promedio = sumatoria / datos.length
+  return promedio
+}
+export const promedioCalidad = (datos: LoteDataType[], llave): number => {
+  const sumatoria = datos.reduce((acu, item) => {
+    if(Object.prototype.hasOwnProperty.call(item,'calidad') && Object.prototype.hasOwnProperty.call(item.calidad, 'calidadInterna')){
+      return acu += Number(item.calidad.calidadInterna[llave])
+    } else {
+      return acu += 0
+    }
+  }, 0);
+  const promedio = sumatoria /  datos.length
+  return promedio
 }

@@ -10,6 +10,7 @@ import GraficasBarras from "../utils/GraficasBarras"
 import GraficaLineal from "../utils/GraficaLineal"
 import GraficaCircular from "../utils/GraficaCircular"
 import TableInfoLotes from "../table/TableInfoLotes"
+import PromediosProceso from "../utils/PromediosProceso"
 
 export default function ProcesoData(): JSX.Element {
     const theme = useContext(themeContext)
@@ -101,7 +102,7 @@ export default function ProcesoData(): JSX.Element {
         <div className={`${theme === 'Dark' ? 'bg-gray-500' : 'bg-gray-200'} p-3 rounded-lg shadow-lg`}>
             <div className={`${theme === 'Dark' ? 'text-white' : 'text-black'}
                     text-2xl font-bold  transition-all border-b-2 duration-500 ease-in-out  hover:text-Celifrut-green hover:border-b-2  hover:border-Celifrut-green`}>
-                <h2>Lotes</h2>
+                <h2>Lotes proceso</h2>
             </div>
             <div className="m-2">
                 <FiltrosColumnas columnVisibility={columnVisibility} handleChange={handleChange} />
@@ -109,10 +110,12 @@ export default function ProcesoData(): JSX.Element {
             <div>
                 <FiltrosFilas handleFiltro={handleFiltro} prediosData={prediosData} setEf1={setEf1} />
                 <div className="m-2">
-
                 </div>
             </div>
        
+        </div>
+        <div>
+            <PromediosProceso data={data} columnVisibility={columnVisibility} />
         </div>
         <select className="rounded-lg p-2 border-solid border-2 border-blue-200 mt-2" onChange={(e): void => setTipoGraficas(e.target.value)}>
                 <option value="">Tipo de gráficas</option>

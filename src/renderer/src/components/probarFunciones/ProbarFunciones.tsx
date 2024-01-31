@@ -5,7 +5,7 @@ export default function ProbarFunciones(): JSX.Element {
         const request = {
             action:"cerrarContenedor",
             data:{
-                contenedor: 1076
+                contenedor: 1079
             }
         }
         const response = await window.api.contenedores(request)

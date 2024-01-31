@@ -37,6 +37,16 @@ export type LoteDataType = {
       calidad1_5: number
       calidad2: number
     }
+  },
+  calidad:{
+    calidadInterna:{
+      acidez:number
+      brix:number
+      ratio:number
+      peso:number
+      zumo:number
+      fecha:string
+    }
   }
 }
 
@@ -67,6 +77,16 @@ export type graficaDataType = {
 
 }
 
+export type graficaDataTypeCalidad = {
+  nombrePredio: string
+  acidez: number
+  brix: number
+  ratio: number
+  peso: number
+  zumo: number
+
+}
+
 export type graficaDonaDataType = {
   descarteLavado: number
   descarteEncerado: number
@@ -74,6 +94,23 @@ export type graficaDonaDataType = {
   desHidratacion:number
   directoNacional: number
   frutaNacional: number
+}
+
+export type filtroCalidadType = {
+  tipoFruta: string
+  fechaIngreso: fechaIngresoType
+  nombrePredio: string
+  cantidad: string
+  rendimiento: rendimientoType
+  ordenar?:string
+  tipoDato: {
+    acidez?: rendimientoType
+    brix?:rendimientoType
+    ratio?:rendimientoType
+    peso?:rendimientoType
+    zumo?:rendimientoType
+  }
+
 }
 
 
@@ -93,4 +130,12 @@ type fechaIngresoType = {
 type rendimientoType = {
   $gte: string | number
   $lt: string | number
+}
+
+export type filtroColumnasCalidadType = {
+    acidez:booelan
+    brix:booelan
+    ratio:booelan
+    peso:booelan
+    zumo:booelan
 }
