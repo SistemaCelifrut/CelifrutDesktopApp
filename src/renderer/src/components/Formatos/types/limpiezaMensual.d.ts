@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 export type limpiezaMensualType = {
   fecha:string
+  responsable?: string,
     //Area cuartos
   area_cuartos_cortinas?: string
   area_cuartos_muelle?: string

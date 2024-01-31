@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 
 import { useContext, useEffect, useState } from "react"
-import { permisosType, serverResponse } from "./type/type";
+import { permisosType, serverResponse } from "../type/type";
 import { themeContext } from "@renderer/App";
 import { FaUserPlus } from "react-icons/fa6";
 import { RiLockPasswordFill } from "react-icons/ri";

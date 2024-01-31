@@ -53,6 +53,7 @@ export default function LimpiezaPostCosecha(): JSX.Element {
         <thead className={`${theme === 'Dark' ? 'bg-slate-700' : 'bg-slate-200'}`}>
           <tr className="h-14 broder-2">
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>Fecha</th>
+            <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>Responsable</th>
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>Área</th>
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>Tipo Área</th>
             <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>Observaciones</th>
@@ -65,6 +66,9 @@ export default function LimpiezaPostCosecha(): JSX.Element {
                 <td className={`p-2 text-sm`}>
                   {format(new Date(item.fecha), 'dd/MM/yyyy HH:mm:ss')}
                 </td>
+                <td className={`p-2 text-sm`}>
+                {item.responsable}
+                      </td>
                 <td className={`p-2 text-sm`}>
                   {Object.keys(item)
                     .reduce((areas: string[], key) => {

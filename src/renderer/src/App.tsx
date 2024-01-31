@@ -16,7 +16,7 @@ import CalidadInterna from './components/calidadInterna/CalidadInterna'
 import ClasificacionCalidad from './components/clasificacionCalidad/ClasificacionCalidad'
 import Formatos from './components/Formatos/Formatos'
 import Informes from './components/informes/Informes'
-import CrearCuenta from './components/crearCuentas/CrearCuenta'
+import Cuentas from './components/crearCuentas/Cuentas'
 import VolanteCalidad from './components/volanteCalidad/VolanteCalidad'
 import Lotes from './components/lotes/Lotes'
 import Proveedores from './components/proveedores/Proveedores'
@@ -123,7 +123,7 @@ function App(): JSX.Element {
                   {section === 'Clasificacion calidad' && <ClasificacionCalidad  />}
                   {section === 'Formatos' && <Formatos />}
                   {section === 'Informes' && <Informes />}
-                  {section === 'Crear cuenta' && <CrearCuenta />}
+                  {section === 'Crear cuenta' && <Cuentas />}
                   {section === 'Volante calidad' && <VolanteCalidad />}
                   {section === 'Lotes' && <Lotes />}
                   {section === 'Proveedores' && <Proveedores />}

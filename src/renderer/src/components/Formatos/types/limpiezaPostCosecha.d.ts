@@ -1,5 +1,6 @@
 export type limpiezaDataType = {
   fecha: string
+  responsable?: string,
   _id:string
   __v: 0
   //AREA SOCIAL

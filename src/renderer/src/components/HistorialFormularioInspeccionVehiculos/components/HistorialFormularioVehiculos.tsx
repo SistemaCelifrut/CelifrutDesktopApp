@@ -164,7 +164,7 @@ const EjemploComponente: React.FC = () => {
           type="text"
           placeholder="Placa"
           value={placaFiltro}
-          onChange={(e) => setPlacaFiltro(e.target.value)}
+          onChange={(e) => setPlacaFiltro(e.target.value.toUpperCase())} // Convertir automáticamente a mayúsculas
           className="p-2 mr-2 border border-gray-300"
         />
         <label htmlFor="fechaInicioFiltro" className={`${theme === 'Dark' ? 'bg-slate-800 text-white' : 'bg-white'} mr-1`}>Fecha Inicio:</label>
@@ -218,7 +218,7 @@ const EjemploComponente: React.FC = () => {
                 <tr className="cursor-pointer">
                   <td className={`py-2 px-3 border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>{contenedor.responsable}</td>
                   <td className={`py-2 px-3 border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>{format(new Date(contenedor.fecha), 'dd/MM/yyyy')}</td>
-                  <td className={`py-2 px-3 border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>{contenedor.placa}</td>
+                  <td className={`py-2 px-3 border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>{contenedor.placa.toUpperCase()}</td> {/* Mostrar en mayúsculas */}
                   <td className={`py-2 px-3 border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>{contenedor.lugar}</td>
                   <td className={`py-2 px-3 border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>{contenedor.tipoFruta}</td>
                   <td className={`py-2 px-3 border border-gray-200 ${theme === 'Dark' ? 'bg-white' : ''}`}>{contenedor.nombreConductor}</td>
