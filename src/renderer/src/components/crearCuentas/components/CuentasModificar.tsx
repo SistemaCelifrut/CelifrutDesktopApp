@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrashAlt, faSearch, faPlus, faList } from '@fortawesome/free-solid-svg-icons';
+import CrearCuenta from './CrearCuenta'; // Importa el componente CrearCuenta
 
 interface Cuenta {
   _id: string;
@@ -10,6 +11,7 @@ interface Cuenta {
   password: string;
   cargo: string;
   correo: string;
+  permisos: string[]; // Agrega permisos al tipo de Cuenta
 }
 
 const ObtenerCuentasComponente = () => {
@@ -23,9 +25,11 @@ const ObtenerCuentasComponente = () => {
     user: '',
     password: '',
     cargo: '',
-    correo: ''
+    correo: '',
+    permisos: [], // Inicializa permisos como un arreglo vacío
   });
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [showCrearCuenta, setShowCrearCuenta] = useState(false); // Nuevo estado para controlar la visibilidad de CrearCuenta
 
   useEffect(() => {
     obtenerCuentas();
@@ -58,7 +62,8 @@ const ObtenerCuentasComponente = () => {
       user: cuenta.user,
       password: cuenta.password,
       cargo: cuenta.cargo,
-      correo: cuenta.correo
+      correo: cuenta.correo,
+      permisos: cuenta.permisos, // Agrega los permisos de la cuenta al estado formData
     });
     setShowEditarModal(true);
   };
@@ -84,7 +89,6 @@ const ObtenerCuentasComponente = () => {
       console.error('Error al eliminar la cuenta:', error);
     }
   };
-  
 
   const handleSaveChanges = async () => {
     try {
@@ -96,15 +100,18 @@ const ObtenerCuentasComponente = () => {
     }
   };
 
+  const toggleCrearCuenta = () => { // Función para alternar la visibilidad de CrearCuenta
+    setShowCrearCuenta(!showCrearCuenta);
+  };
 
   return (
-    <div >
+    <div>
       <h2 className="text-2xl font-bold mb-4">Cuentas</h2>
-      <div className="w-full max-w-md mb-4 relative ">
+      <div className="w-full max-w-md mb-4 relative">
         <input
           type="text"
           placeholder="Buscar..."
-          className="p-2 border rounded-md w-full "
+          className="p-2 border rounded-md w-full"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -112,46 +119,64 @@ const ObtenerCuentasComponente = () => {
           <FontAwesomeIcon icon={faSearch} className="text-gray-400" />
         </div>
       </div>
-
-      <div className="overflow-x-auto">
-        <table className="table-auto w-full">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="py-2 px-4">Nombre de Usuario</th>
-              <th className="py-2 px-4">Contraseña</th>
-              <th className="py-2 px-4">Cargo</th>
-              <th className="py-2 px-4">Correo</th>
-              <th className="py-2 px-4">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-          {cuentas
-  .filter(cuenta =>
-    Object.values(cuenta)
-      .join(' ')
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  )
-  .map((cuenta, index) => (
-    <tr key={index} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
-      <td className="py-2 px-4">{cuenta.user}</td>
-      <td className="py-2 px-4">{cuenta.password}</td>
-      <td className="py-2 px-4">{cuenta.cargo}</td>
-      <td className="py-2 px-4">{cuenta.correo}</td>
-      <td className="py-2 px-4 flex justify-center items-center">
-        <FontAwesomeIcon icon={faEdit} className="text-blue-500 cursor-pointer hover:text-blue-700 mr-2" onClick={() => handleEditar(index)} />
-        <FontAwesomeIcon 
-  icon={faTrashAlt} 
-  className="text-red-500 cursor-pointer hover:text-red-700" 
-  onClick={() => handleEliminar(index)} // Pasa la función handleEliminar directamente
-/>
-
-      </td>
-    </tr>
-  ))}
-          </tbody>
-        </table>
+  
+      <div className="flex justify-center"> {/* Contenedor para centrar el contenido */}
+        <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-4" onClick={toggleCrearCuenta}>
+          <FontAwesomeIcon icon={faPlus} className="mr-2" />
+          {showCrearCuenta ? "Ocultar Crear Cuenta" : "Agregar Cuenta"}
+        </button>
       </div>
+  
+      {/* Mostrar CrearCuenta si showCrearCuenta es true */}
+      {showCrearCuenta && <CrearCuenta />}
+  
+      {!showCrearCuenta && (
+        <div className="overflow-x-auto">
+          <table className="table-auto w-full">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="py-2 px-4">Nombre de Usuario</th>
+                <th className="py-2 px-4">Contraseña</th>
+                <th className="py-2 px-4">Cargo</th>
+                <th className="py-2 px-4">Correo</th>
+                <th className="py-2 px-4">Permisos</th> {/* Nueva columna para mostrar permisos */}
+                <th className="py-2 px-4">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cuentas
+                .filter(cuenta =>
+                  Object.values(cuenta)
+                    .join(' ')
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                )
+                .map((cuenta, index) => (
+                  <tr key={index} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
+                    <td className="py-2 px-4">{cuenta.user}</td>
+                    <td className="py-2 px-4">{cuenta.password}</td>
+                    <td className="py-2 px-4">{cuenta.cargo}</td>
+                    <td className="py-2 px-4">{cuenta.correo}</td>
+                    <td className="py-2 px-4">
+  <ul className="pl-0"> {/* Agrega la clase pl-0 para quitar el padding izquierdo */}
+    {cuenta.permisos.map((permiso, index) => (
+      <li key={index} className="list-none"> {/* Agrega la clase list-none para quitar el marcador de lista */}
+        <FontAwesomeIcon icon={faList} className="text-green-500 mr-2" /> {/* Aquí se muestra el ícono */}
+        {permiso}
+      </li>
+    ))}
+  </ul>
+</td>
+                    <td className="py-2 px-4 flex justify-center items-center">
+                      <FontAwesomeIcon icon={faEdit} className="text-blue-500 cursor-pointer hover:text-blue-700 mr-2" onClick={() => handleEditar(index)} />
+                      <FontAwesomeIcon icon={faTrashAlt} className="text-red-500 cursor-pointer hover:text-red-700" onClick={() => handleEliminar(index)} />
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <Transition.Root show={showEditarModal} as={Fragment}>
       <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={setShowEditarModal}>

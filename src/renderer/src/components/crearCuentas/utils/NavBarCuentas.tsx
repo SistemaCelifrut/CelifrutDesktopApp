@@ -36,12 +36,6 @@ export default function NavBarHistorial(props: propsType): JSX.Element {
               >
                 Cuentas
               </button>
-              <button
-                onClick={(): void => handleMenu('Crear Cuenta')}
-                className="pb-1  hover:bg-slate-400"
-              >
-                Crear Cuenta
-              </button>
             </div>
           </div>
         )}

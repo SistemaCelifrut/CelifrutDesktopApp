@@ -1,6 +1,4 @@
-/* eslint-disable prettier/prettier */
-
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react";
 import { permisosType, serverResponse } from "../type/type";
 import { themeContext } from "@renderer/App";
 import { FaUserPlus } from "react-icons/fa6";
@@ -9,79 +7,88 @@ import { IoMdMail } from "react-icons/io";
 import { GiScrollQuill } from "react-icons/gi";
 
 export default function CrearCuenta(): JSX.Element {
-    const theme = useContext(themeContext)
-    const [permisos, setPermisos] = useState<string[]>([])
-    const [permisosSeleccionado, setPermisosSeleccionados] = useState<string[]>([])
-    const [usuario, setUsuario] = useState<string>('')
-    const [constraseña, setContraseña] = useState<string>('')
-    const [correo, setCorreo] = useState<string>('')
+    const theme = useContext(themeContext);
+    const [permisos, setPermisos] = useState<string[]>([]);
+    const [permisosSeleccionados, setPermisosSeleccionados] = useState<string[]>([]);
+    const [usuario, setUsuario] = useState<string>('');
+    const [contraseña, setContraseña] = useState<string>(''); 
+    const [correo, setCorreo] = useState<string>('');
     const [cargos, setCargos] = useState<string[]>([]);
     const [cargo, setCargo] = useState<string>('');
+
     useEffect(() => {
         const obtenerPermisos = async (): Promise<void> => {
-            const request = {
-                action: 'obtenerPermisosUsuario',
-                query: 'personal'
+            try {
+                const request = {
+                    action: 'obtenerPermisosUsuario',
+                    query: 'personal'
+                };
+                const response: serverResponse<permisosType> = await window.api.user(request);
+                if (response.status === 200) {
+                    setPermisos(response.data.permisos);
+                    setCargos(response.data.cargos);
+                } else {
+                    alert("Error obteniendo los permisos");
+                }
+            } catch (error) {
+                console.error('Error al obtener permisos:', error);
             }
-            const response: serverResponse<permisosType> = await window.api.user(request);
-            if (response.status === 200) {
-                setPermisos(response.data.permisos);
-                setCargos(response.data.cargos)
-            } else {
-                alert("Error obteniendo los permisos");
-            }
-        }
-        obtenerPermisos()
-    }, [])
-    const handlePermisos = (e): void => {
-        const permisosAux = permisosSeleccionado;
+        };
+        obtenerPermisos();
+    }, []);
 
-        if(permisosAux.includes(e)){
-            const index = permisosAux.findIndex(item => item === e)
+    const handlePermisos = (e): void => {
+        const permisosAux = [...permisosSeleccionados];
+
+        if (permisosAux.includes(e)) {
+            const index = permisosAux.findIndex(item => item === e);
             permisosAux.splice(index, 1);
-        } else{
+        } else {
             permisosAux.push(e);
         }
         setPermisosSeleccionados(permisosAux);
-    }
+    };
+
     const crearUsuario = async (event): Promise<void> => {
-        try{
-            event.preventDefault()
+        try {
+            event.preventDefault();
             const request = {
                 action: 'crearUsuario',
-                query:'personal',
-                data:{
-                    usuario:usuario,
-                    contraseña: constraseña,
-                    permisos: permisosSeleccionado,
-                    cargo:cargo,
-                    correo:correo
+                query: 'personal',
+                data: {
+                    usuario: usuario,
+                    contraseña: contraseña,
+                    permisos: permisosSeleccionados,
+                    cargo: cargo,
+                    correo: correo
                 }
-            }
+            };
             const response = await window.api.user(request);
-            console.log(response)
-            if(response.status === 200){
-            console.log("nice")     
+            console.log(response);
+            if (response.status === 200) {
+                console.log("nice");
             } else {
-                alert('Error al crear el usuario')
+                alert('Error al crear el usuario');
             }
-        } catch(e){
-            console.error(e)
+        } catch (e) {
+            console.error(e);
         } finally {
-            setUsuario('')
-            setContraseña('')
-            setCorreo('')
-            setCargo('')
-            setCargos([])
-            resetearCheckboxs()
+            setUsuario('');
+            setContraseña('');
+            setCorreo('');
+            setCargo('');
+            setCargos([]);
+            resetearCheckboxs();
         }
-    }
+    };
+
     const resetearCheckboxs = (): void => {
         const elementos = document.getElementsByClassName('permisos-class');
-        for(const elemento of elementos){
+        for (const elemento of elementos) {
             (elemento as HTMLInputElement).checked = false;
         }
-    }
+    };
+
     return (
         <div className="flex flex-col justify-center items-center">
             <div className="flex justify-center m-4">
@@ -96,7 +103,7 @@ export default function CrearCuenta(): JSX.Element {
             </div>
             <form className={`my-4 mx-2 rounded-lg w-4/5 flex flex-col justify-center items-center p-2 shadow-lg
                             ${theme === 'Dark' ? 'bg-slate-600' : 'bg-slate-100'}`}
-                    onSubmit={crearUsuario}>
+                onSubmit={crearUsuario}>
                 <div className={`w-4/5 m-1 flex flex-col gap-1 justify-center items-center`}>
 
                     <div className="flex justify-start w-full">
@@ -124,10 +131,10 @@ export default function CrearCuenta(): JSX.Element {
                     <input
                         required
                         type="text"
-                        value={constraseña}
+                        value={contraseña}
                         onChange={(e): void => setContraseña(e.target.value)}
                         className={`rounded-lg p-2 transition-all duration-500 ease-in-out 
-                          ${constraseña !== '' ? 'h-9 w-full border-solid border-2 border-Celifrut-green' : 'h-8 w-11/12'}`} />
+                          ${contraseña !== '' ? 'h-9 w-full border-solid border-2 border-Celifrut-green' : 'h-8 w-11/12'}`} />
                 </div>
                 <div className={`w-4/5 m-1 flex flex-col gap-1 justify-center items-center`}>
 
@@ -175,7 +182,7 @@ export default function CrearCuenta(): JSX.Element {
                         {permisos && permisos.map(permiso => (
                             <div className={`flex justify-start mt-2`} key={permiso}>
                                 <label className={`flex flex-row gap-1 items-center ${theme === 'Dark' ? 'text-white' : 'text-black'}`} >
-                                    <input type="checkbox"  className="permisos-class" onClick={(): void => handlePermisos(permiso)} />
+                                    <input type="checkbox" className="permisos-class" onClick={(): void => handlePermisos(permiso)} />
                                     {' '}{permiso}
                                 </label>
                             </div>
@@ -191,5 +198,5 @@ export default function CrearCuenta(): JSX.Element {
             </form>
 
         </div>
-    )
+    );
 }
