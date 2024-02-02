@@ -15,6 +15,8 @@ type propsType = {
   filtroFechaEntrada: Date | null
   filtroFechaFinalizado: Date | null
   filtroFechaSalida: Date | null
+  filtroFechaInicio: Date | null
+  filtroFechaFin: Date | null
   clientes: string[]
   cantidadMostrar: number
 }

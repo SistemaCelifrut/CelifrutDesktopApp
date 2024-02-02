@@ -20,64 +20,86 @@ export default function Contenedores(): JSX.Element {
   const [filtroFechaSalida, setFiltroFechaSalida] = useState<Date | null>(null);
   const [filtroFechaFinalizado, setFiltroFechaFinalizado] = useState<Date | null>(null);
   const [cantidadMostrar, setCantidadMostrar] = useState<number>(50);
+  const [filtroFechaInicio, setFiltroFechaInicio] = useState<Date | null>(null);
+  const [filtroFechaFin, setFiltroFechaFin] = useState<Date | null>(null);
 
   const reiniciarFiltroFecha = () => {
     setFiltroFechaEntrada(null);
     setFiltroFechaSalida(null);
     setFiltroFechaFinalizado(null);
+    setFiltroFechaInicio(null); // Reiniciar también los filtros de fecha de inicio y fin
+    setFiltroFechaFin(null);
   };
 
   useEffect(() => {
     const obtenerDataContenedor = async (): Promise<void> => {
-      try {
-        const formattedFechaEntrada = filtroFechaEntrada ? filtroFechaEntrada.toISOString() : null;
-        const formattedFechaSalida = filtroFechaSalida ? filtroFechaSalida.toISOString() : null;
-  
-        const request = {
-          action: 'ObtenerInfoContenedoresCelifrut',
-          filtro: {
-            contenedor: filtroContenedor,
-            tipoFruta: filtroTipoFruta,
-            cliente: filtroCliente,
-            fecha: {
-              entrada: formattedFechaEntrada,
-              salida: formattedFechaSalida,
-              finalizado: filtroFechaFinalizado ? filtroFechaFinalizado.toISOString() : null,
-            },
-            cantidad: cantidadMostrar
-          },
-        };
-        const response = await window.api.contenedores(request);
-        console.log(response.data)
-        if (response.status === 200) {
-          setData(response.data);
-          const clientesArray = response.data.map(contenedor => contenedor.infoContenedor.nombreCliente);
-          setClientes(Array.from(new Set(clientesArray)));
-          
-          setShowSuccess(true);
-          setTimeout(() => {
-            setShowSuccess(false);
-          }, 5000);
-        } else {
-          setShowError(true);
-          setMessage("Error obteniendo los datos del servidor");
-          setTimeout(() => {
-            setShowError(false);
-          }, 5000);
+        try {
+            let tipoFecha: string | null = null;
+            let formattedFechaInicio: string | null = null;
+            let formattedFechaFin: string | null = null;
+
+            if (tipoFechaFiltrar === 'entrada') {
+                tipoFecha = 'entrada';
+            } else if (tipoFechaFiltrar === 'salida') {
+                tipoFecha = 'salida';
+            } else if (tipoFechaFiltrar === 'finalizado') {
+                tipoFecha = 'finalizado';
+            }
+
+            formattedFechaInicio = filtroFechaInicio ? new Date(filtroFechaInicio).toISOString() : null;
+            formattedFechaFin = filtroFechaFin ? new Date(filtroFechaFin).toISOString() : null;
+
+            const request = {
+                action: 'ObtenerInfoContenedoresCelifrut',
+                filtro: {
+                    contenedor: filtroContenedor,
+                    tipoFruta: filtroTipoFruta,
+                    cliente: filtroCliente,
+                    fecha: {
+                        tipo: tipoFecha,
+                        inicio: formattedFechaInicio,
+                        fin: formattedFechaFin
+                    },
+                    cantidad: cantidadMostrar
+                },
+            };
+
+            const response = await window.api.contenedores(request);
+            console.log(response.data);
+            console.log('Fecha inicio seleccionada:', formattedFechaInicio);
+            console.log('Fecha fin seleccionada:', formattedFechaFin);
+            console.log('Request:', request);
+
+            if (response.status === 200) {
+                setData(response.data);
+                const clientesArray = response.data.map(contenedor => contenedor.infoContenedor.nombreCliente);
+                setClientes(Array.from(new Set(clientesArray)));
+
+                setShowSuccess(true);
+                setTimeout(() => {
+                    setShowSuccess(false);
+                }, 5000);
+            } else {
+                setShowError(true);
+                setMessage("Error obteniendo los datos del servidor");
+                setTimeout(() => {
+                    setShowError(false);
+                }, 5000);
+            }
+        } catch (e) {
+            if (e instanceof Error) {
+                setShowError(true);
+                setMessage(e.message);
+                setTimeout(() => {
+                    setShowError(false);
+                }, 5000);
+            }
         }
-      } catch (e) {
-        if (e instanceof Error) {
-          setShowError(true);
-          setMessage(e.message);
-          setTimeout(() => {
-            setShowError(false);
-          }, 5000);
-        }
-      }
     };
-  
+
     obtenerDataContenedor();
-  }, [filtroContenedor, filtroTipoFruta, filtroFechaEntrada, filtroCliente, filtroFechaSalida, filtroFechaFinalizado, cantidadMostrar]);
+}, [filtroContenedor, filtroTipoFruta, filtroFechaEntrada, filtroFechaSalida, filtroFechaFinalizado, filtroFechaFin, filtroFechaInicio, filtroCliente, tipoFechaFiltrar, cantidadMostrar]);
+
 
   const closeModal = (): void => {
     setShowError(false);
@@ -140,40 +162,38 @@ export default function Contenedores(): JSX.Element {
               className="border p-2 rounded"
             >
               <option value="">Seleccionar Tipo de Fecha</option>
-              <option value="creacion">Fecha de Creación</option>
+              <option value="entrada">Fecha de Creación</option>
               <option value="salida">Fecha de Salida</option>
-              <option value="finalizado">Fecha Finalizado</option>
+              <option value="finalizado">Fecha de Finalizado</option>
             </select>
           </div>
           {tipoFechaFiltrar && (
-            <div className="flex flex-col">
-              <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm mb-1`}>{`Fecha ${tipoFechaFiltrar === 'finalizado' ? 'de Finalizado' : tipoFechaFiltrar === 'creacion' ? 'de Creación' : 'de Salida'}:`}</label>
-              <input
-                type="date"
-                value={
-                  tipoFechaFiltrar === 'finalizado' ? (filtroFechaFinalizado ? filtroFechaFinalizado.toISOString().split('T')[0] : '') :
-                  tipoFechaFiltrar === 'creacion' ? (filtroFechaEntrada ? filtroFechaEntrada.toISOString().split('T')[1] : '') :
-                  tipoFechaFiltrar === 'salida' ? (filtroFechaSalida ? filtroFechaSalida.toISOString().split('T')[0] : '') : ''
-                }
-                onChange={(e) => {
-                  const dateValue = e.target.value ? new Date(e.target.value) : null;
-                  switch (tipoFechaFiltrar) {
-                    case 'creacion':
-                      setFiltroFechaEntrada(dateValue);
-                      break;
-                    case 'salida':
-                      setFiltroFechaSalida(dateValue);
-                      break;
-                    case 'finalizado':
-                      setFiltroFechaFinalizado(dateValue);
-                      break;
-                    default:
-                      break;
-                  }
-                }}
-                className="border p-2 rounded"
-              />
-            </div>
+            <>
+              <div className="flex flex-col">
+                <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm mb-1`}>Fecha de Inicio:</label>
+                <input
+                  type="date"
+                  value={filtroFechaInicio ? filtroFechaInicio.toISOString().split('T')[0] : ''}
+                  onChange={(e) => {
+                    const dateValue = e.target.value ? new Date(e.target.value) : null;
+                    setFiltroFechaInicio(dateValue);
+                  }}
+                  className="border p-2 rounded"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm mb-1`}>Fecha de Fin:</label>
+                <input
+                  type="date"
+                  value={filtroFechaFin ? filtroFechaFin.toISOString().split('T')[0] : ''}
+                  onChange={(e) => {
+                    const dateValue = e.target.value ? new Date(e.target.value) : null;
+                    setFiltroFechaFin(dateValue);
+                  }}
+                  className="border p-2 rounded"
+                />
+              </div>
+            </>
           )}
           <div className="flex flex-col">
             <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm mb-1`}>Cantidad a Mostrar:</label>
@@ -194,6 +214,8 @@ export default function Contenedores(): JSX.Element {
         filtroFechaEntrada={filtroFechaEntrada}
         filtroFechaSalida={filtroFechaSalida}
         filtroFechaFinalizado={filtroFechaFinalizado}
+        filtroFechaInicio={filtroFechaInicio} // Agregar los filtros de fecha de inicio y fin
+        filtroFechaFin={filtroFechaFin}
         cantidadMostrar={cantidadMostrar}
         clientes={clientes}
       />

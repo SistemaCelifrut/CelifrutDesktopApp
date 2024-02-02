@@ -6,7 +6,7 @@ import { themeType } from './env'
 import SideBar from './components/UI/SideBar'
 import Login from './components/Login/Login'
 import { userType } from './types/login'
-import IngresoFruta from './components/ingresoFruta/IngresoFruta'
+import Ingreso from './components/ingresoFruta/Ingreso'
 import InventarioFrutaSinProcesar from './components/inventario/InventarioFrutaSinProcesar'
 import Descarte from './components/inventarioDescarte/Descarte'
 import Desverdizado from './components/desverdizado/Desverdizado'
@@ -109,7 +109,7 @@ function App(): JSX.Element {
                   <SideBar seleccionWindow={seleccionWindow} handleSideBarWidth={handleSideBarWidth} showSideBar={showSideBar} />
                 </div>
                 <div className={`overflow-auto  ${showSideBar ? 'col-span-10 ': 'col-span-11 '}`}>
-                  {section === 'Ingreso de fruta' && <IngresoFruta />}
+                  {section === 'Ingreso de fruta' && <Ingreso />}
                   {section === 'Fruta sin procesar' && (
                     <InventarioFrutaSinProcesar theme={theme} user={user.user} />
                   )}

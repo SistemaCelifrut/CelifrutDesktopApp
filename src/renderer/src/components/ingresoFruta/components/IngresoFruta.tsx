@@ -1,11 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { themeContext } from '@renderer/App'
 import { useContext, useEffect, useState } from 'react'
-import { serverResponseType } from './types/types';
+import { serverResponseType } from '../types/types';
 import SuccessModal from '@renderer/errors/modal/SuccessModal';
 import ErrorModal from '@renderer/errors/modal/ErrorModal';
 import { createPortal } from 'react-dom';
-import ModificarEF1 from './modals/ModificarEF1';
+import ModificarEF1 from '../modals/ModificarEF1';
 
 
 export default function IngresoFruta(): JSX.Element {
@@ -205,18 +205,18 @@ export default function IngresoFruta(): JSX.Element {
           Placa
         </label>
         <input
-          value={placa}
-          type="text"
-          onChange={(e): void => setPlaca(e.target.value)}
-          pattern="^[A-Za-z]{3}[0-9]{3}$"
-          title="Por favor, introduce 3 letras seguidas de 3 números."
-          required
-          className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
-                            ${theme === 'Dark'
-              ? 'border-white bg-slate-800 text-white'
-              : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-            }`}
-        />
+    value={placa}
+    type="text"
+    onChange={(e): void => setPlaca(e.target.value.toUpperCase())}
+    pattern="^[A-Za-z]{3}[0-9]{3}$"
+    title="Por favor, introduce 3 letras seguidas de 3 números."
+    required
+    className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
+                      ${theme === 'Dark'
+        ? 'border-white bg-slate-800 text-white'
+        : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
+      }`}
+  />
       </div>
       <div className="col-span-4 mt-3">
         <label htmlFor="" className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
