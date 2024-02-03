@@ -32,74 +32,87 @@ export default function Contenedores(): JSX.Element {
   };
 
   useEffect(() => {
-    const obtenerDataContenedor = async (): Promise<void> => {
-        try {
-            let tipoFecha: string | null = null;
-            let formattedFechaInicio: string | null = null;
-            let formattedFechaFin: string | null = null;
-
-            if (tipoFechaFiltrar === 'entrada') {
-                tipoFecha = 'entrada';
-            } else if (tipoFechaFiltrar === 'salida') {
-                tipoFecha = 'salida';
-            } else if (tipoFechaFiltrar === 'finalizado') {
-                tipoFecha = 'finalizado';
-            }
-
-            formattedFechaInicio = filtroFechaInicio ? new Date(filtroFechaInicio).toISOString() : null;
-            formattedFechaFin = filtroFechaFin ? new Date(filtroFechaFin).toISOString() : null;
-
-            const request = {
-                action: 'ObtenerInfoContenedoresCelifrut',
-                filtro: {
-                    contenedor: filtroContenedor,
-                    tipoFruta: filtroTipoFruta,
-                    cliente: filtroCliente,
-                    fecha: {
-                        tipo: tipoFecha,
-                        inicio: formattedFechaInicio,
-                        fin: formattedFechaFin
-                    },
-                    cantidad: cantidadMostrar
-                },
-            };
-
-            const response = await window.api.contenedores(request);
-            console.log(response.data);
-            console.log('Fecha inicio seleccionada:', formattedFechaInicio);
-            console.log('Fecha fin seleccionada:', formattedFechaFin);
-            console.log('Request:', request);
-
-            if (response.status === 200) {
-                setData(response.data);
-                const clientesArray = response.data.map(contenedor => contenedor.infoContenedor.nombreCliente);
-                setClientes(Array.from(new Set(clientesArray)));
-
-                setShowSuccess(true);
-                setTimeout(() => {
-                    setShowSuccess(false);
-                }, 5000);
-            } else {
-                setShowError(true);
-                setMessage("Error obteniendo los datos del servidor");
-                setTimeout(() => {
-                    setShowError(false);
-                }, 5000);
-            }
-        } catch (e) {
-            if (e instanceof Error) {
-                setShowError(true);
-                setMessage(e.message);
-                setTimeout(() => {
-                    setShowError(false);
-                }, 5000);
-            }
-        }
-    };
-
     obtenerDataContenedor();
-}, [filtroContenedor, filtroTipoFruta, filtroFechaEntrada, filtroFechaSalida, filtroFechaFinalizado, filtroFechaFin, filtroFechaInicio, filtroCliente, tipoFechaFiltrar, cantidadMostrar]);
-
+  }, [filtroContenedor, filtroTipoFruta, filtroCliente, filtroFechaEntrada, filtroFechaSalida, filtroFechaFinalizado, cantidadMostrar]);
+  
+  useEffect(() => {
+    const obtenerDataContenedorConFechas = async (): Promise<void> => {
+      obtenerDataContenedor();
+    };
+  
+    obtenerDataContenedorConFechas();
+  }, [filtroFechaInicio, filtroFechaFin]);
+  
+  const obtenerDataContenedor = async (): Promise<void> => {
+    try {
+      const request = construirRequest();
+  
+      const response = await window.api.contenedores(request);
+      console.log(response.data);
+      console.log('Request:', request);
+  
+      if (response.status === 200) {
+        setData(response.data);
+        const clientesArray = response.data.map(contenedor => contenedor.infoContenedor.nombreCliente);
+        setClientes(Array.from(new Set(clientesArray)));
+  
+        setShowSuccess(true);
+        setTimeout(() => {
+          setShowSuccess(false);
+        }, 5000);
+      } else {
+        setShowError(true);
+        setMessage("Error obteniendo los datos del servidor");
+        setTimeout(() => {
+          setShowError(false);
+        }, 5000);
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        setShowError(true);
+        setMessage(e.message);
+        setTimeout(() => {
+          setShowError(false);
+        }, 5000);
+      }
+    }
+  };
+  
+  let defaultFormattedFechaInicio: string | null = null;
+  let defaultFormattedFechaFin: string | null = null;
+  
+  const construirRequest = (): any => {
+    let tipoFecha: string | null = null;
+    let formattedFechaInicio: string | null = null;
+    let formattedFechaFin: string | null = null;
+  
+    if (tipoFechaFiltrar === 'entrada') {
+      tipoFecha = 'entrada';
+    } else if (tipoFechaFiltrar === 'salida') {
+      tipoFecha = 'salida';
+    } else if (tipoFechaFiltrar === 'finalizado') {
+      tipoFecha = 'finalizado';
+    }
+  
+    // Utiliza las variables por defecto para asignar valores
+    formattedFechaInicio = filtroFechaInicio !== null ? filtroFechaInicio.toISOString() : defaultFormattedFechaInicio;
+    formattedFechaFin = filtroFechaFin !== null ? filtroFechaFin.toISOString() : defaultFormattedFechaFin;
+  
+    return {
+      action: 'ObtenerInfoContenedoresCelifrut',
+      filtro: {
+        contenedor: filtroContenedor,
+        tipoFruta: filtroTipoFruta,
+        cliente: filtroCliente,
+        fecha: {
+          tipo: tipoFecha,
+          inicio: formattedFechaInicio,
+          fin: formattedFechaFin
+        },
+        cantidad: cantidadMostrar
+      },
+    };
+  };
 
   const closeModal = (): void => {
     setShowError(false);
