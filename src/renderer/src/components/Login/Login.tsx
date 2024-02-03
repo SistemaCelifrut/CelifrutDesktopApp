@@ -56,7 +56,7 @@ export default function Login(props: propsType): JSX.Element {
   }, [username, password])
 
   return (
-    <form onSubmit={handleSubmit} className={`bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4  transition-all duration-500
+    <form onSubmit={handleSubmit} className={`bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-6/12  transition-all duration-500
     ${animation === true ? 'h-[550px]' : 'h-[360px]'} ${fade === true ? 'opacity-0' : 'opacity-100'}` }>
       <div className="mb-4">
         <label

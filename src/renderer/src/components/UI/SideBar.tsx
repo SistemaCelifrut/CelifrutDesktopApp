@@ -1,8 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { themeContext, userContext } from '@renderer/App'
-import { useContext } from 'react'
-import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
-import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
+import { useContext, useEffect, useRef, useState } from 'react'
+import { FcFolder } from "react-icons/fc";
+import { FcOpenedFolder } from "react-icons/fc";
+import { FcDepartment } from "react-icons/fc";
+import { FcCommandLine } from "react-icons/fc";
+
 
 type propsType = {
   seleccionWindow: (data: string) => void
@@ -13,38 +16,169 @@ type propsType = {
 export default function SideBar(props: propsType): JSX.Element {
   const theme = useContext(themeContext)
   const user = useContext(userContext)
+  const isResizingRef = useRef(false)
+  const [width, setWidth] = useState<number>(100)
+  //const [items, setItems] = useState<string[][]>([]);
+  const [areaState, setAreaState] = useState<string[]>([])
+  const [elementoState, setElementoState] = useState<string[][]>([])
+  const [areaSelect, setAreaSelect] = useState<number[]>([])
+  const [elementSelect, setElementSelect] = useState<number[]>([])
+  const [permisos, setPermisos] = useState<string[][]>([])
+
+  useEffect((): void => {
+    const areas: string[] = [];
+    const elementos: string[] = [];
+
+    const permisosArr = user.permisos.map(item => {
+      const [area, elemento, permiso] = item.split("//")
+      areas.push(area);
+      elementos.push(area + "//" + elemento)
+      return [area, elemento, permiso]
+    })
+    const areaSet = new Set(areas);
+    const elementosSet = new Set(elementos);
+    const areaArr = [...areaSet]
+    const elementosArr = [...elementosSet]
+    const elementoArr2 = elementosArr.map(elementoArr => {
+      const [area, elemento] = elementoArr.split("//")
+      return [area, elemento]
+    })
+    setAreaState(areaArr);
+    setElementoState(elementoArr2)
+    setPermisos(permisosArr)
+    console.log(elementos)
+  }, [])
+
+  useEffect(() => {
+    if (props.showSideBar) {
+      setWidth(250)
+    } else {
+      setWidth(0)
+    }
+  }, [props.showSideBar])
+
+
+  const handleMouseMove = (e): void => {
+    if (isResizingRef) {
+      setWidth(e.clientX);
+    }
+  };
+
+  const handleMouseDown = (e): void => {
+    if (e.target === e.currentTarget) {
+      e.stopPropagation();
+      isResizingRef.current = true;
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+  };
+
+  const handleMouseUp = (): void => {
+    isResizingRef.current = false;
+    document.removeEventListener('mousemove', handleMouseMove);
+  };
+
+  const handleClickArea = (index): void => {
+    if (areaSelect.includes(index)) {
+      const indexToRemove = areaSelect.findIndex(item => item === index)
+      setAreaSelect(prevState => prevState.filter((_, indexArr) => indexArr !== indexToRemove));
+    } else {
+      setAreaSelect(prevState => [...prevState, index]);
+    }
+  }
+
+  const handleClickElement = (index): void => {
+    if (elementSelect.includes(index)) {
+      const indexToRemove = elementSelect.findIndex(item => item === index)
+      setElementSelect(prevState => prevState.filter((_, indexArr) => indexArr !== indexToRemove));
+    } else {
+      setElementSelect(prevState => [...prevState, index]);
+    }
+  }
+
+
   return (
     <aside
-      className={`${theme === 'Dark' ? 'bg-primary shadow-white' : 'bg-white shadow-lg'
-        } text-sm h-full relative`}
+      className={`${theme === 'Dark' ? 'bg-primary border-slate-600' : 'bg-white border-gray-200 '} felx border-solid border-r-2 m-0 
+      cursor-col-resize pr-[1px] text-[11px] h-max  overflow-auto ${isResizingRef.current ? 'cursor-ew-resize' : 'pointer-events-auto'}`}
+      style={{
+        width: `${width}px`,
+        minWidth: `${width}px`
+      }}
+      onMouseDown={handleMouseDown}
     >
-      <div className="mx-auto px-2 py-2 flex justify-between h-max min-h-screen ml-0">
+      <div className="mx-auto flex justify-between  min-h-screen ml-0 h-full w-full m-0 p-0" onClick={(): null => null}>
         {props.showSideBar ?
-          <ul className="transition-all ease-in-out duration-500 opacity-100 transform scale-100">
-            {user.permisos.sort().map(permiso => (
-
-              <li className={`${theme === 'Dark' ? 'hover:bg-slate-950' : 'hover:bg-slate-200'} p-1`} key={permiso}>
-                <div >
-                  <button
-                    className={`${theme === 'Dark' ? 'text-white' : 'text-black'} hover:underline w-full text-left `}
-                    onClick={(): void => props.seleccionWindow(permiso)}
-                  >
-                    {permiso}
+          <ul className="transition-all ease-in-out duration-500 opacity-100 transform scale-100 w-full m-0 p-0 hover:cursor-default">
+            {areaState.map((item, index) => (
+              <>
+                <li className={`hover:cursor-pointer  w-full pl-2 ${theme === 'Dark' ? 'text-white hover:bg-slate-500' : 'text-black hover:bg-slate-200'}`}>
+                  <button className='flex flex-row justify-start items-center gap-2' onClick={(): void => handleClickArea(index)}>
+                    <div className=' text-sm'>
+                      <FcDepartment />
+                    </div>
+                    {item}
                   </button>
-                  <hr></hr>
-                </div>
-              </li>
+                </li>
+                <li>
+                  {areaSelect.includes(index) ?
+                    <ul className='ml-4'>
+                      {elementoState.map((itemElemento, indexElement) => {
+                        if (itemElemento[0] === item) {
+                          return (
+                            <>
+                              <li key={itemElemento[1] + indexElement} className={`hover:cursor-pointer  w-full pl-2 ${theme === 'Dark' ? 'text-white hover:bg-slate-500' : 'text-black hover:bg-slate-200'}`} >
+                                <button className='flex flex-row justify-start items-center gap-2' onClick={(): void => handleClickElement(indexElement)}>
+                                  <div className=' text-sm'>
+                                    { elementSelect.includes(indexElement) ? <FcOpenedFolder /> : <FcFolder />}
+                                  </div>
+                                  {itemElemento[1]}
+                                </button>
+                              </li>
+                              <li>
+                                {elementSelect.includes(indexElement) ?
+                                  <ul>
+                                    {permisos.map((permiso, indexPermiso) => {
+                                      if (permiso[1] === itemElemento[1]) {
+                                        return (
+                                          <>
+                                            <li key={permiso[2] + indexPermiso} className={`hover:cursor-pointer  w-full pl-4 ${theme === 'Dark' ? 'text-white hover:bg-slate-500' : 'text-black hover:bg-slate-200'}`}>
+                                              <button className='flex flex-row justify-start items-center gap-2' onClick={(): void => props.seleccionWindow(permiso[2])}>
+                                                <div className=' text-sm'>
+                                                   <FcCommandLine /> 
+                                                </div>
+                                                {permiso[2]}
+                                              </button>
+                                            </li>
+                                          </>
+                                        )
+                                      } else {
+                                        return null
+                                      }
+                                    })}
+                                  </ul>
+                                  :
+                                  null
+                                }
+                              </li>
+                            </>
 
+                          )
+                        } else {
+                          return null
+                        }
+                      })}
+                    </ul> :
+                    null
+                  }
+                </li>
+
+
+              </>
             ))}
           </ul> :
           <div className="transition-all ease-in-out duration-500 opacity-0 transform scale-0"></div>
         }
-        <button
-          onClick={props.handleSideBarWidth}
-          className={`border-solid border-2 ${theme === 'Dark' ? 'text-white bg-gray-800 shadow-white' : 'text-black bg-white'}
-                            mr-[-16px] text-2xl rounded-full p-1 absolute right-0 top-[250px]`}>
-          {props.showSideBar ? <MdKeyboardDoubleArrowLeft /> : <MdOutlineKeyboardDoubleArrowRight />}
-        </button>
       </div>
     </aside>
   )
