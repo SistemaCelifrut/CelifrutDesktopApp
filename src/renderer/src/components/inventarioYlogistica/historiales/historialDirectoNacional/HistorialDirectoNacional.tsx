@@ -104,7 +104,7 @@ export default function HistorialDirectoNacional(): JSX.Element {
     setFiltro(data)
   }
   return (
-    <div>
+    <div className='w-full'>
       <NavBarInventario handleFilter={handleFilter} />
 
       <BotonesAccionHistorialFrutaProcesada

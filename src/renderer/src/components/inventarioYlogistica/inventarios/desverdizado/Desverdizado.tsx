@@ -27,7 +27,7 @@ export default function Desverdizado(): JSX.Element {
     setShowError(false)
   }
   return (
-    <div>
+    <div className="w-full">
       <NavBarDesverdizado handleFilter={handleFilter} handleSectionSelect={handleSectionSelect} />
       {seccion === "" &&
         <InventarioDesverdizado

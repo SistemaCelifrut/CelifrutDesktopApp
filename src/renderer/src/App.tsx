@@ -6,26 +6,34 @@ import { themeType } from './env'
 import SideBar from './components/UI/SideBar'
 import Login from './components/Login/Login'
 import { userType } from './types/login'
-import Descarte from './components/inventarioDescarte/Descarte'
-import ListaDeEmpaque from './components/listaDeEmpaque/ListaDeEmpaque'
-import CalidadInterna from './components/calidadInterna/CalidadInterna'
-import ClasificacionCalidad from './components/clasificacionCalidad/ClasificacionCalidad'
-import Formatos from './components/Formatos/Formatos'
-import Informes from './components/informes/Informes'
-import Cuentas from './components/crearCuentas/Cuentas'
-import VolanteCalidad from './components/volanteCalidad/VolanteCalidad'
-import Lotes from './components/lotes/Lotes'
-import Proveedores from './components/proveedores/Proveedores'
-import InspeccionMulas from './components/inspeccionMulas/InspeccionMulas'
-import HistorialVehiculos from './components/HistorialFormularioInspeccionVehiculos/HistorialVehiculos'
-import Contenedores from './components/contenedores/Contenedores'
-import ProbarFunciones from './components/probarFunciones/ProbarFunciones'
+
 import IngresoFruta from './components/inventarioYlogistica/ingresos/ingresoFruta/IngresoFruta'
 import CrearContenedor from './components/inventarioYlogistica/ingresos/crearContenedor/CrearContenedor'
 import InventarioFrutaSinProcesar from './components/inventarioYlogistica/inventarios/frutaSinProcesar/InventarioFrutaSinProcesar'
 import HistorialProcesado from './components/inventarioYlogistica/historiales/historialProcesado/HistorialProcesado'
 import HistorialDirectoNacional from './components/inventarioYlogistica/historiales/historialDirectoNacional/HistorialDirectoNacional'
 import Desverdizado from './components/inventarioYlogistica/inventarios/desverdizado/Desverdizado'
+import CalidadInterna from './components/calidad/ingresos/calidadInterna/CalidadInterna'
+import HistorialCalidadInterna from './components/calidad/historiales/historialCalidadInterna/HistorialCalidadInterna'
+import IngresoClasificacionCalidad from './components/calidad/ingresos/clasificacionCalidad/IngresoClasificacionCalidad'
+import HistorialClasificacionCalidad from './components/calidad/historiales/historialClasificacionCalidad/HistorialClasificacionCalidad'
+import Clientes from './components/gestionDeCuentas/clientes/Clientes'
+import Contenedores from './components/inventarioYlogistica/historiales/contenedores/Contenedores'
+import ControlPlagas from './components/calidad/formularios/controlPlagas/ControlPlagas'
+import LimpiezaMensual from './components/calidad/formularios/limpiezaMensual/LimpiezaMensual'
+import LimpiezaPostCosecha from './components/calidad/formularios/limpiezaPostCosecha/LimpiezaPostCosecha'
+import HigienePersonal from './components/calidad/formularios/higienePersonal/HigienePersonal'
+import HistorialVehiculos from './components/transporte/historialInspecciones/historialFormularioInspeccionVehiculos/HistorialVehiculos'
+import Informes from './components/calidad/informes/informesCalidad/Informes'
+import HistorialIngresoFruta from './components/inventarioYlogistica/historiales/historialIngresoFruta/HistorialIngreso'
+import FormularioMulas from './components/transporte/formulatioInspecciones/inspeccionMulas/FormularioMulas'
+import HistorialFormulario from './components/transporte/historialInspecciones/historialFormularioInspeccionMulas/HistorialFormulario'
+import InventarioDescarte from './components/inventarioYlogistica/inventarios/descarte/InventarioDescarte'
+import HistorialDescarte from './components/inventarioYlogistica/historiales/historialDescartes/HistorialDescarte'
+import ListaDeEmpaque from './components/inventarioYlogistica/Proceso/listaDeEmpaque/ListaDeEmpaque'
+import Lotes from './components/inventarioYlogistica/historiales/lotes/Lotes'
+import Proveedores from './components/gestionDeCuentas/proveedores/Proveedores'
+import VolanteCalidad from './components/calidad/formularios/volanteCalidad/VolanteCalidad'
 
 type MyContextType = {
   setSection: React.Dispatch<React.SetStateAction<string>>;
@@ -108,34 +116,44 @@ function App(): JSX.Element {
                       <div className={` flex justify-center w-full h-full overflow-auto `}>
 
                         {/* Inventario y logistica */}
-                        {section === 'Ingreso de fruta' && <IngresoFruta />}
-                        {section === 'Crear contenedor' && <CrearContenedor />}
-                        {section === 'Fruta sin procesar' && <InventarioFrutaSinProcesar />}
-                        {section === 'Historial proceso' && <HistorialProcesado />}
-                        {section === 'Historial directo nacional' && <HistorialDirectoNacional />}
-                        {section === 'Desverdizado' && <Desverdizado />}
+                        {section === "Inventario y Logística//Ingresos//Ingreso de fruta" && <IngresoFruta />}
+                        {section === "Inventario y Logística//Ingresos//Crear contenedor" && <CrearContenedor />}
+                        {section === "Inventario y Logística//Inventarios//Fruta sin procesar" && <InventarioFrutaSinProcesar />}
+                        {section === "Inventario y Logística//Historiales//Fruta procesada" && <HistorialProcesado />}
+                        {section === "Inventario y Logística//Historiales//Directo nacional" && <HistorialDirectoNacional />}
+                        {section === "Inventario y Logística//Inventarios//Desverdizado" && <Desverdizado />}
+                        {section === "Inventario y Logística//Inventarios//Descarte" && <InventarioDescarte />}
+                        {section === "Inventario y Logística//Historiales//Contenedores" && <Contenedores />}
+                        {section === "Inventario y Logística//Historiales//Ingreso fruta" &&  <HistorialIngresoFruta />}
+                        {section === "Inventario y Logística//Historiales//Descarte" &&  <HistorialDescarte />}
+                        {section === "Inventario y Logística//Historiales//Lista de empaque" &&  <ListaDeEmpaque />}
+                        {section === "Inventario y Logística//Historiales//Lotes" &&  <Lotes />}
 
 
+                        {/* Calidad */}
+                        {section === "Calidad//Ingresos//Calidad interna" && <CalidadInterna />}
+                        {section === "Calidad//Historiales//Calidad interna" && <HistorialCalidadInterna />}
+                        {section === "Calidad//Ingresos//Clasificacion calidad" && <IngresoClasificacionCalidad />}
+                        {section === "Calidad//Historiales//Clasificacion calidad" && <HistorialClasificacionCalidad />}
+                        {section === "Calidad//Formularios//Control plagas" && <ControlPlagas />} 
+                        {section === "Calidad//Formularios//Higiene personal" && <HigienePersonal />} 
+                        {section === "Calidad//Formularios//Limpieza mensual" && <LimpiezaMensual />} 
+                        {section === "Calidad//Formularios//Limpieza post cosecha" && <LimpiezaPostCosecha />} 
+                        {section === "Calidad//Formularios//Volante calidad" && <VolanteCalidad />} 
+                        {section === "Calidad//Informes//Informe proveedor" && <Informes />}
 
 
-                        {section === 'Descarte' && <Descarte theme={theme} user={user.user} />}
-                        {section === 'Lista de empaque' && (
-                          <ListaDeEmpaque theme={theme} user={user.user} />
-                        )}
-                        {section === 'Calidad interna' && <CalidadInterna />}
-                        {section === 'Clasificacion calidad' && <ClasificacionCalidad />}
-                        {section === 'Formatos' && <Formatos />}
-                        {section === 'Informes' && <Informes />}
-                        {section === 'Crear cuenta' && <Cuentas />}
-                        {section === 'Volante calidad' && <VolanteCalidad />}
-                        {section === 'Lotes' && <Lotes />}
-                        {section === 'Proveedores' && <Proveedores />}
-                        {section === 'Inspeccion tractomulas' && (
-                          <InspeccionMulas />
-                        )}
-                        {section === 'Contenedores' && <Contenedores />}
-                        {section === 'Historial formulario inspeccion vehiculos' && <HistorialVehiculos />}
-                        {section === 'probarFunciones' && <ProbarFunciones />}
+                        {/* Gestion de cuentas */}
+                        {section === "Gestión de Cuentas//Clientes//Clientes" && <Clientes />}
+                        {section === "Gestión de Cuentas//Proveedores//Proveedores" && <Proveedores />}
+
+                        {/* Transporte */}
+                        {section === 'Transporte//Inspecciones//Inspeccion camiones' && <HistorialVehiculos />}
+                        {section === "Transporte//Inspecciones//Inspeccion tractomulas" && <HistorialFormulario />}
+                        {section === "Transporte//Formularios//Tractomulas" && <FormularioMulas />}
+
+
+              
 
                       </div>
                     </div>

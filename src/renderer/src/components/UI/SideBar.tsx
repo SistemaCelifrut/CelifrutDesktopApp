@@ -128,22 +128,22 @@ export default function SideBar(props: propsType): JSX.Element {
                           return (
                             <>
                               <li key={itemElemento[1] + indexElement} className={`hover:cursor-pointer  w-full pl-2 ${theme === 'Dark' ? 'text-white hover:bg-slate-500' : 'text-black hover:bg-slate-200'}`} >
-                                <button className='flex flex-row justify-start items-center gap-2' onClick={(): void => handleClickElement(indexElement)}>
+                                <button className='flex flex-row w-full justify-start items-center gap-2' onClick={(): void => handleClickElement(indexElement)}>
                                   <div className=' text-sm'>
                                     { elementSelect.includes(indexElement) ? <FcOpenedFolder /> : <FcFolder />}
                                   </div>
                                   {itemElemento[1]}
                                 </button>
                               </li>
-                              <li>
+                              <li className='w-full'>
                                 {elementSelect.includes(indexElement) ?
-                                  <ul>
+                                  <ul className='w-full'>
                                     {permisos.map((permiso, indexPermiso) => {
                                       if ( permiso[1] === itemElemento[1] && permiso[0] === item) {
                                         return (
                                           <>
                                             <li key={permiso[2] + indexPermiso} className={`hover:cursor-pointer  w-full pl-4 ${theme === 'Dark' ? 'text-white hover:bg-slate-500' : 'text-black hover:bg-slate-200'}`}>
-                                              <button className='flex flex-row justify-start items-center gap-2' onClick={(): void => props.seleccionWindow(permiso[2])}>
+                                              <button className='flex flex-row w-full justify-start items-center gap-2' onClick={(): void => props.seleccionWindow(permiso[0] + "//" + permiso[1] + "//" + permiso[2])}>
                                                 <div className=' text-sm'>
                                                    <FcCommandLine /> 
                                                 </div>
