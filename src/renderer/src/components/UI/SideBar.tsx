@@ -107,9 +107,9 @@ export default function SideBar(props: propsType): JSX.Element {
       }}
       onMouseDown={handleMouseDown}
     >
-      <div className="mx-auto flex justify-between  min-h-screen ml-0 h-full w-full m-0 p-0" onClick={(): null => null}>
+      <div className="mx-auto flex justify-between overflow-x-hidden  min-h-screen ml-0 h-full w-full m-0 p-0" onClick={(): null => null}>
         {props.showSideBar ?
-          <ul className="transition-all ease-in-out duration-500 opacity-100 transform scale-100 w-full m-0 p-0 hover:cursor-default">
+          <ul className="transition-all ease-in-out duration-500 opacity-100 transform scale-100 w-full min-w-[200px] m-0 p-0 hover:cursor-default">
             {areaState.map((item, index) => (
               <>
                 <li className={`hover:cursor-pointer  w-full pl-2 ${theme === 'Dark' ? 'text-white hover:bg-slate-500' : 'text-black hover:bg-slate-200'}`}>

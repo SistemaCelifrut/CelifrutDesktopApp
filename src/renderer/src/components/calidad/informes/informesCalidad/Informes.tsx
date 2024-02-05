@@ -90,7 +90,7 @@ export default function Informes(): JSX.Element {
     if(!dataGlobal){
       throw new Error("Error informes context data global")
     }
-    secctionMenu.setSection("Lotes")
+    secctionMenu.setSection("Inventario y Logística//Historiales//Lotes")
     dataGlobal.setDataComponentes(EF1)
 
   }

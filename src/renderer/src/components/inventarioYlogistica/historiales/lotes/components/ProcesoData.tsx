@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 
-import { themeContext } from "@renderer/App"
+import { dataContext, themeContext } from "@renderer/App"
 import { useContext, useEffect, useState } from "react"
 import FiltrosColumnas from "../utils/FiltrosColumnas"
 import FiltrosFilas from "../utils/FiltrosFilas"
@@ -14,10 +14,14 @@ import PromediosProceso from "../utils/PromediosProceso"
 
 export default function ProcesoData(): JSX.Element {
     const theme = useContext(themeContext)
+    const dataGlobal = useContext(dataContext);
+    if(!dataGlobal){
+        throw new Error("Error informes context data global")
+      }
     const [columnVisibility, setColumnVisibility] = useState<filtroColumnasType>(filtrosColumnasObj)
     const [filtro, setFiltro] = useState<filtroType>({ tipoFruta: '', fechaIngreso: { $gte: null, $lt: null }, rendimiento: { $gte: '', $lt: '' }, nombrePredio: '', cantidad: '' })
     const [prediosData, setPrediosData] = useState<string[]>([])
-    const [ef1, setEf1] = useState<string>('')
+    const [ef1, setEf1] = useState<string>(dataGlobal.dataComponentes)
     const [tipoGraficas, setTipoGraficas] = useState<string>('')
     const [data, setData] = useState<LoteDataType[]>([])
     const [dataOriginal, setDataOriginal] = useState<LoteDataType[]>([])
