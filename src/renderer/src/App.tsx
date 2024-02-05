@@ -34,6 +34,7 @@ import ListaDeEmpaque from './components/inventarioYlogistica/Proceso/listaDeEmp
 import Lotes from './components/inventarioYlogistica/historiales/lotes/Lotes'
 import Proveedores from './components/gestionDeCuentas/proveedores/Proveedores'
 import VolanteCalidad from './components/calidad/formularios/volanteCalidad/VolanteCalidad'
+import Cuentas from './components/crearCuentas/Cuentas'
 
 type MyContextType = {
   setSection: React.Dispatch<React.SetStateAction<string>>;
@@ -146,7 +147,7 @@ function App(): JSX.Element {
                         {/* Gestion de cuentas */}
                         {section === "Gestión de Cuentas//Clientes//Clientes" && <Clientes />}
                         {section === "Gestión de Cuentas//Proveedores//Proveedores" && <Proveedores />}
-                        {section === "Gestión de Cuentas//Ingresos//Crear cuenta" && <HistorialVehiculos />}
+                        {section === "Gestión de Cuentas//Ingresos//Crear cuenta" && <Cuentas />}
 
                         {/* Transporte */}
                         {section === 'Transporte//Inspecciones//Inspeccion camiones' && <HistorialVehiculos />}

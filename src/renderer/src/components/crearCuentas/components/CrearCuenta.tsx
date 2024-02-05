@@ -6,9 +6,15 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { IoMdMail } from "react-icons/io";
 import { GiScrollQuill } from "react-icons/gi";
 
+interface Permiso {
+    id: string;
+    nombre: string;
+    hijos?: Permiso[];
+}
+
 export default function CrearCuenta(): JSX.Element {
     const theme = useContext(themeContext);
-    const [permisos, setPermisos] = useState<string[]>([]);
+    const [permisos, setPermisos] = useState<Permiso[]>([]);
     const [permisosSeleccionados, setPermisosSeleccionados] = useState<string[]>([]);
     const [usuario, setUsuario] = useState<string>('');
     const [contraseña, setContraseña] = useState<string>(''); 
@@ -25,7 +31,7 @@ export default function CrearCuenta(): JSX.Element {
                 };
                 const response: serverResponse<permisosType> = await window.api.user(request);
                 if (response.status === 200) {
-                    setPermisos(response.data.permisos);
+                    setPermisos(formatPermisos(response.data.permisos));
                     setCargos(response.data.cargos);
                 } else {
                     alert("Error obteniendo los permisos");
@@ -37,34 +43,106 @@ export default function CrearCuenta(): JSX.Element {
         obtenerPermisos();
     }, []);
 
-    const handlePermisos = (e): void => {
-        const permisosAux = [...permisosSeleccionados];
+    const formatPermisos = (permisos: string[]): Permiso[] => {
+        const formattedPermisos: Permiso[] = [];
+        let idCounter = 0;
 
-        if (permisosAux.includes(e)) {
-            const index = permisosAux.findIndex(item => item === e);
-            permisosAux.splice(index, 1);
-        } else {
-            permisosAux.push(e);
-        }
-        setPermisosSeleccionados(permisosAux);
+        permisos.forEach(permiso => {
+            const paths = permiso.split('//');
+            let currentLevel = formattedPermisos;
+
+            paths.forEach((path, index) => {
+                const existingPermiso = currentLevel.find(p => p.nombre === path);
+
+                if (existingPermiso) {
+                    if (index === paths.length - 1) {
+                        existingPermiso.nombre = path;
+                    }
+                    currentLevel = existingPermiso.hijos || [];
+                } else {
+                    const newPermiso: Permiso = { id: `permiso-${idCounter++}`, nombre: path };
+                    currentLevel.push(newPermiso);
+                    if (index < paths.length - 1) {
+                        currentLevel = newPermiso.hijos = [];
+                    }
+                }
+            });
+        });
+
+        return formattedPermisos;
     };
 
+    const handleSeleccionRecursiva = (nombre: string, isChecked: boolean, hijos?: Permiso[]): void => {
+        if (!hijos) return;
+
+        if (isChecked) {
+            setPermisosSeleccionados(prevState => [...prevState, nombre]);
+        } else {
+            setPermisosSeleccionados(prevState => prevState.filter(item => item !== nombre));
+        }
+
+        hijos.forEach(hijo => {
+            handleSeleccionRecursiva(hijo.nombre, isChecked, hijo.hijos);
+        });
+    };
+
+    const handlePermisos = (nombre: string, isChecked: boolean, hijos?: Permiso[]): void => {
+        const toggleChildren = (permisos: Permiso[], isChecked: boolean): void => {
+            permisos.forEach(permiso => {
+                // Seleccionar/deseleccionar el permiso actual
+                setPermisosSeleccionados(prevState => {
+                    if (isChecked && !prevState.includes(permiso.nombre)) {
+                        return [...prevState, permiso.nombre];
+                    } else if (!isChecked && prevState.includes(permiso.nombre)) {
+                        return prevState.filter(item => item !== permiso.nombre);
+                    }
+                    return prevState;
+                });
+    
+                // Seleccionar/deseleccionar los hijos recursivamente
+                if (permiso.hijos && permiso.hijos.length > 0) {
+                    toggleChildren(permiso.hijos, isChecked);
+                }
+            });
+        };
+    
+        // Seleccionar/deseleccionar la carpeta principal
+        setPermisosSeleccionados(prevState => {
+            if (isChecked && !prevState.includes(nombre)) {
+                return [...prevState, nombre];
+            } else if (!isChecked && prevState.includes(nombre)) {
+                return prevState.filter(item => item !== nombre);
+            }
+            return prevState;
+        });
+    
+        // Seleccionar/deseleccionar los hijos recursivamente
+        if (hijos && hijos.length > 0) {
+            toggleChildren(hijos, isChecked);
+        }
+    };
+    
     const crearUsuario = async (event): Promise<void> => {
         try {
             event.preventDefault();
+
+            // Obtener todas las rutas completas de los permisos seleccionados
+            const permisosConRuta = obtenerPermisosConRuta(permisos, permisosSeleccionados);
+
             const request = {
                 action: 'crearUsuario',
                 query: 'personal',
                 data: {
                     usuario: usuario,
                     contraseña: contraseña,
-                    permisos: permisosSeleccionados,
+                    permisos: permisosConRuta,
                     cargo: cargo,
                     correo: correo
                 }
             };
+
             const response = await window.api.user(request);
-            console.log(response);
+            console.log(request);
             if (response.status === 200) {
                 console.log("nice");
             } else {
@@ -80,6 +158,31 @@ export default function CrearCuenta(): JSX.Element {
             setCargos([]);
             resetearCheckboxs();
         }
+    };    
+
+    const obtenerPermisosConRuta = (permisos: Permiso[], permisosSeleccionados: string[]): string[] => {
+        const permisosConRuta: string[] = [];
+        permisosSeleccionados.forEach(permisoSeleccionado => {
+            permisos.forEach(permiso => {
+                agregarPermisosConRuta(permiso, permisoSeleccionado, '', permisosConRuta);
+            });
+        });
+        return permisosConRuta;
+    };
+
+    const agregarPermisosConRuta = (permiso: Permiso, permisoSeleccionado: string, ruta: string, permisosConRuta: string[]): void => {
+        const rutaActual = ruta !== '' ? `${ruta}//${permiso.nombre}` : permiso.nombre;
+
+        if (permisoSeleccionado === permiso.nombre && (!permiso.hijos || permiso.hijos.length === 0)) {
+            permisosConRuta.push(rutaActual);
+            return;
+        }
+
+        if (permiso.hijos && permiso.hijos.length > 0) {
+            permiso.hijos.forEach(hijo => {
+                agregarPermisosConRuta(hijo, permisoSeleccionado, rutaActual, permisosConRuta);
+            });
+        }
     };
 
     const resetearCheckboxs = (): void => {
@@ -87,6 +190,26 @@ export default function CrearCuenta(): JSX.Element {
         for (const elemento of elementos) {
             (elemento as HTMLInputElement).checked = false;
         }
+    };
+
+    const renderizarPermisos = (permisos: Permiso[]): JSX.Element[] => {
+        return permisos.map(permiso => (
+            <div key={permiso.id} className="ml-4">
+                <label>
+                    <input
+                        type="checkbox"
+                        checked={permisosSeleccionados.includes(permiso.nombre)}
+                        onChange={() => handlePermisos(permiso.nombre, !permisosSeleccionados.includes(permiso.nombre), permiso.hijos)}
+                    />
+                    {permiso.nombre}
+                </label>
+                {permiso.hijos && (
+                    <div className="ml-4">
+                        {renderizarPermisos(permiso.hijos)}
+                    </div>
+                )}
+            </div>
+        ));
     };
 
     return (
@@ -105,13 +228,11 @@ export default function CrearCuenta(): JSX.Element {
                             ${theme === 'Dark' ? 'bg-slate-600' : 'bg-slate-100'}`}
                 onSubmit={crearUsuario}>
                 <div className={`w-4/5 m-1 flex flex-col gap-1 justify-center items-center`}>
-
                     <div className="flex justify-start w-full">
                         <label className={`flex flex-row gap-1 items-center ${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
                             <FaUserPlus className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`} /> Usuario:
                         </label>
                     </div>
-
                     <input
                         required
                         type="text"
@@ -121,13 +242,11 @@ export default function CrearCuenta(): JSX.Element {
                                 ${usuario !== '' ? 'h-9 w-full border-solid border-2 border-Celifrut-green' : 'h-8 w-11/12'}`} />
                 </div>
                 <div className={`w-4/5 m-1 flex flex-col gap-1 justify-center items-center`}>
-
                     <div className="flex justify-start w-full">
                         <label className={`flex flex-row gap-1 items-center ${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
                             <RiLockPasswordFill className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`} /> Contraseña:
                         </label>
                     </div>
-
                     <input
                         required
                         type="text"
@@ -137,13 +256,11 @@ export default function CrearCuenta(): JSX.Element {
                           ${contraseña !== '' ? 'h-9 w-full border-solid border-2 border-Celifrut-green' : 'h-8 w-11/12'}`} />
                 </div>
                 <div className={`w-4/5 m-1 flex flex-col gap-1 justify-center items-center`}>
-
                     <div className="flex justify-start w-full">
                         <label className={`flex flex-row gap-1 items-center ${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
                             <IoMdMail className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`} /> Correo:
                         </label>
                     </div>
-
                     <input
                         required
                         type="email"
@@ -153,13 +270,11 @@ export default function CrearCuenta(): JSX.Element {
                         ${correo !== '' ? 'h-9 w-full border-solid border-2 border-Celifrut-green' : 'h-8 w-11/12'}`} />
                 </div>
                 <div className={`w-4/5 m-1 flex flex-col gap-1 justify-center items-center`}>
-
                     <div className="flex justify-start w-full">
                         <label className={`flex flex-row gap-1 items-center ${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
                             <GiScrollQuill className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`} /> Cargo:
                         </label>
                     </div>
-
                     <select
                         required
                         value={cargo}
@@ -179,14 +294,7 @@ export default function CrearCuenta(): JSX.Element {
                         </p>
                     </div>
                     <div className="flex flex-row flex-wrap gap-4 justify-start w-full border-solid border-2 border-slate-200 rounded-lg p-2">
-                        {permisos && permisos.map(permiso => (
-                            <div className={`flex justify-start mt-2`} key={permiso}>
-                                <label className={`flex flex-row gap-1 items-center ${theme === 'Dark' ? 'text-white' : 'text-black'}`} >
-                                    <input type="checkbox" className="permisos-class" onClick={(): void => handlePermisos(permiso)} />
-                                    {' '}{permiso}
-                                </label>
-                            </div>
-                        ))}
+                        {renderizarPermisos(permisos)}
                     </div>
                 </div>
                 <button
@@ -196,7 +304,6 @@ export default function CrearCuenta(): JSX.Element {
                     Guardar
                 </button>
             </form>
-
         </div>
     );
 }

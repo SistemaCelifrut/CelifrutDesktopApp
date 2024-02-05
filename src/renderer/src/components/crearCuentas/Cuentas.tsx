@@ -4,7 +4,7 @@ import CuentasModificar from './components/CuentasModificar'
 import NavBarCuentas from './utils/NavBarCuentas'
 import { useState } from 'react'
 
-export default function HistorialVehiculos(): JSX.Element {
+export default function Cuentas(): JSX.Element {
   const [, setFiltro] = useState<string>('')
   const [seccion, setSeccion] = useState<string>('Cuentas')
 
