@@ -18,7 +18,7 @@ export default function BotonesAccionHistorialFrutaProcesada(props: propsType):J
     ${props.theme === 'Dark' ? 'text-white' : 'text-black'}`}
     >
       <h2>{props.title}</h2>
-      <h2>{props.table && props.table.reduce((acu, lote) => (acu += lote.kilos), 0)} Kg</h2>
+      <h2>{props.table && props.table.reduce((acu, lote) => (acu += lote.kilos), 0).toFixed(2)} Kg</h2>
       <button
         onClick={props.closeModal}
         className={

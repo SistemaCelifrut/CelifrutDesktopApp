@@ -5,16 +5,12 @@ import InventarioDesverdizado from "./components/InventarioDesverdizado"
 import NavBarDesverdizado from "./utils/NavBarDesverdizado"
 import { useContext, useState } from 'react'
 import SuccessModal from "@renderer/errors/modal/SuccessModal"
-import { themeContext } from "@renderer/App"
-
-type propsType = {
-  theme: string
-  user: string
-}
+import { themeContext, userContext } from "@renderer/App"
 
 
-export default function Desverdizado(props: propsType): JSX.Element {
+export default function Desverdizado(): JSX.Element {
   const theme = useContext(themeContext)
+  const user = useContext(userContext)
   const [filtro, setFiltro] = useState<string>('')
   const [seccion, setSeccion] = useState<string>('')
   const [message, setMessage] = useState<string>('')
@@ -35,8 +31,8 @@ export default function Desverdizado(props: propsType): JSX.Element {
       <NavBarDesverdizado handleFilter={handleFilter} handleSectionSelect={handleSectionSelect} />
       {seccion === "" &&
         <InventarioDesverdizado
-          user={props.user}
-          theme={props.theme}
+          user={user.cargo}
+          theme={theme}
           filtro={filtro}
           setShowSuccess={setShowSuccess}
           setShowError={setShowError}

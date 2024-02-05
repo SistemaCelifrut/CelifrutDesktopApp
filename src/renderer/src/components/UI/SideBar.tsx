@@ -100,7 +100,7 @@ export default function SideBar(props: propsType): JSX.Element {
   return (
     <aside
       className={`${theme === 'Dark' ? 'bg-primary border-slate-600' : 'bg-white border-gray-200 '} felx border-solid border-r-2 m-0 
-      cursor-col-resize pr-[1px] text-[11px] h-max  overflow-auto ${isResizingRef.current ? 'cursor-ew-resize' : 'pointer-events-auto'}`}
+      cursor-col-resize pr-[1px] text-[15px] h-max  overflow-auto ${isResizingRef.current ? 'cursor-ew-resize' : 'pointer-events-auto'}`}
       style={{
         width: `${width}px`,
         minWidth: `${width}px`
@@ -139,7 +139,7 @@ export default function SideBar(props: propsType): JSX.Element {
                                 {elementSelect.includes(indexElement) ?
                                   <ul>
                                     {permisos.map((permiso, indexPermiso) => {
-                                      if (permiso[1] === itemElemento[1]) {
+                                      if ( permiso[1] === itemElemento[1] && permiso[0] === item) {
                                         return (
                                           <>
                                             <li key={permiso[2] + indexPermiso} className={`hover:cursor-pointer  w-full pl-4 ${theme === 'Dark' ? 'text-white hover:bg-slate-500' : 'text-black hover:bg-slate-200'}`}>

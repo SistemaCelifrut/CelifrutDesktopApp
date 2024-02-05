@@ -1,25 +1,24 @@
 /* eslint-disable prettier/prettier */
 import { format } from 'date-fns'
 import { historialProcesoType } from '../types/types'
+import HeaderTableHistorialProcesado from '../utils/HeaderTableHistorialProcesado'
 import React from 'react'
-import HeaderTableHistorialDirecto from '../utils/HeaderTableHistorialDirecto'
 
 type propsType = {
   table: historialProcesoType[]
   theme: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  clickLote: (e:any) => void
+  clickLote: (e) => void
 }
 
-export default function TableHistorialDirectoNacional(props: propsType): JSX.Element {
+export default function TableHistorialProcesado(props: propsType): JSX.Element {
   return (
     <>
       <div>
-        <div className="grid grid-cols-7 gap-0 mt-0">
-          <HeaderTableHistorialDirecto theme={props.theme} />
+        <div className="grid grid-cols-8 gap-0 mt-0">
+          <HeaderTableHistorialProcesado theme={props.theme} />
         </div>
-        <div className="grid grid-cols-7 gap-0 mt-0">
-          {props.table.map((item, index) => (
+        <div className="grid grid-cols-8 gap-0 mt-0">
+          {props.table && props.table.map((item, index) => (
             <React.Fragment key={item._id}>
 
             <div
@@ -60,7 +59,7 @@ export default function TableHistorialDirectoNacional(props: propsType): JSX.Ele
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {item.kilos}
+              {item.kilos.toFixed(2)}
             </div>
             <div
               key={item.tipoFruta + 'tipofruta'}
@@ -77,6 +76,14 @@ export default function TableHistorialDirectoNacional(props: propsType): JSX.Ele
               }`}
             >
               {format(new Date(item.fecha), 'dd/MM/yyyy')}
+            </div>
+            <div
+              key={item.rendimiento + 'rendimiento'}
+              className={` ol-span-1 text-[12px] flex items-center justify-center ${
+                index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
+              }`}
+            >
+              {item.rendimiento && item.rendimiento.toFixed(2) + '%'}
             </div>
 
             </React.Fragment>

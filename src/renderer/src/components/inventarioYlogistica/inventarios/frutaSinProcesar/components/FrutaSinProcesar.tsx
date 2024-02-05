@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import TableFrutaSinProcesar from '../tables/TableFrutaSinProcesar'
-import { useEffect, useReducer, useState } from 'react'
+import { useContext, useEffect, useReducer, useState } from 'react'
 import { INITIAL_STATE, reducer } from '../functions/reducer'
 import BotonesAccionFrutaSinProcesar from '../utils/BotonesAccionFrutaSinProcesar'
 import { prediosType } from '../types/types'
@@ -8,10 +8,9 @@ import { createPortal } from 'react-dom'
 import Vaciado from '../modals/Vaciado'
 import Directo from '../modals/Directo'
 import Desverdizado from '../modals/Desverdizado'
+import { themeContext } from '@renderer/App'
 
 type propsType = {
-  theme: string
-  user: string
   filtro: string
   setShowSuccess: (e) => void
   setShowError: (e) => void
@@ -19,6 +18,7 @@ type propsType = {
 }
 
 export default function FrutaSinProcesar(props: propsType): JSX.Element {
+  const theme = useContext(themeContext);
   const [propsModal, setPropsModal] = useState({ nombre: '', canastillas: 0, enf: '' })
 
 
@@ -117,14 +117,14 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
           closeDirecto={closeDirecto}
           closeDesverdizado={closeDesverdizado}
         />
-        <TableFrutaSinProcesar table={table} theme={props.theme} clickLote={clickLote} />
+        <TableFrutaSinProcesar table={table} theme={theme} clickLote={clickLote} />
 
         {showVaciarModal &&
           createPortal(
             <Vaciado 
               closeVaciado={closeVaciado} 
               propsModal={propsModal} 
-              theme={props.theme} 
+              theme={theme} 
               setMessage={props.setMessage} 
               setShowSuccess={props.setShowSuccess} 
               setShowError={props.setShowError} />,
@@ -136,7 +136,7 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
             <Directo 
               closeDirecto={closeDirecto} 
               propsModal={propsModal} 
-              theme={props.theme}
+              theme={theme}
               setMessage={props.setMessage} 
               setShowSuccess={props.setShowSuccess} 
               setShowError={props.setShowError} />,

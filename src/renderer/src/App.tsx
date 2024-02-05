@@ -6,10 +6,7 @@ import { themeType } from './env'
 import SideBar from './components/UI/SideBar'
 import Login from './components/Login/Login'
 import { userType } from './types/login'
-import InventarioFrutaSinProcesar from './components/inventario/InventarioFrutaSinProcesar'
 import Descarte from './components/inventarioDescarte/Descarte'
-import Desverdizado from './components/desverdizado/Desverdizado'
-import CrearContenedor from './components/crearContenedor/CrearContenedor'
 import ListaDeEmpaque from './components/listaDeEmpaque/ListaDeEmpaque'
 import CalidadInterna from './components/calidadInterna/CalidadInterna'
 import ClasificacionCalidad from './components/clasificacionCalidad/ClasificacionCalidad'
@@ -23,6 +20,12 @@ import InspeccionMulas from './components/inspeccionMulas/InspeccionMulas'
 import HistorialVehiculos from './components/HistorialFormularioInspeccionVehiculos/HistorialVehiculos'
 import Contenedores from './components/contenedores/Contenedores'
 import ProbarFunciones from './components/probarFunciones/ProbarFunciones'
+import IngresoFruta from './components/inventarioYlogistica/ingresos/ingresoFruta/IngresoFruta'
+import CrearContenedor from './components/inventarioYlogistica/ingresos/crearContenedor/CrearContenedor'
+import InventarioFrutaSinProcesar from './components/inventarioYlogistica/inventarios/frutaSinProcesar/InventarioFrutaSinProcesar'
+import HistorialProcesado from './components/inventarioYlogistica/historiales/historialProcesado/HistorialProcesado'
+import HistorialDirectoNacional from './components/inventarioYlogistica/historiales/historialDirectoNacional/HistorialDirectoNacional'
+import Desverdizado from './components/inventarioYlogistica/inventarios/desverdizado/Desverdizado'
 
 type MyContextType = {
   setSection: React.Dispatch<React.SetStateAction<string>>;
@@ -97,19 +100,25 @@ function App(): JSX.Element {
 
                   <div className='flex flex-col h-full'>
                     <div className={`border-solid border-2 ${theme === 'Dark' ? 'border-slate-600' : 'border-gray-200 '}`}>
-                      <NavBar theme={theme} changeTheme={changeTheme} showSideBar={showSideBar}  setShowSideBar={setShowSideBar}/>
+                      <NavBar theme={theme} changeTheme={changeTheme} showSideBar={showSideBar} setShowSideBar={setShowSideBar} />
                     </div>
 
                     <div className='flex flex-row  h-full '>
                       <SideBar seleccionWindow={seleccionWindow} handleSideBarWidth={handleSideBarWidth} showSideBar={showSideBar} />
                       <div className={` flex justify-center w-full h-full overflow-auto `}>
-                   
-                        {section === 'Fruta sin procesar' && (
-                          <InventarioFrutaSinProcesar theme={theme} user={user.user} />
-                        )}
-                        {section === 'Descarte' && <Descarte theme={theme} user={user.user} />}
-                        {section === 'Desverdizado' && <Desverdizado theme={theme} user={user.user} />}
+
+                        {/* Inventario y logistica */}
+                        {section === 'Ingreso de fruta' && <IngresoFruta />}
                         {section === 'Crear contenedor' && <CrearContenedor />}
+                        {section === 'Fruta sin procesar' && <InventarioFrutaSinProcesar />}
+                        {section === 'Historial proceso' && <HistorialProcesado />}
+                        {section === 'Historial directo nacional' && <HistorialDirectoNacional />}
+                        {section === 'Desverdizado' && <Desverdizado />}
+
+
+
+
+                        {section === 'Descarte' && <Descarte theme={theme} user={user.user} />}
                         {section === 'Lista de empaque' && (
                           <ListaDeEmpaque theme={theme} user={user.user} />
                         )}
@@ -128,8 +137,8 @@ function App(): JSX.Element {
                         {section === 'Historial formulario inspeccion vehiculos' && <HistorialVehiculos />}
                         {section === 'probarFunciones' && <ProbarFunciones />}
 
-                       </div>
                       </div>
+                    </div>
                   </div>
 
                 )}

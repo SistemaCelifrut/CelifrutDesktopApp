@@ -1,38 +1,41 @@
 /* eslint-disable prettier/prettier */
-import { useEffect, useReducer, useState } from 'react'
-import { INITIAL_STATE_HISTORIAL_PROCESO, reducerHistorial } from '../functions/reducer'
+import { useContext, useEffect, useReducer, useState } from 'react'
+import { INITIAL_STATE_HISTORIAL_PROCESO, reducerHistorial } from './functions/reducer'
 import { createPortal } from 'react-dom'
-import TableHistorialProcesado from '../tables/TableHistorialProcesado'
-import BotonesAccionHistorialFrutaProcesada from '../utils/BotonesAccionHistorialFrutaProcesada'
-import { historialProcesoType } from '../types/types'
+import { historialProcesoType } from './types/types'
 import { format } from 'date-fns'
-import ModificarHistorialProceso from '../modals/ModificarHistorialProceso'
+import TableHistorialDirectoNacional from './tables/TableHistorialDirectoNacional'
+import BotonesAccionHistorialFrutaProcesada from './utils/BotonesAccionHistorialFrutaProcesada'
+import ModificarHistorialDirecto from './modals/ModificarHistorialDirecto'
+import ErrorModal from '@renderer/errors/modal/ErrorModal'
+import SuccessModal from '@renderer/errors/modal/SuccessModal'
+import { themeContext, userContext } from '@renderer/App'
+import NavBarInventario from './utils/NavBarInventario'
 
-type propsType = { 
-  theme: string; user: string; filtro: string 
-  setShowSuccess: (e) => void
-  setShowError: (e) => void
-  setMessage: (e) => void
-}
 
-export default function HistorialProcesado(props: propsType): JSX.Element {
+export default function HistorialDirectoNacional(): JSX.Element {
+  const theme = useContext(themeContext);
+  const user = useContext(userContext);
   const [datosOriginales, setDatosOriginales] = useState([])
   const [titleTable, setTitleTable] = useState('Lotes Procesados')
   const [showModal, setShowModal] = useState<boolean>(false)
   const [propsModal, setPropsModal] = useState({ nombre: '', canastillas: 0, enf: '', id: '' })
   const [showModificar, setShowModificar] = useState<boolean>(false)
+  const [filtro, setFiltro] = useState<string>('')
+  const [message, setMessage] = useState<string>('')
+  const [showSuccess, setShowSuccess] = useState<boolean>(false)
+  const [showError, setShowError] = useState<boolean>(false)
 
   const [table, dispatch] = useReducer(reducerHistorial, INITIAL_STATE_HISTORIAL_PROCESO)
 
   useEffect(() => {
-    const asyncFunction = async (): Promise<void> => {
+    const asyncFunction = async ():Promise<void> => {
       try {
-        console.log('render')
-        const request = { action: 'obtenerHistorialProceso' }
+        const request = { action: 'obtenerHistorialDirectoNacional' }
         const frutaActual = await window.api.proceso(request)
 
         if (frutaActual.status === 200) {
-          setDatosOriginales(frutaActual.data.data)
+          setDatosOriginales(frutaActual.data)
           dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
         } else {
           alert('error obteniendo datos del servidor')
@@ -45,13 +48,13 @@ export default function HistorialProcesado(props: propsType): JSX.Element {
   }, [])
 
   useEffect(() => {
-    const asyncFunction = async (): Promise<void> => {
+    const asyncFunction = async ():Promise<void> => {
       try {
-        const request = { action: 'obtenerHistorialProceso' }
+        const request = { action: 'obtenerHistorialDirectoNacional' }
         const frutaActual = await window.api.proceso(request)
 
         if (frutaActual.status === 200) {
-          setDatosOriginales(frutaActual.data.data)
+          setDatosOriginales(frutaActual.data)
           dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
         } else {
           alert('error obteniendo datos del servidor')
@@ -63,7 +66,7 @@ export default function HistorialProcesado(props: propsType): JSX.Element {
     asyncFunction()
   }, [showModal])
 
-  const closeModal = () : void => {
+  const closeModal = (): void => {
     setShowModal(!showModal)
   }
 
@@ -90,33 +93,47 @@ export default function HistorialProcesado(props: propsType): JSX.Element {
   }
 
   useEffect(() => {
-    dispatch({ type: 'filter', data: datosOriginales, filtro: props.filtro })
-  }, [props.filtro])
+    dispatch({ type: 'filter', data: datosOriginales, filtro: filtro })
+  }, [filtro])
 
+  const closeModalinfo = (): void => {
+    setShowError(false)
+  }
+
+  const handleFilter = (data: string): void => {
+    setFiltro(data)
+  }
   return (
     <div>
+      <NavBarInventario handleFilter={handleFilter} />
+
       <BotonesAccionHistorialFrutaProcesada
-        theme={props.theme}
+        theme={theme}
         title={titleTable}
         table={table}
-        user={props.user}
+        user={user.cargo}
         closeModal={closeModal}
         modificar={showModificar}
       />
-      <TableHistorialProcesado table={table} theme={props.theme} clickLote={clickLote} />
+      <TableHistorialDirectoNacional table={table} theme={theme} clickLote={clickLote} />
 
       {showModal &&
         createPortal(
-          <ModificarHistorialProceso
+          <ModificarHistorialDirecto
             closeModal={closeModal}
             propsModal={propsModal}
-            theme={props.theme}
-            setMessage={props.setMessage} 
-            setShowSuccess={props.setShowSuccess} 
-            setShowError={props.setShowError} 
+            theme={theme}
+            setMessage={setMessage} 
+            setShowSuccess={setShowSuccess} 
+            setShowError={setShowError} 
           />,
           document.body
         )}
+
+<div className='fixed bottom-0 right-0 flex items-center justify-center'>
+        {showError && <ErrorModal message={message} closeModal={closeModalinfo} theme={theme} />}
+        {showSuccess && <SuccessModal message={message} closeModal={closeModalinfo} theme={theme} />}
+      </div>
     </div>
   )
 }
