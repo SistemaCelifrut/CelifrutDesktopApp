@@ -146,6 +146,7 @@ function App(): JSX.Element {
                         {/* Gestion de cuentas */}
                         {section === "Gestión de Cuentas//Clientes//Clientes" && <Clientes />}
                         {section === "Gestión de Cuentas//Proveedores//Proveedores" && <Proveedores />}
+                        {section === "Gestión de Cuentas//Ingresos//Crear cuenta" && <HistorialVehiculos />}
 
                         {/* Transporte */}
                         {section === 'Transporte//Inspecciones//Inspeccion camiones' && <HistorialVehiculos />}

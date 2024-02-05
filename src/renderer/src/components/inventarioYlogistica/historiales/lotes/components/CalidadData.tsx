@@ -7,7 +7,6 @@ import { KEY_FILTRO_COL_CALIDAD, filtrosColumnasObjCalidad } from "../functions/
 import FiltroFilasCalidad from "../utils/FiltrosFilasCalidad"
 import TableInfolotesCalidad from "../table/TableInfolotesCalidad"
 import PromediosCalidad from "../utils/PromediosCalidad"
-import GraficasBarras from "../utils/GraficasBarras"
 import GraficasBarrasCalidad from "../utils/GraficasBarrasCalidad"
 import GraficasLinealCalidad from "../utils/GraficaLinealCalidad"
 
@@ -18,7 +17,6 @@ export default function CalidadData(): JSX.Element {
   const [prediosData, setPrediosData] = useState<string[]>([])
   const [ef1, setEf1] = useState<string>('')
   const [data, setData] = useState<LoteDataType[]>([])
-  const [dataOriginal, setDataOriginal] = useState<LoteDataType[]>([])
   const [tipoGraficas, setTipoGraficas] = useState<string>('')
 
 
@@ -32,7 +30,6 @@ export default function CalidadData(): JSX.Element {
       }
       const request = { action: 'obtenerDatosLotes', data: { filtros: filtro } };
       const datosLotes = await window.api.proceso(request);
-      setDataOriginal(datosLotes.data)
       if (ef1 === '') {
         setData(datosLotes.data)
       }

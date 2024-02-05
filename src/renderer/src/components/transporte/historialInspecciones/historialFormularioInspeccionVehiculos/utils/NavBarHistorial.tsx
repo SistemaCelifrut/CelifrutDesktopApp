@@ -1,20 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { useState } from 'react'
 
-import { HiOutlineViewList } from 'react-icons/hi'
 
-type propsType = {
-  handleFilter: (data: string) => void
-  handleSectionSelect: (data: string) => void
-}
+export default function NavBarHistorial(): JSX.Element {
 
-export default function NavBarHistorial(props: propsType): JSX.Element {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
 
-  const handleMenu = (data: string): void => {
-    props.handleSectionSelect(data)
-    setIsOpen(false)
-  }
 
   return (
     <div
