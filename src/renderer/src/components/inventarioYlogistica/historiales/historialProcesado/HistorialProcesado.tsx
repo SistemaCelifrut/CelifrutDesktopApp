@@ -37,7 +37,11 @@ export default function HistorialProcesado(): JSX.Element {
           setDatosOriginales(frutaActual.data.data)
           dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
         } else {
-          alert('error obteniendo datos del servidor')
+          setShowError(true)
+          setMessage(`Error ${frutaActual.status}: ${frutaActual.message}`)
+          setInterval(() => {
+            setShowError(false)
+          }, 5000)
         }
       } catch (e: unknown) {
         alert(`Fruta actual ${e}`)
@@ -56,7 +60,11 @@ export default function HistorialProcesado(): JSX.Element {
           setDatosOriginales(frutaActual.data.data)
           dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
         } else {
-          alert('error obteniendo datos del servidor')
+          setShowError(true)
+          setMessage(`Error ${frutaActual.status}: ${frutaActual.message}`)
+          setInterval(() => {
+            setShowError(false)
+          }, 5000)
         }
       } catch (e: unknown) {
         alert(`Fruta actual ${e}`)

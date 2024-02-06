@@ -38,12 +38,15 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
       try {
         const request = { action: 'obtenerFrutaActual' }
         const frutaActual = await window.api.proceso(request)
-        console.log(frutaActual)
         if (frutaActual.status === 200) {
           setDatosOriginales(frutaActual.data)
           dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
         } else {
-          alert('error obteniendo datos del servidor')
+          props.setShowError(true)
+          props.setMessage(`Error ${frutaActual.status}: ${frutaActual.message}`)
+          setInterval(() => {
+            props.setShowError(false)
+          }, 5000)
         }
       } catch (e: unknown) {
         alert(`Fruta actual ${e}`)

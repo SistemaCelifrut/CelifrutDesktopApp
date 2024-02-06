@@ -101,7 +101,6 @@ export default function IngresarProveedor(props: propsType): JSX.Element {
                     documentos: results
                 }
             }
-            console.log(request)
             window.api.proceso(request).then((response) => {
                 if (response.status === 200) {
                     resetearData()
@@ -113,7 +112,7 @@ export default function IngresarProveedor(props: propsType): JSX.Element {
                     }, 5000)
                 } else {
                     setShowError(true)
-                    setMessage("Error al guardar los datos")
+                    setMessage(`Error ${response.status}: ${response.message}`)
                     setInterval(() => {
                         setShowError(false)
                     }, 5000)

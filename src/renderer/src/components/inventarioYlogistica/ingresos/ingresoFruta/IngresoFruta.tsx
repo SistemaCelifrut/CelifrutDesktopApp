@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { themeContext } from '@renderer/App'
 import { useContext, useEffect, useState } from 'react'
-import { serverResponseType } from './types/type';
 import SuccessModal from '@renderer/errors/modal/SuccessModal';
 import ErrorModal from '@renderer/errors/modal/ErrorModal';
 
@@ -25,26 +24,27 @@ export default function IngresoFruta(): JSX.Element {
   useEffect(() => {
     const obtenerPredios = async (): Promise<void> => {
       const request = { action: 'obtenerProveedores' }
-      const response: serverResponseType = await window.api.proceso(request);
-      if (Array.isArray(response.data)) {
+      const response = await window.api.proceso(request);
+      if (Array.isArray(response.data) && response.status === 200) {
         const nombrePredio = response.data.map((item) => item.PREDIO)
         setPrediosData(nombrePredio)
         setEnf(response.enf)
       } else {
-        alert('Error con los datos de los predios')
+        setMessageError(`Error ${response.status}: ${response.message}`);
+        setShowError(true)
+        setTimeout(() => {
+          setShowError(false);
+        }, 5000);
       }
     }
     obtenerPredios()
   }, [])
-
   useEffect(() => {
     console.log("render")
   }, [canastillas])
-
   const handlePrediosChange = (event): void => {
     setNombrePredio(event.target.value)
   }
-
   const guardarLote: React.FormEventHandler<HTMLFormElement> = async (event) => {
     try {
       event.preventDefault()
@@ -77,15 +77,15 @@ export default function IngresoFruta(): JSX.Element {
         return
       }
       const request = { action: 'guardarLote', data: datos }
-      const response: serverResponseType = await window.api.proceso(request)
-
+      const response = await window.api.proceso(request)
+      console.log(response)
       if (response.status === 200) {
         setShowSuccess(true)
         setTimeout(() => {
           setShowSuccess(false);
         }, 5000);
       } else {
-        setMessageError('Error al guardar el dato')
+        setMessageError(`Error ${response.status}: ${response.message}`);
         setShowError(true)
         setTimeout(() => {
           setShowError(false);
@@ -101,7 +101,6 @@ export default function IngresoFruta(): JSX.Element {
       }, 5000);
     }
   }
-
   const reiniciarCampos = (): void => {
     setNombrePredio('')
     setCanastillas('')
@@ -110,7 +109,6 @@ export default function IngresoFruta(): JSX.Element {
     setObservaciones('')
     setCanastillasVacias('')
   }
-
   const closeSuccess = (): void => {
     setShowSuccess(false)
   }

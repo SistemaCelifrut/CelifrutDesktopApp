@@ -2,7 +2,7 @@
 import { useContext } from 'react'
 import { prediosType } from '../types/types'
 import { HiSwitchHorizontal } from 'react-icons/hi'
-import { themeContext, userContext } from '@renderer/App'
+import { themeContext } from '@renderer/App'
 
 type propsType = {
   title: string
@@ -15,7 +15,6 @@ type propsType = {
 
 export default function BotonesAccionFrutaSinProcesar(props: propsType): JSX.Element {
   const theme = useContext(themeContext)
-  const user = useContext(userContext)
   return (
     <div
       className={`flex justify-between items-center m-4 
@@ -26,7 +25,7 @@ export default function BotonesAccionFrutaSinProcesar(props: propsType): JSX.Ele
       <button
         onClick={props.closeDesverdizado}
         className={
-          user.cargo === 'recepcion' || (user.cargo === 'admin' && props.tipoFruta === 'Naranja')
+          props.tipoFruta === 'Naranja'
             ? 'group relative inline-flex w-40 h-10 items-center overflow-hidden rounded bg-amber-500 px-8 py-3 text-white focus:outline-none active:bg-amber-700 active:border-amber-800'
             : 'invisible group relative inline-flex w-40 h-10 items-center overflow-hidden'
         }
@@ -53,9 +52,7 @@ export default function BotonesAccionFrutaSinProcesar(props: propsType): JSX.Ele
       <button
         onClick={props.closeVaciado}
         className={
-          user.cargo === 'recepcion' ||
-          (user.cargo === 'admin' && props.tipoFruta === 'Limon') ||
-          props.tipoFruta === 'Naranja'
+        props.tipoFruta === 'Limon' || props.tipoFruta === 'Naranja'
             ? 'group relative inline-flex w-40 h-10 items-center overflow-hidden rounded bg-Celifrut-green px-8 py-3 text-white focus:outline-none active:bg-Celifrut-green-dark active:border-Celifrut-green-dark'
             : 'invisible group relative inline-flex w-40 h-10 items-center overflow-hidden'
         }
@@ -82,9 +79,8 @@ export default function BotonesAccionFrutaSinProcesar(props: propsType): JSX.Ele
       <button
         onClick={props.closeDirecto}
         className={
-          user.cargo === 'recepcion' ||
-          (user.cargo === 'admin' && props.tipoFruta === 'Limon') ||
-          props.tipoFruta === 'Naranja'
+  
+         props.tipoFruta === 'Limon'|| props.tipoFruta === 'Naranja'
             ? 'group relative inline-flex w-40 h-10 items-center overflow-hidden rounded bg-red-700 px-8 py-3 text-white focus:outline-none active:bg-red-900 active:border-red-700'
             : 'invisible group relative inline-flex w-40 h-10 items-center overflow-hidden'
         }

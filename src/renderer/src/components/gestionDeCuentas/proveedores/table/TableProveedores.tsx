@@ -46,7 +46,7 @@ export default function TableProveedores(props: propsType): JSX.Element {
         setShowConfirm(false)
       } else {
         setShowError(true)
-        setMessage("Error eliminando el predio")
+        setMessage(`Error ${response.status}: ${response.message}`)
         setInterval(() => {
           setShowError(false)
         }, 5000)

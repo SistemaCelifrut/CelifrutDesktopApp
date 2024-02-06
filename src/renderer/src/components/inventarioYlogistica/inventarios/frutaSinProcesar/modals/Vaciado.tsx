@@ -37,15 +37,9 @@ export default function Vaciado(props: vaciadoType): JSX.Element {
           setInterval(() => {
             props.setShowSuccess(false)
           }, 5000)
-        } else if (response.status === 400) {
-          props.setShowError(true)
-          props.setMessage("Error vaciando los datos desde el servidor!")
-          setInterval(() => {
-            props.setShowError(false)
-          }, 5000)
         } else {
           props.setShowError(true)
-          props.setMessage("Error vaciando los datos desde el servidor!")
+          props.setMessage(`Error ${response.status}: ${response.message}`)
           setInterval(() => {
             props.setShowError(false)
           }, 5000)

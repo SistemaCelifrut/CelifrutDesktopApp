@@ -42,15 +42,9 @@ export default function Desverdizado(props: vaciadoType): JSX.Element {
           setInterval(() => {
             props.setShowSuccess(false)
           }, 5000)
-        } else if (response.status === 400) {
-          props.setShowError(true)
-          props.setMessage("Error al poner a desverdiar la fruta!")
-          setInterval(() => {
-            props.setShowError(false)
-          }, 5000)
         } else {
           props.setShowError(true)
-          props.setMessage("Error al poner a desverdiar la fruta!")
+          props.setMessage(`Error ${response.status}: ${response.message}`)
           setInterval(() => {
             props.setShowError(false)
           }, 5000)
