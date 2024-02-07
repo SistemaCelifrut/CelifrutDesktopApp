@@ -6,8 +6,9 @@ import { useContext, useEffect, useState } from 'react'
 
 
 type serverResponseType = {
-  status: string
+  status: number
   data: clientesType[]
+  message: string
 }
 
 type clientesType = {
@@ -36,10 +37,17 @@ export default function CrearContenedor(): JSX.Element {
       try {
         const request = { action: 'obtenerClientes' }
         const response: serverResponseType = await window.api.contenedores(request)
-        console.log(response);
-        const nombreClientes: clientesType[] = response.data
-        setClientesDatos(nombreClientes)
-        console.log(response)
+        if(response.status === 200){
+          const nombreClientes: clientesType[] = response.data
+          setClientesDatos(nombreClientes)
+        }
+        else {
+          setMessage(`Error ${response.status}: ${response.message}`);
+          setShowError(true)
+          setTimeout(() => {
+            setShowError(false);
+          }, 5000);
+        }
       } catch (e: unknown) {
         alert(`Crear contenedor ${e}`)
       }
@@ -62,23 +70,26 @@ export default function CrearContenedor(): JSX.Element {
        const request = { action: 'crearContenedor', data: datos }
       console.log(request)
       const response = await window.api.contenedores(request)
-      if (response.status == 200) {
+      if (response.status === 200) {
         setShowSuccess(true)
         setMessage("Contenedor creado con exito!")
         setInterval(() => {
           setShowSuccess(false)
         }, 5000)
       } else {
-        setShowError(true)
-        setMessage("Error enviando los datos a el servidor!")
-        setInterval(() => {
-          setShowError(false)
-        }, 5000)
+        setMessage(`Error ${response.status}: ${response.message}`);
+          setShowError(true)
+          setTimeout(() => {
+            setShowError(false);
+          }, 5000);
       }
       reiniciarCampos()
     } catch (e: unknown) {
-      console.log(`${e}}`)
-      alert("Error: " + e)
+      setMessage(`Error ${e}`);
+      setShowError(true)
+      setTimeout(() => {
+        setShowError(false);
+      }, 5000);
     }
   }
   const reiniciarCampos = (): void => {

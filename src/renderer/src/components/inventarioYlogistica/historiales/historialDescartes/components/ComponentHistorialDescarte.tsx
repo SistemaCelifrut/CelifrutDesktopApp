@@ -25,10 +25,10 @@ export default function ComponentHistorialDescarte(props: propsType): JSX.Elemen
           setDatosOriginales(descarte.data)
           dispatch({ type: 'initialData', data: descarte.data, filtro: '' })
         } else {
-          alert('error obteniendo datos del servidor')
+          console.log("error")
         }
       } catch (e: unknown) {
-        alert(`Fruta actual ${e}`)
+        console.log(e)
       }
     }
     asyncFunction()

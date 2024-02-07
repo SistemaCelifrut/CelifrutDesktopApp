@@ -79,13 +79,13 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
     const lote: prediosType | undefined = table.find((item) => item._id === id)
     if (lote !== undefined) {
       setPropsModal(() => ({
-        nombre: lote.nombre,
-        canastillas: lote.inventario,
+        nombre: lote.predio.PREDIO,
+        canastillas: lote.inventarioActual.inventario,
         enf: id
       }))
     }
     if (e.target.checked) {
-      setTitleTable(id + ' ' + lote?.nombre)
+      setTitleTable(id + ' ' + lote?.predio.PREDIO)
       if (lote?.tipoFruta === 'Naranja') {
         setTipoFruta('Naranja')
       } else if (lote?.tipoFruta == 'Limon') {

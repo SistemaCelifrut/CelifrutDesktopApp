@@ -41,7 +41,7 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {lote.nombre}
+              {lote.predio.PREDIO}
             </div>
             <div
 
@@ -49,7 +49,7 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {lote.ICA}
+              {lote.predio.ICA}
             </div>
             <div
    
@@ -57,7 +57,7 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {format(new Date(lote.fecha), 'dd-MM-yyyy')}
+              {format(new Date(lote.fechaIngreso), 'dd-MM-yyyy')}
             </div>
             <div
 
@@ -73,7 +73,7 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {lote.inventario}
+              {lote.inventarioActual.inventario}
             </div>
             <div
    

@@ -28,6 +28,11 @@ export type historialDescarteType = {
   fecha: string
   tipoFruta: string
   predios: predioType
+  cliente: string
+  cedula: string
+  remision: string
+  nombreConductor: string
+  telefono: string
 }
 
 export type serverResponseHistorialDescarte = {

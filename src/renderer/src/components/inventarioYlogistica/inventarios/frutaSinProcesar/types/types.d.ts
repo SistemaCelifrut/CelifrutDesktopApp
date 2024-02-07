@@ -6,14 +6,21 @@ export type serverResponseTypeFrutaSinProcesar = {
 
 export type prediosType = {
   _id: string
-  ICA: string
-  nombre: string
-  fecha: string
-  inventario: number
+  predio:proveedorType
+  fechaIngreso: string
+  inventarioActual: {
+    inventario: number
+  }
   observaciones: string
   tipoFruta: string
   KilosActual: number
 }
+
+type proveedorType = {
+  ICA: string
+  PREDIO:string
+}
+
 
 export type stateUseReducerTypePredios = {
   type: string

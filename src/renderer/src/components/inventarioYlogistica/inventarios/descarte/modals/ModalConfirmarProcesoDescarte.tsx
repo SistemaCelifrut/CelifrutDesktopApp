@@ -18,9 +18,10 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
   const [remision, setRemision] = useState<string>('')
   const finalizar = async (): Promise<void> => {
     if (props.propsModal.action === 'Enviar descarte') {
-      const datos = [props.propsModal.data, cliente]
+      const datos = [props.propsModal.data]
       const request = { 
         action: 'eliminarFrutaDescarte', 
+        cliente:cliente,
         data: datos,
         nombreConductor: nombreConductor,
         telefono: telefono,

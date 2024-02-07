@@ -5,7 +5,7 @@ export type serverResponseType = {
     data: proveedoresType[]
   }
 
-type proveedoresType = {
+export type proveedoresType = {
   _id: string
   PREDIO: string
 }

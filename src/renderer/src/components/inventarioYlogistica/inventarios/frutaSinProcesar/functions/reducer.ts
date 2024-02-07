@@ -7,7 +7,7 @@ import {
 
 export const INITIAL_STATE: prediosType[] = []
 
-export const reducer = (state: prediosType[], action: stateUseReducerTypePredios) => {
+export const reducer = (state: prediosType[], action: stateUseReducerTypePredios): prediosType[] => {
   switch (action.type) {
     case 'initialData':
       state = action.data
@@ -15,9 +15,9 @@ export const reducer = (state: prediosType[], action: stateUseReducerTypePredios
     case 'filter':
       state = action.data.filter(
         (lote) =>
-          lote.nombre.toLowerCase().indexOf(action.filtro) !== -1 ||
-          String(lote.ICA).toLowerCase().indexOf(action.filtro) !== -1 ||
-          format(new Date(lote.fecha), 'dd-MM-yyyy').toLowerCase().indexOf(action.filtro) !== -1 ||
+          lote.predio.PREDIO.toLowerCase().indexOf(action.filtro) !== -1 ||
+          String(lote.predio.PREDIO).toLowerCase().indexOf(action.filtro) !== -1 ||
+          format(new Date(lote.fechaIngreso), 'dd-MM-yyyy').toLowerCase().indexOf(action.filtro) !== -1 ||
           lote.tipoFruta.toLowerCase().indexOf(action.filtro) !== -1
       )
       return state

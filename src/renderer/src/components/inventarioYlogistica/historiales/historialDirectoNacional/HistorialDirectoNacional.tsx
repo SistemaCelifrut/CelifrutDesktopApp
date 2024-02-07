@@ -38,7 +38,11 @@ export default function HistorialDirectoNacional(): JSX.Element {
           setDatosOriginales(frutaActual.data)
           dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
         } else {
-          alert('error obteniendo datos del servidor')
+          setShowError(true)
+          setMessage(`Error ${frutaActual.status}: ${frutaActual.message}`)
+          setInterval(() => {
+          setShowError(false)
+          }, 5000)
         }
       } catch (e: unknown) {
         alert(`Fruta actual ${e}`)

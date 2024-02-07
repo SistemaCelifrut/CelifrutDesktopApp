@@ -3,12 +3,13 @@ import { themeContext } from '@renderer/App'
 import { useContext, useEffect, useState } from 'react'
 import SuccessModal from '@renderer/errors/modal/SuccessModal';
 import ErrorModal from '@renderer/errors/modal/ErrorModal';
+import { proveedoresType } from './types/type';
 
 
 
 export default function IngresoFruta(): JSX.Element {
   const theme = useContext(themeContext);
-  const [prediosDatos, setPrediosData] = useState<string[]>([''])
+  const [prediosDatos, setPrediosData] = useState<proveedoresType[]>([])
   const [nombrePredio, setNombrePredio] = useState('')
   const [tipoFruta, setTipoFruta] = useState('')
   const [canastillas, setCanastillas] = useState('')
@@ -26,8 +27,8 @@ export default function IngresoFruta(): JSX.Element {
       const request = { action: 'obtenerProveedores' }
       const response = await window.api.proceso(request);
       if (Array.isArray(response.data) && response.status === 200) {
-        const nombrePredio = response.data.map((item) => item.PREDIO)
-        setPrediosData(nombrePredio)
+        
+        setPrediosData(response.data)
         setEnf(response.enf)
       } else {
         setMessageError(`Error ${response.status}: ${response.message}`);
@@ -49,7 +50,7 @@ export default function IngresoFruta(): JSX.Element {
     try {
       event.preventDefault()
       const datos = {
-        nombre: nombrePredio,
+        predio: nombrePredio,
         canastillas: canastillas,
         kilos: kilos,
         placa: placa,
@@ -144,7 +145,7 @@ export default function IngresoFruta(): JSX.Element {
         >
           <option>Predios</option>
           {prediosDatos.map((item, index) => (
-            <option key={item + index} value={item}>{item}</option>
+            <option key={item.PREDIO + index} value={item._id}>{item.PREDIO}</option>
           ))}
         </select>
       </div>

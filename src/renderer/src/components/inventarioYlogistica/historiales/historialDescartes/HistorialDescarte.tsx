@@ -12,7 +12,7 @@ export default function HistorialDescarte(): JSX.Element {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full p-2">
       <NavBarDescartes handleFilter={handleFilter} />
       <ComponentHistorialDescarte filtro={filtro} />
     </div>

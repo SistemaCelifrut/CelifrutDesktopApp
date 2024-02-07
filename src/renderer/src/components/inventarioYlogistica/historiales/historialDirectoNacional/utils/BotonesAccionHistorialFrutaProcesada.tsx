@@ -22,7 +22,7 @@ export default function BotonesAccionHistorialFrutaProcesada(props: propsType):J
       <button
         onClick={props.closeModal}
         className={
-          props.user === 'recepcion' || (props.user === 'admin' && props.modificar)
+           props.modificar
             ? 'group relative inline-flex w-40 h-10 items-center overflow-hidden rounded bg-blue-700 px-8 py-3 text-white focus:outline-none active:bg-blue-900 active:border-blue-900'
             : 'invisible group relative inline-flex w-40 h-10 items-center overflow-hidden'
         }
