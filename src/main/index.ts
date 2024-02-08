@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { app, shell, BrowserWindow, nativeTheme, ipcMain, utilityProcess } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -143,7 +144,7 @@ const socket = io('ws://192.168.0.172:3003/', {
 ipcMain.handle('user', async (event, datos) => {
   try {
     event.defaultPrevented
-    console.log(datos)
+    console.log("user", datos)
     const request = { data: datos, id: socket.id }
     const user: responseLoginType = await new Promise((resolve) => {
       socket.emit('user', request, (response) => {
@@ -170,7 +171,7 @@ ipcMain.handle('user', async (event, datos) => {
 ipcMain.handle('proceso', async (event, data) => {
   try {
     event.defaultPrevented
-    console.log(data)
+    console.log("Proceso", data)
     const request = { data: data, id: socket.id }
     const response = await new Promise((resolve) => {
       socket.emit('proceso', request, (serverResponse) => {
@@ -236,7 +237,7 @@ ipcMain.handle('contenedores', async (event, data) => {
   try {
     event.preventDefault()
     const request = { data: data, id: socket.id }
-    console.log(request)
+    console.log("Contenedores", request)
     const response = await new Promise((resolve) => {
       socket.emit('contenedoresService', request, (serverResponse) => {
         if (typeof serverResponse === 'object') {
@@ -300,6 +301,7 @@ ipcMain.handle('proveedores', async (event, data) => {
 ipcMain.handle('imprimirRotulos', async (event, data) => {
   try {
     event.preventDefault()
+    console.log(data)
     if (data.tipoRotulo === 'rotuloCaja') {
       console.log('entra aqui')
       const request = {

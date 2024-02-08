@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useContext } from 'react'
 import NavBarListaEmpaque from './utils/NavBarListaEmpaque'
-import { ContenedoresObj, serverInfoContenedoresType } from './types/types'
+import { ContenedoresObj } from './types/types'
 import FiltrosListaEmpaque from './utils/FiltrosListaEmpaque'
 import TablePrincipalGeneral from './tables/TablePrincipalGeneral'
 import TablePallets from './tables/TablePallets'
@@ -26,15 +26,15 @@ export default function ListaDeEmpaque(): JSX.Element {
         const request = { action: 'obtenerDataContenedor' }
         const response = await window.api.contenedores(request)
         console.log(response)
-        setContenedores(response.data)
+        setContenedores(response.data.contenedores)
       } catch (e) {
-        console.log(e)
+        console.log("Error",e)
       }
     }
     obtenerDatos()
 
-    window.api.listaEmpaqueInfo('listaEmpaqueInfo', (response: serverInfoContenedoresType) => {
-      setContenedores(response.data)
+    window.api.listaEmpaqueInfo('listaEmpaqueInfo', (response) => {
+      setContenedores(response.data.contenedores)
       console.log(response);
     })
   }, [])

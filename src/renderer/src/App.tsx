@@ -30,7 +30,7 @@ import FormularioMulas from './components/transporte/formulatioInspecciones/insp
 import HistorialFormulario from './components/transporte/historialInspecciones/historialFormularioInspeccionMulas/HistorialFormulario'
 import InventarioDescarte from './components/inventarioYlogistica/inventarios/descarte/InventarioDescarte'
 import HistorialDescarte from './components/inventarioYlogistica/historiales/historialDescartes/HistorialDescarte'
-import ListaDeEmpaque from './components/inventarioYlogistica/Proceso/listaDeEmpaque/ListaDeEmpaque'
+import ListaDeEmpaque from './components/inventarioYlogistica/historiales/listaDeEmpaque/ListaDeEmpaque'
 import Lotes from './components/inventarioYlogistica/historiales/lotes/Lotes'
 import Proveedores from './components/gestionDeCuentas/proveedores/Proveedores'
 import VolanteCalidad from './components/calidad/formularios/volanteCalidad/VolanteCalidad'

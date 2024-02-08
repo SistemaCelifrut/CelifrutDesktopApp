@@ -112,7 +112,7 @@ export default function HistorialProcesado(): JSX.Element {
   }
 
   return (
-    <div>
+    <div className='w-full'>
       <NavBarInventario handleFilter={handleFilter} />
 
       <BotonesAccionHistorialFrutaProcesada

@@ -47,7 +47,7 @@ export default function TableInfoLotes(props: propsType): JSX.Element {
               className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'}`} key={index}
             >
               <td className="p-2 text-sm  text-center">{lote._id}</td>
-              <td className="p-2 text-sm  text-center">{lote.nombrePredio}</td>
+              <td className="p-2 text-sm  text-center">{lote.nombrePredio ? lote.nombrePredio : lote.predio?.PREDIO}</td>
               <td className="p-2 text-sm  text-center">{format(new Date(lote.fechaIngreso), 'dd-MM-yyyy')}</td>
               <td className="p-2 text-sm  text-center">{lote.tipoFruta}</td>
               {Object.keys(props.columnVisibility).map((item, index2) => {

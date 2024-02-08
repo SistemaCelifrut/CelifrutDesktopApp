@@ -22,7 +22,7 @@ export default function InventarioFrutaSinProcesar(): JSX.Element {
     setShowError(false)
   }
   return (
-    <div>
+    <div className='w-full'>
       <NavBarInventario handleFilter={handleFilter} />
      
         <FrutaSinProcesar 

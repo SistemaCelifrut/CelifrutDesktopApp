@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 export type LoteDataType = {
   _id: string
-  nombrePredio: string
   fechaIngreso: string
   canastillas: string
   tipoFruta: string
@@ -47,6 +46,10 @@ export type LoteDataType = {
       zumo:number
       fecha:string
     }
+  }
+  nombrePredio?: string
+  predio?:{
+    PREDIO: string
   }
 }
 
