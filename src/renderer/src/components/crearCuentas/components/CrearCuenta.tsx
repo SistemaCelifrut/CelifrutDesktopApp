@@ -195,22 +195,42 @@ export default function CrearCuenta(): JSX.Element {
     const renderizarPermisos = (permisos: Permiso[]): JSX.Element[] => {
         return permisos.map(permiso => (
             <div key={permiso.id} className="ml-4">
-                <label>
-                    <input
-                        type="checkbox"
-                        checked={permisosSeleccionados.includes(permiso.nombre)}
-                        onChange={() => handlePermisos(permiso.nombre, !permisosSeleccionados.includes(permiso.nombre), permiso.hijos)}
-                    />
-                    {permiso.nombre}
-                </label>
-                {permiso.hijos && (
-                    <div className="ml-4">
-                        {renderizarPermisos(permiso.hijos)}
-                    </div>
-                )}
+                <div className="border rounded p-2 mb-4" style={{ display: 'flex', flexDirection: 'column' }}>
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={permisosSeleccionados.includes(permiso.nombre)}
+                            onChange={() => handlePermisos(permiso.nombre, !permisosSeleccionados.includes(permiso.nombre), permiso.hijos)}
+                        />
+                        {permiso.nombre}
+                    </label>
+                    {/* Renderizar subcarpetas recursivamente */}
+                    {permiso.hijos && renderizarSubPermisos(permiso.hijos)}
+                </div>
             </div>
         ));
     };
+    
+    const renderizarSubPermisos = (subPermisos: Permiso[]): JSX.Element => {
+        return (
+            <div className="ml-4" style={{ display: 'flex', flexDirection: 'column' }}>
+                {subPermisos.map(subPermiso => (
+                    <div key={subPermiso.id} style={{ marginLeft: '20px' }}>
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={permisosSeleccionados.includes(subPermiso.nombre)}
+                                onChange={() => handlePermisos(subPermiso.nombre, !permisosSeleccionados.includes(subPermiso.nombre))}
+                            />
+                            {subPermiso.nombre}
+                        </label>
+                        {/* Renderizar subcarpetas recursivamente */}
+                        {subPermiso.hijos && renderizarSubPermisos(subPermiso.hijos)}
+                    </div>
+                ))}
+            </div>
+        );
+    };    
 
     return (
         <div className="flex flex-col justify-center items-center">
@@ -293,7 +313,7 @@ export default function CrearCuenta(): JSX.Element {
                             Permisos:
                         </p>
                     </div>
-                    <div className="flex flex-row flex-wrap gap-4 justify-start w-full border-solid border-2 border-slate-200 rounded-lg p-2">
+                    <div className={`${theme === 'Dark' ? 'text-white' : 'text-black'}  flex flex-row flex-wrap gap-4  justify-start w-full border-solid border-2 border-slate-200 rounded-lg p-3`}>
                         {renderizarPermisos(permisos)}
                     </div>
                 </div>

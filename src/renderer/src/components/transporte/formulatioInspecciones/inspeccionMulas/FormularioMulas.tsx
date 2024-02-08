@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import '@fortawesome/fontawesome-free/css/all.css';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
@@ -12,17 +11,31 @@ type Criterio = {
   cumplimiento?: string;
   observaciones?: string;
 };
+
 type Contenedor = {
   _id: string;
-  // otros campos del contenedor
+  formularioInspeccionMula: {
+    placa: string;
+    trailer: string;
+    conductor: string;
+    cedula: string;
+    celular: string;
+    color: string;
+    modelo: string;
+    marca: string;
+    contenedor: string;
+    prof: string;
+    cliente: string;
+    puerto: string;
+    naviera: string;
+    agenciaAduanas: string;
+  };
 };
+
 
 type EstadoInicial = {
   contenedores: Record<string, Contenedor[]>;
-  contenedorSeleccionado: null | string;
-  placa: string;
-  conductor: string;
-  empresaTransportadora: string;
+  contenedorSeleccionado: Contenedor | null;
   numContenedor: string;
   criterios: Criterio[];
   cumpleRequisitos: string;
@@ -31,37 +44,38 @@ type EstadoInicial = {
 };
 
 const generarEstadoInicial: EstadoInicial = {
-  contenedores: {},
+  contenedores: {}, // Inicializar como un objeto vacío en lugar de un arreglo vacío
   contenedorSeleccionado: null,
-  placa: '',
-  conductor: '',
-  empresaTransportadora: '',
   numContenedor: '',
-  criterios: [{ type: 'titulo', value: 'Criterios de Inspección - Unidad de Enfriamiento' },
-  { nombre: 'La unidad de enfriamiento está funcionando adecuadamente.', cumplimiento: '', observaciones: '' },
-  { nombre: 'El equipo de refrigeración tiene la temperatura adecuada para proceder a realizar el cargue.', cumplimiento: '', observaciones: '' },
-  { type: 'titulo', value: 'Criterios de Inspección - FURGÓN' },
-  { nombre: 'El vehículo cuenta con talanquera para el aseguramiento de los pallets.', cumplimiento: '', observaciones: '' },
-  { nombre: 'Se verificó que el furgón no tiene rupturas, daños y/o enmendaduras.', cumplimiento: '', observaciones: '' },
-  { nombre: 'Los sellos de las puertas, conductos de aire y paredes laterales están en buenas condiciones.', cumplimiento: '', observaciones: '' },
-  { nombre: 'Las superficies internas del furgón (pisos, paredes, puertas y techos) están fabricadas de materiales fáciles de limpiar, lavar y desinfectar', cumplimiento: '', observaciones: '' },
-  { nombre: 'Se verifica la inexistencia de reparaciones recientes, pegamentos y/o soldaduras inapropiadas.', cumplimiento: '', observaciones: '' },
-  { nombre: 'Se observa que se ha aplicado correctamente procedimientos de limpieza y desinfección previos a la carga', cumplimiento: '', observaciones: '' },
-  { nombre: 'El vehículo se encuentra libre de plagas', cumplimiento: '', observaciones: '' },
-  { nombre: 'El vehículo se encuentra libre de olores extraños o desagradables', cumplimiento: '', observaciones: '' },
-  { nombre: 'El vehículo se encuentra libre de otros insumos u objetos diferentes a la carga principal', cumplimiento: '', observaciones: '' },
-  { nombre: 'El vehículo cumple con las medidas adecuadas (ancho, largo y alto), para el correcto cargue del producto.', cumplimiento: '', observaciones: '' },
-  { type: 'titulo', value: 'Criterios de Inspección - Documentación' },
-  { nombre: 'La documentación presentada por el conductor corresponde a la del vehículo', cumplimiento: '', observaciones: '' },
-  { nombre: 'Se reconoció debidamente el vehículo, la identificación del conductor y se verificó la coincidencia con el Manifiesto de Carga enviado por la empresa de transporte', cumplimiento: '', observaciones: '' },], // Tu array de criterios
+  criterios: [
+    { type: 'titulo', value: 'Criterios de Inspección - Unidad de Enfriamiento' },
+    { nombre: 'La unidad de enfriamiento está funcionando adecuadamente.', cumplimiento: '', observaciones: '' },
+    { nombre: 'El equipo de refrigeración tiene la temperatura adecuada para proceder a realizar el cargue.', cumplimiento: '', observaciones: '' },
+    { type: 'titulo', value: 'Criterios de Inspección - FURGÓN' },
+    { nombre: 'El vehículo cuenta con talanquera para el aseguramiento de los pallets.', cumplimiento: '', observaciones: '' },
+    { nombre: 'Se verificó que el furgón no tiene rupturas, daños y/o enmendaduras.', cumplimiento: '', observaciones: '' },
+    { nombre: 'Los sellos de las puertas, conductos de aire y paredes laterales están en buenas condiciones.', cumplimiento: '', observaciones: '' },
+    { nombre: 'Las superficies internas del furgón (pisos, paredes, puertas y techos) están fabricadas de materiales fáciles de limpiar, lavar y desinfectar', cumplimiento: '', observaciones: '' },
+    { nombre: 'Se verifica la inexistencia de reparaciones recientes, pegamentos y/o soldaduras inapropiadas.', cumplimiento: '', observaciones: '' },
+    { nombre: 'Se observa que se ha aplicado correctamente procedimientos de limpieza y desinfección previos a la carga', cumplimiento: '', observaciones: '' },
+    { nombre: 'El vehículo se encuentra libre de plagas', cumplimiento: '', observaciones: '' },
+    { nombre: 'El vehículo se encuentra libre de olores extraños o desagradables', cumplimiento: '', observaciones: '' },
+    { nombre: 'El vehículo se encuentra libre de otros insumos u objetos diferentes a la carga principal', cumplimiento: '', observaciones: '' },
+    { nombre: 'El vehículo cumple con las medidas adecuadas (ancho, largo y alto), para el correcto cargue del producto.', cumplimiento: '', observaciones: '' },
+    { type: 'titulo', value: 'Criterios de Inspección - Documentación' },
+    { nombre: 'La documentación presentada por el conductor corresponde a la del vehículo', cumplimiento: '', observaciones: '' },
+    { nombre: 'Se reconoció debidamente el vehículo, la identificación del conductor y se verificó la coincidencia con el Manifiesto de Carga enviado por la empresa de transporte', cumplimiento: '', observaciones: '' },
+  ],
   cumpleRequisitos: '',
   successMessage: '',
   errorMessage: '',
-}
+};
 
 const FormularioMulas: React.FC = () => {
   const [state, setState] = useState<EstadoInicial>(generarEstadoInicial);
-  const theme = useContext(themeContext)
+  const [contenedores, ] = useState<Record<string, Contenedor>>({});
+
+  const theme = useContext(themeContext);
 
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -74,9 +88,6 @@ const FormularioMulas: React.FC = () => {
     localStorage.setItem(`${campo}Historial`, JSON.stringify(historial));
   };
 
-
-  const [conductorHistory] = useState<string[]>(getHistorialDesdeLocalStorage('conductor'));
-  const [empresaTransportadoraHistory] = useState<string[]>(getHistorialDesdeLocalStorage('empresaTransportadora'));
   const [isLoading, setIsLoading] = useState(false);
   const [, setErrorMessage] = useState<string>('');
   const [responsable, setResponsable] = useState('');
@@ -89,11 +100,15 @@ const FormularioMulas: React.FC = () => {
         const request = {
           action: 'obtenerDataContenedorFormularioInspeccionMulas',
         };
-
+    
         const response = await window.api.contenedores(request);
-
+    
         if (response.status === 200 && response.data) {
-          setState((prev) => ({ ...prev, contenedores: response.data }));
+          setState((prev) => ({
+            ...prev,
+            contenedores: response.data, // Cambia aquí
+          }));
+          console.log(response.data)
         } else {
           console.error('Error al obtener la lista de contenedores:', response);
         }
@@ -106,18 +121,6 @@ const FormularioMulas: React.FC = () => {
   }, []);
 
   const MAX_HISTORIAL_LENGTH = 10;
-
-  const handleConductorChange = (e: React.FocusEvent<HTMLInputElement>): void => {
-    const newConductor = e.target.value;
-    handleBlur('conductor', newConductor);
-    setState((prev) => ({ ...prev, conductor: newConductor }));
-  };
-
-  const handleEmpresaTransportadoraChange = (e: React.FocusEvent<HTMLInputElement>): void => {
-    const newEmpresaTransportadora = e.target.value;
-    handleBlur('empresaTransportadora', newEmpresaTransportadora);
-    setState((prev) => ({ ...prev, empresaTransportadora: newEmpresaTransportadora }));
-  };
 
   const handleBlur = (campo: string, value: string): void => {
     const trimmedValue = value.trim();
@@ -137,16 +140,6 @@ const FormularioMulas: React.FC = () => {
       setHistorialEnLocalStorage(campo, slicedHistorial);
     }
   };
-
-
-  const handleConductorBlur = (e: React.FocusEvent<HTMLInputElement>): void => {
-    handleBlur('conductor', e.target.value);
-  };
-
-  const handleEmpresaTransportadoraBlur = (e: React.FocusEvent<HTMLInputElement>): void => {
-    handleBlur('empresaTransportadora', e.target.value);
-  };
-
 
   const handleCriterioChange = (index: number, cumplimiento: 'C' | 'NC'): void => {
     setState((prev) => {
@@ -169,11 +162,26 @@ const FormularioMulas: React.FC = () => {
   };
 
   const handleContenedorChange = (contenedorId: string): void => {
-    const contenedorSeleccionado = (state.contenedores as Record<string, Contenedor[]>).find((contenedor) => contenedor._id === contenedorId);
-    setState((prev) => ({ ...prev, numContenedor: contenedorId, contenedorSeleccionado }));
+    const contenedorSeleccionado = contenedores[contenedorId];
+    setState((prev) => ({
+      ...prev,
+      numContenedor: contenedorId,
+      contenedorSeleccionado: contenedorSeleccionado ? { ...contenedorSeleccionado } : null,
+    }));
+  
+    // Mostrar la información del contenedor seleccionado directamente
+    if (contenedorSeleccionado) {
+      console.log("Información del contenedor seleccionado:");
+      console.log("Placa:", contenedorSeleccionado.formularioInspeccionMula?.placa);
+      console.log("Trailer:", contenedorSeleccionado.formularioInspeccionMula?.trailer);
+      console.log("Conductor:", contenedorSeleccionado.formularioInspeccionMula?.conductor);
+      console.log("Cédula:", contenedorSeleccionado.formularioInspeccionMula?.cedula);
+    } else {
+      console.log("Contenedor seleccionado no encontrado");
+    }
   };
 
-
+  
   const resetearFormulario = (): void => {
     setState(generarEstadoInicial);
     setResponsable(''); // Resetear el campo "Responsable"
@@ -190,9 +198,6 @@ const FormularioMulas: React.FC = () => {
             criterio.cumplimiento !== undefined &&
             (criterio.observaciones !== undefined)
         ) ||
-      !state.placa ||
-      !state.conductor ||
-      !state.empresaTransportadora ||
       !state.numContenedor ||
       !responsable
     ) {
@@ -208,21 +213,14 @@ const FormularioMulas: React.FC = () => {
     try {
       setIsLoading(true);
 
-      // Declarar criteriosSinTitulos aquí
       const criteriosSinTitulos = state.criterios.filter((criterio) => criterio.type !== 'titulo');
-
-      // Obtener la fecha y hora actuales
       const fecha = new Date();
 
-      // Actualizar el historial de responsables
       handleBlur('responsable', responsable);
 
       const enviarDatosResponse = await enviarDatosAlServidor({
         action: 'enviarDatosFormularioInspeccionMulas',
         data: {
-          placa: state.placa,
-          conductor: state.conductor,
-          empresaTransportadora: state.empresaTransportadora,
           numContenedor: state.numContenedor,
           criterios: criteriosSinTitulos,
           cumpleRequisitos: state.cumpleRequisitos,
@@ -282,67 +280,9 @@ const FormularioMulas: React.FC = () => {
   };
 
   return (
-    <div className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'} max-w-3xl mx-auto p-8  rounded-md shadow-md h-max`}>
+    <div className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'} max-w-3xl mx-auto p-8 rounded-md shadow-md h-max`}>
       <h2 className="text-3xl font-bold mb-6 text-center">Formulario de Inspección</h2>
-      <form ref={formRef} onSubmit={handleEnviarYResetear} className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'} grid grid-cols-1 md:grid-cols-2 gap-6`}
-      >
-        <div className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'} mb-4`}>
-          <label className="block font-bold mb-2">
-            <i className="fas fa-car mr-2"></i> Placa:
-          </label>
-          <input
-            type="text"
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500  text-black"
-            value={state.placa}
-            onChange={(e): void => setState((prev) => ({ ...prev, placa: e.target.value }))}
-            required
-          />
-        </div>
-
-        <div className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'} mb-4`}>
-          <label className="block font-bold mb-2">
-            <i className="fas fa-user mr-2"></i> Conductor:
-          </label>
-          <div className="relative">
-            <input
-              type="text"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 text-black"
-              value={state.conductor}
-              onChange={handleConductorChange}
-              onBlur={handleConductorBlur}
-              list="conductor-suggestions"
-              required
-            />
-            <datalist id="conductor-suggestions" className="absolute z-10 bg-white border rounded-md mt-1">
-              {conductorHistory.map((item, index) => (
-                <option key={index} value={item} className="py-1 px-3 hover:bg-blue-200 cursor-pointer" />
-              ))}
-            </datalist>
-          </div>
-        </div>
-
-        <div className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'} mb-4`}>
-          <label className="block font-bold mb-2">
-            <i className="fas fa-building mr-2"></i> Empresa Transportadora:
-          </label>
-          <div className="relative">
-            <input
-              type="text"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 text-black"
-              value={state.empresaTransportadora}
-              onChange={handleEmpresaTransportadoraChange}
-              onBlur={handleEmpresaTransportadoraBlur}
-              list="empresa-transportadora-suggestions"
-              required
-            />
-            <datalist id="empresa-transportadora-suggestions" className="absolute z-10 bg-white border rounded-md mt-1">
-              {empresaTransportadoraHistory.map((item, index) => (
-                <option key={index} value={item} className="py-1 px-3 hover:bg-blue-200 cursor-pointer" />
-              ))}
-            </datalist>
-          </div>
-        </div>
-
+      <form ref={formRef} onSubmit={handleEnviarYResetear} className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'} grid grid-cols-1 md:grid-cols-2 gap-6`}>
         <div className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'} mb-4 w-full`}>
           <label className="block font-bold mb-2">
             <i className="fas fa-user-tie mr-2"></i> Responsable:
@@ -363,7 +303,6 @@ const FormularioMulas: React.FC = () => {
             </datalist>
           </div>
         </div>
-
         <div className="mb-4 w-full">
           <label className="block font-bold mb-2 w-full">
             <i className="fas fa-box mr-2"></i> Número de Contenedor:
@@ -371,25 +310,23 @@ const FormularioMulas: React.FC = () => {
           <select
             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 text-black"
             value={state.numContenedor}
-            onChange={(e): void => handleContenedorChange(e.target.value)}
-            required
-          >
-            <option value="">Seleccione...</option>
-            {Array.isArray(state.contenedores) &&
-              state.contenedores.map((contenedorData) => (
-                <option key={contenedorData._id} value={contenedorData._id}>
-                  {`${contenedorData._id} - ${contenedorData.infoContenedor.nombreCliente}`}
-                </option>
-              ))}
-          </select>
+            onChange={(e): void => handleContenedorChange(JSON.parse(e.target.value))}
+>
+{Array.isArray(state.contenedores) && state.contenedores.map((contenedorData) => (
+  <option key={contenedorData._id} value={JSON.stringify(contenedorData)}>
+    {`${contenedorData._id} - ${contenedorData.infoContenedor[0]}`}
+  </option>
+))}
 
+</select>
         </div>
+  
         {state.successMessage && (
           <div className="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md w-full" role="alert">
             {state.successMessage}
           </div>
         )}
-
+  
         {state.criterios.map((item, index) => (
           <div key={index} className="mb-4 md:col-span-2 w-full">
             {item.type === 'titulo' ? (
@@ -431,7 +368,7 @@ const FormularioMulas: React.FC = () => {
             )}
           </div>
         ))}
-
+  
         <div className="col-span-2 w-full">
           <label className="block font-bold mb-2">¿Cumple con los requisitos para aprobar el cargue?</label>
           <div className="flex items-center mb-2">
@@ -475,9 +412,18 @@ const FormularioMulas: React.FC = () => {
               Enviar
             </button>
           )}
-
         </div>
       </form>
+      {state.contenedorSeleccionado && (
+  <div className="mt-4">
+    <h3>Información del Contenedor Seleccionado</h3>
+    <p>Placa: {state.contenedorSeleccionado.formularioInspeccionMula?.placa}</p>
+    <p>Trailer: {state.contenedorSeleccionado.formularioInspeccionMula?.trailer}</p>
+    <p>Conductor: {state.contenedorSeleccionado.formularioInspeccionMula?.conductor}</p>
+    <p>Cédula: {state.contenedorSeleccionado.formularioInspeccionMula?.cedula}</p>
+  </div>
+)}
+
     </div>
   );
 };

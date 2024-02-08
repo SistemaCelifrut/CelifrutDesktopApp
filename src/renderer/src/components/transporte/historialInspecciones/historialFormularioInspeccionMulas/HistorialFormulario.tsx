@@ -6,7 +6,7 @@ import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { themeContext } from '@renderer/App';
 
 const HistorialFormulario: React.FC = () => {
-  const [historialData, setHistorialData] = useState<[]>([]);
+  const [historialData, setHistorialData] = useState<any[]>([]);
   const [filtroContenedor, setFiltroContenedor] = useState<string>('');
   const [filtroTipoFruta, setFiltroTipoFruta] = useState<string>('');
   const [fechaInicio, setFechaInicio] = useState<Date | null>(null);

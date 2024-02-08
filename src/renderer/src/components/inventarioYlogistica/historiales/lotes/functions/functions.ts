@@ -24,6 +24,7 @@ export const datosGraficas = (datos: LoteDataType[]): graficaDataType[] => {
   const prediosSet = new Set(prediosTotal)
   const predios = [...prediosSet]
   const salida = predios.map((nombrepredio) => {
+    nombrepredio = nombrepredio || '';
     const kilosProm =
       datos
         .filter((item) => item.nombrePredio === nombrepredio)
@@ -90,6 +91,7 @@ export const datosGraficasCalidad = (datos: LoteDataType[]): graficaDataTypeCali
   const prediosSet = new Set(prediosTotal)
   const predios = [...prediosSet]
   const salida = predios.map((nombrepredio) => {
+    nombrepredio = nombrepredio || '';
     const acidezPromedio = promedioCalidad(datos.filter((item) => item.nombrePredio === nombrepredio), "acidez")
     const brixPromedio = promedioCalidad(datos.filter((item) => item.nombrePredio === nombrepredio), "brix")
     const ratioPromedio = promedioCalidad(datos.filter((item) => item.nombrePredio === nombrepredio), "ratio")
