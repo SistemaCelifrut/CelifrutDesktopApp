@@ -34,6 +34,8 @@ import ListaDeEmpaque from './components/inventarioYlogistica/historiales/listaD
 import Lotes from './components/inventarioYlogistica/historiales/lotes/Lotes'
 import Proveedores from './components/gestionDeCuentas/proveedores/Proveedores'
 import VolanteCalidad from './components/calidad/formularios/volanteCalidad/VolanteCalidad'
+import FormularioProgramacionMula from './components/transporte/formulatioInspecciones/programacionMulas/FormularioProgramacionMula'
+import HistorialProgramacionMula from './components/transporte/historialInspecciones/historialProgramacionMula/HistorialProgramacionMula'
 import Cuentas from './components/crearCuentas/Cuentas'
 
 type MyContextType = {
@@ -150,12 +152,11 @@ function App(): JSX.Element {
                         {section === "Gestión de Cuentas//Ingresos//Crear cuenta" && <Cuentas />}
 
                         {/* Transporte */}
-                        {section === 'Transporte//Inspecciones//Inspeccion camiones' && <HistorialVehiculos />}
-                        {section === "Transporte//Inspecciones//Inspeccion tractomulas" && <HistorialFormulario />}
+                        {section === 'Transporte//Historiales//Inspeccion camiones' && <HistorialVehiculos />}
+                        {section === "Transporte//Historiales//Inspeccion tractomulas" && <HistorialFormulario />}
                         {section === "Transporte//Formularios//Tractomulas" && <FormularioMulas />}
-
-
-              
+                        {section === "Transporte//Formularios//Programación tractomulas" && <FormularioProgramacionMula/>}
+                        {section === "Transporte//Historiales//Historial programación tractomula" && <HistorialProgramacionMula/>}
 
                       </div>
                     </div>

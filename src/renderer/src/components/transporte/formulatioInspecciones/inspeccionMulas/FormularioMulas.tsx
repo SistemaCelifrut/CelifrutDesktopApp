@@ -14,7 +14,10 @@ type Criterio = {
 
 type Contenedor = {
   _id: string;
-  formularioInspeccionMula: {
+  infoContenedor: {
+    nombreCliente: string;
+  };
+  formularioInspeccionMula?: {
     placa: string;
     trailer: string;
     conductor: string;
@@ -32,10 +35,9 @@ type Contenedor = {
   };
 };
 
-
 type EstadoInicial = {
-  contenedores: Record<string, Contenedor[]>;
-  contenedorSeleccionado: Contenedor | null;
+  contenedores: Contenedor[];
+  contenedorSeleccionado: null | Contenedor;
   numContenedor: string;
   criterios: Criterio[];
   cumpleRequisitos: string;
@@ -44,7 +46,7 @@ type EstadoInicial = {
 };
 
 const generarEstadoInicial: EstadoInicial = {
-  contenedores: {}, // Inicializar como un objeto vacío en lugar de un arreglo vacío
+  contenedores: [],
   contenedorSeleccionado: null,
   numContenedor: '',
   criterios: [
@@ -73,8 +75,6 @@ const generarEstadoInicial: EstadoInicial = {
 
 const FormularioMulas: React.FC = () => {
   const [state, setState] = useState<EstadoInicial>(generarEstadoInicial);
-  const [contenedores, ] = useState<Record<string, Contenedor>>({});
-
   const theme = useContext(themeContext);
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -100,15 +100,11 @@ const FormularioMulas: React.FC = () => {
         const request = {
           action: 'obtenerDataContenedorFormularioInspeccionMulas',
         };
-    
+
         const response = await window.api.contenedores(request);
-    
+
         if (response.status === 200 && response.data) {
-          setState((prev) => ({
-            ...prev,
-            contenedores: response.data, // Cambia aquí
-          }));
-          console.log(response.data)
+          setState((prev) => ({ ...prev, contenedores: response.data }));
         } else {
           console.error('Error al obtener la lista de contenedores:', response);
         }
@@ -160,26 +156,36 @@ const FormularioMulas: React.FC = () => {
   const handleCumpleRequisitosChange = (value: string): void => {
     setState((prev) => ({ ...prev, cumpleRequisitos: value }));
   };
-
-  const handleContenedorChange = (contenedorId: string): void => {
-    const contenedorSeleccionado = contenedores[contenedorId];
-    setState((prev) => ({
-      ...prev,
-      numContenedor: contenedorId,
-      contenedorSeleccionado: contenedorSeleccionado ? { ...contenedorSeleccionado } : null,
-    }));
   
-    // Mostrar la información del contenedor seleccionado directamente
-    if (contenedorSeleccionado) {
-      console.log("Información del contenedor seleccionado:");
-      console.log("Placa:", contenedorSeleccionado.formularioInspeccionMula?.placa);
-      console.log("Trailer:", contenedorSeleccionado.formularioInspeccionMula?.trailer);
-      console.log("Conductor:", contenedorSeleccionado.formularioInspeccionMula?.conductor);
-      console.log("Cédula:", contenedorSeleccionado.formularioInspeccionMula?.cedula);
-    } else {
-      console.log("Contenedor seleccionado no encontrado");
+  const handleContenedorChange = (contenedorId: string): void => {
+    console.log("Contenedor ID seleccionado:", contenedorId);
+    
+    // Verifica que los IDs de los contenedores sean cadenas y que coincidan con el ID seleccionado
+    console.log("IDs de los contenedores:", state.contenedores.map(contenedor => contenedor._id));
+    
+    // Asegúrate de que state.contenedores tenga datos antes de intentar encontrar el contenedor seleccionado
+    if (state.contenedores.length > 0) {
+        const contenedorSeleccionado = state.contenedores.find((contenedor) => contenedor._id === contenedorId);
+        
+        console.log("Contenedor seleccionado:", contenedorSeleccionado);
+        
+        if (contenedorSeleccionado) {
+            // Actualiza el estado con la información del contenedor seleccionado
+            setState((prev) => ({
+                ...prev,
+                numContenedor: contenedorId,
+                contenedorSeleccionado: contenedorSeleccionado,
+            }));
+        } else {
+            // Si no se encontró un contenedor válido, establece contenedorSeleccionado en null
+            setState((prev) => ({
+                ...prev,
+                numContenedor: contenedorId,
+                contenedorSeleccionado: null,
+            }));
+        }
     }
-  };
+};
 
   
   const resetearFormulario = (): void => {
@@ -308,122 +314,138 @@ const FormularioMulas: React.FC = () => {
             <i className="fas fa-box mr-2"></i> Número de Contenedor:
           </label>
           <select
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 text-black"
-            value={state.numContenedor}
-            onChange={(e): void => handleContenedorChange(JSON.parse(e.target.value))}
->
-{Array.isArray(state.contenedores) && state.contenedores.map((contenedorData) => (
-  <option key={contenedorData._id} value={JSON.stringify(contenedorData)}>
-    {`${contenedorData._id} - ${contenedorData.infoContenedor[0]}`}
-  </option>
-))}
+          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 text-black"
+          value={state.numContenedor}
+          onChange={(e): void => handleContenedorChange(e.target.value)}
+          required
+        >
+          <option value="">Seleccione...</option>
+          {state.contenedores.map((contenedorData) => (
+            <option key={contenedorData._id} value={contenedorData._id}>
+              {`${contenedorData._id} - ${contenedorData.infoContenedor.nombreCliente}`}
+            </option>
+          ))}
+        </select>
+      </div>
 
-</select>
-        </div>
-  
-        {state.successMessage && (
-          <div className="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-md w-full" role="alert">
-            {state.successMessage}
-          </div>
-        )}
-  
-        {state.criterios.map((item, index) => (
-          <div key={index} className="mb-4 md:col-span-2 w-full">
-            {item.type === 'titulo' ? (
-              <h3 className="text-xl font-bold mb-2 text-center w-full">{item.value}</h3>
-            ) : (
+      {state.contenedorSeleccionado && (
+        <div className="md:col-span-2 mb-4 w-full">
+          <label className="block font-bold mb-2">
+            <i className="fas fa-address-card mr-2"></i> Información del Contenedor:
+          </label>
+          <div className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'} p-4 rounded-md shadow-md`}>
+            {state.contenedorSeleccionado.formularioInspeccionMula && (
               <>
-                <label className="block font-bold mb-2">
-                  <i className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'} w-full far fa-check-circle mr-2 `}></i> {item.nombre}
-                </label>
-                <div className="flex items-center mb-2 w-full">
-                  <label className="flex items-center mr-4 ">
-                    <input
-                      type="radio"
-                      value="C"
-                      onChange={(): void => handleCriterioChange(index, 'C')}
-                      checked={item.cumplimiento === 'C'}
-                      className="mr-2"
-                    />
-                    C
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      value="NC"
-                      onChange={(): void => handleCriterioChange(index, 'NC')}
-                      checked={item.cumplimiento === 'NC'}
-                      className="mr-2"
-                    />
-                    NC
-                  </label>
-                </div>
-                <textarea
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 text-black"
-                  value={item.observaciones}
-                  onChange={(e): void => handleObservacionesChange(index, e.target.value)}
-                  placeholder="Observaciones"
-                />
+                <p><strong>Placa:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.placa}</p>
+                <p><strong>Trailer:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.trailer}</p>
+                <p><strong>Conductor:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.conductor}</p>
+                <p><strong>Cédula:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.cedula}</p>
+                <p><strong>Celular:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.celular}</p>
+                <p><strong>Color:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.color}</p>
+                <p><strong>Modelo:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.modelo}</p>
+                <p><strong>Marca:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.marca}</p>
+                <p><strong>Contenedor:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.contenedor}</p>
+                <p><strong>Prof:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.prof}</p>
+                <p><strong>Cliente:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.cliente}</p>
+                <p><strong>Puerto:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.puerto}</p>
+                <p><strong>Naviera:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.naviera}</p>
+                <p><strong>Agencia Aduanas:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.agenciaAduanas}</p>
               </>
             )}
           </div>
-        ))}
-  
-        <div className="col-span-2 w-full">
-          <label className="block font-bold mb-2">¿Cumple con los requisitos para aprobar el cargue?</label>
-          <div className="flex items-center mb-2">
-            <label className="flex items-center mr-4">
-              <input
-                type="radio"
-                value="Si"
-                onChange={(): void => handleCumpleRequisitosChange('Si')}
-                checked={state.cumpleRequisitos === 'Si'}
-                className="mr-2"
-                required
-              />
-              Si
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                value="No"
-                onChange={(): void => handleCumpleRequisitosChange('No')}
-                checked={state.cumpleRequisitos === 'No'}
-                className="mr-2"
-                required
-              />
-              No
-            </label>
-          </div>
         </div>
-        {isLoading && (
-          <div className="flex items-center justify-center">
-            <FontAwesomeIcon icon={faSpinner} spin className="text-green-500 text-4xl" />
-          </div>
+      )}
+
+        {state.criterios.map((criterio, index) =>
+          criterio.type === 'titulo' ? (
+            <h3 key={index} className="col-span-2 text-xl font-bold mt-8">{criterio.value}</h3>
+          ) : (
+            <div key={index} className={`${theme === 'Dark' ? 'bg-slate-700' : 'bg-gray-100'} rounded-md p-4 mb-4`}>
+              <p className="mb-2 font-bold">{criterio.nombre}</p>
+              <div className="flex items-center mb-4">
+                <label className="inline-flex items-center mr-4">
+                  <input
+                    type="radio"
+                    className="form-radio text-blue-500"
+                    name={`cumplimiento-${index}`}
+                    value="C"
+                    checked={criterio.cumplimiento === 'C'}
+                    onChange={(e): void => handleCriterioChange(index, e.target.value as 'C' | 'NC')}
+                    required
+                  />
+                  <span className="ml-2">C</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    className="form-radio text-red-500"
+                    name={`cumplimiento-${index}`}
+                    value="NC"
+                    checked={criterio.cumplimiento === 'NC'}
+                    onChange={(e): void => handleCriterioChange(index, e.target.value as 'C' | 'NC')}
+                  />
+                  <span className="ml-2">NC</span>
+                </label>
+              </div>
+              <textarea
+                className="w-full border rounded-md p-2 focus:outline-none focus:border-blue-500"
+                rows={3}
+                placeholder="Observaciones"
+                value={criterio.observaciones || ''}
+                onChange={(e): void => handleObservacionesChange(index, e.target.value)}
+              ></textarea>
+            </div>
+          )
         )}
         <div className="col-span-2">
-          {isLoading ? (
-            <p>Cargando...</p>
-          ) : (
-            <button
-              type="submit"
-              className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none focus:shadow-outline-green active:bg-green-700"
-            >
-              Enviar
-            </button>
-          )}
+          <label className="block font-bold mb-2">
+            <i className="fas fa-check-circle mr-2"></i> ¿Cumple con los requisitos para aprobar el cargue?
+          </label>
+          <div className="flex items-center mb-4">
+            <label className="inline-flex items-center mr-4">
+              <input
+                type="radio"
+                className="form-radio text-blue-500"
+                name="cumpleRequisitos"
+                value="Sí"
+                checked={state.cumpleRequisitos === 'Sí'}
+                onChange={(e): void => handleCumpleRequisitosChange(e.target.value)}
+                required
+              />
+              <span className="ml-2">Sí</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                className="form-radio text-red-500"
+                name="cumpleRequisitos"
+                value="No"
+                checked={state.cumpleRequisitos === 'No'}
+                onChange={(e): void => handleCumpleRequisitosChange(e.target.value)}
+              />
+              <span className="ml-2">No</span>
+            </label>
+          </div>
+        </div>
+        <div className="col-span-2 text-center">
+          <button
+            type="submit"
+            className={`inline-block w-full px-4 py-2 leading-5 rounded-md ${theme === 'Dark' ? 'bg-blue-500 hover:bg-blue-600 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'} font-semibold transition duration-200 focus:outline-none focus:shadow-outline`}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <FontAwesomeIcon icon={faSpinner} spin className="mr-2" />
+                Enviando...
+              </>
+            ) : (
+              'Enviar'
+            )}
+          </button>
+          {state.successMessage && <p className="text-green-500 mt-2">{state.successMessage}</p>}
+          {state.errorMessage && <p className="text-red-500 mt-2">{state.errorMessage}</p>}
         </div>
       </form>
-      {state.contenedorSeleccionado && (
-  <div className="mt-4">
-    <h3>Información del Contenedor Seleccionado</h3>
-    <p>Placa: {state.contenedorSeleccionado.formularioInspeccionMula?.placa}</p>
-    <p>Trailer: {state.contenedorSeleccionado.formularioInspeccionMula?.trailer}</p>
-    <p>Conductor: {state.contenedorSeleccionado.formularioInspeccionMula?.conductor}</p>
-    <p>Cédula: {state.contenedorSeleccionado.formularioInspeccionMula?.cedula}</p>
-  </div>
-)}
-
     </div>
   );
 };

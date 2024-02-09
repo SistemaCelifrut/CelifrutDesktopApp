@@ -21,7 +21,6 @@ type EstadoInicial = {
   marca: string;
   contenedor: string;
   prof: string;
-  cliente: string;
   puerto: string;
   naviera: string;
   agenciaAduanas: string;
@@ -41,7 +40,6 @@ const generarEstadoInicial = (): EstadoInicial => ({
   marca: '',
   contenedor: '',
   prof: '',
-  cliente: '',
   puerto: '',
   naviera: '',
   agenciaAduanas: '',
@@ -120,7 +118,6 @@ const FormularioMulas: React.FC = () => {
           marca: state.marca,
           contenedor: state.contenedor,
           prof: state.prof,
-          cliente: state.cliente,
           puerto: state.puerto,
           naviera: state.naviera,
           agenciaAduanas: state.agenciaAduanas,
@@ -320,20 +317,6 @@ const FormularioMulas: React.FC = () => {
               name="prof"
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 text-black"
               value={state.prof}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div className={`${theme === 'Dark' ? 'bg-slate-750 text-white' : 'bg-white'}`}>
-            <label className="block font-bold mb-2">
-              <FontAwesomeIcon icon={faUserTie} className="mr-2" />
-              Cliente:
-            </label>
-            <input
-              type="text"
-              name="cliente"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 text-black"
-              value={state.cliente}
               onChange={handleInputChange}
               required
             />
