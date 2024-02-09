@@ -41,7 +41,7 @@ const ObtenerCuentasComponente = (): JSX.Element => {
     const fetchData = async (): Promise<void> => {
       try {
         await obtenerCuentas();
-        await obtenerPermisosDisponibles();
+        //await obtenerPermisosDisponibles();
       } catch (error) {
         console.error('Error al obtener datos:', error);
       }
@@ -63,7 +63,7 @@ const ObtenerCuentasComponente = (): JSX.Element => {
       };
   
       const response = await window.api.user(request);
-  
+      console.log(response)
       if (response.status === 200 && response.data) {
         const cuentasData = Array.isArray(response.data) ? response.data : response.data.data;
         setCuentas(cuentasData);

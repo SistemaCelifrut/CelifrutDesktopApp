@@ -136,7 +136,7 @@ ipcMain.handle('obtenerTheme', async () => {
   }
 })
 
-const socket = io('ws://192.168.0.172:3000/', {
+const socket = io('ws://192.168.0.172:3003/', {
   rejectUnauthorized: false
 })
 
