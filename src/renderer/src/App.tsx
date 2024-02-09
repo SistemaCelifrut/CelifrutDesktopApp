@@ -36,7 +36,7 @@ import Proveedores from './components/gestionDeCuentas/proveedores/Proveedores'
 import VolanteCalidad from './components/calidad/formularios/volanteCalidad/VolanteCalidad'
 import FormularioProgramacionMula from './components/transporte/formulatioInspecciones/programacionMulas/FormularioProgramacionMula'
 import HistorialProgramacionMula from './components/transporte/historialInspecciones/historialProgramacionMula/HistorialProgramacionMula'
-import Cuentas from './components/crearCuentas/Cuentas'
+import Cuentas from './components/gestionDeCuentas/crearCuentas/Cuentas'
 
 type MyContextType = {
   setSection: React.Dispatch<React.SetStateAction<string>>;
@@ -149,7 +149,7 @@ function App(): JSX.Element {
                         {/* Gestion de cuentas */}
                         {section === "Gestión de Cuentas//Clientes//Clientes" && <Clientes />}
                         {section === "Gestión de Cuentas//Proveedores//Proveedores" && <Proveedores />}
-                        {section === "Gestión de Cuentas//Ingresos//Crear cuenta" && <Cuentas />}
+                        {section === "Gestión de Cuentas//Sistema//Crear cuenta" && <Cuentas />}
 
                         {/* Transporte */}
                         {section === 'Transporte//Historiales//Inspeccion camiones' && <HistorialVehiculos />}

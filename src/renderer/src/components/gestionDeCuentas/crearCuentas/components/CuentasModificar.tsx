@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useEffect, useState, useContext } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
@@ -15,7 +16,7 @@ interface Cuenta {
   permisos: string[];
 }
 
-const ObtenerCuentasComponente = () => {
+const ObtenerCuentasComponente = (): JSX.Element => {
   const theme = useContext(themeContext);
   const [cuentas, setCuentas] = useState<Cuenta[]>([]);
   const [, setEditIndex] = useState<number | null>(null);
@@ -37,7 +38,7 @@ const ObtenerCuentasComponente = () => {
   const [permisosSeleccionados, setPermisosSeleccionados] = useState<string[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async (): Promise<void> => {
       try {
         await obtenerCuentas();
         await obtenerPermisosDisponibles();
@@ -50,9 +51,13 @@ const ObtenerCuentasComponente = () => {
   }, []);
   
 
-  const obtenerCuentas = async () => {
+  const obtenerCuentas = async (): Promise<void> => {
     try {
       const request = {
+        data:{
+          query:{},
+        },
+        collection:'users',
         action: 'obtenerCuentas',
         query: 'personal'
       };
@@ -70,7 +75,7 @@ const ObtenerCuentasComponente = () => {
     }
   };
 
-  const obtenerPermisosDisponibles = async () => {
+  const obtenerPermisosDisponibles = async (): Promise<void> => {
     try {
       const request = {
         action: 'obtenerPermisosUsuario',
@@ -90,7 +95,7 @@ const ObtenerCuentasComponente = () => {
   };
   
 
-  const handleEditar = (index: number) => {
+  const handleEditar = (index: number): void => {
     setEditIndex(index);
     const cuenta = cuentas[index];
     setFormData({
@@ -105,7 +110,7 @@ const ObtenerCuentasComponente = () => {
     setShowEditarModal(true);
   };
 
-  const handleEliminar = async (index: number) => {
+  const handleEliminar = async (index: number): Promise<void> => {
     try {
       setShowEliminarModal(true);
       setDeleteIndex(index);
@@ -114,7 +119,7 @@ const ObtenerCuentasComponente = () => {
     }
   };
   
-  const confirmarEliminar = async () => {
+  const confirmarEliminar = async (): Promise<void> => {
     try {
       if (deleteIndex !== null) {
         const cuenta = cuentas[deleteIndex];
@@ -127,7 +132,7 @@ const ObtenerCuentasComponente = () => {
     }
   };
 
-  const handleSaveChanges = async () => {
+  const handleSaveChanges = async (): Promise<void> => {
     try {
       setShowEditarModal(false);
       const permisosSeleccionadosArray = permisosDisponibles.filter(permiso => permisosSeleccionados.includes(permiso));
@@ -140,11 +145,11 @@ const ObtenerCuentasComponente = () => {
   };
   
 
-  const toggleCrearCuenta = () => {
+  const toggleCrearCuenta = (): void => {
     setShowCrearCuenta(!showCrearCuenta);
   };
 
-  const handlePermisoChange = (permiso: string) => {
+  const handlePermisoChange = (permiso: string): void => {
     const index = permisosSeleccionados.indexOf(permiso);
     if (index === -1) {
       setPermisosSeleccionados([...permisosSeleccionados, permiso]);
@@ -164,7 +169,7 @@ const ObtenerCuentasComponente = () => {
       placeholder="Buscar..."
       className="p-2 border rounded-md w-64 md:w-80"
       value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
+      onChange={(e): void => setSearchTerm(e.target.value)}
     />
     <div className="absolute right-2 top-2 pointer-events-none">
       <FontAwesomeIcon icon={faSearch} className="text-gray-400" />
@@ -210,10 +215,10 @@ const ObtenerCuentasComponente = () => {
                     <td className="border py-2 px-4">{cuenta.correo}</td>
                     <td className="border py-2 px-4">{cuenta.permisos.join(', ')}</td>
                     <td className="border py-2 px-4  items-center space-x-2">
-                      <button className="text-sm text-blue-500 hover:text-blue-700" onClick={() => handleEditar(index)}>
+                      <button className="text-sm text-blue-500 hover:text-blue-700" onClick={(): void => handleEditar(index)}>
                         <FontAwesomeIcon icon={faEdit} />
                       </button>
-                      <button className="text-sm text-red-500 hover:text-red-700" onClick={() => handleEliminar(index)}>
+                      <button className="text-sm text-red-500 hover:text-red-700" onClick={(): Promise<void> => handleEliminar(index)}>
                         <FontAwesomeIcon icon={faTrashAlt} />
                       </button>
                     </td>
@@ -254,19 +259,19 @@ const ObtenerCuentasComponente = () => {
               <div className="space-y-4">
                 <div>
                   <label htmlFor="user" className="block text-sm font-medium text-gray-700 mb-1">Nombre de Usuario</label>
-                  <input type="text" id="user" className="input-field" value={formData.user} onChange={(e) => setFormData({ ...formData, user: e.target.value })} />
+                  <input type="text" id="user" className="input-field" value={formData.user} onChange={(e): void => setFormData({ ...formData, user: e.target.value })} />
                 </div>
                 <div>
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
-                  <input type="text" id="password" className="input-field" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
+                  <input type="text" id="password" className="input-field" value={formData.password} onChange={(e): void => setFormData({ ...formData, password: e.target.value })} />
                 </div>
                 <div>
                   <label htmlFor="cargo" className="block text-sm font-medium text-gray-700 mb-1">Cargo</label>
-                  <input type="text" id="cargo" className="input-field" value={formData.cargo} onChange={(e) => setFormData({ ...formData, cargo: e.target.value })} />
+                  <input type="text" id="cargo" className="input-field" value={formData.cargo} onChange={(e): void => setFormData({ ...formData, cargo: e.target.value })} />
                 </div>
                 <div>
                   <label htmlFor="correo" className="block text-sm font-medium text-gray-700 mb-1">Correo</label>
-                  <input type="email" id="correo" className="input-field" value={formData.correo} onChange={(e) => setFormData({ ...formData, correo: e.target.value })} />
+                  <input type="email" id="correo" className="input-field" value={formData.correo} onChange={(e): void => setFormData({ ...formData, correo: e.target.value })} />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Permisos</label>
@@ -278,7 +283,7 @@ const ObtenerCuentasComponente = () => {
                           id={`permiso-${index}`}
                           value={permiso}
                           checked={permisosSeleccionados.includes(permiso)}
-                          onChange={() => handlePermisoChange(permiso)}
+                          onChange={(): void => handlePermisoChange(permiso)}
                         />
                         <label htmlFor={`permiso-${index}`} className="ml-2">{permiso}</label>
                       </li>
@@ -288,7 +293,7 @@ const ObtenerCuentasComponente = () => {
               </div>
               <div className="mt-6 flex justify-end space-x-4">
                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleSaveChanges}>Guardar Cambios</button>
-                <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded" onClick={() => setShowEditarModal(false)}>Cancelar</button>
+                <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded" onClick={(): void => setShowEditarModal(false)}>Cancelar</button>
               </div>
             </div>
           </Transition.Child>
@@ -328,7 +333,7 @@ const ObtenerCuentasComponente = () => {
                   <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2" onClick={confirmarEliminar}>
                     Eliminar
                   </button>
-                  <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded" onClick={() => setShowEliminarModal(false)}>
+                  <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded" onClick={(): void => setShowEliminarModal(false)}>
                     Cancelar
                   </button>
                 </div>

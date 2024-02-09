@@ -20,17 +20,22 @@ export default function Login(props: propsType): JSX.Element {
   const handleSubmit = async (event):Promise<void> => {
     event.preventDefault()
     const datosLogIn: sendLogInType = {
-      user: username,
-      password: password,
+      data:{
+        query:{
+          user:username
+        },
+        password: password,
+      },
       action: 'logIn',
-      query: 'personal'
+      query: 'personal',
+      collection: 'users'
     }
     const response: serverResponse<userType> = await window.api.user(datosLogIn)
+    console.log(response)
     if (isServerResponse(response)) {
       // Ahora puedes usar 'response' como 'serverResponse<responseLoginType>'
       const result: serverResponse<userType> = response;
-      console.log(result)
-      props.getUser(result.data)
+      props.getUser(result.data[0])
       if (result.status === 200) {
         setAnimation(true)
         setTimeout(() => {

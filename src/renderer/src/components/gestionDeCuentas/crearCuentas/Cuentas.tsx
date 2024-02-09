@@ -17,7 +17,7 @@ export default function Cuentas(): JSX.Element {
   }
 
   return (
-    <div>
+    <div className='w-full'>
       <NavBarCuentas handleFilter={handleFilter} handleSectionSelect={handleSectionSelect} />
       {seccion === 'Cuentas' && (
         <CuentasModificar />

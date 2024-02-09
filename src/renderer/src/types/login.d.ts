@@ -1,9 +1,14 @@
 /* eslint-disable prettier/prettier */
 export type sendLogInType = {
-  user: string
+  data: {
+    query:{
+      user:string
+    }
   password: string
+  }
   action: logIn
   query: string
+  collection: string
 }
 
 export type responseLoginType = {
