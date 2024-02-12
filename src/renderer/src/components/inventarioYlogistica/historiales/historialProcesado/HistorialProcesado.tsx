@@ -12,6 +12,22 @@ import NavBarInventario from './utils/NavBarInventario'
 import ErrorModal from '@renderer/errors/modal/ErrorModal'
 import SuccessModal from '@renderer/errors/modal/SuccessModal'
 
+const request = {
+  data:{
+    query:{ 
+      operacionRealizada: "Vaciado", "documento.predio": { $exists: true } 
+    },
+    select : { },
+    populate:{},
+    sort:{fecha: -1},
+    limit:50
+  },
+  collection:'historialLotes',
+  action: 'obtenerHistorialLotes',
+  query: 'proceso'
+};
+
+
 export default function HistorialProcesado(): JSX.Element {
   const user = useContext(userContext)
   const theme = useContext(themeContext);
@@ -29,8 +45,6 @@ export default function HistorialProcesado(): JSX.Element {
   useEffect(() => {
     const asyncFunction = async (): Promise<void> => {
       try {
-        console.log('render')
-        const request = { action: 'obtenerHistorialProceso' }
         const frutaActual = await window.api.proceso(request)
 
         if (frutaActual.status === 200) {
@@ -44,30 +58,11 @@ export default function HistorialProcesado(): JSX.Element {
           }, 5000)
         }
       } catch (e: unknown) {
-        alert(`Fruta actual ${e}`)
-      }
-    }
-    asyncFunction()
-  }, [])
-
-  useEffect(() => {
-    const asyncFunction = async (): Promise<void> => {
-      try {
-        const request = { action: 'obtenerHistorialProceso' }
-        const frutaActual = await window.api.proceso(request)
-
-        if (frutaActual.status === 200) {
-          setDatosOriginales(frutaActual.data.data)
-          dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
-        } else {
-          setShowError(true)
-          setMessage(`Error ${frutaActual.status}: ${frutaActual.message}`)
-          setInterval(() => {
-            setShowError(false)
-          }, 5000)
-        }
-      } catch (e: unknown) {
-        alert(`Fruta actual ${e}`)
+        setShowError(true)
+        setMessage(`Error ${e}`)
+        setInterval(() => {
+          setShowError(false)
+        }, 5000)
       }
     }
     asyncFunction()
