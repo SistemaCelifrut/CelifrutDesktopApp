@@ -159,34 +159,32 @@ const FormularioMulas: React.FC = () => {
   
   const handleContenedorChange = (contenedorId: string): void => {
     console.log("Contenedor ID seleccionado:", contenedorId);
-    
-    // Verifica que los IDs de los contenedores sean cadenas y que coincidan con el ID seleccionado
+  
+    // Convierte contenedorId a número
+    const idSeleccionado = parseInt(contenedorId, 10);
+  
     console.log("IDs de los contenedores:", state.contenedores.map(contenedor => contenedor._id));
-    
-    // Asegúrate de que state.contenedores tenga datos antes de intentar encontrar el contenedor seleccionado
+  
     if (state.contenedores.length > 0) {
-        const contenedorSeleccionado = state.contenedores.find((contenedor) => contenedor._id === contenedorId);
-        
-        console.log("Contenedor seleccionado:", contenedorSeleccionado);
-        
-        if (contenedorSeleccionado) {
-            // Actualiza el estado con la información del contenedor seleccionado
-            setState((prev) => ({
-                ...prev,
-                numContenedor: contenedorId,
-                contenedorSeleccionado: contenedorSeleccionado,
-            }));
-        } else {
-            // Si no se encontró un contenedor válido, establece contenedorSeleccionado en null
-            setState((prev) => ({
-                ...prev,
-                numContenedor: contenedorId,
-                contenedorSeleccionado: null,
-            }));
-        }
+      const contenedorSeleccionado = state.contenedores.find((contenedor) => parseInt(contenedor._id, 10) === idSeleccionado);
+      
+      console.log("Contenedor seleccionado:", contenedorSeleccionado);
+      
+      if (contenedorSeleccionado) {
+        setState((prev) => ({
+          ...prev,
+          numContenedor: contenedorId,
+          contenedorSeleccionado: contenedorSeleccionado,
+        }));
+      } else {
+        setState((prev) => ({
+          ...prev,
+          numContenedor: contenedorId,
+          contenedorSeleccionado: null,
+        }));
+      }
     }
-};
-
+  };
   
   const resetearFormulario = (): void => {
     setState(generarEstadoInicial);
@@ -288,7 +286,7 @@ const FormularioMulas: React.FC = () => {
   return (
     <div className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'} max-w-3xl mx-auto p-8 rounded-md shadow-md h-max`}>
       <h2 className="text-3xl font-bold mb-6 text-center">Formulario de Inspección</h2>
-      <form ref={formRef} onSubmit={handleEnviarYResetear} className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'} grid grid-cols-1 md:grid-cols-2 gap-6`}>
+      <form ref={formRef} onSubmit={handleEnviarYResetear} className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'} grid grid-cols-2 md:grid-cols-2 gap-6`}>
         <div className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'} mb-4 w-full`}>
           <label className="block font-bold mb-2">
             <i className="fas fa-user-tie mr-2"></i> Responsable:
@@ -334,7 +332,7 @@ const FormularioMulas: React.FC = () => {
             <i className="fas fa-address-card mr-2"></i> Información del Contenedor:
           </label>
           <div className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'} p-4 rounded-md shadow-md`}>
-            {state.contenedorSeleccionado.formularioInspeccionMula && (
+          {state.contenedorSeleccionado && state.contenedorSeleccionado.formularioInspeccionMula && (
               <>
                 <p><strong>Placa:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.placa}</p>
                 <p><strong>Trailer:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.trailer}</p>
@@ -360,7 +358,7 @@ const FormularioMulas: React.FC = () => {
           criterio.type === 'titulo' ? (
             <h3 key={index} className="col-span-2 text-xl font-bold mt-8">{criterio.value}</h3>
           ) : (
-            <div key={index} className={`${theme === 'Dark' ? 'bg-slate-700' : 'bg-gray-100'} rounded-md p-4 mb-4`}>
+            <div key={index} className={`${theme === 'Dark' ? 'bg-slate-800' : 'bg-gray-100'} rounded-md p-4 mb-4`}>
               <p className="mb-2 font-bold">{criterio.nombre}</p>
               <div className="flex items-center mb-4">
                 <label className="inline-flex items-center mr-4">
