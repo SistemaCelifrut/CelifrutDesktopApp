@@ -1,10 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { themeContext } from '@renderer/App'
 import { useContext, useState } from 'react'
+import { prediosType } from '../types/types'
 
 type vaciadoType = {
     closeDesverdizado: () => void
-    propsModal: { nombre: string, canastillas: number, enf:string}
+    propsModal: prediosType
     setShowSuccess: (e) => void 
     setShowError: (e) => void
     setMessage: (e) => void
@@ -18,7 +19,7 @@ export default function Desverdizado(props: vaciadoType): JSX.Element {
   const vaciar = async (): Promise<void> => {
     try {
       const canastillasInt = canastillas
-      const propsCanastillasInt = props.propsModal.canastillas
+      const propsCanastillasInt = props.propsModal.inventarioActual.inventario
 
       if (canastillasInt > propsCanastillasInt) {
         props.setShowError(true)
@@ -27,13 +28,27 @@ export default function Desverdizado(props: vaciadoType): JSX.Element {
           props.setShowError(false)
         }, 5000)
       } else {
-        const obj = {
-            canastillas: canastillas,
-            enf: props.propsModal.enf,
-            action: 'desverdizado',
-            cuartoDesverdizado: cuartoDesverdizado
-          }
-        const response = await window.api.proceso(obj)
+        const nuevo_lote = props.propsModal
+        nuevo_lote.inventarioActual.inventario -= canastillasInt;
+        nuevo_lote.desverdizado = {}
+        nuevo_lote.desverdizado.canastillas = canastillasInt;
+        nuevo_lote.desverdizado.canastillasIngreso = canastillasInt;
+        const suma_canastillas = Number(nuevo_lote.promedio) * Number(canastillasInt);
+        nuevo_lote.desverdizado.kilos = suma_canastillas;
+        nuevo_lote.desverdizado.kilosIngreso = suma_canastillas;
+        nuevo_lote.desverdizado.cuartoDesverdizado = cuartoDesverdizado;
+        
+        const request = {
+          data:{
+            lote: nuevo_lote,
+            vaciado: canastillas
+          },
+          collection:'lotes',
+          action: 'desverdizado',
+          query: 'proceso'
+        }
+
+        const response = await window.api.server(request)
         console.log(response)
         if (response.status === 200) {
           props.closeDesverdizado()
@@ -51,17 +66,21 @@ export default function Desverdizado(props: vaciadoType): JSX.Element {
         }
       }
     } catch (e: unknown) {
-      alert(`${e}`)
+      props.setShowError(true)
+      props.setMessage(`Error ${e}`)
+      setInterval(() => {
+        props.setShowError(false)
+      }, 5000)
     }
   }
   return (
     <div className={` fixed inset-0 flex items-center justify-center bg-black bg-opacity-50`}>
     <div className={`${theme === 'Dark' ? 'bg-slate-800' : 'bg-white'} rounded-xl w-96 h-90 overflow-hidden pb-5`}>
       <div className={`flex bg-yellow-500 justify-between items-center border-b-2 border-gray-200 p-3 mb-4 rounded-sm`}>
-        <h2 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-lg font-semibold`}>{props.propsModal.nombre}</h2>
+        <h2 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-lg font-semibold`}>{props.propsModal.predio.PREDIO}</h2>
       </div>
       <div className="flex justify-center pb-2">
-        <p className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>Numero de canastillas en inventario: {props.propsModal.canastillas}</p>
+        <p className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>Numero de canastillas en inventario: {props.propsModal.inventarioActual.inventario}</p>
       </div>
       <div className="flex justify-center pb-5">
         <input

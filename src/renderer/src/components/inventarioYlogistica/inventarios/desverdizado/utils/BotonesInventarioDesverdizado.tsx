@@ -22,7 +22,7 @@ export default function BotonesInventarioDesverdizado(props: propsType): JSX.Ele
     ${props.theme === 'Dark' ? 'text-white' : 'text-black'}`}
     >
       <h2>{props.title}</h2>
-      <h2>{props.table && props.table.reduce((acu, lote) => (acu += lote.kilos), 0)} Kg</h2>
+      <h2>{props.table && props.table.reduce((acu, lote) => (acu += lote.desverdizado?.kilos ? lote.desverdizado?.kilos : 0), 0)} Kg</h2>
       <button
         onClick={props.closeParametros}
         className={

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
@@ -11,6 +12,10 @@ const api = {
   },
   user: async (datos): Promise<unknown> => {
     const response = await ipcRenderer.invoke('user', datos)
+    return response
+  },
+  server: async (datos) => {
+    const response = await ipcRenderer.invoke('server', datos)
     return response
   },
   proceso: async (datos) => {

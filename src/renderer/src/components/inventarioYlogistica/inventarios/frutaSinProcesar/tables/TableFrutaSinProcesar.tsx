@@ -18,14 +18,14 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
       </div>
       <div className="grid grid-cols-9 gap-0 mt-0">
         {props.table.sort().map((lote, index) => (
-          <React.Fragment key={lote._id}>
+          <React.Fragment key={lote.enf}>
             <div
 
               className={`h-10 p-0 ol-span-1 text-[12px] flex justify-center items-center  ${
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              <input type="radio" onClick={props.clickLote} id={lote._id} value={lote._id} name='lote' ></input>
+              <input type="radio" onClick={props.clickLote} id={lote.enf} value={lote.enf} name='lote' ></input>
             </div>
             <div
 
@@ -33,7 +33,7 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {lote._id}
+              {lote.enf}
             </div>
             <div
 
@@ -41,7 +41,7 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {lote.predio.PREDIO}
+              {lote.predio && lote.predio.PREDIO}
             </div>
             <div
 
@@ -49,7 +49,7 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {lote.predio.ICA}
+              {lote.predio && lote.predio.ICA}
             </div>
             <div
    
@@ -65,7 +65,7 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {lote.KilosActual.toFixed(2)}
+              {(lote.inventarioActual.inventario * lote.promedio).toFixed(2)}
             </div>
             <div
  

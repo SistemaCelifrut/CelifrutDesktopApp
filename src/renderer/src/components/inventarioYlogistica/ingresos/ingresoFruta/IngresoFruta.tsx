@@ -8,6 +8,7 @@ import { proveedoresType } from './types/type';
 
 
 export default function IngresoFruta(): JSX.Element {
+  let check = true;
   const theme = useContext(themeContext);
   const [prediosDatos, setPrediosData] = useState<proveedoresType[]>([])
   const [nombrePredio, setNombrePredio] = useState('')
@@ -24,25 +25,46 @@ export default function IngresoFruta(): JSX.Element {
 
   useEffect(() => {
     const obtenerPredios = async (): Promise<void> => {
-      const request = { action: 'obtenerProveedores' }
-      const response = await window.api.proceso(request);
-      if (Array.isArray(response.data) && response.status === 200) {
-        
-        setPrediosData(response.data)
-        setEnf(response.enf)
-      } else {
-        setMessageError(`Error ${response.status}: ${response.message}`);
-        setShowError(true)
-        setTimeout(() => {
-          setShowError(false);
-        }, 5000);
+      if(check){
+        check = false
+        const request1 = {
+          data:{
+            query:{},
+          },
+          collection:'proveedors',
+          action: 'obtenerProveedores',
+          query: 'proceso'
+        };
+      
+        const request2 = {
+          collection:'variablesDesktop',
+          action: 'obtenerEF1',
+          query: 'variablesDelProceso'
+        };
+        const [response1, response2] = await Promise.all([
+          window.api.server(request1),
+          window.api.server(request2)
+        ]);
+    
+        console.log(response1);
+    
+        if (Array.isArray(response1.data) && response1.status === 200) {
+          setPrediosData(response1.data);
+          setEnf(response2.enf);
+        }
+       else {
+          setMessageError(`Error ${response1.status}: ${response1.message}`);
+          setShowError(true)
+          setTimeout(() => {
+            setShowError(false);
+          }, 5000);
+        }
       }
+     
     }
     obtenerPredios()
   }, [])
-  useEffect(() => {
-    console.log("render")
-  }, [canastillas])
+
   const handlePrediosChange = (event): void => {
     setNombrePredio(event.target.value)
   }
@@ -57,7 +79,12 @@ export default function IngresoFruta(): JSX.Element {
         tipoFruta: tipoFruta,
         observaciones: observaciones,
         promedio: parseFloat(kilos) / parseFloat(canastillas),
-        canastillasVacias: canastillasVacias
+        canastillasVacias: canastillasVacias,
+        inventarioActual: {
+          inventario: Number(canastillas),
+          descarteLavado: { balin: 0, pareja: 0, descarteGeneral: 0 },
+          descarteEncerado: { balin: 0, pareja: 0, extra: 0, descarteEncerado: 0 },
+        },
       }
 
       if (datos.promedio < 15 || datos.promedio > 30) {
@@ -77,14 +104,26 @@ export default function IngresoFruta(): JSX.Element {
         }, 5000);
         return
       }
-      const request = { action: 'guardarLote', data: datos }
-      const response = await window.api.proceso(request)
-      console.log(response)
+      const request = {
+        data:datos,
+        collection:'lotes',
+        action: 'guardarLote',
+        query: 'proceso'
+      };
+      const response = await window.api.server(request)
       if (response.status === 200) {
         setShowSuccess(true)
         setTimeout(() => {
           setShowSuccess(false);
         }, 5000);
+        const request = {
+          collection:'variablesDesktop',
+          action: 'obtenerEF1',
+          query: 'variablesDelProceso'
+        };
+        const enf = await window.api.server(request);
+        setEnf(enf.enf);
+
       } else {
         setMessageError(`Error ${response.status}: ${response.message}`);
         setShowError(true)

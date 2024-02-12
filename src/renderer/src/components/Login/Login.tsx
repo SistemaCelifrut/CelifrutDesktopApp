@@ -10,6 +10,7 @@ type propsType = {
 }
 
 export default function Login(props: propsType): JSX.Element {
+  let check = true;
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [errUser, setErrUser] = useState<boolean>(false)
@@ -18,40 +19,48 @@ export default function Login(props: propsType): JSX.Element {
   const [fade, setFade] = useState<boolean>(false)
 
   const handleSubmit = async (event):Promise<void> => {
-    event.preventDefault()
-    const datosLogIn: sendLogInType = {
-      data:{
-        query:{
-          user:username
+  try{
+    if(check){
+      event.preventDefault()
+      check = false
+      const datosLogIn: sendLogInType = {
+        data:{
+          query:{
+            user:username
+          },
+          password: password,
         },
-        password: password,
-      },
-      action: 'logIn',
-      query: 'personal',
-      collection: 'users'
-    }
-    const response: serverResponse<userType> = await window.api.user(datosLogIn)
-    console.log(response)
-    if (isServerResponse(response)) {
-      // Ahora puedes usar 'response' como 'serverResponse<responseLoginType>'
-      const result: serverResponse<userType> = response;
-      props.getUser(result.data[0])
-      if (result.status === 200) {
-        setAnimation(true)
-        setTimeout(() => {
-          setFade(true)
-          setTimeout(() => {
-            props.loggin(true)
-          }, 600)
-        }, 600)
-      } else if (response.status === 401) {
-        setErrUser(true)
-      } else if (response.status === 402) {
-        setErrPass(true)
+        action: 'logIn',
+        query: 'personal',
+        collection: 'users'
       }
-  } else {
-      // Manejar el caso en que 'result' no sea del tipo 'serverResponse<responseLoginType>'
-      throw new Error('La respuesta del servidor no es del tipo esperado.');
+      const response: serverResponse<userType> = await window.api.user(datosLogIn)
+      if (isServerResponse(response)) {
+        // Ahora puedes usar 'response' como 'serverResponse<responseLoginType>'
+        const result: serverResponse<userType> = response;
+        props.getUser(result.data[0])
+        if (result.status === 200) {
+          setAnimation(true)
+          setTimeout(() => {
+            setFade(true)
+            setTimeout(() => {
+              props.loggin(true)
+            }, 600)
+          }, 600)
+        } else if (response.status === 401) {
+          setErrUser(true)
+        } else if (response.status === 402) {
+          setErrPass(true)
+        }
+    } else {
+        // Manejar el caso en que 'result' no sea del tipo 'serverResponse<responseLoginType>'
+        throw new Error('La respuesta del servidor no es del tipo esperado.');
+    }
+    }
+  } catch(e) {
+    console.error(e)
+  } finally {
+    check = true
   }
   }
 

@@ -5,6 +5,30 @@ import {
   stateUseReducerTypePredios
 } from '../types/types'
 
+export const predios: prediosType = {
+  _id: '',
+  enf: '',
+  predio: { ICA: '', PREDIO: '' },
+  fechaIngreso: '',
+  kilosVaciados: 0,
+  inventarioActual: {
+    inventario: 0
+  },
+  desverdizado: {
+    canastillas: 0,
+    canastillasIngreso: 0,
+    kilos: 0,
+    kilosIngreso: 0,
+    cuartoDesverdizado: '',
+  },
+  observaciones: '',
+  tipoFruta: '',
+  promedio: 0,
+  directoNacional: 0, // Agrega esta línea
+};
+
+
+
 export const INITIAL_STATE: prediosType[] = []
 
 export const reducer = (state: prediosType[], action: stateUseReducerTypePredios): prediosType[] => {

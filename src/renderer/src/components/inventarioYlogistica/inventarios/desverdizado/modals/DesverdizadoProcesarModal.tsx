@@ -1,10 +1,11 @@
 /* eslint-disable prettier/prettier */
 
 import { useState } from 'react'
+import { prediosDesverdizadoType } from '../type/type'
 
 type propsType = {
   closeProcesarDesverdizado: () => void
-  propsModal: { nombre: string; canastillas: number; enf: string }
+  propsModal: prediosDesverdizadoType
   theme: string
   setShowSuccess: (e) => void
   setShowError: (e) => void
@@ -19,7 +20,7 @@ export default function DesverdizadoProcesarModal(props: propsType): JSX.Element
     try {
       setLoading(true)
       const canastillasInt = canastillas
-      const propsCanastillasInt = props.propsModal.canastillas
+      const propsCanastillasInt = props.propsModal.desverdizado?.canastillas ? props.propsModal.desverdizado?.canastillas : 0
 
       if (canastillasInt > propsCanastillasInt) {
         alert('Error en el numero de canastillas')
@@ -68,12 +69,12 @@ export default function DesverdizadoProcesarModal(props: propsType): JSX.Element
               props.theme === 'Dark' ? 'text-white' : 'text-black'
             } text-lg font-semibold`}
           >
-            {props.propsModal.nombre}
+            {props.propsModal.predio.PREDIO}
           </h2>
         </div>
         <div className="flex justify-center pb-5">
           <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>
-            Numero de canastillas en inventario: {props.propsModal.canastillas}
+            Numero de canastillas en inventario: {props.propsModal.desverdizado?.canastillas}
           </p>
         </div>
         <div className="flex justify-center pb-10">

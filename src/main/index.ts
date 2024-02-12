@@ -167,6 +167,23 @@ ipcMain.handle('user', async (event, datos) => {
     return `${e}`
   }
 })
+
+//comunicacion con el servidor
+ipcMain.handle('server', async (event, data) => {
+  try{
+    event.preventDefault();
+    const request = { data:data }
+    const response = await new Promise((resolve) => {
+     socket.emit("Desktop", request, (serverResponse) => {
+      console.log(serverResponse)
+      resolve(serverResponse);
+     })
+    })
+     return response;
+  } catch(e){
+    return {status:505, data:e};
+  }
+})
 // funcion encargada del proceso de la fruta
 ipcMain.handle('proceso', async (event, data) => {
   try {

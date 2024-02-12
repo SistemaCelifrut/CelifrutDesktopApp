@@ -1,10 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { useState } from 'react'
 import { GiSave } from 'react-icons/gi'
+import { prediosDesverdizadoType } from '../type/type'
 
 type vaciadoType = {
   closeParametros: () => void
-  propsModal: { nombre: string; enf: string }
+  propsModal: prediosDesverdizadoType
   theme: string
   setShowSuccess: (e) => void
   setShowError: (e) => void
@@ -26,7 +27,6 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType): JSX.
         etileno: etileno,
         carbono: dioxido,
         humedad: humedad,
-        enf: props.propsModal.enf,
         action: 'setParametrosDesverdizado'
       }
 
@@ -75,7 +75,7 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType): JSX.
               props.theme === 'Dark' ? 'text-white' : 'text-black'
             } text-lg font-semibold`}
           >
-            {props.propsModal.nombre}
+            {props.propsModal.predio.PREDIO}
           </h2>
         </div>
         <div className="flex justify-center pb-2">

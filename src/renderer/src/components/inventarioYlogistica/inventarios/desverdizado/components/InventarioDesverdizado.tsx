@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useEffect, useReducer, useState } from 'react'
-import { INITIAL_STATE, reducer } from '../functions/reduce'
+import { INITIAL_STATE, predios, reducer } from '../functions/reduce'
 import TableInventarioDesverdizado from '../tables/TableInventarioDesverdizado'
 import { prediosDesverdizadoType } from '../type/type'
 import BotonesInventarioDesverdizado from '../utils/BotonesInventarioDesverdizado'
@@ -17,10 +17,26 @@ type propsType = {
   setShowError: (e) => void
   setMessage: (e) => void
 }
+const request = {
+  data:{
+    query:{ 
+      "desverdizado": { $exists: true },
+    },
+    select : { promedio:1, enf:1, desverdizado:1,},
+    populate:{
+      path: 'predio',
+      select: 'PREDIO ICA'
+    },
+    sort:{"desverdizado.fechaIngreso": -1}
+  },
+  collection:'lotes',
+  action: 'obtenerFrutaActual',
+  query: 'proceso'
+};
 
 export default function InventarioDesverdizado(props: propsType): JSX.Element {
   const [datosOriginales, setDatosOriginales] = useState([])
-  const [propsModal, setPropsModal] = useState({ nombre: '', canastillas: 0, enf: '' })
+  const [propsModal, setPropsModal] = useState<prediosDesverdizadoType>(predios)
   const [titleTable, setTitleTable] = useState('Lotes')
   const [showButton, setShowButton] = useState<string>('')
   const [showModalParametros, setShowModalParametros] = useState<boolean>(false)
@@ -33,18 +49,25 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
   useEffect(() => {
     const asyncFunction = async (): Promise<void> => {
       try {
-        const request = { action: 'obtenerFrutaDesverdizando' }
-        const frutaActual = await window.api.proceso(request)
-        console.log(frutaActual)
+        const frutaActual = await window.api.server(request)
 
         if (frutaActual.status === 200) {
           setDatosOriginales(frutaActual.data)
+          console.log(frutaActual)
           dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
         } else {
-          alert('error obteniendo datos del servidor')
+          props.setShowError(true)
+          props.setMessage(`Error ${frutaActual.status}: ${frutaActual.message}`)
+          setInterval(() => {
+            props.setShowError(false)
+          }, 5000)
         }
       } catch (e: unknown) {
-        alert(`Fruta actual ${e}`)
+        props.setShowError(true)
+        props.setMessage(`Error ${e}`)
+        setInterval(() => {
+          props.setShowError(false)
+        }, 5000)
       }
     }
     asyncFunction()
@@ -76,15 +99,11 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
     console.log(enf)
     const lote: prediosDesverdizadoType | undefined = table.find((item) => item.enf === enf)
     if (lote !== undefined) {
-      setPropsModal(() => ({
-        nombre: lote.nombrePredio,
-        canastillas: lote.canastillas,
-        enf: enf
-      }))
+      setPropsModal(lote)
     }
     if (e.target.checked) {
-      setTitleTable(enf + ' ' + lote?.nombrePredio)
-      if (lote?.fechaFinalizado) {
+      setTitleTable(enf + ' ' + lote?.predio.PREDIO)
+      if (lote?.desverdizado?.fechaFinalizar) {
         setShowButton('finalizado')
       } else {
         setShowButton('desverdizando')

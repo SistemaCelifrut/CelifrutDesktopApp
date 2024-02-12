@@ -25,6 +25,7 @@ export default function InventarioFrutaSinProcesar(): JSX.Element {
     <div className='w-full'>
       <NavBarInventario handleFilter={handleFilter} />
      
+     
         <FrutaSinProcesar 
           filtro={filtro} 
           setShowSuccess={setShowSuccess} 

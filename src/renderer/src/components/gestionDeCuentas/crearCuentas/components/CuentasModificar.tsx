@@ -34,7 +34,7 @@ const ObtenerCuentasComponente = (): JSX.Element => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [showCrearCuenta, setShowCrearCuenta] = useState(false);
 
-  const [permisosDisponibles, setPermisosDisponibles] = useState<string[]>([]);
+  const [permisosDisponibles, ] = useState<string[]>([]);
   const [permisosSeleccionados, setPermisosSeleccionados] = useState<string[]>([]);
 
   useEffect(() => {
@@ -75,24 +75,24 @@ const ObtenerCuentasComponente = (): JSX.Element => {
     }
   };
 
-  const obtenerPermisosDisponibles = async (): Promise<void> => {
-    try {
-      const request = {
-        action: 'obtenerPermisosUsuario',
-        query: 'personal'
-      };
+  // const obtenerPermisosDisponibles = async (): Promise<void> => {
+  //   try {
+  //     const request = {
+  //       action: 'obtenerPermisosUsuario',
+  //       query: 'personal'
+  //     };
   
-      const response = await window.api.user(request);
+  //     const response = await window.api.user(request);
   
-      if (response.status === 200 && response.data && response.data.permisos) {
-        setPermisosDisponibles(response.data.permisos);
-      } else {
-        console.error('Error al obtener permisos disponibles:', response);
-      }
-    } catch (error) {
-      console.error('Error al realizar la petición de permisos disponibles:', error);
-    }
-  };
+  //     if (response.status === 200 && response.data && response.data.permisos) {
+  //       setPermisosDisponibles(response.data.permisos);
+  //     } else {
+  //       console.error('Error al obtener permisos disponibles:', response);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error al realizar la petición de permisos disponibles:', error);
+  //   }
+  // };
   
 
   const handleEditar = (index: number): void => {

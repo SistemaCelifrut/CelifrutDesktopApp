@@ -6,6 +6,7 @@ import { responseIngresarPredio } from '@renderer/types/predios'
 export interface Api {
   obtenerTheme: () => Promise<'Dark' | 'Ligth'>
   user: (datos) => Promise<serverResponse>
+  server: (datos) => Promise<serverResponse>
   obtenerSesion: () => Promise<userType>
   proceso: (datos) => Promise<serverResponse>
   imprimirRotulos: (datos) => Promise<void>

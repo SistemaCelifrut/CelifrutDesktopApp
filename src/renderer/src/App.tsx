@@ -38,6 +38,7 @@ import FormularioProgramacionMula from './components/transporte/formulatioInspec
 import HistorialProgramacionMula from './components/transporte/historialInspecciones/historialProgramacionMula/HistorialProgramacionMula'
 import Cuentas from './components/gestionDeCuentas/crearCuentas/Cuentas'
 
+
 type MyContextType = {
   setSection: React.Dispatch<React.SetStateAction<string>>;
 };
@@ -70,6 +71,7 @@ function App(): JSX.Element {
     const funcionAuxiliar = async (): Promise<void> => {
       try {
         const response = await window.api.obtenerTheme()
+        console.log("server");
         setTheme(response)
       } catch (e: unknown) {
         alert(`${e}`)

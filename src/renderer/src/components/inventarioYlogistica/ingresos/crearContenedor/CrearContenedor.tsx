@@ -17,8 +17,8 @@ type clientesType = {
 }
 
 
-
 export default function CrearContenedor(): JSX.Element {
+  let check = true;
   const theme = useContext(themeContext);
   const [numeroContenedor, setNumeroContenedor] = useState<string>('')
   const [cliente, setCliente] = useState<string>('')
@@ -34,22 +34,33 @@ export default function CrearContenedor(): JSX.Element {
 
   useEffect(() => {
     const obtenerDatos = async (): Promise<void> => {
-      try {
-        const request = { action: 'obtenerClientes' }
-        const response: serverResponseType = await window.api.contenedores(request)
-        if(response.status === 200){
-          const nombreClientes: clientesType[] = response.data
-          setClientesDatos(nombreClientes)
-        }
-        else {
-          setMessage(`Error ${response.status}: ${response.message}`);
-          setShowError(true)
-          setTimeout(() => {
-            setShowError(false);
-          }, 5000);
-        }
-      } catch (e: unknown) {
-        alert(`Crear contenedor ${e}`)
+      if(check) {
+        try {
+          check = false;
+          const request = {
+            data:{
+              query:{},
+            },
+            collection:'clientes',
+            action: 'obtenerClientes',
+            query: 'proceso'
+          };
+          const response: serverResponseType = await window.api.server(request)
+          console.log("entra")
+          if(response.status === 200){
+            const nombreClientes: clientesType[] = response.data
+            setClientesDatos(nombreClientes)
+          }
+          else {
+            setMessage(`Error ${response.status}: ${response.message}`);
+            setShowError(true)
+            setTimeout(() => {
+              setShowError(false);
+            }, 5000);
+          }
+        } catch (e: unknown) {
+          alert(`Crear contenedor ${e}`)
+        } 
       }
     }
     obtenerDatos()
@@ -70,6 +81,8 @@ export default function CrearContenedor(): JSX.Element {
        const request = { action: 'crearContenedor', data: datos }
       console.log(request)
       const response = await window.api.contenedores(request)
+      console.log("2");
+
       if (response.status === 200) {
         setShowSuccess(true)
         setMessage("Contenedor creado con exito!")

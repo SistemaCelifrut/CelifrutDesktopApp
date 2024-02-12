@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { themeContext, userContext } from '@renderer/App'
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState, Fragment } from 'react'
 import { FcFolder } from "react-icons/fc";
 import { FcOpenedFolder } from "react-icons/fc";
 import { FcDepartment } from "react-icons/fc";
@@ -111,7 +111,7 @@ export default function SideBar(props: propsType): JSX.Element {
         {props.showSideBar ?
           <ul className="transition-all ease-in-out duration-500 opacity-100 transform scale-100 w-full min-w-[200px] m-0 p-0 hover:cursor-default">
             {areaState.map((item, index) => (
-              <>
+              <Fragment key={index}>
                 <li className={`hover:cursor-pointer  w-full pl-2 ${theme === 'Dark' ? 'text-white hover:bg-slate-500' : 'text-black hover:bg-slate-200'}`}>
                   <button className='flex flex-row justify-start items-center gap-2' onClick={(): void => handleClickArea(index)}>
                     <div className=' text-sm'>
@@ -126,7 +126,7 @@ export default function SideBar(props: propsType): JSX.Element {
                       {elementoState.map((itemElemento, indexElement) => {
                         if (itemElemento[0] === item) {
                           return (
-                            <>
+                            <Fragment key={indexElement}>
                               <li key={itemElemento[1] + indexElement} className={`hover:cursor-pointer  w-full pl-2 ${theme === 'Dark' ? 'text-white hover:bg-slate-500' : 'text-black hover:bg-slate-200'}`} >
                                 <button className='flex flex-row w-full justify-start items-center gap-2' onClick={(): void => handleClickElement(indexElement)}>
                                   <div className=' text-sm'>
@@ -141,7 +141,7 @@ export default function SideBar(props: propsType): JSX.Element {
                                     {permisos.map((permiso, indexPermiso) => {
                                       if ( permiso[1] === itemElemento[1] && permiso[0] === item) {
                                         return (
-                                          <>
+                                          <Fragment key={indexPermiso}>
                                             <li key={permiso[2] + indexPermiso} className={`hover:cursor-pointer  w-full pl-4 ${theme === 'Dark' ? 'text-white hover:bg-slate-500' : 'text-black hover:bg-slate-200'}`}>
                                               <button className='flex flex-row w-full justify-start items-center gap-2' onClick={(): void => props.seleccionWindow(permiso[0] + "//" + permiso[1] + "//" + permiso[2])}>
                                                 <div className=' text-sm'>
@@ -150,7 +150,7 @@ export default function SideBar(props: propsType): JSX.Element {
                                                 {permiso[2]}
                                               </button>
                                             </li>
-                                          </>
+                                          </Fragment>
                                         )
                                       } else {
                                         return null
@@ -161,7 +161,7 @@ export default function SideBar(props: propsType): JSX.Element {
                                   null
                                 }
                               </li>
-                            </>
+                            </Fragment>
 
                           )
                         } else {
@@ -174,7 +174,7 @@ export default function SideBar(props: propsType): JSX.Element {
                 </li>
 
 
-              </>
+              </Fragment>
             ))}
           </ul> :
           <div className="transition-all ease-in-out duration-500 opacity-0 transform scale-0"></div>

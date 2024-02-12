@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import TableFrutaSinProcesar from '../tables/TableFrutaSinProcesar'
 import { useContext, useEffect, useReducer, useState } from 'react'
-import { INITIAL_STATE, reducer } from '../functions/reducer'
+import { INITIAL_STATE, predios, reducer } from '../functions/reducer'
 import BotonesAccionFrutaSinProcesar from '../utils/BotonesAccionFrutaSinProcesar'
 import { prediosType } from '../types/types'
 import { createPortal } from 'react-dom'
@@ -16,10 +16,26 @@ type propsType = {
   setShowError: (e) => void
   setMessage: (e) => void
 }
+const request = {
+  data:{
+    query:{ 
+      "inventarioActual.inventario": { $gt: 0 },
+    },
+    select : {nombrePredio: 1, fechaIngreso: 1 , observaciones: 1 , tipoFruta: 1, promedio:1, "inventarioActual.inventario":1, enf:1, kilosVaciados:1, directoNacional:1 },
+    populate:{
+      path: 'predio',
+      select: 'PREDIO ICA'
+    },
+    sort:{fechaIngreso: -1}
+  },
+  collection:'lotes',
+  action: 'obtenerFrutaActual',
+  query: 'proceso'
+};
 
 export default function FrutaSinProcesar(props: propsType): JSX.Element {
   const theme = useContext(themeContext);
-  const [propsModal, setPropsModal] = useState({ nombre: '', canastillas: 0, enf: '' })
+  const [propsModal, setPropsModal] = useState<prediosType>(predios)
 
 
   const [titleTable, setTitleTable] = useState('Lotes')
@@ -36,8 +52,8 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
   useEffect(() => {
     const asyncFunction = async (): Promise<void> => {
       try {
-        const request = { action: 'obtenerFrutaActual' }
-        const frutaActual = await window.api.proceso(request)
+        const frutaActual = await window.api.server(request)
+        console.log("frutaActual")
         if (frutaActual.status === 200) {
           setDatosOriginales(frutaActual.data)
           dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
@@ -49,26 +65,11 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
           }, 5000)
         }
       } catch (e: unknown) {
-        alert(`Fruta actual ${e}`)
-      }
-    }
-    asyncFunction()
-  }, [])
-
-  useEffect(() => {
-    const asyncFunction = async (): Promise<void> => {
-      try {
-        const request = { action: 'obtenerFrutaActual' }
-        const frutaActual = await window.api.proceso(request)
-        console.log(frutaActual)
-        if (frutaActual.status === 200) {
-          setDatosOriginales(frutaActual.data)
-          dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
-        } else {
-          alert('error obteniendo datos del servidor')
-        }
-      } catch (e: unknown) {
-        alert(`Fruta actual ${e}`)
+        props.setShowError(true)
+        props.setMessage(`Error ${e}`)
+        setInterval(() => {
+          props.setShowError(false)
+        }, 5000)
       }
     }
     asyncFunction()
@@ -76,16 +77,12 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
 
   const clickLote = (e): void => {
     const id = e.target.value
-    const lote: prediosType | undefined = table.find((item) => item._id === id)
+    const lote: prediosType | undefined = table.find((item) => item.enf === id)
     if (lote !== undefined) {
-      setPropsModal(() => ({
-        nombre: lote.predio.PREDIO,
-        canastillas: lote.inventarioActual.inventario,
-        enf: id
-      }))
+      setPropsModal(lote)
     }
     if (e.target.checked) {
-      setTitleTable(id + ' ' + lote?.predio.PREDIO)
+      setTitleTable(lote?.enf + ' ' + lote?.predio.PREDIO)
       if (lote?.tipoFruta === 'Naranja') {
         setTipoFruta('Naranja')
       } else if (lote?.tipoFruta == 'Limon') {
@@ -120,7 +117,8 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
           closeDirecto={closeDirecto}
           closeDesverdizado={closeDesverdizado}
         />
-        <TableFrutaSinProcesar table={table} theme={theme} clickLote={clickLote} />
+        
+         <TableFrutaSinProcesar table={table} theme={theme} clickLote={clickLote} />
 
         {showVaciarModal &&
           createPortal(

@@ -1,7 +1,9 @@
 /* eslint-disable prettier/prettier */
+import { prediosDesverdizadoType } from "../type/type"
+
 type propsType = {
   closeFinalizarDesverdizado: () => void
-  propsModal: { nombre: string; enf: string }
+  propsModal: prediosDesverdizadoType
   theme: string
   setShowSuccess: (e) => void
   setShowError: (e) => void
@@ -34,7 +36,7 @@ export default function DesverdizadoFInalizarDesverdizado(props: propsType): JSX
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white rounded-xl  w-96 h-44">
         <div className="flex justify-between items-center bg-orange-600 p-2 rounded-t-xl">
-          <h1 className="text-white">{props.propsModal.nombre}</h1>
+          <h1 className="text-white">{props.propsModal.predio.PREDIO}</h1>
         </div>
         <div className="flex justify-center p-2">
           <h2 className="text-center">Esta seguro que desea finalizar el desverdizado</h2>

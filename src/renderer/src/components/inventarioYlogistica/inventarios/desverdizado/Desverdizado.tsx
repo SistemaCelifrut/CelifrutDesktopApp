@@ -26,6 +26,7 @@ export default function Desverdizado(): JSX.Element {
   const closeModal = (): void => {
     setShowError(false)
   }
+
   return (
     <div className="w-full">
       <NavBarDesverdizado handleFilter={handleFilter} handleSectionSelect={handleSectionSelect} />

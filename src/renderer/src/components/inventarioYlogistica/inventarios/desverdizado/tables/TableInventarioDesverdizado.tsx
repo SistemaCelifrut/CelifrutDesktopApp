@@ -56,35 +56,35 @@ export default function TableInventarioDesverdizado(props: propsType):JSX.Elemen
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {lote.nombrePredio}
+              {lote.predio.PREDIO}
             </div>
             <div
               className={`flex justify-center ol-span-1 text-[12px] items-center  ${
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {lote.canastillas}
+              {lote.desverdizado?.canastillas}
             </div>
             <div
               className={`flex justify-center ol-span-1 text-[12px]  items-center  ${
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {lote.kilos}
+              {lote.desverdizado?.kilos}
             </div>
             <div
               className={`flex justify-center ol-span-1 text-[12px]  items-center  ${
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {lote.cuartoDesverdizado}
+              {lote.desverdizado?.cuartoDesverdizado}
             </div>
             <div
               className={`flex justify-center ol-span-1 text-[12px]  items-center  ${
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {format(new Date(lote.fechaIngreso), 'dd-MM-yyyy')}
+              {lote.desverdizado?.fechaIngreso && format(new Date(lote.desverdizado?.fechaIngreso), 'dd-MM-yyyy')}
             </div>
           </React.Fragment>
         ))}
