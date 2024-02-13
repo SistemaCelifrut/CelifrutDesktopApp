@@ -29,8 +29,8 @@ const request = {
     sort:{fechaIngreso: -1}
   },
   collection:'lotes',
-  action: 'obtenerFrutaActual',
-  query: 'proceso'
+  action: 'getLotes',
+  query: 'proceso',
 };
 
 export default function FrutaSinProcesar(props: propsType): JSX.Element {

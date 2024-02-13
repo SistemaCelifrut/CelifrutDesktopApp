@@ -41,15 +41,42 @@ export default function TablaClasificacionCalidad(props: propsType): JSX.Element
           objRes[item.key] = (Number(item.lavado) + Number(item.proceso)) / 2
         })
       }
-      objRes.lote = props.lote.id
-      const response: serverResponse = await window.api.calidad({
-        action: 'guardarClasificacionCalidad',
-        query:'proceso',
-        data: objRes
-      })
-      const requestLotes = { action: 'obtenerLotesClasificacionCalidad', query:'proceso' }
-      await window.api.calidad(requestLotes)
-      console.log(response)
+      const new_lote = {
+        ...props.lote,
+        calidad:{
+          calidadInterna:props.lote.calidad?.calidadInterna,
+          clasificacionCalidad:objRes
+        }
+      }
+      const request = {
+        query: 'proceso',
+        collection:'lotes',
+        action: 'putLotes',
+        record: 'ingresoClasificacionCalidad',
+        data: {
+          lote:new_lote
+        }
+    }
+      const response: serverResponse = await window.api.server(request)
+
+      const requestLotes = {
+        data:{
+          query:{ 
+            "calidad.clasificacionCalidad": { $exists : false},
+          },
+          select : { enf:1, tipoFruta: 1 },
+          populate:{
+            path: 'predio',
+            select: 'PREDIO'
+          },
+          sort:{fechaIngreso: -1}
+        },
+        collection:'lotes',
+        action: 'getLotes',
+        query: 'proceso'
+      };
+
+      await window.api.server(requestLotes)
       if (response.status === 200) {
         alert('Guardado exitoso')
         if(props.lote.tipoFruta === 'Limon'){
@@ -107,7 +134,7 @@ export default function TablaClasificacionCalidad(props: propsType): JSX.Element
         </formLimonContext.Provider>
       ) : (
         <formNaranjaContext.Provider value={formularioNaranja}>
-          <FormClasificacionCalidadNaranja handleChange={handleChangeNaranja} tipoFuta={props.lote.tipoFruta}/>
+          <FormClasificacionCalidadNaranja handleChange={handleChangeNaranja} tipoFruta={props.lote.tipoFruta}/>
         </formNaranjaContext.Provider>
       )}
       <button

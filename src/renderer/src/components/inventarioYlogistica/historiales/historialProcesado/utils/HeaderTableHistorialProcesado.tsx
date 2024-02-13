@@ -49,13 +49,7 @@ export default function HeaderTableHistorialProcesado(props: propsType): JSX.Ele
       >
         <h4>Fecha</h4>
       </div>
-      <div
-        className={`${
-          props.theme === 'Dark' ? 'text-white' : 'text-black'
-        } col-span-1 bg-blue-400 shadow-lg border-b-2 p-2 flex justify-center items-center text-sm`}
-      >
-        <h4>Rendimiento</h4>
-      </div>
+
     </>
   )
 }

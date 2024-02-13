@@ -4,10 +4,16 @@ import { lotesInventarioType } from '../types/calidadInterna'
 
 type propsType = {
   lotesData: lotesInventarioType[]
-  setLote: (enf: string) => void
+  setLote: (e) => void
 }
 
 export default function NavCalidadInternaForm(props: propsType): JSX.Element {
+
+  const handleChange = (e): void => {
+    const id = e.target.value;
+    const lote = props.lotesData.find(item => item._id === id)
+    props.setLote(lote)
+  }
 
   return (
     <div className='flex flex-row justify-between items-center bg-Celifrut-green rounded-t-sm m-0 border-1 border-Celifrut-green-dark pl-5'>
@@ -19,13 +25,13 @@ export default function NavCalidadInternaForm(props: propsType): JSX.Element {
       </div>
 
       <select
-        onChange={(e): void => props.setLote(e.target.value)}
+        onChange={handleChange}
         className={`border focus:outline-none appearance-none w-2/5 mr-5 rounded-md h-10 pl-5 pr-10
                         ${'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '}`}
       >
         <option>Lotes</option>
         {props.lotesData.map((lote) => (
-          <option key={lote.id} value={lote.id}>{lote.id + ' ' + ' ' + lote.nombre}</option>
+          <option key={lote._id} value={lote._id}>{lote.enf + ' ' + ' ' + lote.predio.PREDIO}</option>
         ))}
       </select>
     </div>

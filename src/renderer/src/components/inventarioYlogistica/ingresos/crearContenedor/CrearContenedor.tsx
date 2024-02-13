@@ -3,6 +3,8 @@ import { themeContext } from '@renderer/App'
 import ErrorModal from '@renderer/errors/modal/ErrorModal'
 import SuccessModal from '@renderer/errors/modal/SuccessModal'
 import { useContext, useEffect, useState } from 'react'
+import { datosType } from './type'
+import { crearObjetoContenedor } from './functions'
 
 
 type serverResponseType = {
@@ -42,11 +44,12 @@ export default function CrearContenedor(): JSX.Element {
               query:{},
             },
             collection:'clientes',
-            action: 'obtenerClientes',
+            action: 'getClientes',
             query: 'proceso'
           };
+        
           const response: serverResponseType = await window.api.server(request)
-          console.log("entra")
+          console.log(response)
           if(response.status === 200){
             const nombreClientes: clientesType[] = response.data
             setClientesDatos(nombreClientes)
@@ -68,21 +71,25 @@ export default function CrearContenedor(): JSX.Element {
   const guardarDatos: React.FormEventHandler<HTMLFormElement> = async (event) => {
     try {
       event.preventDefault()
-      const datos = {
+      const datos: datosType = {
         cliente: cliente,
-        numeroContenedor: numeroContenedor,
-        pallets: pallets,
+        numeroContenedor: Number(numeroContenedor),
+        pallets: Number(pallets),
         tipoFruta: tipoFruta,
         desverdizado: desverdizado,
         observaciones: observaciones,
         tipoEmpaque: tipoEmpaque
       }
-
-       const request = { action: 'crearContenedor', data: datos }
-      console.log(request)
-      const response = await window.api.contenedores(request)
-      console.log("2");
-
+      const new_contenedor = crearObjetoContenedor(datos);
+      const request = {
+        data:new_contenedor,
+        collection:'contenedores',
+        action: 'crearContenedor',
+        query: 'proceso',
+        record: 'crearContenedor'
+      };
+      const response = await window.api.server(request)
+      console.log(response)
       if (response.status === 200) {
         setShowSuccess(true)
         setMessage("Contenedor creado con exito!")

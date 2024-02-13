@@ -2,17 +2,33 @@
 import { useEffect, useState } from 'react'
 import NavCalidadInternaForm from './utils/NavCalidadInternaForm'
 import PruebasCalidadInterna from './components/PruebasCalidadInterna'
+import { calidadInternalote } from './types/calidadInterna';
 
+const request = {
+  data:{
+    query:{ 
+      "calidad.calidadInterna": { $exists : false},
+    },
+    select : { enf:1 },
+    populate:{
+      path: 'predio',
+      select: 'PREDIO ICA'
+    },
+    sort:{fechaIngreso: -1}
+  },
+  collection:'lotes',
+  action: 'getLotes',
+  query: 'proceso'
+};
 
 export default function CalidadInterna(): JSX.Element {
   const [lotesData, setLotesData] = useState([])
-  const [lote, setLote] = useState<string>('')
+  const [lote, setLote] = useState<calidadInternalote>({_id:"",enf:"",})
 
   useEffect(() => {
     const interval = async (): Promise<void> => {
       try {
-        const request = { action: 'obtenerLotesCalidadInterna', query: 'proceso' }
-        const lotes = await window.api.calidad(request)
+        const lotes = await window.api.server(request)
         setLotesData(lotes.data)
       } catch (e) {
         alert(e)

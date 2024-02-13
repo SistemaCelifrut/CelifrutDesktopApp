@@ -49,8 +49,9 @@ export default function Directo(props: vaciadoType): JSX.Element {
             vaciado: canastillasInt
           },
           collection:'lotes',
-          action: 'directoNacional',
-          query: 'proceso'
+          action: 'putLotes',
+          query: 'proceso',
+          record: "directoNacional"
         }
 
         const response = await window.api.server(request)

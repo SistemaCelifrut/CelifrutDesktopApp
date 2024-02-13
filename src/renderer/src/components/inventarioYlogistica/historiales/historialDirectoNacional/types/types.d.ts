@@ -29,12 +29,26 @@ export type stateUseReducerTypeHistorial = {
 
 export type historialProcesoType = {
   _id: string
-  enf: string
-  nombre: string
-  canastillas: number
-  kilos: number
-  tipoFruta: string
+  documento: documentoType
   fecha: string
-  rendimiento?: number
+  operacionRealizada: string
 }
 
+type documentoType = {
+  directoNacional: number
+  enf: string
+  fechaIngreso: string
+  inventarioActual:{
+    inventario: number
+  }
+  kilosVaciados: number
+  observaciones: string
+  predio:{
+    _id:string
+    ICA:string
+    PREDIO:string
+  }
+  promedio: number
+  tipoFruta:string
+  _id:string
+}

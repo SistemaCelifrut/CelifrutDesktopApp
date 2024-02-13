@@ -4,20 +4,31 @@ import TablaClasificacionCalidad from './components/TablaClasificacionCalidad'
 import NavClasificacionCalidad from './utils/NavClasificacionCalidad'
 import { lotesInventarioType } from './types/clasificacionTypes'
 
-
+const request = {
+  data:{
+    query:{ 
+      "calidad.clasificacionCalidad": { $exists : false},
+    },
+    select : { enf:1, tipoFruta: 1, calidad:1 },
+    populate:{
+      path: 'predio',
+      select: 'PREDIO'
+    },
+    sort:{fechaIngreso: -1}
+  },
+  collection:'lotes',
+  action: 'getLotes',
+  query: 'proceso'
+};
 
 export default function IngresoClasificacionCalidad(): JSX.Element {
-  const [lotesData, setLotesData] = useState<lotesInventarioType[]>([{ id: '', tipoFruta: 'Limon', nombre: '' }])
-  const [lote, setLote] = useState('')
-  const [loteData, setLoteData] = useState<lotesInventarioType>({id: '',tipoFruta: 'Limon',nombre: ''})
-  const [seccion, setSeccion] = useState<string>('Clasificacion calidad')
-
+  const [lotesData, setLotesData] = useState<lotesInventarioType[]>([])
+  const [lote, setLote] = useState<lotesInventarioType>({_id:"", enf:"", predio:{PREDIO:""}, tipoFruta:'Limon'})
 
   useEffect(() => {
     const interval = async (): Promise<void> => {
       try {
-        const request = { action: 'obtenerLotesClasificacionCalidad', query:"proceso"}
-        const lotes = await window.api.calidad(request)
+        const lotes = await window.api.server(request)
         setLotesData(lotes.data)
       } catch (e) {
         alert(e)
@@ -25,21 +36,11 @@ export default function IngresoClasificacionCalidad(): JSX.Element {
     }
     interval()
   }, [])
-  useEffect(() => {
-    const loteFind: lotesInventarioType | undefined = lotesData.find((item) => item.id === lote)
-    if (loteFind !== undefined) {
-      setLoteData(loteFind)
-    }
-  }, [lote])
-  const handleSectionSelect = (data: string): void => {
-    console.log(seccion)
-    setSeccion(data)
-  }
 
   return (
     <div>
-      <NavClasificacionCalidad lotesData={lotesData} setLote={setLote} handleSectionSelect={handleSectionSelect} />
-      <TablaClasificacionCalidad lote={loteData} /> 
+      <NavClasificacionCalidad lotesData={lotesData} setLote={setLote} />
+      <TablaClasificacionCalidad lote={lote} /> 
     </div>
   )
 }

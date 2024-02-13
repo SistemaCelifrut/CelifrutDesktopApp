@@ -1,10 +1,11 @@
 /* eslint-disable prettier/prettier */
 
 import { useState } from 'react'
+import { historialProcesoType } from '../types/types'
 
 type vaciadoType = {
     closeModal: () => void
-    propsModal: { nombre: string, canastillas: number, enf:string, id:string}
+    propsModal: historialProcesoType
     theme:string
     setShowSuccess: (e) => void
     setShowError: (e) => void
@@ -19,7 +20,7 @@ export default function ModificarHistorialProceso(props: vaciadoType): JSX.Eleme
     try {
         setLoading(true)
       const canastillasInt = canastillas
-      const propsCanastillasInt = props.propsModal.canastillas
+      const propsCanastillasInt = props.propsModal.documento.kilosVaciados / props.propsModal.documento.promedio
 
       if (canastillasInt > propsCanastillasInt) {
         props.setShowError(true)
@@ -28,8 +29,20 @@ export default function ModificarHistorialProceso(props: vaciadoType): JSX.Eleme
           props.setShowError(false)
         }, 5000)
       } else {
-        const obj = { canastillas: canastillas, enf: props.propsModal.enf, id:props.propsModal.id, action: 'modificarHistorialVaciado'}
-        const response = await window.api.proceso(obj)
+        const new_lote = props.propsModal.documento;
+        new_lote.inventarioActual.inventario += canastillasInt;
+        new_lote.kilosVaciados -= canastillasInt * new_lote.promedio;
+
+        const request = {
+          data:{
+            lote: new_lote
+          },
+          collection:'lotes',
+          action: 'putLotes',
+          query: 'proceso',
+          record: 'modificarHistorialVaciado'
+        }
+        const response = await window.api.server(request)
         if (response.status === 200) {
           props.closeModal()
           props.setShowSuccess(true)
@@ -55,7 +68,7 @@ export default function ModificarHistorialProceso(props: vaciadoType): JSX.Eleme
     <div className={` fixed inset-0 flex items-center justify-center bg-black bg-opacity-50`}>
     <div className={`${props.theme === 'Dark' ? 'bg-slate-800' : 'bg-white'} rounded-xl w-96 h-90 overflow-hidden pb-5`}>
       <div className={`bg-Celifrut-green flex justify-between items-center border-b-2 border-gray-200 p-3 mb-4 rounded-sm`}>
-        <h2 className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-lg font-semibold`}>{props.propsModal.nombre}</h2>
+        <h2 className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-lg font-semibold`}>{props.propsModal.documento.predio.PREDIO}</h2>
       </div>
       <div className="flex justify-center pb-5 px-4">
         <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>Ingrese el numero de canastillas que desea regresar al inventario:</p>

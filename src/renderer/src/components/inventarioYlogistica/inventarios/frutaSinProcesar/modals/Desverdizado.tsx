@@ -44,8 +44,9 @@ export default function Desverdizado(props: vaciadoType): JSX.Element {
             vaciado: canastillas
           },
           collection:'lotes',
-          action: 'desverdizado',
-          query: 'proceso'
+          action: 'putLotes',
+          query: 'proceso',
+          record: "desverdizado"
         }
 
         const response = await window.api.server(request)

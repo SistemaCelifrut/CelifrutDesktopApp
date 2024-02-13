@@ -1,8 +1,22 @@
 /* eslint-disable prettier/prettier */
 export type lotesInventarioType = {
-  id: string
-  nombre: string
+  _id: string
+  enf: string
+  predio: {
+    PREDIO: string
+  }
   tipoFruta: 'Limon' | 'Naranja'
+}
+
+export type calidadInternalote = {
+  _id: string
+  enf: string
+  predio?:{
+    _id: string
+    ICA: string
+    PREDIO: string
+  }
+  calidad?:calidadHistorialType
 }
 
 export type calidadInternaType = {
@@ -37,6 +51,7 @@ type calidadHistorialType = {
     ratio:number
     zumo:number
     fecha: string
+    semillas:boolean
   }
 }
 

@@ -31,44 +31,44 @@ export default function TableHistorialDirectoNacional(props: propsType): JSX.Ele
               <input type="radio"  id={item._id} value={item._id} onClick={props.clickLote} name='lote'></input>
             </div>
             <div
-              key={item.enf + 'ef'}
+              key={item.documento.enf + 'ef'}
               className={` ol-span-1 text-[12px] flex items-center  ${
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {item.enf}
+              {item.documento.enf }
             </div>
             <div
-              key={item.nombre + 'nombre'}
+              key={item.documento.predio.PREDIO + 'nombre'}
               className={` ol-span-1 text-[12px] flex items-center  ${
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {item.nombre}
+              {item.documento.predio.PREDIO}
             </div>
             <div
-              key={item.canastillas + 'canastillas'}
+              key={item._id + 'canastillas'}
               className={` ol-span-1 text-[12px] flex items-center justify-center ${
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {item.canastillas}
+              {item.documento.directoNacional / item.documento.promedio}
             </div>
             <div
-              key={item.kilos + 'kilos'}
+              key={item.documento.directoNacional + 'kilos'}
               className={` ol-span-1 text-[12px] flex items-center justify-center ${
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {item.kilos.toFixed(2)}
+              {item.documento.directoNacional.toFixed(2)}
             </div>
             <div
-              key={item.tipoFruta + 'tipofruta'}
+              key={item.documento.tipoFruta + 'tipofruta'}
               className={` ol-span-1 text-[12px] flex items-center  ${
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {item.tipoFruta}
+              {item.documento.tipoFruta}
             </div>
             <div
               key={item.fecha + 'fecha'}

@@ -30,7 +30,7 @@ const request = {
     sort:{"desverdizado.fechaIngreso": -1}
   },
   collection:'lotes',
-  action: 'obtenerFrutaActual',
+  action: 'getLotes',
   query: 'proceso'
 };
 

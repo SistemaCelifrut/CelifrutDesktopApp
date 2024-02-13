@@ -6,7 +6,7 @@ import { themeContext } from '@renderer/App'
 
 type propsType = {
   handleChange: (data:string, type:string, dataCard:string) => void
-  tipoFuta: string
+  tipoFruta: string
 }
 
 export default function FormClasificacionCalidadNaranja(props: propsType): JSX.Element {
@@ -20,7 +20,7 @@ export default function FormClasificacionCalidadNaranja(props: propsType): JSX.E
       {formulario.map((item, index) => (
         <TarjetaItemCLasificacionCalidad
           key={index}
-          tipoFruta={props.tipoFuta}
+          tipoFruta={props.tipoFruta}
           theme={theme}
           index={index}
           cardInfo={item}

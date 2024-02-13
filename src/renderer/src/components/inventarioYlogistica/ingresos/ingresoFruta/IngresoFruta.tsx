@@ -108,7 +108,8 @@ export default function IngresoFruta(): JSX.Element {
         data:datos,
         collection:'lotes',
         action: 'guardarLote',
-        query: 'proceso'
+        query: 'proceso',
+        record: 'crearLote'
       };
       const response = await window.api.server(request)
       if (response.status === 200) {

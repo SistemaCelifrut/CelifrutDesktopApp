@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useContext, useEffect, useReducer, useState } from 'react'
-import { INITIAL_STATE_HISTORIAL_PROCESO, reducerHistorial } from './functions/reducer'
+import { INITIAL_STATE_HISTORIAL_PROCESO, documentoInit, reducerHistorial } from './functions/reducer'
 import { createPortal } from 'react-dom'
 import { historialProcesoType } from './types/types'
 import { format } from 'date-fns'
@@ -12,6 +12,19 @@ import SuccessModal from '@renderer/errors/modal/SuccessModal'
 import { themeContext, userContext } from '@renderer/App'
 import NavBarInventario from './utils/NavBarInventario'
 
+const request = {
+  data:{
+    query:{ 
+      operacionRealizada: "directoNacional", "documento.predio": { $exists: true } 
+    },
+    select : { },
+    sort:{fecha: -1},
+    limit:50
+  },
+  collection:'historialLotes',
+  action: 'obtenerHistorialLotes',
+  query: 'proceso'
+};
 
 export default function HistorialDirectoNacional(): JSX.Element {
   const theme = useContext(themeContext);
@@ -19,7 +32,7 @@ export default function HistorialDirectoNacional(): JSX.Element {
   const [datosOriginales, setDatosOriginales] = useState([])
   const [titleTable, setTitleTable] = useState('Lotes Procesados')
   const [showModal, setShowModal] = useState<boolean>(false)
-  const [propsModal, setPropsModal] = useState({ nombre: '', canastillas: 0, enf: '', id: '' })
+  const [propsModal, setPropsModal] = useState<historialProcesoType>(documentoInit)
   const [showModificar, setShowModificar] = useState<boolean>(false)
   const [filtro, setFiltro] = useState<string>('')
   const [message, setMessage] = useState<string>('')
@@ -31,32 +44,8 @@ export default function HistorialDirectoNacional(): JSX.Element {
   useEffect(() => {
     const asyncFunction = async ():Promise<void> => {
       try {
-        const request = { action: 'obtenerHistorialDirectoNacional' }
-        const frutaActual = await window.api.proceso(request)
-
-        if (frutaActual.status === 200) {
-          setDatosOriginales(frutaActual.data)
-          dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
-        } else {
-          setShowError(true)
-          setMessage(`Error ${frutaActual.status}: ${frutaActual.message}`)
-          setInterval(() => {
-          setShowError(false)
-          }, 5000)
-        }
-      } catch (e: unknown) {
-        alert(`Fruta actual ${e}`)
-      }
-    }
-    asyncFunction()
-  }, [])
-
-  useEffect(() => {
-    const asyncFunction = async ():Promise<void> => {
-      try {
-        const request = { action: 'obtenerHistorialDirectoNacional' }
-        const frutaActual = await window.api.proceso(request)
-
+        const frutaActual = await window.api.server(request)
+        console.log(frutaActual)
         if (frutaActual.status === 200) {
           setDatosOriginales(frutaActual.data)
           dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
@@ -79,14 +68,9 @@ export default function HistorialDirectoNacional(): JSX.Element {
     console.log(id)
     const lote: historialProcesoType | undefined = table.find((item) => item._id === id)
     if (lote !== undefined) {
-      setPropsModal(() => ({
-        nombre: lote.nombre,
-        canastillas: lote.canastillas,
-        enf: lote.enf,
-        id: lote._id
-      }))
+      setPropsModal(lote)
       if (e.target.checked) {
-        setTitleTable(lote?.enf + ' ' + lote?.nombre)
+        setTitleTable(lote?.documento.enf + ' ' + lote?.documento.predio.PREDIO)
         if (format(new Date(lote?.fecha), 'MM/dd/yyyy') == format(new Date(), 'MM/dd/yyyy')) {
           setShowModificar(true)
         } else {

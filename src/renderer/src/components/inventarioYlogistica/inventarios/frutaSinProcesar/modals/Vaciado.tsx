@@ -41,7 +41,8 @@ export default function Vaciado(props: vaciadoType): JSX.Element {
           },
           collection:'lotes',
           action: 'vaciarLote',
-          query: 'proceso'
+          query: 'proceso',
+          record: 'vaciarLote'
         }
         const response = await window.api.server(request)
         if (response.status === 200) {

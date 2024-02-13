@@ -5,9 +5,10 @@ import { INITIAL_STATE, reducer } from "../functions/reduce"
 import { themeContext, userContext } from "@renderer/App"
 import ContenidoZumo from "./ContenidoZumo"
 import PruebasPlataforma from "./PruebasPlataforma"
+import { calidadInternalote } from "../types/calidadInterna"
 
 type propsType = {
-    lote: string
+    lote: calidadInternalote
     setLotesData: (e) => void
 }
 
@@ -18,6 +19,7 @@ export default function PruebasCalidadInterna(props:propsType): JSX.Element {
     const [formulario, dispatch] = useReducer(reducer, INITIAL_STATE)
 
     const handleChange = (data: React.ChangeEvent<HTMLInputElement>, action: string): void => {
+      console.log(props.lote)
         if (action === 'semillas') {
             dispatch({ type: action, data: String(data.target.checked) })
         } else {
@@ -26,28 +28,50 @@ export default function PruebasCalidadInterna(props:propsType): JSX.Element {
         console.log(formulario)
     }
     const guardar = async (): Promise<void> => {
+        const new_lote: calidadInternalote = {
+          ...props.lote,
+          calidad:{
+            calidadInterna:{
+              zumo: Number(formulario.zumo),
+              peso: Number(formulario.pesoInicial),
+              brix:(Number(formulario.brix1) + Number(formulario.brix2) + Number(formulario.brix3)) / 3,
+              acidez:(Number(formulario.acidez1) + Number(formulario.acidez2) + Number(formulario.acidez3)) / 3,
+              semillas: Boolean(formulario.semillas),
+              ratio:
+              (Number(formulario.brix1) / Number(formulario.acidez1) +
+                  Number(formulario.brix2) / Number(formulario.acidez2) +
+                  Number(formulario.brix3) / Number(formulario.acidez3)) / 3,
+              fecha: new Date().toUTCString()
+            }
+          }
+        }
         const requestLotes = {
-            action: 'guardarCalidadInterna',
             query: 'proceso',
+            collection:'lotes',
+            action: 'putLotes',
+            record: 'ingresoCalidadInterna',
             data: {
-                lote: props.lote,
-                zumo: Number(formulario.zumo),
-                peso: Number(formulario.pesoInicial),
-                brix: (Number(formulario.brix1) + Number(formulario.brix2) + Number(formulario.brix3)) / 3,
-                acidez:
-                    (Number(formulario.acidez1) + Number(formulario.acidez2) + Number(formulario.acidez3)) /
-                    3,
-                semillas: Boolean(formulario.semillas),
-                ratio:
-                    (Number(formulario.brix1) / Number(formulario.acidez1) +
-                        Number(formulario.brix2) / Number(formulario.acidez2) +
-                        Number(formulario.brix3) / Number(formulario.acidez3)) / 3
+              lote:new_lote
             }
         }
-        await window.api.calidad(requestLotes)
-        const requestLotes2 = { action: 'obtenerLotesCalidadInterna', query: 'proceso' }
-        const datos = await window.api.calidad(requestLotes2)
-        console.log(datos);
+        await window.api.server(requestLotes)
+        const requestLotes2 = {
+          data:{
+            query:{ 
+              "calidad.calidadInterna": { $exists : false},
+            },
+            select : { enf:1 },
+            populate:{
+              path: 'predio',
+              select: 'PREDIO ICA'
+            },
+            sort:{fechaIngreso: -1}
+          },
+          collection:'lotes',
+          action: 'getLotes',
+          query: 'proceso'
+        };
+        const datos = await window.api.server(requestLotes2)
         props.setLotesData(datos.data)
 
         setMensajeGuardado('Los datos se han guardado correctamente')

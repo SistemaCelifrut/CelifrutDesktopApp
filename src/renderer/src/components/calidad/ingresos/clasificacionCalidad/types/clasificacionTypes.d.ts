@@ -1,8 +1,12 @@
 /* eslint-disable prettier/prettier */
 export type lotesInventarioType = {
-  id: string
-  nombre: string
+  _id: string
+  enf: string
+  predio:{
+    PREDIO: string
+  }
   tipoFruta: 'Limon' | 'Naranja'
+  calidad?:calidadHistorialType
 }
 
 export type formularioType = {
@@ -24,12 +28,16 @@ export type serverResponse = {
 
 export type dataHistorialCalidadClasificacion = {
     _id: string
-    nombrePredio: string
+    enf: string
+    predio:{
+      PREDIO:string
+    }
     tipoFruta: string
     calidad: calidadHistorialType
   }
   
   type calidadHistorialType = {
+    calidadInterna:object
     clasificacionCalidad: { 
             acaro: number;
             alsinoe: number;
