@@ -342,12 +342,6 @@ const FormularioMulas: React.FC = () => {
                 <p><strong>Color:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.color}</p>
                 <p><strong>Modelo:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.modelo}</p>
                 <p><strong>Marca:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.marca}</p>
-                <p><strong>Contenedor:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.contenedor}</p>
-                <p><strong>Prof:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.prof}</p>
-                <p><strong>Cliente:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.cliente}</p>
-                <p><strong>Puerto:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.puerto}</p>
-                <p><strong>Naviera:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.naviera}</p>
-                <p><strong>Agencia Aduanas:</strong> {state.contenedorSeleccionado.formularioInspeccionMula.agenciaAduanas}</p>
               </>
             )}
           </div>

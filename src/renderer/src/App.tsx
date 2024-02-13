@@ -37,7 +37,7 @@ import VolanteCalidad from './components/calidad/formularios/volanteCalidad/Vola
 import FormularioProgramacionMula from './components/transporte/formulatioInspecciones/programacionMulas/FormularioProgramacionMula'
 import HistorialProgramacionMula from './components/transporte/historialInspecciones/historialProgramacionMula/HistorialProgramacionMula'
 import Cuentas from './components/gestionDeCuentas/crearCuentas/Cuentas'
-
+import Inicio from './components/Inicio'
 
 type MyContextType = {
   setSection: React.Dispatch<React.SetStateAction<string>>;
@@ -119,7 +119,7 @@ function App(): JSX.Element {
                     <div className='flex flex-row  h-full '>
                       <SideBar seleccionWindow={seleccionWindow} handleSideBarWidth={handleSideBarWidth} showSideBar={showSideBar} />
                       <div className={` flex justify-center w-full h-full overflow-auto `}>
-
+                        {section === "main" && <Inicio />}
                         {/* Inventario y logistica */}
                         {section === "Inventario y Logística//Ingresos//Ingreso de fruta" && <IngresoFruta />}
                         {section === "Inventario y Logística//Ingresos//Crear contenedor" && <CrearContenedor />}
@@ -161,8 +161,9 @@ function App(): JSX.Element {
                         {section === "Transporte//Historiales//Historial programación tractomula" && <HistorialProgramacionMula/>}
 
                       </div>
-                    </div>
-                  </div>
+                    </div>   
+
+                  </div> 
 
                 )}
               </div>

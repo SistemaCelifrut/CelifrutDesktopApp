@@ -367,12 +367,13 @@ const FormularioMulas: React.FC = () => {
           </div>
         </div>
         <div className="col-span-2">
-          <button
-            type="submit"
-            className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none focus:shadow-outline-green active:bg-green-700"
-          >
-            Enviar
-          </button>
+        <button
+    type="submit"
+    className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-700"
+>
+    Enviar
+</button>
+
         </div>
       </form>
     </div>
