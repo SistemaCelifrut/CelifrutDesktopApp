@@ -1,7 +1,6 @@
-/* eslint-disable prettier/prettier */
 import React, { useState, useEffect, useContext } from 'react';
 import { themeContext } from '@renderer/App';
-import imagen from '../assets/img/img_logo.png'; // Ruta relativa desde Inicio.tsx a la imagen
+import imagen from './img/img_logo.png'; // Ruta relativa desde Inicio.tsx a la imagen
 
 const Inicio: React.FC = () => {
   const [mensajeCompleto, setMensajeCompleto] = useState('');
@@ -10,7 +9,7 @@ const Inicio: React.FC = () => {
   const theme = useContext(themeContext);
 
   useEffect(() => {
-    const mostrarMensajeConEfecto = async (): Promise<void> => {
+    const mostrarMensajeConEfecto = async () => {
       for (let i = 0; i <= mensajeOriginal.length; i++) {
         await new Promise((resolve) => setTimeout(resolve, 100)); // Espera 100 milisegundos entre cada caracter
         setMensajeCompleto(mensajeOriginal.substring(0, i));
