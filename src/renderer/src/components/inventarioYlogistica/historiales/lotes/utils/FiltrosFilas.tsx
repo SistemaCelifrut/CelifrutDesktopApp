@@ -7,6 +7,8 @@ type propsType = {
   handleFiltro: (tipoFiltro, elemento) => void
   prediosData: string[]
   setEf1: (e) => void
+  setFiltroPredio: (e) => void
+  setCantidad: (e) => void
 }
 
 export default function FiltrosFilas(props: propsType): JSX.Element {
@@ -27,13 +29,7 @@ export default function FiltrosFilas(props: propsType): JSX.Element {
   const handleMaxRendimiento = (e): void => {
     props.handleFiltro('maxRendimiento', e.target.value)
   }
-  const handlePredios = (e): void => {
-    props.handleFiltro('predio', e.target.value)
-  }
-  const handleCantidadLote = (e): void => {
-    props.handleFiltro('cantidad', e.target.value)
 
-  }
   return (
     <div>
       <div className={`flex flex-row flex-wrap gap-2 p-3 rounded-xl`}>
@@ -42,7 +38,7 @@ export default function FiltrosFilas(props: propsType): JSX.Element {
           <option value="Naranja">Naranja</option>
           <option value="Limon">Limon</option>
         </select>
-        <select className="w-52 rounded-lg p-2" onChange={handlePredios}>
+        <select className="w-52 rounded-lg p-2" onChange={(e): void => props.setFiltroPredio(e.target.value)}>
           <option value="">Nombre predios</option>
           {props.prediosData.map((item, index) => (
             <option key={item + index} value={item}>{item}</option>
@@ -70,7 +66,7 @@ export default function FiltrosFilas(props: propsType): JSX.Element {
                               ${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
           Cantidad-lotes
           <div>
-            <input onChange={handleCantidadLote} type="number" className="w-28 rounded-lg p-1 text-black" min={0} />
+            <input onChange={(e): void => props.setCantidad(Number(e.target.value))} type="number" className="w-28 rounded-lg p-1 text-black" min={0} />
           </div>
         </label>
       </div>

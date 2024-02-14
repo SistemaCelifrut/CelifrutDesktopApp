@@ -82,9 +82,13 @@ export default function IngresoFruta(): JSX.Element {
         canastillasVacias: canastillasVacias,
         inventarioActual: {
           inventario: Number(canastillas),
+          descarteEncerado: { balin: 0, pareja: 0, extra: 0, descarteGeneral: 0 },
           descarteLavado: { balin: 0, pareja: 0, descarteGeneral: 0 },
-          descarteEncerado: { balin: 0, pareja: 0, extra: 0, descarteEncerado: 0 },
         },
+        descarteLavado: { balin: 0, pareja: 0, descarteGeneral: 0, descompuesta:0, piel:0, hojas:0 },
+        descarteEncerado: { balin: 0, pareja: 0, extra: 0, descarteGeneral: 0, descompuesta:0, suelo:0 },
+
+
       }
 
       if (datos.promedio < 15 || datos.promedio > 30) {

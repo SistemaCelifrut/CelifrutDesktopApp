@@ -20,24 +20,24 @@ export const filtrosColumnasObj = {
   deshidratacion: false
 }
 export const datosGraficas = (datos: LoteDataType[]): graficaDataType[] => {
-  const prediosTotal = datos.map((lote) => lote.nombrePredio)
+  const prediosTotal = datos.map((lote) => lote.predio?.PREDIO)
   const prediosSet = new Set(prediosTotal)
   const predios = [...prediosSet]
   const salida = predios.map((nombrepredio) => {
     nombrepredio = nombrepredio || '';
     const kilosProm =
       datos
-        .filter((item) => item.nombrePredio === nombrepredio)
+        .filter((item) => item.predio?.PREDIO === nombrepredio)
         .reduce((acu, kilos) => (acu += kilos.kilos), 0) /
-      datos.filter((item) => item.nombrePredio === nombrepredio).length
+      datos.filter((item) => item.predio?.PREDIO === nombrepredio).length
     const kilosVaciadosProm =
       datos
-        .filter((item) => item.nombrePredio === nombrepredio)
+        .filter((item) => item.predio?.PREDIO === nombrepredio)
         .reduce((acu, kilos) => (acu += kilos.kilosVaciados), 0) /
-      datos.filter((item) => item.nombrePredio === nombrepredio).length
+      datos.filter((item) => item.predio?.PREDIO === nombrepredio).length
     const descarteLavadoProm =
       datos
-        .filter((item) => item.nombrePredio === nombrepredio)
+        .filter((item) => item.predio?.PREDIO === nombrepredio)
         .reduce(
           (acu, kilos) =>
             (acu += Object.keys(kilos.descarteLavado).reduce(
@@ -45,10 +45,10 @@ export const datosGraficas = (datos: LoteDataType[]): graficaDataType[] => {
               0
             )),
           0
-        ) / datos.filter((item) => item.nombrePredio === nombrepredio).length
+        ) / datos.filter((item) => item.predio?.PREDIO === nombrepredio).length
     const descarteEnceradoProm =
       datos
-        .filter((item) => item.nombrePredio === nombrepredio)
+        .filter((item) => item.predio?.PREDIO === nombrepredio)
         .reduce(
           (acu, kilos) =>
             (acu += Object.keys(kilos.descarteEncerado).reduce(
@@ -56,10 +56,10 @@ export const datosGraficas = (datos: LoteDataType[]): graficaDataType[] => {
               0
             )),
           0
-        ) / datos.filter((item) => item.nombrePredio === nombrepredio).length
+        ) / datos.filter((item) => item.predio?.PREDIO === nombrepredio).length
     const exportacionProm =
       datos
-        .filter((item) => item.nombrePredio === nombrepredio)
+        .filter((item) => item.predio?.PREDIO === nombrepredio)
         .reduce(
           (acu1, lote) =>
             (acu1 += Object.prototype.hasOwnProperty.call(lote, 'exportacion')
@@ -73,7 +73,7 @@ export const datosGraficas = (datos: LoteDataType[]): graficaDataType[] => {
                 )
               : 0),
           0
-        ) / datos.filter((item) => item.nombrePredio === nombrepredio).length
+        ) / datos.filter((item) => item.predio?.PREDIO === nombrepredio).length
 
     return {
       nombrePredio: nombrepredio,
@@ -87,16 +87,16 @@ export const datosGraficas = (datos: LoteDataType[]): graficaDataType[] => {
   return salida
 }
 export const datosGraficasCalidad = (datos: LoteDataType[]): graficaDataTypeCalidad[] => {
-  const prediosTotal = datos.map((lote) => lote.nombrePredio)
+  const prediosTotal = datos.map((lote) => lote.predio?.PREDIO)
   const prediosSet = new Set(prediosTotal)
   const predios = [...prediosSet]
   const salida = predios.map((nombrepredio) => {
     nombrepredio = nombrepredio || '';
-    const acidezPromedio = promedioCalidad(datos.filter((item) => item.nombrePredio === nombrepredio), "acidez")
-    const brixPromedio = promedioCalidad(datos.filter((item) => item.nombrePredio === nombrepredio), "brix")
-    const ratioPromedio = promedioCalidad(datos.filter((item) => item.nombrePredio === nombrepredio), "ratio")
-    const pesoPromedio = promedioCalidad(datos.filter((item) => item.nombrePredio === nombrepredio), "peso")
-    const zumoPromedio = promedioCalidad(datos.filter((item) => item.nombrePredio === nombrepredio), "zumo")
+    const acidezPromedio = promedioCalidad(datos.filter((item) => item.predio?.PREDIO === nombrepredio), "acidez")
+    const brixPromedio = promedioCalidad(datos.filter((item) => item.predio?.PREDIO === nombrepredio), "brix")
+    const ratioPromedio = promedioCalidad(datos.filter((item) => item.predio?.PREDIO === nombrepredio), "ratio")
+    const pesoPromedio = promedioCalidad(datos.filter((item) => item.predio?.PREDIO === nombrepredio), "peso")
+    const zumoPromedio = promedioCalidad(datos.filter((item) => item.predio?.PREDIO === nombrepredio), "zumo")
 
     return {
       nombrePredio: nombrepredio,

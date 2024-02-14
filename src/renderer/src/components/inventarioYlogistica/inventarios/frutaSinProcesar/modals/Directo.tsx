@@ -33,8 +33,8 @@ export default function Directo(props: vaciadoType): JSX.Element {
           props.setShowError(false)
         }, 5000)
       } else {
-        const nuevo_lote = props.propsModal
-        nuevo_lote.inventarioActual.inventario -= canastillasInt;
+        const nuevo_lote = JSON.parse(JSON.stringify(props.propsModal));
+        nuevo_lote["inventarioActual.inventario"] = nuevo_lote.inventarioActual.inventario - canastillasInt;
         nuevo_lote.directoNacional = Number(nuevo_lote.directoNacional) + (Number(nuevo_lote.promedio) * Number(canastillasInt));
         nuevo_lote.infoSalidaDirectoNacional = {
           placa: placa,
@@ -43,6 +43,13 @@ export default function Directo(props: vaciadoType): JSX.Element {
           cedula: cedula,
           remision: remision
         }
+        if ('inventario' in nuevo_lote.inventarioActual) {
+          delete nuevo_lote.inventarioActual.inventario;
+        }
+        if ('inventarioActual' in nuevo_lote) {
+          delete nuevo_lote.inventarioActual;
+        }
+        
         const request = {
           data:{
             lote: nuevo_lote,

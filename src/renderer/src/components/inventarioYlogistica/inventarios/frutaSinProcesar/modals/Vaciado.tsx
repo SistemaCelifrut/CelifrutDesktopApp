@@ -29,10 +29,18 @@ export default function Vaciado(props: vaciadoType): JSX.Element {
           props.setShowError(false)
         }, 5000)
       } else {
-        const nuevo_lote = props.propsModal
-        nuevo_lote.inventarioActual.inventario -= canastillasInt;
+        const nuevo_lote = JSON.parse(JSON.stringify(props.propsModal));
+        nuevo_lote["inventarioActual.inventario"] = nuevo_lote.inventarioActual.inventario - canastillasInt;
         nuevo_lote.kilosVaciados = Number(nuevo_lote.kilosVaciados)  + (Number(nuevo_lote.promedio) * Number(canastillasInt));
-
+       
+        if ('inventario' in nuevo_lote.inventarioActual) {
+          delete nuevo_lote.inventarioActual.inventario;
+        }
+        
+        if ('inventarioActual' in nuevo_lote) {
+          delete nuevo_lote.inventarioActual;
+        }
+        
 
         const request = {
           data:{
@@ -45,6 +53,8 @@ export default function Vaciado(props: vaciadoType): JSX.Element {
           record: 'vaciarLote'
         }
         const response = await window.api.server(request)
+        // console.log(request)
+        // const response = {status:401};
         if (response.status === 200) {
           props.closeVaciado()
           props.setShowSuccess(true)

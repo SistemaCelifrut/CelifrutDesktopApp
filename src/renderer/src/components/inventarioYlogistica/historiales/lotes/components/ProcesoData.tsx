@@ -11,6 +11,7 @@ import GraficaLineal from "../utils/GraficaLineal"
 import GraficaCircular from "../utils/GraficaCircular"
 import TableInfoLotes from "../table/TableInfoLotes"
 import PromediosProceso from "../utils/PromediosProceso"
+import { crear_filtro } from "../functions/filtroProceso"
 
 export default function ProcesoData(): JSX.Element {
     const theme = useContext(themeContext)
@@ -25,17 +26,41 @@ export default function ProcesoData(): JSX.Element {
     const [tipoGraficas, setTipoGraficas] = useState<string>('')
     const [data, setData] = useState<LoteDataType[]>([])
     const [dataOriginal, setDataOriginal] = useState<LoteDataType[]>([])
+    const [filtroPredio, setFiltroPredio] = useState<string>('');
+    const [cantidad, setCantidad] = useState<number>(50);
 
     useEffect(() => {
         const obtenerData = async (): Promise<void> => {
             if(prediosData.length === 0){
-                const requestProveedor = { action: 'obtenerProveedores' }
-                const response = await window.api.proceso(requestProveedor);
+                const requestProveedor = {
+                    data:{
+                      query:{},
+                    },
+                    collection:'proveedors',
+                    action: 'obtenerProveedores',
+                    query: 'proceso'
+                  };
+                const response = await window.api.server(requestProveedor);
                 const nombrePredio = await response.data.map((item) => item.PREDIO)
                  setPrediosData(nombrePredio)
             }
-            const request = { action: 'obtenerDatosLotes', data: { filtros: filtro }};
-            const datosLotes = await window.api.proceso(request);
+            const filtro_request = crear_filtro(filtro);
+            const request = {
+                data:{
+                  query:filtro_request,
+                  select : {},
+                  populate:{
+                    path: 'predio',
+                    select: 'PREDIO ICA'
+                  },
+                  sort:{fechaIngreso: -1},
+                  limit: cantidad,
+                },
+                collection:'lotes',
+                action: 'getLotes',
+                query: 'proceso'
+              };
+            const datosLotes = await window.api.server(request);
             setDataOriginal(datosLotes.data)
 
             if (ef1 === '') {
@@ -50,16 +75,21 @@ export default function ProcesoData(): JSX.Element {
         obtenerData()
       
         
-    }, [filtro, ef1])
+    }, [filtro, cantidad])
 
     useEffect(() => {
-        if (ef1 === '') {
-            setData(dataOriginal)
+        let filteredData = dataOriginal;
+
+        if (ef1 !== '') {
+          filteredData = filteredData.filter(item => item.enf.startsWith(ef1.toUpperCase()));
         }
-        else if (ef1 !== '') {
-            setData(previusData => previusData.filter(item => item._id.includes(ef1.toUpperCase())))
+        
+        if (filtroPredio !== '') {
+          filteredData = filteredData.filter(item => item.predio?.PREDIO.includes(filtroPredio));
         }
-    }, [ef1])
+        
+        setData(filteredData);
+    }, [ef1, filtroPredio])
 
     const handleChange = (e): void => {
         setColumnVisibility({
@@ -90,14 +120,6 @@ export default function ProcesoData(): JSX.Element {
             const nuevoFiltro: filtroType = JSON.parse(JSON.stringify(filtro))
             nuevoFiltro.rendimiento.$lt = elementoFiltro
             setFiltro(nuevoFiltro)
-        } else if (filtroCase === 'predio') {
-            const nuevoFiltro: filtroType = JSON.parse(JSON.stringify(filtro))
-            nuevoFiltro.nombrePredio = elementoFiltro
-            setFiltro(nuevoFiltro)
-        } else if (filtroCase === 'cantidad') {
-            const nuevoFiltro: filtroType = JSON.parse(JSON.stringify(filtro))
-            nuevoFiltro.cantidad = elementoFiltro
-            setFiltro(nuevoFiltro)
         }
     }
 
@@ -112,7 +134,13 @@ export default function ProcesoData(): JSX.Element {
                 <FiltrosColumnas columnVisibility={columnVisibility} handleChange={handleChange} />
             </div>
             <div>
-                <FiltrosFilas handleFiltro={handleFiltro} prediosData={prediosData} setEf1={setEf1} />
+                <FiltrosFilas 
+                    handleFiltro={handleFiltro} 
+                    prediosData={prediosData} 
+                    setEf1={setEf1} 
+                    setFiltroPredio={setFiltroPredio}
+                    setCantidad={setCantidad}
+                    />
                 <div className="m-2">
                 </div>
             </div>
