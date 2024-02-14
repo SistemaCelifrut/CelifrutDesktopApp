@@ -200,32 +200,50 @@ const ObtenerCuentasComponente = (): JSX.Element => {
               </tr>
             </thead>
             <tbody>
-              {Array.isArray(cuentas) && cuentas
-                .filter(cuenta =>
-                  Object.values(cuenta)
-                    .join(' ')
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-                )
-                .map((cuenta, index) => (
-                  <tr key={index} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
-                    <td className="border py-2 px-4">{cuenta.user}</td>
-                    <td className="border py-2 px-4">{cuenta.password}</td>
-                    <td className="border py-2 px-4">{cuenta.cargo}</td>
-                    <td className="border py-2 px-4">{cuenta.correo}</td>
-                    <td className="border py-2 px-4">{cuenta.permisos.join(', ')}</td>
-                    <td className="border py-2 px-4  items-center space-x-2">
-                      <button className="text-sm text-blue-500 hover:text-blue-700" onClick={(): void => handleEditar(index)}>
-                        <FontAwesomeIcon icon={faEdit} />
-                      </button>
-                      <button className="text-sm text-red-500 hover:text-red-700" onClick={(): Promise<void> => handleEliminar(index)}>
-                        <FontAwesomeIcon icon={faTrashAlt} />
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              }
-            </tbody>
+  {Array.isArray(cuentas) && cuentas
+    .filter(cuenta =>
+      Object.values(cuenta)
+        .join(' ')
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    )
+    .map((cuenta, index) => {
+      const subcategorias: Record<string, string[]> = cuenta.permisos.reduce((acc, permiso) => {
+        const [ subcategoria, detalle] = permiso.split('//');
+        if (!acc[subcategoria]) {
+          acc[subcategoria] = [];
+        }
+        acc[subcategoria].push(detalle);
+        return acc;
+      }, {});
+
+      return (
+        <tr key={index} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
+          <td className="border py-2 px-4">{cuenta.user}</td>
+          <td className="border py-2 px-4">{cuenta.password}</td>
+          <td className="border py-2 px-4">{cuenta.cargo}</td>
+          <td className="border py-2 px-4">{cuenta.correo}</td>
+          <td className="border py-2 px-4">
+            <ul>
+              {Object.entries(subcategorias).map(([subcategoria, detalles], subindex) => (
+                <li key={subindex}>
+                  <strong>{subcategoria}</strong>: {detalles.join(', ')}
+                </li>
+              ))}
+            </ul>
+          </td>
+          <td className="border py-2 px-4 items-center space-x-2">
+            <button className="text-sm text-blue-500 hover:text-blue-700" onClick={(): void => handleEditar(index)}>
+              <FontAwesomeIcon icon={faEdit} />
+            </button>
+            <button className="text-sm text-red-500 hover:text-red-700" onClick={(): Promise<void> => handleEliminar(index)}>
+              <FontAwesomeIcon icon={faTrashAlt} />
+            </button>
+          </td>
+        </tr>
+      );
+    })}
+</tbody>
           </table>
         </div>
       )}

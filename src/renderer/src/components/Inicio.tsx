@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { themeContext } from '@renderer/App';
-import imagen from './img/img_logo.png'; // Ruta relativa desde Inicio.tsx a la imagen
+import imagen from '../assets/img/img_logo.png'; // Ruta relativa desde Inicio.tsx a la imagen
 
 const Inicio: React.FC = () => {
   const [mensajeCompleto, setMensajeCompleto] = useState('');
@@ -18,7 +18,7 @@ const Inicio: React.FC = () => {
       setTimeout(() => {
         setMensajeCompleto('');
         setMostrarImagen(true);
-      }, 3000);
+      }, 2000);
     };
 
     mostrarMensajeConEfecto(); // Llama a la función directamente al iniciar el componente
@@ -26,30 +26,27 @@ const Inicio: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className={`${theme === 'Dark' ? 'bg-slate-800 text-white' : 'bg-white'} text-center relative flex items-center`}>
-        <div className="flex-1"> {/* Este div ocupa el espacio restante */}
-          {mensajeCompleto && ( // Mostrar el mensaje solo cuando mensajeCompleto no esté vacío
-            <h1 className="text-6xl font-bold mb-8 font-serif">{mensajeCompleto}</h1>
-          )}
-          {mensajeCompleto && ( // Mostrar la animación solo cuando mensajeCompleto no esté vacío
-            <div className="relative">
-              <div className="w-16 h-16 rounded-full bg-yellow-300 absolute top-0 left-1/4 transform -translate-x-1/2 animate-bounce"></div>
-              <div className="w-16 h-16 rounded-full bg-orange-400 absolute top-0 right-1/4 transform -translate-x-1/2 animate-bounce"></div>
-            </div>
-          )}
-           {!mensajeCompleto && mostrarImagen && (
-  <img
-    src={imagen}
-    alt="Descripción de la imagen"
-    className="d-flex justify-content-center"
-    style={{ maxHeight: '300%', maxWidth: '300%', marginLeft: '5px' }}
-  />
-)}
-
+      <div className={`${theme === 'Dark' ? 'bg-slate-80 text-white' : 'bg-white'} text-center relative flex items-center`}>
+        <div className="flex-1"> 
+          <h1 className={`text-6xl font-bold mb-8 font-serif transition-opacity duration-500 ${mensajeCompleto ? 'opacity-100' : 'opacity-0'}`}>{mensajeCompleto}</h1>
+          <div className={`relative transition-opacity duration-500 ${mensajeCompleto ? 'opacity-100' : 'opacity-0'}`}>
+            <div className="w-16 h-16 rounded-full bg-yellow-300 absolute top-0 left-1/4 transform -translate-x-1/2 animate-bounce"></div>
+            <div className="w-16 h-16 rounded-full bg-orange-400 absolute top-0 right-1/4 transform -translate-x-1/2 animate-bounce"></div>
+          </div>
+          <img
+            src={imagen}
+            alt="Logo de celifrut"
+            className={`d-flex justify-content-center transition duration-1000 transform hover:scale-110 ${mostrarImagen ? 'opacity-100' : 'opacity-0'}`}
+            style={{ maxHeight: '300%', maxWidth: '300%', marginLeft: '5px', marginBottom: '160px' }}
+          />
         </div>
       </div>
     </div>
   );
 };
+
 export default Inicio;
+
+
+
 
