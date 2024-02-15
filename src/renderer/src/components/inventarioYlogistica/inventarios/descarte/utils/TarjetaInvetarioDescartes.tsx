@@ -50,11 +50,11 @@ export default function TarjetaInvetarioDescartes(props: propsType): JSX.Element
             <div className="flex flex-row gap-4">
               <input type="checkbox" onClick={seleccionarLote} />
               <h4 className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-sm font-bold`}>
-                {props.lote._id}
+                {props.lote.enf}
               </h4>
             </div>
             <h5 className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-sm ml-5`}>
-              {props.lote.nombre}
+              {props.lote.predio.PREDIO}
             </h5>
             <h5
               className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-sm ml-5 font-bold`}
@@ -74,11 +74,11 @@ export default function TarjetaInvetarioDescartes(props: propsType): JSX.Element
               <div className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} ml-8 w-full`}>
                 <h4 className={`font-bold`}>Descarte Lavado:</h4>
                 <div className={`flex flex-row gap-4`}>
-                  {props.lote.descarteLavado && Object.keys(props.lote.descarteLavado).map((item) => (
+                  {props.lote.inventarioActual.descarteLavado && Object.keys(props.lote.inventarioActual.descarteLavado).map((item) => (
                     <div className={`flex flex-row gap-4 items-center`} key={item}>
                       <p>
                         <span className={`font-bold`}> {llavesVisualizar[item]}:</span>{' '}
-                        {props.lote.descarteLavado[item]} Kg
+                        {props.lote.inventarioActual.descarteLavado[item]} Kg
                       </p>
                       <input
                         type="checkbox"
@@ -93,11 +93,11 @@ export default function TarjetaInvetarioDescartes(props: propsType): JSX.Element
               <div className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} ml-8`}>
                 <h4 className={`font-bold`}>Descarte Encerado:</h4>
                 <div className={`flex flex-row gap-4 `}>
-                  {props.lote.descarteEncerado && Object.keys(props.lote.descarteEncerado).map((item) => (
+                  {props.lote.inventarioActual.descarteEncerado && Object.keys(props.lote.inventarioActual.descarteEncerado).map((item) => (
                     <div className={`flex flex-row gap-4 items-center`} key={item}>
                       <p>
                         <span className={`font-bold`}> {llavesVisualizar[item]}:</span>{' '}
-                        {props.lote.descarteEncerado[item]} Kg
+                        {props.lote.inventarioActual.descarteEncerado[item]} Kg
                       </p>
                       <input
                         type="checkbox"

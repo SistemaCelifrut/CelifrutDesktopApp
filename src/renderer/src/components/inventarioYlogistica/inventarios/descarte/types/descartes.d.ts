@@ -12,16 +12,26 @@ export type descarteEnceradoType = {
   extra: number
 }
 
+type inventarioActualType = {
+  inventario: number
+  descarteEncerado:descarteEnceradoType
+  descarteLavado: descarteLavadoType
+}
+
 export type descarteType = {
   _id: string
-  nombre: string
+  enf: string
+  predio: {
+    PREDIO: string
+    _id: string
+  }
   tipoFruta: string
-  descarteLavado: descarteLavadoType
-  descarteEncerado: descarteEnceradoType
+  inventarioActual: inventarioActualType
 }
 
 export type responDescarteType = {
   status: number
+  message: string
   data: descarteType[]
 }
 

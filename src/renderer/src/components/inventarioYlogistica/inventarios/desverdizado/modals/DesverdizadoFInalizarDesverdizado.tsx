@@ -12,8 +12,20 @@ type propsType = {
 
 export default function DesverdizadoFInalizarDesverdizado(props: propsType): JSX.Element {
   const finalizar = async (): Promise<void> => {
-    const request = { action: 'finalizarDesverdizado', enf: props.propsModal.enf }
-    const response = await window.api.proceso(request)
+    const new_lote = {
+      _id:props.propsModal._id,
+      "desverdizado.fechaFinalizar" : new Date().toUTCString()
+    }
+    const request = {
+      data:{
+        lote: new_lote
+      },
+      collection:'lotes',
+      action: 'putLotes',
+      query: 'proceso',
+      record: "setParametros desverdizado"
+    }
+    const response = await window.api.server(request)
 
     if (response.status == 200) {
       props.closeFinalizarDesverdizado()

@@ -40,12 +40,8 @@ export default function BotonesInventarioDescartes(props: propsType): JSX.Elemen
             {props.reprocesar && (
               <button
               onClick={(): void => props.procesar("Reprocesar el lote")}
-                className={
-                  props.user === 'recepcion' || props.user === 'admin'
-                    ? 'group relative inline-flex w-40 h-10 items-center overflow-hidden rounded bg-blue-700 px-8 py-3 text-white focus:outline-none active:bg-blue-900 active:border-blue-700'
-                    : 'invisible group relative inline-flex w-40 h-10 items-center overflow-hidden'
-                }
-              >
+                className={      
+                     'group relative inline-flex w-40 h-10 items-center overflow-hidden rounded bg-blue-700 px-8 py-3 text-white focus:outline-none active:bg-blue-900 active:border-blue-700'}>
                 <span className="absolute -end-full transition-all group-hover:end-4 text-xl">
                   <RiRecycleFill />
                 </span>
@@ -99,7 +95,7 @@ export default function BotonesInventarioDescartes(props: propsType): JSX.Elemen
               </h3>
               <div className="p-2 flex flex-row gap-4">
                 {props.table[0] &&
-                  Object.keys(props.table[0].descarteLavado).map((item) => (
+                  Object.keys(props.table[0].inventarioActual.descarteLavado).map((item) => (
                     <h4
                       className={`${props.theme === 'Dark' ? 'text-white' : 'texy-black'}`}
                       key={item}
@@ -119,7 +115,7 @@ export default function BotonesInventarioDescartes(props: propsType): JSX.Elemen
               </h3>
               <div className="p-2 flex flex-row gap-4 ">
                 {props.table[0] &&
-                  Object.keys(props.table[0].descarteEncerado).map((item) => (
+                  Object.keys(props.table[0].inventarioActual.descarteEncerado).map((item) => (
                     <h4
                       className={`${props.theme === 'Dark' ? 'text-white' : 'texy-black'}`}
                       key={item}

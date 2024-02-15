@@ -28,8 +28,10 @@ export default function Desverdizado(props: vaciadoType): JSX.Element {
           props.setShowError(false)
         }, 5000)
       } else {
-        const nuevo_lote = props.propsModal
-        nuevo_lote.inventarioActual.inventario -= canastillasInt;
+        console.log(props.propsModal)
+        const nuevo_lote = JSON.parse(JSON.stringify(props.propsModal));
+        nuevo_lote["inventarioActual.inventario"] = nuevo_lote.inventarioActual.inventario - canastillasInt;
+        delete nuevo_lote.inventarioActual;
         nuevo_lote.desverdizado = {}
         nuevo_lote.desverdizado.canastillas = canastillasInt;
         nuevo_lote.desverdizado.canastillasIngreso = canastillasInt;
@@ -41,14 +43,13 @@ export default function Desverdizado(props: vaciadoType): JSX.Element {
         const request = {
           data:{
             lote: nuevo_lote,
-            vaciado: canastillas
           },
           collection:'lotes',
           action: 'putLotes',
           query: 'proceso',
           record: "desverdizado"
         }
-
+        console.log(request)
         const response = await window.api.server(request)
         console.log(response)
         if (response.status === 200) {

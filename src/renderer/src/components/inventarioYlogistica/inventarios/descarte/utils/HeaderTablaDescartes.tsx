@@ -7,13 +7,7 @@ export default function HeaderTablaDescartes(props: propsType): JSX.Element {
   return (
     <>
       <div className=" col-span-1 bg-blue-400 shadow-lg border-b-2 p-2 flex justify-center items-center text-sm"></div>
-      <div
-        className={`${
-          props.theme === 'Dark' ? 'text-white' : 'text-black '
-        } col-span-1 bg-blue-400 shadow-lg border-b-2 p-2 flex justify-center items-center text-sm `}
-      >
-        <h4>EF1</h4>
-      </div>
+
       <div
         className={`${
           props.theme === 'Dark' ? 'text-white' : 'text-black'

@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useState } from 'react'
+import { descarteType } from '../types/descartes';
 
 type propsType = {
   procesar: (data: string) => void
@@ -7,6 +8,10 @@ type propsType = {
   theme: string
   unCheck: (data: boolean) => void
   reset: () => void
+  table: descarteType[]
+  setShowSuccess: (e) => void
+  setShowError: (e) => void
+  setMessage: (e) => void
 }
 
 export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Element {
@@ -16,49 +21,210 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
   const [telefono, setTelefono] = useState<string>('')
   const [cedula, setCedula] = useState<string>('')
   const [remision, setRemision] = useState<string>('')
-  const finalizar = async (): Promise<void> => {
-    if (props.propsModal.action === 'Enviar descarte') {
-      const datos = [props.propsModal.data]
-      const request = { 
-        action: 'eliminarFrutaDescarte', 
-        cliente:cliente,
-        data: datos,
-        nombreConductor: nombreConductor,
-        telefono: telefono,
-        cedula: cedula,
-        remision: remision
-      }
-      const response = await window.api.proceso(request)
-      console.log(response)
-      if (response.status == 200) {
-        propsAction()
-      } else {
-        alert('Error al enviar el descarte')
-        props.unCheck(false)
-        props.procesar('')
-      }
-    } else if (props.propsModal.action === 'Reprocesar como Celifrut') {
-      const request = { action: 'ReprocesarDescarteCelifrut', data: props.propsModal.data }
-      const response = await window.api.proceso(request)
 
-      if (response.status == 200) {
-        propsAction()
-      } else {
-        alert('Error a reproceso Celifrut')
-        props.unCheck(false)
-        props.procesar('')
+  const finalizar = async (): Promise<void> => {
+    try {
+      if (props.propsModal.action === 'Enviar descarte') {
+        
+        const historial = {
+          fecha: new Date(),
+          accion: "Reproceso Celifrut",
+          cliente: cliente,
+          nombreConductor: nombreConductor,
+          telefono: telefono,
+          cedula: cedula,
+          remision: remision,
+          predios: {}
+        }
+
+        //se eliminan los datos
+        const objRequest = {}
+        Object.keys(props.propsModal.data).forEach(item => {
+          const [id, tipoDescarte, descarte] = item.split("/")
+          if (!Object.prototype.hasOwnProperty.call(objRequest, id)) {
+            objRequest[id] = {}
+          }
+          objRequest[id][`inventarioActual.${tipoDescarte}.${descarte}`] = 0;
+        });
+        // se hace la peticion para poner en 0 los inventarios de los lotes
+        for (const item of Object.keys(objRequest)) {
+          const enf = props.table.find(id => id._id === item);
+          const request = {
+            data: {
+              lote: {
+                ...objRequest[item],
+                _id: item,
+              }
+            },
+            collection: 'lotes',
+            action: 'putLotes',
+            query: 'proceso',
+            record: "salidaDescarte"
+          };
+          await window.api.server(request);
+          if (enf) {
+            historial.predios[enf?.enf] = {
+              descarteLavado: enf?.inventarioActual.descarteLavado,
+              descarteEncerado: enf?.inventarioActual.descarteEncerado
+            }
+          }
+          // Puedes manejar la respuesta aquí antes de pasar al siguiente elemento
+        }
+
+        // se crea el historial descarte
+        const requestHistorial = {
+          data: historial,
+          collection: 'historialDescartes',
+          action: 'addHistorialDescarte',
+          query: 'proceso',
+          record: 'historialDescarte'
+        };
+        await window.api.server(requestHistorial)
+
+ 
+      } else if (props.propsModal.action === 'Reprocesar como Celifrut') {
+
+        // se crea el elemnto historial descarte
+        const historial = {
+          fecha: new Date(),
+          accion: "Reproceso Celifrut",
+          cliente: "Celifrut",
+          nombreConductor: "N/A",
+          telefono: "N/A",
+          cedula: "N/A",
+          remision: "N/A",
+          predios: {}
+        }
+
+        //se eliminan los datos
+        const kilos = Object.keys(props.propsModal.data).reduce((acu, item) => acu += props.propsModal.data[item], 0);
+        const objRequest = {}
+        let _id;
+        Object.keys(props.propsModal.data).forEach(item => {
+          const [id, tipoDescarte, descarte] = item.split("/")
+          if (!Object.prototype.hasOwnProperty.call(objRequest, id)) {
+            objRequest[id] = {}
+            _id = id
+          }
+          objRequest[id][`inventarioActual.${tipoDescarte}.${descarte}`] = 0;
+        });
+        const lote = props.table.find(lote => lote._id === _id);
+        // se hace la peticion para poner en 0 los inventarios de los lotes
+        for (const item of Object.keys(objRequest)) {
+          const enf = props.table.find(id => id._id === item);
+          const request = {
+            data: {
+              lote: {
+                ...objRequest[item],
+                _id: item,
+              }
+            },
+            collection: 'lotes',
+            action: 'putLotes',
+            query: 'proceso',
+            record: "reprocesoCelifrut"
+          };
+          await window.api.server(request);
+          if (enf) {
+            historial.predios[enf?.enf] = {
+              descarteLavado: enf?.inventarioActual.descarteLavado,
+              descarteEncerado: enf?.inventarioActual.descarteEncerado
+            }
+          }
+          // Puedes manejar la respuesta aquí antes de pasar al siguiente elemento
+        }
+        //se crea el lote Celifrut
+        const datos = {
+          predio: "65c27f3870dd4b7f03ed9857",
+          canastillas: "0",
+          kilos: kilos,
+          placa: "AAA000",
+          tipoFruta: lote?.tipoFruta,
+          observaciones: "Reproceso",
+          promedio: Number(kilos) / (lote?.tipoFruta === "Naranja" ? 19 : 20),
+          inventarioActual: {
+            inventario: 0,
+            descarteEncerado: { balin: 0, pareja: 0, extra: 0, descarteGeneral: 0 },
+            descarteLavado: { balin: 0, pareja: 0, descarteGeneral: 0 },
+          },
+          descarteLavado: { balin: 0, pareja: 0, descarteGeneral: 0, descompuesta: 0, piel: 0, hojas: 0 },
+          descarteEncerado: { balin: 0, pareja: 0, extra: 0, descarteGeneral: 0, descompuesta: 0, suelo: 0 },
+
+        }
+        const request = {
+          data: datos,
+          collection: 'lotes',
+          action: 'reprocesoCelifrut',
+          query: 'proceso',
+          record: 'crearLote'
+        };
+        await window.api.server(request)
+
+        // se crea el historial descarte
+        const requestHistorial = {
+          data: historial,
+          collection: 'historialDescartes',
+          action: 'addHistorialDescarte',
+          query: 'proceso',
+          record: 'historialDescarte'
+        };
+        await window.api.server(requestHistorial)
+      } else if (props.propsModal.action === 'Reprocesar el lote') {
+        const objRequest = {}
+        const objRequestDescarte = {}
+        let _id;
+        Object.keys(props.propsModal.data).forEach(item => {
+          const [id, tipoDescarte, descarte] = item.split("/")
+          if (!Object.prototype.hasOwnProperty.call(objRequest, id)) {
+            objRequest[id] = {}
+            _id = id
+          }
+          objRequest[id][`inventarioActual.${tipoDescarte}.${descarte}`] = 0;
+          objRequestDescarte[`${tipoDescarte}.${descarte}`] = 0;
+        });
+        const lote = props.table.find(lote => lote._id === _id);
+        const request = {
+          data: {
+            lote: {
+              ...objRequest[_id],
+              ...objRequestDescarte,
+              _id: _id,
+              enf: lote?.enf,
+              predio: {
+                _id: lote?.predio._id,
+                PREDIO: lote?.predio.PREDIO
+              },
+              tipoFruta: lote?.tipoFruta
+            }
+          },
+          collection: 'lotes',
+          action: 'vaciarLote',
+          query: 'proceso',
+          record: 'vaciarLote'
+        }
+        const response = await window.api.server(request)
+        if (response.status !== 200) {
+
+          alert('Error al reprocesar predio')
+          props.unCheck(false)
+          props.procesar('')
+        }
       }
-    } else if (props.propsModal.action === 'Reprocesar el lote') {
-      const request = { action: 'reprocesarDescarteUnPredio', data: props.propsModal.data }
-      const response = await window.api.proceso(request)
-      console.log(response)
-      if (response.status == 200) {
-        propsAction()
-      } else {
-        alert('Error al reprocesar predio')
-        props.unCheck(false)
-        props.procesar('')
-      }
+
+      props.setShowSuccess(true)
+      props.setMessage("Fruta vaciada!")
+      setInterval(() => {
+        props.setShowSuccess(false)
+      }, 5000)
+    } catch (e) {
+
+      props.setShowError(true)
+      props.setMessage(`Error: ${e}`)
+      setInterval(() => {
+        props.setShowError(false)
+      }, 5000)
+    } finally {
+      propsAction()
     }
   }
 
@@ -111,13 +277,13 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
               className="border-2 border-gray-200 rounded-md p-2"
               onChange={(e): void => setTelefono(e.target.value)}
             />
-                 <label >Cedula</label>
+            <label >Cedula</label>
             <input
               type="number"
               className="border-2 border-gray-200 rounded-md p-2"
               onChange={(e): void => setCedula(e.target.value)}
             />
-                      <label >Remision</label>
+            <label >Remision</label>
             <input
               type="number"
               className="border-2 border-gray-200 rounded-md p-2"

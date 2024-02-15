@@ -18,50 +18,13 @@ const api = {
     const response = await ipcRenderer.invoke('server', datos)
     return response
   },
-  proceso: async (datos) => {
-    const response = await ipcRenderer.invoke('proceso', datos)
-    return response
-  },
-  imprimirRotulos: async (datos) => {
-    const response = await ipcRenderer.invoke('imprimirRotulos', datos)
-    return response
-  },
-  obtenerSesion: async () => {
-    const response = await ipcRenderer.invoke('obtenerSesion')
-    return response
-  },
-  ingresoFruta: async (datos) => {
-    const response = await ipcRenderer.invoke('ingresoFruta', datos)
-    return response
-  },
-  inventario: async (datos) => {
-    const response = await ipcRenderer.invoke('inventario', datos)
-    return response
-  },
-  contenedores: async (datos) => {
-    const response = await ipcRenderer.invoke('contenedores', datos)
-    return response
-  },
-  calidad: async (datos) => {
-    const response = await ipcRenderer.invoke('calidad', datos)
-    return response
-  },
-  proveedores: async (datos) => {
-    const response = await ipcRenderer.invoke('proveedores', datos)
-    return response
-  },
-  descartes: (channel, callback) => {
+  serverEmit: (channel, callback) => {
     ipcRenderer.on(channel, (event, ...args) => {
       event.preventDefault
       return callback(...args)
     })
   },
-  listaEmpaqueInfo: (channel, callback) => {
-    ipcRenderer.on(channel, (event, ...args) => {
-      event.preventDefault
-      return callback(...args)
-    })
-  }
+
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

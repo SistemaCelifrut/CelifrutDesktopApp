@@ -21,8 +21,9 @@ const request = {
   data:{
     query:{ 
       "desverdizado": { $exists: true },
+      "desverdizado.canastillas": {$gt: 0}
     },
-    select : { promedio:1, enf:1, desverdizado:1,},
+    select : { promedio:1, enf:1, desverdizado:1, kilosVaciados:1},
     populate:{
       path: 'predio',
       select: 'PREDIO ICA'
@@ -46,14 +47,16 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
 
   const [table, dispatch] = useReducer(reducer, INITIAL_STATE)
 
+
+
   useEffect(() => {
     const asyncFunction = async (): Promise<void> => {
       try {
+        setRender(!render)
         const frutaActual = await window.api.server(request)
 
         if (frutaActual.status === 200) {
           setDatosOriginales(frutaActual.data)
-          console.log(frutaActual)
           dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
         } else {
           props.setShowError(true)
@@ -68,27 +71,6 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
         setInterval(() => {
           props.setShowError(false)
         }, 5000)
-      }
-    }
-    asyncFunction()
-  }, [])
-
-  useEffect(() => {
-    const asyncFunction = async (): Promise<void> => {
-      try {
-        setRender(!render)
-        const request = { action: 'obtenerFrutaDesverdizando' }
-        const frutaActual = await window.api.proceso(request)
-        console.log(frutaActual)
-
-        if (frutaActual.status === 200) {
-          setDatosOriginales(frutaActual.data)
-          dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
-        } else {
-          alert('error obteniendo datos del servidor')
-        }
-      } catch (e: unknown) {
-        alert(`Fruta actual ${e}`)
       }
     }
     asyncFunction()

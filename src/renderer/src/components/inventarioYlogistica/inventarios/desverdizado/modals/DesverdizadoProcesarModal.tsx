@@ -23,10 +23,30 @@ export default function DesverdizadoProcesarModal(props: propsType): JSX.Element
       const propsCanastillasInt = props.propsModal.desverdizado?.canastillas ? props.propsModal.desverdizado?.canastillas : 0
 
       if (canastillasInt > propsCanastillasInt) {
-        alert('Error en el numero de canastillas')
+        props.setShowError(true)
+        props.setMessage("Error en el numero de canastillas!")
+        setInterval(() => {
+          props.setShowError(false)
+        }, 5000)
       } else {
-        const obj = { canastillas: canastillas, enf: props.propsModal.enf, action: 'procesarDesverdizado' }
-        const response = await window.api.proceso(obj)
+        console.log(props.propsModal)
+        const nuevo_lote = JSON.parse(JSON.stringify(props.propsModal));
+        nuevo_lote["desverdizado.canastillas"] = nuevo_lote.desverdizado.canastillas - canastillasInt;
+        nuevo_lote["desverdizado.kilos"] = (nuevo_lote.desverdizado.canastillas - canastillasInt) * props.propsModal.promedio;
+        nuevo_lote["desverdizado.fechaProceso"] = new Date().toUTCString();
+        nuevo_lote.kilosVaciados = nuevo_lote.kilosVaciados + (canastillasInt * props.propsModal.promedio);
+        nuevo_lote.tipoFruta = "Naranja";
+        delete nuevo_lote.desverdizado
+        const request = {
+          data:{
+            lote: nuevo_lote
+          },
+          collection:'lotes',
+          action: 'vaciarLote',
+          query: 'proceso',
+          record: 'vaciarLote'
+        }
+        const response = await window.api.server(request)
         if (response.status === 200) {
           props.closeProcesarDesverdizado()
           props.setShowSuccess(true)

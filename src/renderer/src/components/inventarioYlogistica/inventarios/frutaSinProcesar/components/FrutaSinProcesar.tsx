@@ -21,7 +21,7 @@ const request = {
     query:{ 
       "inventarioActual.inventario": { $gt: 0 },
     },
-    select : {nombrePredio: 1, fechaIngreso: 1 , observaciones: 1 , tipoFruta: 1, promedio:1, inventarioActual:1, enf:1, kilosVaciados:1, directoNacional:1 },
+    select : {nombrePredio: 1, fechaIngreso: 1 , observaciones: 1 , tipoFruta: 1, promedio:1, "inventarioActual.inventario":1, enf:1, kilosVaciados:1, directoNacional:1 },
     populate:{
       path: 'predio',
       select: 'PREDIO ICA'

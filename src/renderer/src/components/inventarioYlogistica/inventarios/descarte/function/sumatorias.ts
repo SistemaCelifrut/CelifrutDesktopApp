@@ -8,9 +8,9 @@ export const sumatoriaDescartes = (data: descarteType[]): number => {
   const sumatoria = data.reduce(
     (acu1, lote) =>
       (acu1 +=
-        (Object.prototype.hasOwnProperty.call(lote, 'descarteEncerado') ? Object.values(lote.descarteEncerado).reduce((acuEncerado, item) => (acuEncerado += item),0)  : 0)
+        (Object.prototype.hasOwnProperty.call(lote, 'descarteEncerado') ? Object.values(lote.inventarioActual.descarteEncerado).reduce((acuEncerado, item) => (acuEncerado += item),0)  : 0)
           + 
-        (Object.prototype.hasOwnProperty.call(lote, 'descarteLavado') ? Object.values(lote.descarteLavado).reduce((acuLavado, item) => (acuLavado += item), 0) : 0)),
+        (Object.prototype.hasOwnProperty.call(lote, 'descarteLavado') ? Object.values(lote.inventarioActual.descarteLavado).reduce((acuLavado, item) => (acuLavado += item), 0) : 0)),
     0
   )
 
@@ -24,7 +24,7 @@ export const sumatoriaDescarteEspecifico = (
 ):number => {
   if (!data) return 0
 
-  const sumatoria = data.reduce((acu, lote) => (acu += lote[descarte][tipoDescarte]), 0)
+  const sumatoria = data.reduce((acu, lote) => (acu += lote.inventarioActual[descarte][tipoDescarte]), 0)
 
   return sumatoria
 }

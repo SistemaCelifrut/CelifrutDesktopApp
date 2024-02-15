@@ -22,16 +22,31 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType): JSX.
   const guardar = async (): Promise<void> => {
     try {
       setLoading(true)
-      const request = {
+      const parametro = {
         temperatura: temperatura,
         etileno: etileno,
         carbono: dioxido,
         humedad: humedad,
-        action: 'setParametrosDesverdizado'
+        fecha: new Date().toUTCString()
+        
       }
+      const parametros = props.propsModal.desverdizado?.parametros;
+      parametros?.push(parametro)
 
-      const response = await window.api.proceso(request)
-      console.log(response)
+      const new_lote = {
+        _id:props.propsModal._id,
+        "desverdizado.parametros" : parametros
+      }
+      const request = {
+        data:{
+          lote: new_lote
+        },
+        collection:'lotes',
+        action: 'putLotes',
+        query: 'proceso',
+        record: "setParametros desverdizado"
+      }
+      const response = await window.api.server(request)
       if (response.status === 200) {
         props.closeParametros()
         props.setShowSuccess(true)

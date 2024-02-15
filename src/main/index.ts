@@ -42,9 +42,9 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 
-  socket.on('descartesInfo', (data) => {
-    console.log(data)
-    if (data.status === 200) mainWindow.webContents.send('descartes', data)
+  socket.on('serverToDesktop', (data) => {
+    console.log("serverToDesktop", data)
+    if (data.status === 200) mainWindow.webContents.send('serverEmit', data.data)
     else console.log('error')
   })
   socket.off('listaEmpaqueInfo')
