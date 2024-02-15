@@ -64,14 +64,24 @@ type infoContenedorType = {
     fechaFinalizado?: string
     urlInforme?: string
     fechaSalida?: string
-}
+    fechaInicioProceso?: fechaType;
+    fechaEstimadaCargue?: fechaType; 
+    calidad: string[]; 
+    tipoCaja: string[];
+    calibres: string;
+};
 
 export type datosType = {
-    cliente: string,
-    numeroContenedor: number,
-    pallets: number,
-    tipoFruta: string,
-    desverdizado: boolean,
-    observaciones: string,
-    tipoEmpaque: string
-  }
+  cliente: string;
+  numeroContenedor: number;
+  pallets: number;
+  tipoFruta: string;
+  desverdizado: boolean;
+  observaciones: string;
+  tipoEmpaque: string;
+  fechaInicioProceso?: Date | null;
+  fechaEstimadaCargue?: Date | null;
+  calidad: string[];
+  tipoCaja: string[];
+  calibres: string;
+};

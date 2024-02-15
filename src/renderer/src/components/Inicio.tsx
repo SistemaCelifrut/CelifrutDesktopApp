@@ -44,9 +44,4 @@ const Inicio: React.FC = () => {
     </div>
   );
 };
-
 export default Inicio;
-
-
-
-

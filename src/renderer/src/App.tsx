@@ -10,6 +10,7 @@ import { userType } from './types/login'
 import IngresoFruta from './components/inventarioYlogistica/ingresos/ingresoFruta/IngresoFruta'
 import CrearContenedor from './components/inventarioYlogistica/ingresos/crearContenedor/CrearContenedor'
 import InventarioFrutaSinProcesar from './components/inventarioYlogistica/inventarios/frutaSinProcesar/InventarioFrutaSinProcesar'
+import OrdenDeVaceo from './components/inventarioYlogistica/inventarios/orden/OrdenDeVaceo'
 import HistorialProcesado from './components/inventarioYlogistica/historiales/historialProcesado/HistorialProcesado'
 import HistorialDirectoNacional from './components/inventarioYlogistica/historiales/historialDirectoNacional/HistorialDirectoNacional'
 import Desverdizado from './components/inventarioYlogistica/inventarios/desverdizado/Desverdizado'
@@ -124,6 +125,7 @@ function App(): JSX.Element {
                         {section === "Inventario y Logística//Ingresos//Ingreso de fruta" && <IngresoFruta />}
                         {section === "Inventario y Logística//Ingresos//Crear contenedor" && <CrearContenedor />}
                         {section === "Inventario y Logística//Inventarios//Fruta sin procesar" && <InventarioFrutaSinProcesar />}
+                        {section === "Inventario y Logística//Inventarios//Orden de vaceo" && <OrdenDeVaceo />}
                         {section === "Inventario y Logística//Historiales//Fruta procesada" && <HistorialProcesado />}
                         {section === "Inventario y Logística//Historiales//Directo nacional" && <HistorialDirectoNacional />}
                         {section === "Inventario y Logística//Inventarios//Desverdizado" && <Desverdizado />}

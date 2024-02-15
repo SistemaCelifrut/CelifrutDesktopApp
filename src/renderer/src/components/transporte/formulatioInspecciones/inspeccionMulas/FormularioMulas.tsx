@@ -352,7 +352,7 @@ const FormularioMulas: React.FC = () => {
           criterio.type === 'titulo' ? (
             <h3 key={index} className="col-span-2 text-xl font-bold mt-8">{criterio.value}</h3>
           ) : (
-            <div key={index} className={`${theme === 'Dark' ? 'bg-slate-800' : 'bg-gray-100'} rounded-md p-4 mb-4`}>
+            <div key={index} className={`${theme === 'Dark' ? 'bg-slate-800' : 'bg-gray-200'} rounded-md p-4 mb-4`}>
               <p className="mb-2 font-bold">{criterio.nombre}</p>
               <div className="flex items-center mb-4">
                 <label className="inline-flex items-center mr-4">
