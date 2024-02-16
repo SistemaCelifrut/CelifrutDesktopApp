@@ -18,8 +18,19 @@ export default function ComponentHistorialDescarte(props: propsType): JSX.Elemen
   useEffect(() => {
     const asyncFunction = async (): Promise<void> => {
       try {
-        const request = { action: 'obtenerHistorialDescarte' }
-        const descarte = await window.api.proceso(request)
+        const request = {
+          data:{
+            query:{},
+            select :{},
+            sort:{fecha: -1},
+            limit:50
+          },
+          collection:'historialDescartes',
+          action: 'getHistorialDescartes',
+          query: 'proceso'
+        };
+        
+        const descarte = await window.api.server(request)
         console.log(descarte)
         if (descarte.status === 200) {
           setDatosOriginales(descarte.data)

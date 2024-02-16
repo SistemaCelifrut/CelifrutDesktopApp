@@ -40,8 +40,8 @@ export default function TableInfolotesCalidad(props: propsType): JSX.Element {
                         if (Object.prototype.hasOwnProperty.call(lote, 'calidad') && Object.prototype.hasOwnProperty.call(lote.calidad, 'calidadInterna')) {
                             return (
                                 <tr className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'}`} key={index}>
-                                    <td className="p-2 text-sm  text-center">{lote._id}</td>
-                                    <td className="p-2 text-sm  text-center">{lote.nombrePredio}</td>
+                                    <td className="p-2 text-sm  text-center">{lote.enf}</td>
+                                    <td className="p-2 text-sm  text-center">{lote.predio?.PREDIO}</td>
                                     <td className="p-2 text-sm  text-center">
                                         {format(new Date(lote.fechaIngreso), 'dd-MM-yyyy')}
                                     </td>

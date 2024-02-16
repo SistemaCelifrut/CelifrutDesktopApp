@@ -7,6 +7,7 @@ export type serverInfoContenedoresType = {
 }
 
 export interface ContenedoresObj {
+  numeroContenedor: number
   pallets: palletType[]
   infoContenedor: infoContenedorType
   __v: number
@@ -24,16 +25,7 @@ interface infoContenedorType {
   pesoCaja: pesoCajaType
 }
 
-type pesoCajaType = {
-  'B-30': number
-  'B-37': number
-  'B-40': number
-  'G-4_5': number
-  'G-30': number
-  'G-37': number
-  'G-40': number
-  Rojo: number
-}
+
 
 interface palletType {
   cajasTotal: number

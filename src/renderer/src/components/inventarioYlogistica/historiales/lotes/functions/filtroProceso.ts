@@ -16,14 +16,17 @@ export const crear_filtro = (filtro): consultaType => {
   if (filtro.tipoFruta !== '') {
     consulta.tipoFruta = filtro.tipoFruta
   }
-  if (filtro.fechaIngreso.$gte !== null || filtro.fechaIngreso.$lt !== null) {
+
+  if (filtro.fechaIngreso.$gte !== null  ) {
     consulta.fechaIngreso = {};
     if (filtro.fechaIngreso.$gte !== null) {
       consulta.fechaIngreso.$gte = filtro.fechaIngreso.$gte;
       consulta.fechaIngreso.$lt = new Date();
-    }
+    } 
     if (filtro.fechaIngreso.$lt !== null) {
       consulta.fechaIngreso.$lt = filtro.fechaIngreso.$lt;
+    } else {
+      consulta.fechaIngreso.$lt = new Date();
     }
   }
   if (filtro.rendimiento.$gte !== "" || filtro.rendimiento.$lt !== "") {

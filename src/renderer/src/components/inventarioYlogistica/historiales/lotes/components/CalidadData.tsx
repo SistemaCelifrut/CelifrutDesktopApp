@@ -9,6 +9,7 @@ import TableInfolotesCalidad from "../table/TableInfolotesCalidad"
 import PromediosCalidad from "../utils/PromediosCalidad"
 import GraficasBarrasCalidad from "../utils/GraficasBarrasCalidad"
 import GraficasLinealCalidad from "../utils/GraficaLinealCalidad"
+import { crear_filtro } from "../functions/filtroProceso"
 
 export default function CalidadData(): JSX.Element {
   const theme = useContext(themeContext)
@@ -18,30 +19,72 @@ export default function CalidadData(): JSX.Element {
   const [ef1, setEf1] = useState<string>('')
   const [data, setData] = useState<LoteDataType[]>([])
   const [tipoGraficas, setTipoGraficas] = useState<string>('')
-
+  const [filtroPredio, setFiltroPredio] = useState<string>('');
+  const [cantidad, setCantidad] = useState<number>(50);
+  const [dataOriginal, setDataOriginal] = useState<LoteDataType[]>([])
+  const [ordenar, seteOrdenar] = useState<object>({"fechaIngreso":-1})
 
   useEffect(() => {
     const obtenerData = async (): Promise<void> => {
-      if (prediosData.length === 0) {
-        const requestProveedor = { action: 'obtenerProveedores' }
-        const response = await window.api.proceso(requestProveedor);
-        const nombrePredio = await response.data.map((item) => item.PREDIO)
-        setPrediosData(nombrePredio)
-      }
-      const request = { action: 'obtenerDatosLotes', data: { filtros: filtro } };
-      const datosLotes = await window.api.proceso(request);
-      if (ef1 === '') {
-        setData(datosLotes.data)
-      }
-      else if (ef1 !== '') {
-        setData(() => datosLotes.data.filter(item => item._id.toLowerCase().includes(ef1.toLowerCase())))
-      }
-      // const dataGrafica = datosGraficas(datosLotes.data)
-      // setDataGrafica(dataGrafica)
+        if(prediosData.length === 0){
+            const requestProveedor = {
+                data:{
+                  query:{},
+                },
+                collection:'proveedors',
+                action: 'obtenerProveedores',
+                query: 'proceso'
+              };
+            const response = await window.api.server(requestProveedor);
+            const nombrePredio = await response.data.map((item) => item.PREDIO)
+             setPrediosData(nombrePredio)
+        }
+        const filtro_request = crear_filtro(filtro);
+        const request = {
+            data:{
+              query:filtro_request,
+              select : {},
+              populate:{
+                path: 'predio',
+                select: 'PREDIO ICA'
+              },
+              sort:ordenar,
+              limit: cantidad,
+            },
+            collection:'lotes',
+            action: 'getLotes',
+            query: 'proceso'
+          };
+        const datosLotes = await window.api.server(request);
+        setDataOriginal(datosLotes.data)
+
+        if (ef1 === '') {
+            setData(datosLotes.data)
+        }
+        else if (ef1 !== '') {
+            setData(() => datosLotes.data.filter(item =>item._id.toLowerCase().includes(ef1.toLowerCase())))
+        }
+        // const dataGrafica = datosGraficas(datosLotes.data)
+        // setDataGrafica(dataGrafica)
     }
     obtenerData()
+  
+    
+}, [filtro, cantidad])
 
-  }, [filtro, ef1])
+useEffect(() => {
+  let filteredData = dataOriginal;
+
+  if (ef1 !== '') {
+    filteredData = filteredData.filter(item => item.enf.startsWith(ef1.toUpperCase()));
+  }
+  
+  if (filtroPredio !== '') {
+    filteredData = filteredData.filter(item => item.predio?.PREDIO.includes(filtroPredio));
+  }
+  
+  setData(filteredData);
+}, [ef1, filtroPredio])
 
   const handleChange = (e): void => {
     setColumnVisibility({
@@ -54,18 +97,32 @@ export default function CalidadData(): JSX.Element {
       setFiltro({ ...filtro, tipoFruta: elementoFiltro })
     } 
     else if (filtroCase === 'fechaInicio') {
-      const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-      nuevoFiltro.fechaIngreso.$gte = new Date(elementoFiltro)
-      setFiltro(nuevoFiltro)
+      if(elementoFiltro === "") {
+        const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
+        nuevoFiltro.fechaIngreso.$gte = null
+        setFiltro(nuevoFiltro)
+      }
+      else{
+        const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
+        nuevoFiltro.fechaIngreso.$gte = new Date(elementoFiltro)
+        setFiltro(nuevoFiltro)
+      }
+
     } 
     else if (filtroCase === 'fechaFin') {
-      const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-      const fecha = new Date(elementoFiltro)
-      fecha.setUTCHours(23);
-      fecha.setUTCMinutes(59);
-      fecha.setUTCSeconds(59);
-      nuevoFiltro.fechaIngreso.$lt = fecha
-      setFiltro(nuevoFiltro)
+      if(elementoFiltro === "") {
+        const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
+        nuevoFiltro.fechaIngreso.$lt = new Date();
+        setFiltro(nuevoFiltro)
+      } else {
+        const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
+        const fecha = new Date(elementoFiltro)
+        fecha.setUTCHours(23);
+        fecha.setUTCMinutes(59);
+        fecha.setUTCSeconds(59);
+        nuevoFiltro.fechaIngreso.$lt = fecha
+        setFiltro(nuevoFiltro)
+      }
     } 
     else if (filtroCase === 'acidezMin') {
       const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
@@ -158,22 +215,6 @@ export default function CalidadData(): JSX.Element {
         setFiltro(nuevoFiltro)
       }
     } 
-
-    
-  else if (filtroCase === 'predio') {
-      const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-      nuevoFiltro.nombrePredio = elementoFiltro
-      setFiltro(nuevoFiltro)
-    } else if (filtroCase === 'cantidad') {
-      const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-      nuevoFiltro.cantidad = elementoFiltro
-      setFiltro(nuevoFiltro)
-    }
-    else if (filtroCase === 'ordenar'){
-      const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-      nuevoFiltro.ordenar = elementoFiltro
-      setFiltro(nuevoFiltro)
-    }
   }
   return (
     <div>
@@ -193,7 +234,13 @@ export default function CalidadData(): JSX.Element {
             ))}
           </div>
           <div>
-            <FiltroFilasCalidad handleFiltro={handleFiltro} prediosData={prediosData} setEf1={setEf1} />
+            <FiltroFilasCalidad 
+              handleFiltro={handleFiltro} 
+              prediosData={prediosData} 
+              setEf1={setEf1} 
+              seteOrdenar={seteOrdenar}
+              setCantidad={setCantidad}
+              setFiltroPredio={setFiltroPredio} />
           </div>
         </div>
       </div>

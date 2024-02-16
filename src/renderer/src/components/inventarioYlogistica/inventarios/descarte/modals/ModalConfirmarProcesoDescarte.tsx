@@ -28,7 +28,7 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
         
         const historial = {
           fecha: new Date(),
-          accion: "Reproceso Celifrut",
+          accion: "Salida de fruta",
           cliente: cliente,
           nombreConductor: nombreConductor,
           telefono: telefono,

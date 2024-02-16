@@ -7,11 +7,15 @@ type propsType = {
   handleFiltro: (tipoFiltro, elemento) => void
   prediosData: string[]
   setEf1: (e) => void
+  setFiltroPredio: (e) => void
+  setCantidad: (e) => void
+  seteOrdenar: (e) => void
+
 }
 
 export default function FiltroFilasCalidad(props: propsType): JSX.Element {
   const theme = useContext(themeContext)
-  const [criterio, setCriterio] = useState<string>('')
+  const [criterio, setCriterio] = useState<string>('fechaIngreso')
 
   const handleTipoFruta = (e): void => {
     props.handleFiltro("tipoFruta", e.target.value)
@@ -48,14 +52,10 @@ export default function FiltroFilasCalidad(props: propsType): JSX.Element {
       props.handleFiltro('zumoMax', e.target.value)
     }
   }
-  const handlePredios = (e): void => {
-    props.handleFiltro('predio', e.target.value)
-  }
-  const handleCantidadLote = (e): void => {
-    props.handleFiltro('cantidad', e.target.value)
-  }
   const handleOrdenar = (e): void => {
-    props.handleFiltro('ordenar', e.target.value)
+    const obj = {};
+    obj[criterio] = Number(e.target.value);
+     props.seteOrdenar(obj)
   }
   return (
     <div>
@@ -65,7 +65,7 @@ export default function FiltroFilasCalidad(props: propsType): JSX.Element {
           <option value="Naranja">Naranja</option>
           <option value="Limon">Limon</option>
         </select>
-        <select className="w-52 rounded-lg p-2" onChange={handlePredios}>
+        <select className="w-52 rounded-lg p-2" onChange={(e): void => props.setFiltroPredio(e.target.value)}>
           <option value="">Nombre predios</option>
           {props.prediosData.map((item, index) => (
             <option key={item + index} value={item}>{item}</option>
@@ -84,7 +84,7 @@ export default function FiltroFilasCalidad(props: propsType): JSX.Element {
         <label className={`flex flex-col ${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
           Cantidad-lotes
           <div>
-            <input onChange={handleCantidadLote} type="number" className="w-28 rounded-lg p-1 text-black" min={0} />
+            <input onChange={(e): void => props.setCantidad(Number(e.target.value))} type="number" className="w-28 rounded-lg p-1 text-black" min={0} />
           </div>
         </label>
         <select className="rounded-lg p-2" onChange={(e): void => setCriterio(e.target.value)}>
@@ -104,7 +104,7 @@ export default function FiltroFilasCalidad(props: propsType): JSX.Element {
          </label>}
          {criterio !== '' && 
          <select className="rounded-lg p-2" onChange={handleOrdenar}>
-          <option value="">Ordenado por</option>
+          <option value="-1">Ordenado por</option>
           <option value="1">De menor a mayor</option>
           <option value="-1">De mayor a menor</option>
         </select>}

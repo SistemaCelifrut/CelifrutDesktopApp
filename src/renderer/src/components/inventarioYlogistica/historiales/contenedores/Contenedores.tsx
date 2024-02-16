@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import ErrorModal from "@renderer/errors/modal/ErrorModal";
 import SuccessModal from "@renderer/errors/modal/SuccessModal";
 import { useContext, useEffect, useState } from "react";
@@ -23,7 +24,7 @@ export default function Contenedores(): JSX.Element {
   const [filtroFechaInicio, setFiltroFechaInicio] = useState<Date | null>(null);
   const [filtroFechaFin, setFiltroFechaFin] = useState<Date | null>(null);
 
-  const reiniciarFiltroFecha = () => {
+  const reiniciarFiltroFecha = (): void => {
     setFiltroFechaEntrada(null);
     setFiltroFechaSalida(null);
     setFiltroFechaFinalizado(null);
@@ -47,7 +48,7 @@ export default function Contenedores(): JSX.Element {
     try {
       const request = construirRequest();
   
-      const response = await window.api.contenedores(request);
+      const response = await window.api.server(request);
       console.log(response.data);
       console.log('Request:', request);
   
@@ -78,10 +79,10 @@ export default function Contenedores(): JSX.Element {
     }
   };
   
-  let defaultFormattedFechaInicio: string | null = null;
-  let defaultFormattedFechaFin: string | null = null;
+  const defaultFormattedFechaInicio: string | null = null;
+  const defaultFormattedFechaFin: string | null = null;
   
-  const construirRequest = (): any => {
+  const construirRequest = (): object => {
     let tipoFecha: string | null = null;
     let formattedFechaInicio: string | null = null;
     let formattedFechaFin: string | null = null;
@@ -114,6 +115,8 @@ export default function Contenedores(): JSX.Element {
     };
   };
 
+  
+
   const closeModal = (): void => {
     setShowError(false);
     setShowSuccess(false);
@@ -134,7 +137,7 @@ export default function Contenedores(): JSX.Element {
               type="text"
               placeholder="Filtrar por contenedor"
               value={filtroContenedor}
-              onChange={(e) => setFiltroContenedor(e.target.value)}
+              onChange={(e): void => setFiltroContenedor(e.target.value)}
               className="border p-2 rounded"
             />
           </div>
@@ -142,7 +145,7 @@ export default function Contenedores(): JSX.Element {
             <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm mb-1`}>Tipo de Fruta:</label>
             <select
               value={filtroTipoFruta}
-              onChange={(e) => setFiltroTipoFruta(e.target.value)}
+              onChange={(e): void => setFiltroTipoFruta(e.target.value)}
               className="border p-2 rounded"
             >
               <option value="">Seleccionar Tipo de Fruta</option>
@@ -155,7 +158,7 @@ export default function Contenedores(): JSX.Element {
             <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm mb-1`}>Cliente:</label>
             <select
               value={filtroCliente}
-              onChange={(e) => setFiltroCliente(e.target.value)}
+              onChange={(e): void => setFiltroCliente(e.target.value)}
               className="border p-2 rounded"
             >
               <option value="">Seleccionar Cliente</option>
@@ -168,7 +171,7 @@ export default function Contenedores(): JSX.Element {
             <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-sm mb-1`}>Fechas:</label>
             <select
               value={tipoFechaFiltrar}
-              onChange={(e) => {
+              onChange={(e): void => {
                 setTipoFechaFiltrar(e.target.value);
                 reiniciarFiltroFecha();
               }}
@@ -187,7 +190,7 @@ export default function Contenedores(): JSX.Element {
                 <input
                   type="date"
                   value={filtroFechaInicio ? filtroFechaInicio.toISOString().split('T')[0] : ''}
-                  onChange={(e) => {
+                  onChange={(e): void => {
                     const dateValue = e.target.value ? new Date(e.target.value) : null;
                     setFiltroFechaInicio(dateValue);
                   }}
@@ -199,7 +202,7 @@ export default function Contenedores(): JSX.Element {
                 <input
                   type="date"
                   value={filtroFechaFin ? filtroFechaFin.toISOString().split('T')[0] : ''}
-                  onChange={(e) => {
+                  onChange={(e): void => {
                     const dateValue = e.target.value ? new Date(e.target.value) : null;
                     setFiltroFechaFin(dateValue);
                   }}
@@ -213,7 +216,7 @@ export default function Contenedores(): JSX.Element {
             <input
               type="number"
               value={cantidadMostrar}
-              onChange={(e) => setCantidadMostrar(Number(e.target.value))}
+              onChange={(e): void => setCantidadMostrar(Number(e.target.value))}
               className="border p-2 rounded"
             />
           </div>

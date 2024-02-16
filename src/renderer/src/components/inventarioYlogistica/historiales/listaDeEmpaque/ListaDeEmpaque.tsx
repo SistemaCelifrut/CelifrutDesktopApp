@@ -23,20 +23,34 @@ export default function ListaDeEmpaque(): JSX.Element {
   useEffect(() => {
     const obtenerDatos = async (): Promise<void> => {
       try {
-        const request = { action: 'obtenerDataContenedor' }
-        const response = await window.api.contenedores(request)
+        const request = {
+          data:{
+            query:{},
+            select :{},
+            sort:{"infoContenedor.fechaCreacion": -1},
+            limit:50,
+            populate:{
+              path: 'infoContenedor.clienteInfo',
+              select: 'CLIENTE'
+            },
+          },
+          collection:'contenedores',
+          action: 'getContenedores',
+          query: 'proceso'
+        };
+        const response = await window.api.server(request)
         console.log(response)
-        setContenedores(response.data.contenedores)
+        setContenedores(response.data)
       } catch (e) {
         console.log("Error",e)
       }
     }
     obtenerDatos()
 
-    window.api.listaEmpaqueInfo('listaEmpaqueInfo', (response) => {
-      setContenedores(response.data.contenedores)
-      console.log(response);
-    })
+    // window.api.listaEmpaqueInfo('listaEmpaqueInfo', (response) => {
+    //   setContenedores(response.data.contenedores)
+    //   console.log(response);
+    // })
   }, [])
 
   const handleChange = (event:React.ChangeEvent<HTMLInputElement>): void => {
