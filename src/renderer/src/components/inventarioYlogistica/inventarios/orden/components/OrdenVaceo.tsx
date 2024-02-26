@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { format } from 'date-fns';
+import { themeContext } from '@renderer/App';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faCalendar, faBox, faIndustry } from '@fortawesome/free-solid-svg-icons';
 
 interface Predio {
+    _id: string;
     PREDIO: string;
 }
 
@@ -12,13 +14,18 @@ interface Inventario {
 }
 
 interface Lote {
+    _id: string;
     nombrePredio: string;
     fechaIngreso: string;
     tipoFruta: string;
     inventarioActual: Inventario;
     enf: string;
     predio: Predio;
-    ordenVaceo?: number; // Propiedad opcional para orden de vaceo
+    ordenVaceo?: number;
+    desverdizado?: {
+        canastillas: number;
+        fechaIngreso: string;
+    };
 }
 
 interface ServerResponse<T> {
@@ -28,8 +35,11 @@ interface ServerResponse<T> {
 
 const MiComponente: React.FC = () => {
     const [lotes, setLotes] = useState<Lote[]>([]);
-    const [lotesOrdenVaceo, setLotesOrdenVaceo] = useState<Lote[]>([]);
+    const [lotesDesverdizados, setLotesDesverdizados] = useState<Lote[]>([]);
+    const [lotesOrdenVaceo, setLotesOrdenVaceo] = useState<{ lote: Lote; ordenVaceo: number }[]>([]);
     const [vaceoCount, setVaceoCount] = useState<number>(1);
+    const [showPredios, setShowPredios] = useState<{ [key: string]: boolean }>({});
+    const theme = useContext(themeContext);
 
     useEffect(() => {
         const obtenerLotes = async (): Promise<void> => {
@@ -48,31 +58,88 @@ const MiComponente: React.FC = () => {
                     action: 'getLotes',
                     query: 'proceso',
                 };
-        
+
                 const response: ServerResponse<Lote[]> = await window.api.server(request);
                 if (response.status === 200) {
-                    const lotesFiltrados = response.data.map(lote => {
-                        return {
-                            nombrePredio: lote.predio ? lote.predio.PREDIO : "",
-                            fechaIngreso: lote.fechaIngreso,
-                            tipoFruta: lote.tipoFruta,
-                            inventarioActual: { inventario: lote.inventarioActual.inventario },
-                            enf: lote.enf,
-                            predio: lote.predio
-                        };
-                    });
-        
-                    setLotes(lotesFiltrados);
+                    setLotes(response.data);
                 } else {
-                    alert("Error obteniendo los lotes");
+                    alert("Error al obtener los lotes.");
                 }
             } catch (error) {
-                console.error('Error al obtener lotes:', error);
+                console.error('Error al obtener los lotes:', error);
+                alert('Error al obtener los lotes.');
+            }
+        };
+
+        const obtenerLotesDesverdizados = async (): Promise<void> => {
+            try {
+                const request = {
+                    data: {
+                        query: { "desverdizado.canastillas": { $gt: 0 } },
+                        select: { nombrePredio: 1, fechaIngreso: 1, tipoFruta: 1, desverdizado: 1, enf: 1 },
+                        populate:{
+                            path: 'predio',
+                            select: 'PREDIO ICA'
+                        },
+                        sort: { fechaIngreso: -1 }
+                    },
+                    collection: 'lotes',
+                    action: 'getLotesDesverdizados',
+                    query: 'proceso',
+                };
+
+                const response: ServerResponse<Lote[]> = await window.api.server(request);
+                if (response.status === 200) {
+                    setLotesDesverdizados(response.data);
+                } else {
+                    alert("Error al obtener los lotes desverdizados.");
+                }
+            } catch (error) {
+                console.error('Error al obtener los lotes desverdizados:', error);
+                alert('Error al obtener los lotes desverdizados.');
             }
         };
 
         obtenerLotes();
+        obtenerLotesDesverdizados();
     }, []);
+
+    useEffect(() => {
+        const obtenerOrdenVaceo = async (): Promise<void> => {
+            try {
+                console.log('Realizando solicitud para obtener orden de vaciado...');
+                const response: string[] = await window.api.server({
+                    action: 'obtenerOrdenDeVaceo',
+                    collection: 'variablesDesktop',
+                    query: 'variablesDelProceso'
+                });
+                console.log('Respuesta del servidor al obtener orden de vaciado:', response);
+
+                const idsOrdenVaceo = response;
+                console.log('IDs de orden de vaceo obtenidos:', idsOrdenVaceo);
+
+                const nuevosLotesOrdenVaceo = lotes
+                    .filter(lote => idsOrdenVaceo.includes(lote._id))
+                    .map((lote, index) => ({ lote, ordenVaceo: index + 1 }));
+
+                console.log('Lotes de orden de vaciado actualizados:', nuevosLotesOrdenVaceo);
+                setLotesOrdenVaceo(nuevosLotesOrdenVaceo);
+            } catch (error) {
+                console.error('Error al obtener el orden de vaciado:', error);
+                alert('Error al obtener el orden de vaciado.');
+            }
+        };
+
+        obtenerOrdenVaceo();
+    }, [lotes]);
+
+    useEffect(() => {
+        const newShowPredios = { ...showPredios };
+        lotesOrdenVaceo.forEach(({ lote }) => {
+            newShowPredios[lote._id] = false;
+        });
+        setShowPredios(newShowPredios);
+    }, [lotesOrdenVaceo]);
 
     const handleDragStartLote = (e: React.DragEvent<HTMLDivElement>, index: number) => {
         e.dataTransfer.setData("index", index.toString());
@@ -86,12 +153,36 @@ const MiComponente: React.FC = () => {
         e.preventDefault();
         const index = parseInt(e.dataTransfer.getData("index"));
         const draggedLote = lotes[index];
-        const newLotes = lotes.filter((lote, i) => i !== index);
-        setLotes(newLotes);
-        setLotesOrdenVaceo([...lotesOrdenVaceo, { ...draggedLote, ordenVaceo: vaceoCount }]);
-        setVaceoCount(vaceoCount + 1);
+        
+        if (draggedLote && draggedLote.predio !== null) {
+            const newShowPredios = { ...showPredios };
+            newShowPredios[draggedLote._id] = false;
+            setShowPredios(newShowPredios);
+            
+            const newLotesOrdenVaceo = [...lotesOrdenVaceo];
+            const existingLoteIndex = newLotesOrdenVaceo.findIndex(lote => lote.lote._id === draggedLote._id);
+            
+            if (existingLoteIndex !== -1) {
+                newLotesOrdenVaceo[existingLoteIndex].ordenVaceo = vaceoCount;
+            } else {
+                newLotesOrdenVaceo.push({ lote: draggedLote, ordenVaceo: vaceoCount });
+            }
+            
+            newLotesOrdenVaceo.sort((a, b) => a.ordenVaceo - b.ordenVaceo);
+            
+            enviarOrdenVaceoAlServidor(newLotesOrdenVaceo.map(item => item.lote))
+                .then(() => {
+                    setLotesOrdenVaceo(newLotesOrdenVaceo);
+                    setVaceoCount(vaceoCount + 1);
+                })
+                .catch((error) => {
+                    console.error('Error al enviar la orden de vaceo al servidor:', error);
+                    alert('Error al enviar la orden de vaceo al servidor.');
+                    setLotesOrdenVaceo(lotesOrdenVaceo);
+                });
+        }
     };
-
+    
     const handleDragStartOrdenVaceo = (e: React.DragEvent<HTMLDivElement>, index: number) => {
         e.dataTransfer.setData("index", index.toString());
     };
@@ -104,67 +195,132 @@ const MiComponente: React.FC = () => {
         e.preventDefault();
         const index = parseInt(e.dataTransfer.getData("index"));
         const draggedLote = lotesOrdenVaceo[index];
-        const newLotesOrdenVaceo = lotesOrdenVaceo.filter((lote, i) => i !== index);
+    
+        const dropIndex = lotes.length;
+    
+        const newLotesOrdenVaceo = lotesOrdenVaceo.filter((_, i) => i !== index)
+            .map(item => ({ lote: item.lote, ordenVaceo: item.ordenVaceo }));
+    
         setLotesOrdenVaceo(newLotesOrdenVaceo);
-        setLotes([...lotes, { ...draggedLote, ordenVaceo: undefined }]);
+    
+        setLotes([...lotes.slice(0, dropIndex), { ...draggedLote.lote, ordenVaceo: undefined }, ...lotes.slice(dropIndex)]);
     };
 
-    const handleRemoveFromVaceo = (index: number) => {
-        const newLotesOrdenVaceo = lotesOrdenVaceo.filter((lote, i) => i !== index);
-        const removedLote = lotesOrdenVaceo[index];
-        setLotesOrdenVaceo(newLotesOrdenVaceo);
-        setLotes([...lotes, { ...removedLote, ordenVaceo: undefined }]);
+    const handleRemoveFromVaceo = async (index: number) => {
+        try {
+            const removedLote = lotesOrdenVaceo[index];
+            if (removedLote) {
+                const newShowPredios = { ...showPredios };
+                newShowPredios[removedLote.lote._id] = true;
+                setShowPredios(newShowPredios);
+                
+                const newLotesOrdenVaceo = lotesOrdenVaceo.filter((_, i) => i !== index);
+                setLotesOrdenVaceo(newLotesOrdenVaceo);
+    
+                await enviarOrdenVaceoAlServidor(newLotesOrdenVaceo.map(item => item.lote));
+            }
+        } catch (error) {
+            console.error('Error al eliminar el lote del orden de vaceo:', error);
+            alert('Error al eliminar el lote del orden de vaceo.');
+        }
     };
 
+    const enviarOrdenVaceoAlServidor = async (newLotesOrdenVaceo: Lote[]) => {
+        try {
+            if (newLotesOrdenVaceo.length === 0) {
+                console.log('No hay lotes para enviar la orden de vaceo.');
+                return;
+            }
+    
+            console.log('Enviando lotes a orden de vaceo:', newLotesOrdenVaceo);
+            
+            const idsLotesOrdenVaceo = newLotesOrdenVaceo.map(lote => lote._id);
+            const response = await window.api.server({
+                data: idsLotesOrdenVaceo,
+                action: 'guardarOrdenDeVaceo',
+                collection: 'variablesDesktop',
+                query: 'variablesDelProceso'
+            });
+            console.log('id:', idsLotesOrdenVaceo);
+            console.log('Respuesta del servidor:', response);
+            
+    
+            if (response && response.status === 200) {
+                console.log('Orden de vaceo enviada correctamente al servidor.');
+            } else {
+                throw new Error('Error al enviar la orden de vaceo al servidor. Respuesta:', response);
+            }
+        } catch (error) {
+            throw error;
+        }
+    };
+    
+    
     return (
         <div className="flex justify-center items-start">
             <div className="w-1/2 p-4">
-                <h1 className="text-lg font-bold mb-4">Listado de Predios</h1>
+                <h1 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-lg font-bold mb-4`}>Listado de Predios</h1>
                 <ul className="space-y-4">
-                    {lotes.map((lote, index) => (
-                        <div key={index} onClick={() => {}} className="bg-gray-100 p-2 rounded-md cursor-move mb-2" draggable onDragStart={(e) => handleDragStartLote(e, index)} onDragOver={handleDragOverLote} onDrop={handleDropLote}>
-                            <p className="mb-1">
-                                <FontAwesomeIcon icon={faIndustry} className="mr-2" />{lote.enf}
-                            </p>
-                            <p className="mb-1">
-                                <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2" />{lote.nombrePredio}
-                            </p>
-                            <p className="mb-1">
-                                <FontAwesomeIcon icon={faCalendar} className="mr-2" />Fecha de Ingreso: {lote.fechaIngreso ? format(new Date(lote.fechaIngreso), 'dd/MM/yyyy') : '-'}
-                            </p>
-                            <p className="mb-1">
-                                <FontAwesomeIcon icon={faBox} className="mr-2" />Tipo de Fruta: {lote.tipoFruta}
-                            </p>
-                            <p>
-                                <FontAwesomeIcon icon={faBox} className="mr-2" />Canastillas: {lote.inventarioActual.inventario}
-                            </p>
-                        </div>
-                    ))}
+                    {[...lotes, ...lotesDesverdizados].map((lote, index) => {
+                        const isOrdenVaceo = lotesOrdenVaceo.some(item => item.lote._id === lote._id);
+
+                        return (
+                            <div key={index} onClick={() => {}} style={{ display: showPredios[lote._id] !== false ? 'block' : 'none' }} className={`p-2 rounded-md cursor-move mb-2 border border-gray-200 shadow-lg hover:shadow-xl transition duration-300 ${isOrdenVaceo ? 'bg-green-200' : 'bg-gray-100'}`} draggable onDragStart={(e) => handleDragStartLote(e, index)} onDragOver={handleDragOverLote} onDrop={handleDropLote}>
+                                {isOrdenVaceo && (
+                                    <div className="absolute top-0 right-0 bg-green-500 text-white rounded-full h-6 w-6 flex items-center justify-center">
+                                        ✓
+                                    </div>
+                                )}
+                                <p className="mb-1 text-sm">
+                                    <FontAwesomeIcon icon={faIndustry} className="mr-1" />{lote.enf}
+                                </p>
+                                {showPredios[lote._id] !== false && (
+                                    <p className="mb-1 text-sm">
+                                        <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-1" />{lote.nombrePredio}
+                                    </p>
+                                )}
+                                <p className="mb-1 text-sm">
+                                    <FontAwesomeIcon icon={faCalendar} className="mr-1" />Fecha de Ingreso: {lote.fechaIngreso ? format(new Date(lote.fechaIngreso), 'dd/MM/yyyy') : '-'}
+                                </p>
+                                <p className="mb-1 text-sm">
+                                    <FontAwesomeIcon icon={faBox} className="mr-1" />Tipo de Fruta: {lote.tipoFruta}
+                                </p>
+                                <p className="text-sm">
+                                    <FontAwesomeIcon icon={faBox} className="mr-1" />Canastillas: {lote.inventarioActual?.inventario || (lote.desverdizado ? lote.desverdizado.canastillas : '-')}
+                                </p>
+                                {/* Agregamos este bloque para mostrar la información de la segunda petición */}
+                                {lote.desverdizado && (
+                                    <div>
+                                        <p className="text-sm">Fecha de Desverdizado: {lote.desverdizado.fechaIngreso}</p>
+                                        <p className="text-sm">Canastillas (Desverdizado): {lote.desverdizado.canastillas}</p>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+
                 </ul>
             </div>
-            <div className="w-1/2 p-4 border border-gray-300 rounded-md h-128 overflow-y-auto drop-zone" onDragOver={handleDragOverOrdenVaceo} onDrop={handleDropOrdenVaceo} style={{ backgroundColor: '#f3f4f6', boxShadow: '0px 0px 10px 2px rgba(0,0,0,0.1)' }}>
+            <div className="w-1/2 p-4 border border-gray-300 rounded-md max-h-96 overflow-y-auto drop-zone" style={{ backgroundColor: '#f3f4f6', boxShadow: '0px 0px 10px 2px rgba(0,0,0,0.1)', position: 'sticky', top: '20px' }} onDragOver={handleDragOverOrdenVaceo} onDrop={handleDropOrdenVaceo}>
                 <h1 className="text-lg font-bold mb-4">Arrastra aquí para ordenar el vaceo</h1>
                 <ul className="space-y-4">
-                    {lotesOrdenVaceo.map((lote, index) => (
-                        <div key={index} onClick={() => {}} className="bg-blue-100 p-2 rounded-md cursor-move mb-2 relative" draggable onDragStart={(e) => handleDragStartOrdenVaceo(e, index)}>
-                            <div className="absolute top-0 left-0 bg-green-500 text-white rounded-full h-8 w-8 flex items-center justify-center">{index + 1}</div>
-                            <div className="absolute top-0 right-0 bg-red-500 text-white rounded-full h-8 w-8 flex items-center justify-center" onClick={() => handleRemoveFromVaceo(index)}>
+                    {lotesOrdenVaceo.map((loteOrdenVaceo, index) => (
+                        <div key={index} onClick={() => {}} className="bg-blue-100 p-2 rounded-md cursor-move mb-2 relative border border-gray-200 shadow-lg hover:shadow-xl transition duration-300" draggable onDragStart={(e) => handleDragStartOrdenVaceo(e, index)}>
+                            <div className="absolute top-0 left-0 bg-green-500 text-white rounded-full h-6 w-6 flex items-center justify-center" style={{ opacity: 0.7 }}>{index + 1}</div>
+                            <div className="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center" onClick={() => handleRemoveFromVaceo(index)}>
                                 X
                             </div>
-                            <p className="mb-1">{lote.enf}</p>
-                            <p className="mb-1">{lote.nombrePredio}</p>
-                            <p className="mb-1">Fecha de Ingreso: {lote.fechaIngreso ? format(new Date(lote.fechaIngreso), 'dd/MM/yyyy') : '-'}</p>
-                            <p className="mb-1">Tipo de Fruta: {lote.tipoFruta}</p>
-                            <p>
-                                Canastillas: {lote.inventarioActual.inventario}
-                            </p>
+                            <p className="mb-1 text-sm">{loteOrdenVaceo.lote.enf}</p>
+                            <p className="mb-1 text-sm">{loteOrdenVaceo.lote.nombrePredio}</p>
+                            <p className="mb-1 text-sm">Fecha de Ingreso: {loteOrdenVaceo.lote.fechaIngreso ? format(new Date(loteOrdenVaceo.lote.fechaIngreso), 'dd/MM/yyyy') : '-'}</p>
+                            <p className="mb-1 text-sm">Tipo de Fruta: {loteOrdenVaceo.lote.tipoFruta}</p>
+                            <p className="text-sm">Canastillas: {loteOrdenVaceo.lote.inventarioActual?.inventario}</p>
                         </div>
                     ))}
                 </ul>
             </div>
         </div>
-    );
+    );      
 };
 
 export default MiComponente;
-
