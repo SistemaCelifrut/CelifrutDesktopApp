@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
 import { useContext } from "react"
-import { dataHistorialCalidadClasificacion } from "../types/clasificacionTypes"
 import { themeContext } from "@renderer/App"
 import { format } from "date-fns"
 import { INITIAL_STATE_LIMON, INITIAL_STATE_NARANJA } from "../functions/reduce"
+import { lotesType } from "@renderer/types/lotesType"
 
 type propsType = {
-    lote: dataHistorialCalidadClasificacion
+    lote: lotesType
 }
 
 export default function TarjetaHistorialClasificacionCalidad(props: propsType): JSX.Element {
@@ -16,8 +16,8 @@ export default function TarjetaHistorialClasificacionCalidad(props: propsType): 
             <div className={`${theme === 'Dark' ? 'bg-slate-500 text-white' : 'bg-slate-100 text-black shadow-lg '} 
             font-bold p-0 pl-4 flex flex-col gap-4 h-full justify-start `}>
                 <div className="flex flex-row gap-2">
-                    <h2>{props.lote._id}</h2>
-                    <p>{props.lote.nombrePredio}</p>
+                    <h2>{props.lote.enf}</h2>
+                    <p>{props.lote.predio.PREDIO}</p>
                     <p>{props.lote.tipoFruta}</p>
                     <p>{Object.prototype.hasOwnProperty.call(props.lote.calidad.clasificacionCalidad, 'fecha') &&
                         format(new Date(props.lote.calidad.clasificacionCalidad.fecha), 'dd-MM-yyyy')}

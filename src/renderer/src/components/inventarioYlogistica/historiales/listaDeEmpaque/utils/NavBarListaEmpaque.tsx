@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
+import { contenedoresType } from '@renderer/types/contenedoresType'
 import { useState } from 'react'
 import { HiOutlineViewList } from 'react-icons/hi'
-import { ContenedoresObj } from '../types/types'
 
 type propsType = {
-  contenedores: ContenedoresObj[]
+  contenedores: contenedoresType[]
   handleChange: (e) => void
 }
 
@@ -37,7 +37,7 @@ export default function NavBarListaEmpaque(props: propsType): JSX.Element {
         <option>Contenedores</option>
         {props.contenedores.length > 0 && props.contenedores.map((item) => (
           <option key={item._id} value={item._id}>
-            {item._id} - {item.infoContenedor ? item.infoContenedor.nombreCliente : 'Nombre no disponible'}
+            {item.numeroContenedor} - {item.infoContenedor ? item.infoContenedor.clienteInfo.CLIENTE : 'Nombre no disponible'}
           </option>
         ))}
       </select>

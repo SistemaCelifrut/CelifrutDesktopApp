@@ -4,10 +4,10 @@ import { themeContext } from "@renderer/App"
 import { useContext, useEffect, useState } from "react"
 import { IoIosAddCircle } from "react-icons/io";
 import TableListaClientes from "../tables/TableListaClientes";
-import { clientesType } from "../type/type";
 import { TfiBackLeft } from "react-icons/tfi";
 import FormatoAgregarCliente from "./FormatoAgregarCliente";
 import { clienteDefault } from "../functions/functions";
+import { clienteType } from "@renderer/types/clientesType";
 
 type propsType = {
     setShowSuccess: (e) => void
@@ -17,17 +17,24 @@ type propsType = {
 
 export default function ListaClientes(props: propsType): JSX.Element {
     const theme = useContext(themeContext)
-    const [data, setData] = useState<clientesType[]>([])
-    const [dataOriginal, setDataOriginal] = useState<clientesType[]>([])
+    const [data, setData] = useState<clienteType[]>([])
+    const [dataOriginal, setDataOriginal] = useState<clienteType[]>([])
     const [showFormulario, setShowFormulario] = useState<boolean>(false)
-    const [clienteSeleccionado, setClienteSeleccionado] = useState<clientesType>(clienteDefault)
+    const [clienteSeleccionado, setClienteSeleccionado] = useState<clienteType>(clienteDefault)
     const [isModify, setIsModify] = useState<boolean>(false)
     const [filtro, setFiltro] = useState<string>('')
     useEffect(() => {
         const obtenerClientes = async (): Promise<void> => {
             try {
-                const request = { action: 'obtenerClientes' }
-                const response = await window.api.contenedores(request)
+                const request = {
+                    data: {
+                      query: {}
+                    },
+                    collection: 'clientes',
+                    action: 'getClientes',
+                    query: 'proceso'
+                  }
+                const response = await window.api.server(request)
                 if (response.status === 200) {
                     setData(response.data)
                     setDataOriginal(response.data)

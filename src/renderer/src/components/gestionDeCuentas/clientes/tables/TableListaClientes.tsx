@@ -1,17 +1,17 @@
 /* eslint-disable prettier/prettier */
 
 import { useContext, useState } from "react"
-import { clientesType } from "../type/type"
 import { themeContext } from "@renderer/App"
 import { PiNotePencilDuotone } from "react-icons/pi";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import ModalConfirmarEliminarClientes from "../modals/ModalConfirmarEliminarClientes";
+import { clienteType } from "@renderer/types/clientesType";
 
 type propsType = {
-    data: clientesType[]
+    data: clienteType[]
     setData: (e) => void
     setDataOriginal: (e) => void
-    clienteSeleccionado: clientesType
+    clienteSeleccionado: clienteType
     setClienteSeleccionado: (e) => void
     modificarCliente: (e) => void
     setShowSuccess: (e) => void
@@ -28,14 +28,25 @@ export default function TableListaClientes(props: propsType): JSX.Element {
             props.modificarCliente
          if(e){
             const request = {
-                action: "eliminarCliente",
-                data: props.clienteSeleccionado._id
+                collection:'clientes',
+                action: 'deleteCliente',
+                query: 'proceso',
+                data:{
+                    _id:props.clienteSeleccionado._id
+                }
             }
 
-            const response = await window.api.contenedores(request);
+            const response = await window.api.server(request);
             if (response.status === 200) {
-                const request = { action: 'obtenerClientes' }
-                const response = await window.api.contenedores(request)
+                const request = {
+                    data: {
+                      query: {}
+                    },
+                    collection: 'clientes',
+                    action: 'getClientes',
+                    query: 'proceso'
+                  }
+                const response = await window.api.server(request)
                 if (response.status === 200) {
                     props.setData(response.data)
                     props.setDataOriginal(response.data)

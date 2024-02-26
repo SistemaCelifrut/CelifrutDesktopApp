@@ -1,15 +1,17 @@
 /* eslint-disable prettier/prettier */
 import { useContext, useEffect, useState } from 'react'
 import { format } from 'date-fns'
-import { ContenedoresObj } from '../types/types'
 import InfoPalletsListaEmpaque from '../functions/InfoPalletsListaEmpaque'
 import { themeType } from '@renderer/env'
 import { FaPrint } from "react-icons/fa6";
 import { userContext } from '@renderer/App'
+import { contenedoresType } from '@renderer/types/contenedoresType';
+import { pesoCajas } from '../const/constants';
+
 
 
 type propsType = {
-  contenedor: ContenedoresObj
+  contenedor: contenedoresType | undefined
   filtro: string
   theme: themeType
 }
@@ -29,7 +31,7 @@ export default function TablePallets(props: propsType): JSX.Element {
       tipoRotulo: 'rotuloPallet',
       pallet: pallet
     }
-    window.api.imprimirRotulos(data);
+    window.api.server(data);
   }
 
   return (
@@ -46,13 +48,11 @@ export default function TablePallets(props: propsType): JSX.Element {
                 className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}
                                     font-bold text-xl mb-4`}
               >
-                {props.contenedor.infoContenedor?.tipoEmpaque === 'Caja' ? 'Pallet: ' : 'Estiba: '}
+                {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja' ? 'Pallet: ' : 'Estiba: '}
                 {pallet} -- {(tabla[pallet].reduce((acu, item) => acu += item.cajas, 0))} cajas
                 ---
                 {(tabla[pallet].reduce((acu, item) => {
-                  const tipoCaja = item.tipoCaja.replace('.', '_');
-
-                  acu += item.cajas * props.contenedor.infoContenedor.pesoCaja[tipoCaja]
+                  acu += item.cajas * pesoCajas[item.tipoCaja]
                   return acu
                 }, 0)).toFixed(2)}Kg
               </div>

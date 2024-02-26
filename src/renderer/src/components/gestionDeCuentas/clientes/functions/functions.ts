@@ -1,8 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { clientesType } from "../type/type";
 
-export const clienteDefault: clientesType = {
-    CODIGO: '',
+import { clienteType } from "@renderer/types/clientesType";
+
+export const clienteDefault: clienteType = {
+    CODIGO: 0,
     CLIENTE: '',
     CORREO: '',
     DIRECCIÓN: '',

@@ -1,0 +1,17 @@
+{
+    "title": "Recepción",
+    "EF1": "EF1-",
+    "input_predios":"Predios",
+    "numeroCanastillas":"Número de canastillas",
+    "kilos":"Kilos",
+    "placa":"Placa",
+    "canastillasVacias":"Canastillas vacías",
+    "tipoFruta":{
+        "title": "Tipo de fruta",
+        "limon":"Limon",
+        "naranja":"Naranja"
+    },
+    "observaciones": "Observaciones",
+    "botonGuardar": "Guardar"
+
+}

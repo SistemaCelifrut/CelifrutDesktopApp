@@ -1,11 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { useEffect, useState } from 'react'
-import { ContenedoresObj } from '../types/types'
 import PrincipalGeneral from '../functions/PrincipalGeneral'
 import { themeType } from '@renderer/env'
+import { contenedoresType } from '@renderer/types/contenedoresType'
 
 type propsType = {
-  contenedor: ContenedoresObj 
+  contenedor: contenedoresType | undefined
   theme: themeType
 }
 type calidadType = {

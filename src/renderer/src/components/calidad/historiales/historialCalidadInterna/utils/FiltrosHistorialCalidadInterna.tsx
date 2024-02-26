@@ -5,6 +5,7 @@ import { useContext } from "react"
 
 type propsType = {
     handleFiltro: (tipoFiltro, elemento) => void
+    setCantidad: (e) => void
 }
 
 export default function FiltrosHistorialCalidadInterna(props: propsType): JSX.Element {
@@ -17,9 +18,6 @@ export default function FiltrosHistorialCalidadInterna(props: propsType): JSX.El
     }
     const handleFechaFin = (e): void => {
         props.handleFiltro("fechaFin", e.target.value)
-    }
-    const handleCantidad = (e): void => {
-        props.handleFiltro("cantidad", e.target.value)
     }
 
     const theme = useContext(themeContext);
@@ -49,7 +47,7 @@ export default function FiltrosHistorialCalidadInterna(props: propsType): JSX.El
                               ${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
           Cantidad-lotes
           <div>
-            <input onChange={handleCantidad} type="number" className="w-28 rounded-lg p-1 text-black" min={0} />
+            <input onChange={(e): void => props.setCantidad(Number(e.target.value))} type="number" className="w-28 rounded-lg p-1 text-black" min={0} />
           </div>
         </label>
             </div>

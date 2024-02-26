@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import { useContext, useEffect, useState } from "react";
-import { informesCalidadType } from "./types/types";
 import { dataContext, sectionContext, themeContext } from "@renderer/App";
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,45 +12,37 @@ import { IoMdPhotos } from "react-icons/io";
 import { GiBottleVapors } from "react-icons/gi";
 import { GrLinkNext } from "react-icons/gr";
 import { GrLinkPrevious } from "react-icons/gr";
+import { lotesType } from "@renderer/types/lotesType";
 
 export default function Informes(): JSX.Element {
   const theme = useContext(themeContext);
   const secctionMenu = useContext(sectionContext);
   const dataGlobal = useContext(dataContext);
-  const [datos, setDatos] = useState<informesCalidadType[]>([]);
-  const [datosFiltrados, setDatosFiltrados] = useState<informesCalidadType[]>([]);
+  const [datos, setDatos] = useState<lotesType[]>([]);
+  const [datosFiltrados, setDatosFiltrados] = useState<lotesType[]>([]);
   const [filtro, setFiltro] = useState('');
   const [countPage, setCountPage] = useState<number>(0);
 
   useEffect(() => {
     const obtenerDatosDelServidor = async (): Promise<void> => {
       try {
-        const request = { action: 'obtenerInformesCalidad', query: 'proceso', data:countPage };
-        const response = await window.api.calidad(request);
-        const lotes: informesCalidadType[] = response.data;
-
-        console.log('Datos del servidor:', lotes);
-
-        if (Array.isArray(lotes) && lotes.length > 0) {
-          setDatos(lotes);
-          setDatosFiltrados(lotes); // Inicializa los datos filtrados con los datos originales
-        } else {
-          console.error('El formato de lotes no es el esperado o está vacío.');
-        }
-      } catch (error) {
-        console.error('Error al obtener informes:', error);
-      }
-    };
-
-    obtenerDatosDelServidor();
-  }, []);
-
-  useEffect(() => {
-    const obtenerDatosDelServidor = async (): Promise<void> => {
-      try {
-        const request = { action: 'obtenerInformesCalidad', query: 'proceso', data:countPage };
-        const response = await window.api.calidad(request);
-        const lotes: informesCalidadType[] = response.data;
+        const request = {
+          data:{
+            query:{enf: { $regex: '^E', $options: 'i' }},
+            select : {},
+            populate:{
+              path: 'predio',
+              select: 'PREDIO ICA'
+            },
+            sort:{fechaIngreso: -1},
+            limit: 50,
+          },
+          collection:'lotes',
+          action: 'getLotes',
+          query: 'proceso'
+        };
+        const response = await window.api.server(request);
+        const lotes: lotesType[] = response.data;
 
         console.log('Datos del servidor:', lotes);
 
@@ -69,11 +60,13 @@ export default function Informes(): JSX.Element {
     obtenerDatosDelServidor();
   }, [countPage]);
 
+
+
   useEffect(() => {
     const datosFiltrados = datos.filter(
       (item) =>
         item._id.toLowerCase().includes(filtro.toLowerCase()) ||
-        item.nombrePredio.toLowerCase().includes(filtro.toLowerCase()) ||
+        item.predio.PREDIO.toLowerCase().includes(filtro.toLowerCase()) ||
         item.tipoFruta.toLowerCase().includes(filtro.toLowerCase())
     );
     setDatosFiltrados(datosFiltrados);
@@ -135,10 +128,10 @@ export default function Informes(): JSX.Element {
           {datosFiltrados.map((item, index) => (
             <tr className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'}`} key={index}>
               <td className="p-2   text-center text-[11px] cursor-pointer hover:underline" 
-                  onClick={(): void => handleClickEF1(item._id)}>
-                {item._id}
+                  onClick={(): void => handleClickEF1(item.enf)}>
+                {item.enf}
               </td>
-              <td className="p-2   text-center text-[11px]">{item.nombrePredio}</td>
+              <td className="p-2   text-center text-[11px]">{item.predio.PREDIO}</td>
               <td className="p-2   text-center text-[11px]">{item.tipoFruta}</td>
               <td className="p-2   text-center text-[11px]">
                 <div className="flex flex-row justify-center">

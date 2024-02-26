@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { contenedorType, datosType } from "./type";
 
-export const crearObjetoContenedor = (data: datosType): contenedorType => {
-    const subDocumentos = {}
+import { EF1Type, contenedoresType, palletType } from "@renderer/types/contenedoresType";
+
+export const crearObjetoContenedor = (data): contenedoresType => {
+    const subDocumentos = [] as palletType[]
     for (let i = 1; i<=data.pallets; i++){
         const subDocumento = {
-            EF1: [],
-            cajasTotal: 0,
+            EF1: [] as EF1Type[],
             listaLiberarPallet: {
               rotulado: false,
               paletizado: false,
@@ -21,10 +21,11 @@ export const crearObjetoContenedor = (data: datosType): contenedorType => {
             },
           };
   
-          subDocumentos[`${i}`] = subDocumento;
+          subDocumentos.push(subDocumento);
     }
 
-    const new_contenedor: contenedorType = {
+    const new_contenedor: contenedoresType = {
+
         numeroContenedor: data.numeroContenedor,
         infoContenedor:{
             clienteInfo: data.cliente,

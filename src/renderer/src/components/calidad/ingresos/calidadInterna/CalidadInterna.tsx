@@ -8,6 +8,7 @@ const request = {
   data:{
     query:{ 
       "calidad.calidadInterna": { $exists : false},
+      enf: { $regex: '^E', $options: 'i' }
     },
     select : { enf:1 },
     populate:{

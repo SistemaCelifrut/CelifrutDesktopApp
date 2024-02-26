@@ -1,4 +1,6 @@
-import { ContenedoresObj } from '../types/types'
+/* eslint-disable prettier/prettier */
+
+import { contenedoresType } from '@renderer/types/contenedoresType'
 
 type calidadType = {
   1.5: number
@@ -11,30 +13,35 @@ type calibreType = {
 
 type PrincipalGeneralType = [number, calidadType, calibreType, calibreType]
 
-export default function (contenedor: ContenedoresObj | ''): PrincipalGeneralType | 0 {
+export default function (contenedor: contenedoresType | undefined): PrincipalGeneralType | 0 {
   try {
     if (!contenedor) return 0
 
     let total = 0
-    let calidad = { 1: 0, 1.5: 0, 2: 0 }
-    let calibre = {}
-    let tipoCaja = {}
+    const calidad = { 1: 0, 1.5: 0, 2: 0 }
+    const calibre = {}
+    const tipoCaja = {}
 
-    Object.keys(contenedor.pallets).forEach((pallet) => {
-      total += contenedor.pallets[pallet].cajasTotal
+    contenedor.pallets.forEach((pallet) => {
+      total += pallet.cajasTotal
 
-      contenedor.pallets[pallet].EF1.forEach((item) => {
-        calidad[item.calidad] += item.cajas
-
-        if (!calibre.hasOwnProperty(item.calibre)) {
-          calibre[item.calibre] = 0
+      pallet.EF1.forEach((item) => {
+        if (item.calidad !== undefined) {
+          calidad[item.calidad] += item.cajas
         }
-        calibre[item.calibre] += item.cajas
 
-        if (!tipoCaja.hasOwnProperty(item.tipoCaja)) {
+        if (item.calibre !== undefined) {
+          if (!Object.prototype.hasOwnProperty.call(calibre, item.calibre)) {
+            calibre[item.calibre] = 0
+          }
+          calibre[item.calibre] += item.cajas
+        }
+        if (item.tipoCaja !== undefined) {
+          if (!Object.prototype.hasOwnProperty.call(tipoCaja, item.tipoCaja)) {
             tipoCaja[item.tipoCaja] = 0
+          }
+          tipoCaja[item.tipoCaja] += item.cajas
         }
-        tipoCaja[item.tipoCaja] += item.cajas
       })
     })
 

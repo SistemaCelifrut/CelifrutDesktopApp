@@ -48,7 +48,7 @@ export default function PruebasCalidadInterna(props:propsType): JSX.Element {
         const requestLotes = {
             query: 'proceso',
             collection:'lotes',
-            action: 'putLotes',
+            action: 'putLote',
             record: 'ingresoCalidadInterna',
             data: {
               lote:new_lote

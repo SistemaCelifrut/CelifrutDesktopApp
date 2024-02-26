@@ -39,6 +39,9 @@ import FormularioProgramacionMula from './components/transporte/formulatioInspec
 import HistorialProgramacionMula from './components/transporte/historialInspecciones/historialProgramacionMula/HistorialProgramacionMula'
 import Cuentas from './components/gestionDeCuentas/crearCuentas/Cuentas'
 import Inicio from './components/Inicio'
+import MessagesComponent from './messages/MessagesComponent'
+
+type OpenModalFunction = (messageType: string, message: string) => void;
 
 type MyContextType = {
   setSection: React.Dispatch<React.SetStateAction<string>>;
@@ -51,6 +54,7 @@ type MyContextDataType = {
 export const sectionContext = createContext<MyContextType | undefined>(undefined)
 export const dataContext = createContext<MyContextDataType | undefined>(undefined)
 export const themeContext = createContext<themeType>('Ligth')
+export const messageContext = createContext<OpenModalFunction | undefined>(undefined);
 export const userContext = createContext<userType>({
   _id: '',
   user: '',
@@ -67,6 +71,17 @@ function App(): JSX.Element {
   const [section, setSection] = useState<string>('main')
   const [showSideBar, setShowSideBar] = useState<boolean>(true);
   const [dataComponentes, setDataComponentes] = useState<string>('')
+  const [messageType, setMessageType] = useState<string>('')
+  const [message, setMessage] = useState<string>('')
+
+  const openMessage = (messageType: string, message: string): void => {
+    setMessageType(messageType);
+    setMessage(message);
+    setTimeout(() => {
+      setMessageType('');
+      setMessage('');
+    }, 5000);
+  };
   //useEffect que obtiene el theme del quipo
   useEffect(() => {
     const funcionAuxiliar = async (): Promise<void> => {
@@ -97,12 +112,14 @@ function App(): JSX.Element {
     setShowSideBar(!showSideBar);
   }
 
+
   return (
 
     <sectionContext.Provider value={{ setSection }}>
       <dataContext.Provider value={{ dataComponentes, setDataComponentes }}>
         <themeContext.Provider value={theme}>
           <userContext.Provider value={user}>
+            <messageContext.Provider value={openMessage}>
             <main className={`h-screen max-h-screen w-full ${theme === 'Dark' ? 'bg-gray-800 shadow-white' : 'bg-white shadow-lg'} pb-20 overflow-hidden`}>
 
               <div className='flex flex-col h-full'>
@@ -117,7 +134,7 @@ function App(): JSX.Element {
                       <NavBar theme={theme} changeTheme={changeTheme} showSideBar={showSideBar} setShowSideBar={setShowSideBar} />
                     </div>
 
-                    <div className='flex flex-row  h-full '>
+                    <div className='flex flex-row  h-full'>
                       <SideBar seleccionWindow={seleccionWindow} handleSideBarWidth={handleSideBarWidth} showSideBar={showSideBar} />
                       <div className={` flex justify-center w-full h-full overflow-auto `}>
                         {section === "main" && <Inicio />}
@@ -161,16 +178,14 @@ function App(): JSX.Element {
                         {section === "Transporte//Formularios//Tractomulas" && <FormularioMulas />}
                         {section === "Transporte//Formularios//Programación tractomulas" && <FormularioProgramacionMula/>}
                         {section === "Transporte//Historiales//Historial programación tractomula" && <HistorialProgramacionMula/>}
-
                       </div>
-                    </div>   
-
+                    </div> 
                   </div> 
-
                 )}
               </div>
+                  {message !== '' && <MessagesComponent messageType={messageType} message={message} />}
             </main>
-
+            </messageContext.Provider>
           </userContext.Provider>
         </themeContext.Provider>
       </dataContext.Provider>

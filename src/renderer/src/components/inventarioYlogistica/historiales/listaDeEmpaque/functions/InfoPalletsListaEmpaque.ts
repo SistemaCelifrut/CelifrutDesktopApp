@@ -1,4 +1,6 @@
-import { ContenedoresObj } from '../types/types'
+/* eslint-disable prettier/prettier */
+
+import { contenedoresType } from "@renderer/types/contenedoresType"
 
 type outObjtype = {
   [key: number]: enfType
@@ -8,9 +10,10 @@ type enfType = {
   [key: string]: []
 }
 
-export default function (contenedores: ContenedoresObj, filtro: string): outObjtype {
+export default function (contenedores: contenedoresType | undefined, filtro: string): outObjtype {
   try {
-    let outObj: outObjtype = {}
+  if(contenedores){
+    const  outObj: outObjtype = {}
     Object.keys(contenedores.pallets).map((pallet) => {
       outObj[pallet] = []
       contenedores.pallets[pallet].EF1.forEach((item) => {
@@ -27,6 +30,9 @@ export default function (contenedores: ContenedoresObj, filtro: string): outObjt
     }
 
     return outObj
+  } else {
+    return {}
+  }
   } catch (e) {
     return {}
   }

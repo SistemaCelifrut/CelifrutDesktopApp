@@ -1,193 +1,95 @@
 /* eslint-disable prettier/prettier */
-import { themeContext } from '@renderer/App'
-import { useContext, useEffect, useState } from 'react'
-import SuccessModal from '@renderer/errors/modal/SuccessModal';
-import ErrorModal from '@renderer/errors/modal/ErrorModal';
-import { proveedoresType } from './types/type';
-
-
+import {  useEffect, useState } from 'react'
+import { proveedoresType } from '@renderer/types/proveedoresType';
+import * as strings from './json/strings_ES.json';
+import { crear_request_guardar, formInit, handleServerResponse, request_EF1, request_predios } from './functions/functions';
+import useAppContext from '@renderer/hooks/useAppContext';
 
 export default function IngresoFruta(): JSX.Element {
-  let check = true;
-  const theme = useContext(themeContext);
+  const { theme, messageModal } = useAppContext();
   const [prediosDatos, setPrediosData] = useState<proveedoresType[]>([])
-  const [nombrePredio, setNombrePredio] = useState('')
-  const [tipoFruta, setTipoFruta] = useState('')
-  const [canastillas, setCanastillas] = useState('')
-  const [canastillasVacias, setCanastillasVacias] = useState('')
-  const [kilos, setKilos] = useState('')
-  const [placa, setPlaca] = useState('')
-  const [observaciones, setObservaciones] = useState('')
+  const [formState, setFormState] = useState(formInit);
   const [enf, setEnf] = useState(0)
-  const [showSuccess, setShowSuccess] = useState<boolean>(false);
-  const [showError, setShowError] = useState<boolean>(false);
-  const [messageError, setMessageError] = useState<string>('Error al crear Lote')
 
-  useEffect(() => {
-    const obtenerPredios = async (): Promise<void> => {
-      if(check){
-        check = false
-        const request1 = {
-          data:{
-            query:{},
-          },
-          collection:'proveedors',
-          action: 'obtenerProveedores',
-          query: 'proceso'
-        };
-      
-        const request2 = {
-          collection:'variablesDesktop',
-          action: 'obtenerEF1',
-          query: 'variablesDelProceso'
-        };
-        const [response1, response2] = await Promise.all([
-          window.api.server(request1),
-          window.api.server(request2)
-        ]);
-    
-        console.log(response1);
-    
-        if (Array.isArray(response1.data) && response1.status === 200) {
-          setPrediosData(response1.data);
-          setEnf(response2.enf);
-        }
-       else {
-          setMessageError(`Error ${response1.status}: ${response1.message}`);
-          setShowError(true)
-          setTimeout(() => {
-            setShowError(false);
-          }, 5000);
-        }
-      }
-     
-    }
-    obtenerPredios()
-  }, [])
-
-  const handlePrediosChange = (event): void => {
-    setNombrePredio(event.target.value)
+  const obtenerEF1 = async (): Promise<void> => {
+      const enf = await window.api.server(request_EF1);
+      setEnf(enf.enf);
   }
+  const obtenerPredios = async (): Promise<void> => {
+    const response = await window.api.server(request_predios)
+    const data1 = handleServerResponse(response, messageModal)
+
+    if (Array.isArray(data1) && data1.length > 0 && '_id' in data1[0]) {
+      setPrediosData(data1 as proveedoresType[]);
+    }
+  }
+  useEffect(() => {
+    obtenerPredios()
+    obtenerEF1()
+  }, [])
+  const handleChange = (event): void => {
+    setFormState({
+      ...formState,
+      [event.target.name]: event.target.value,
+    });
+  };
   const guardarLote: React.FormEventHandler<HTMLFormElement> = async (event) => {
     try {
       event.preventDefault()
-      const datos = {
-        predio: nombrePredio,
-        canastillas: canastillas,
-        kilos: kilos,
-        placa: placa,
-        tipoFruta: tipoFruta,
-        observaciones: observaciones,
-        promedio: parseFloat(kilos) / parseFloat(canastillas),
-        canastillasVacias: canastillasVacias,
-        inventarioActual: {
-          inventario: Number(canastillas),
-          descarteEncerado: { balin: 0, pareja: 0, extra: 0, descarteGeneral: 0 },
-          descarteLavado: { balin: 0, pareja: 0, descarteGeneral: 0 },
-        },
-        descarteLavado: { balin: 0, pareja: 0, descarteGeneral: 0, descompuesta:0, piel:0, hojas:0 },
-        descarteEncerado: { balin: 0, pareja: 0, extra: 0, descarteGeneral: 0, descompuesta:0, suelo:0 },
-
-
-      }
-
+      const datos = crear_request_guardar(formState);
       if (datos.promedio < 15 || datos.promedio > 30) {
-        setMessageError('Error, los kilos no corresponden a las canastillas')
-        setShowError(true)
-        setTimeout(() => {
-          setShowError(false);
-        }, 5000);
+        messageModal("error", 'Error, los kilos no corresponden a las canastillas')
         return
       }
-
       if (!datos.tipoFruta) {
-        setMessageError('Seleccione el tipo de fruta del lote')
-        setShowError(true)
-        setTimeout(() => {
-          setShowError(false);
-        }, 5000);
+        messageModal("error", 'Seleccione el tipo de fruta del lote')
         return
       }
       const request = {
-        data:datos,
-        collection:'lotes',
+        data: datos,
+        collection: 'lotes',
         action: 'guardarLote',
         query: 'proceso',
         record: 'crearLote'
       };
       const response = await window.api.server(request)
       if (response.status === 200) {
-        setShowSuccess(true)
-        setTimeout(() => {
-          setShowSuccess(false);
-        }, 5000);
-        const request = {
-          collection:'variablesDesktop',
-          action: 'obtenerEF1',
-          query: 'variablesDelProceso'
-        };
-        const enf = await window.api.server(request);
-        setEnf(enf.enf);
-
+        messageModal("success", "¡lote guardado con exito!")
+        await obtenerEF1();
       } else {
-        setMessageError(`Error ${response.status}: ${response.message}`);
-        setShowError(true)
-        setTimeout(() => {
-          setShowError(false);
-        }, 5000);
+        messageModal("error", `Error ${response.status}: ${response.message}`)
       }
-
       reiniciarCampos()
     } catch (e) {
-      setMessageError('Recepcion' + e)
-      setShowError(true)
-      setTimeout(() => {
-        setShowError(false);
-      }, 5000);
+      messageModal("error", 'Recepcion' + e)
     }
   }
   const reiniciarCampos = (): void => {
-    setNombrePredio('')
-    setCanastillas('')
-    setKilos('')
-    setPlaca('')
-    setObservaciones('')
-    setCanastillasVacias('')
+    setFormState(formInit);
   }
-  const closeSuccess = (): void => {
-    setShowSuccess(false)
-  }
-  const closeError = (): void => {
-    setShowError(false)
-  }
-
   return (
     <form className="grid grid-cols-12 gap-2 w-full h-max" onSubmit={guardarLote}>
       <div className="col-span-12 w-full flex flex-col justify-center items-center mt-4">
         <h2 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-2xl`}>
-          Recepción
+          {strings.title}
         </h2>
         <h3 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-xl`}>
-          EF1-{new Date().getFullYear().toString().slice(-2)}{(new Date().getMonth() + 1).toString().padStart(2, '0')}{enf}
+          {strings.EF1}{new Date().getFullYear().toString().slice(-2)}{(new Date().getMonth() + 1).toString().padStart(2, '0')}{enf}
         </h3>
       </div>
       <div className="col-span-2"></div>
 
-      <div
-        className={`col-span-8 relative inline-flex first-letter ${theme === 'Dark' ? 'bg-dark-primary' : 'bg-white'
-          } mt-3`}
-      >
+      <div className={`col-span-8 relative inline-flex first-letter ${theme === 'Dark' ? 'bg-dark-primary' : 'bg-white'} mt-3`}>
         <select
-          onChange={handlePrediosChange}
+          onChange={handleChange}
           required
-          value={nombrePredio}
+          name='nombrePredio'
           className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
                             ${theme === 'Dark'
               ? 'border-white bg-slate-800 text-white'
               : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-            }`}
-        >
-          <option>Predios</option>
+            }`}>
+          <option>{strings.input_predios}</option>
           {prediosDatos.map((item, index) => (
             <option key={item.PREDIO + index} value={item._id}>{item.PREDIO}</option>
           ))}
@@ -197,100 +99,91 @@ export default function IngresoFruta(): JSX.Element {
       <div className="col-span-2"></div>
       <div className="col-span-4 mt-3 mr-2">
         <label htmlFor="" className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          Número de canastillas
+          {strings.numeroCanastillas}
         </label>
         <input
-          value={canastillas}
           type="number"
+          value={formState.canastillas}
           min={0}
-          onChange={(e): void => setCanastillas(e.target.value)}
+          onChange={handleChange}
+          name='canastillas'
           required
           className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
-                            ${theme === 'Dark'
-              ? 'border-white bg-slate-800 text-white'
-              : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-            }`}
-        />
+              ${theme === 'Dark' ? 'border-white bg-slate-800 text-white' : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
+            }`}/>
       </div>
       <div className="col-span-4 mt-3">
         <label htmlFor="" className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          Kilos
+          {strings.kilos}
         </label>
         <input
-          value={kilos}
           type="number"
-          onChange={(e): void => setKilos(e.target.value)}
+          value={formState.kilos}
+          name='kilos'
+          onChange={handleChange}
           min={0}
           step={0.1}
           required
           className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
-                            ${theme === 'Dark'
-              ? 'border-white bg-slate-800 text-white'
-              : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-            }`}
-        />
+              ${theme === 'Dark' ? 'border-white bg-slate-800 text-white' : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
+            }`}/>
       </div>
       <div className="col-span-2"></div>
       <div className="col-span-2"></div>
       <div className="col-span-4 mt-3 mr-2">
         <label htmlFor="" className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          Placa
+          {strings.placa}
         </label>
         <input
-    value={placa}
-    type="text"
-    onChange={(e): void => setPlaca(e.target.value.toUpperCase())}
-    pattern="^[A-Za-z]{3}[0-9]{3}$"
-    title="Por favor, introduce 3 letras seguidas de 3 números."
-    required
-    className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
-                      ${theme === 'Dark'
-        ? 'border-white bg-slate-800 text-white'
-        : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-      }`}
-  />
+          value={formState.placa}
+          type="text"
+          name='placa'
+          onChange={handleChange}
+          pattern="^[A-Z]{3}[0-9]{3}$"
+          title="Por favor, introduce 3 letras seguidas de 3 números."
+          required
+          className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
+                      ${theme === 'Dark' ? 'border-white bg-slate-800 text-white' : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
+            }`}/>
       </div>
       <div className="col-span-4 mt-3">
         <label htmlFor="" className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          Canastillas vacías
+          {strings.canastillasVacias}
         </label>
         <input
+          value={formState.canastillasVacias}
           type="text"
-          value={canastillasVacias}
-          onChange={(e): void => setCanastillasVacias(e.target.value)}
+          name='canastillasVacias'
+          onChange={handleChange}
           required
           className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
-                            ${theme === 'Dark'
-              ? 'border-white bg-slate-800 text-white'
-              : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-            }`}
-        />
+                    ${theme === 'Dark' ? 'border-white bg-slate-800 text-white' : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
+            }`}/>
       </div>
       <div className="col-span-2"></div>
       <div className="col-span-2"></div>
       <div className="col-span-8 mt-3 flex justify-center items-center gap-5 flex-col">
-        <h3 className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>Tipo de fruta</h3>
+        <h3 className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>{strings.tipoFruta.title}</h3>
         <div className="flex gap-5">
-          {' '}
           <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
             <input
               type="radio"
               className="form-radio text-orange-600"
-              name="fruit"
-              value="naranja"
-              onChange={(): void => setTipoFruta('Naranja')}
+              name="tipoFruta"
+              value="Naranja"
+              onChange={handleChange}
             />
-            <span className="ml-2">Naranja</span>
+            <span className="ml-2">{strings.tipoFruta.naranja}</span>
           </label>
           <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
             <input
               type="radio"
               className="form-radio text-green-600"
-              name="fruit"
-              value="limon"
-              onChange={(): void => setTipoFruta('Limon')}
+              name="tipoFruta"
+              value="Limon"
+              onChange={handleChange}
             />
-            <span className="ml-2">Limón</span>
+            <span className="ml-2">{strings.tipoFruta.limon}</span>
           </label>
         </div>
       </div>
@@ -298,12 +191,13 @@ export default function IngresoFruta(): JSX.Element {
       <div className="col-span-2"></div>
       <div className="col-span-8 mt-3">
         <label htmlFor="" className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          Observaciones
+          {strings.observaciones}
         </label>
         <textarea
-          onChange={(e): void => setObservaciones(e.target.value)}
+          value={formState.observaciones}
+          name='observaciones'
+          onChange={handleChange}
           required
-          value={observaciones}
           className={`border focus:outline-none appearance-none w-full rounded-md h-20 pl-5 pr-10 mt-2 pt-2
                             ${theme === 'Dark'
               ? 'border-white bg-slate-800 text-white'
@@ -318,20 +212,9 @@ export default function IngresoFruta(): JSX.Element {
           type="submit"
           className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
         >
-          Guardar
+          {strings.botonGuardar}
         </button>
       </div>
-      {showSuccess &&
-        <div className='fixed bottom-0 right-0 flex items-center justify-center'>
-          <SuccessModal theme={theme} message={"Guardado con Exito"} closeModal={closeSuccess} />
-        </div>
-      }
-      {showError &&
-        <div className='fixed bottom-0 right-0 flex items-center justify-center'>
-          <ErrorModal theme={theme} closeModal={closeError} message={messageError} />
-        </div>
-      }
-
     </form>
   )
 }

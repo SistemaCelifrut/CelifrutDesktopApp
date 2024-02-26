@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react'
 import { themeType } from '@renderer/env'
-import { ContenedoresObj } from '../types/types'
 import ObtenerPrediosContenedor from '../functions/ObtenerPrediosContenedor'
+import { contenedoresType } from '@renderer/types/contenedoresType'
 
 type propsType = {
   theme: themeType
-  contenedor: ContenedoresObj
+  contenedor: contenedoresType | undefined
   setFiltro: (data: string) => void
   setFiltro2: (data: string) => void
 }
@@ -15,6 +15,10 @@ export default function FiltrosListaEmpaque(props: propsType): JSX.Element {
   const [value1, setValue1] = useState<string>('')
 
   const [predios, setPredios] = useState<string[]>([])
+
+  useEffect(()=>{
+    console.log("awswads", props.contenedor)
+  }, [])
 
   const handleFiltro1 = (e): void => {
     props.setFiltro(e.target.value)
@@ -26,8 +30,11 @@ export default function FiltrosListaEmpaque(props: propsType): JSX.Element {
   }
 
   useEffect(() => {
-    const response: string[] = ObtenerPrediosContenedor(props.contenedor)
-    setPredios(response)
+    if(props.contenedor){
+      const response: string[] = ObtenerPrediosContenedor(props.contenedor)
+      console.log("filtros component",response)
+      setPredios(response)
+    }
   }, [value1])
 
   return (
@@ -47,7 +54,7 @@ export default function FiltrosListaEmpaque(props: propsType): JSX.Element {
             <>
               <option value={'predio'}>Predios</option>
               <option value={'pallet'}>
-                {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
+                {props.contenedor && props.contenedor.infoContenedor.tipoEmpaque === 'Caja'
                   ? 'Pallets'
                   : 'Estibas'}
               </option>

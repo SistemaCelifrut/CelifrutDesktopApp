@@ -5,11 +5,11 @@ import ErrorModal from "@renderer/errors/modal/ErrorModal";
 import { useContext, useEffect, useState } from "react"
 import { FaSave } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
-import { proveedoresType } from "../type/type";
 import SuccessModal from "@renderer/errors/modal/SuccessModal";
+import { proveedoresType } from "@renderer/types/proveedoresType";
 
 type propsType = {
-    proveedorSeleccionado: proveedoresType
+    proveedorSeleccionado: proveedoresType | undefined
     setShowFormulario: (e) => void
     isModificar: boolean
     setRender: (e) => void
@@ -32,20 +32,21 @@ export default function IngresarProveedor(props: propsType): JSX.Element {
     const [showError, setShowError] = useState<boolean>(false)
     const [showSuccess, setShowSuccess] = useState<boolean>(false)
     const [message, setMessage] = useState<string>('')
-    const [id, setId] = useState<string>('')
 
     useEffect(() => {
-        setCodigoInterno(props.proveedorSeleccionado["CODIGO INTERNO"])
-        setNombrePredio(props.proveedorSeleccionado.PREDIO)
-        setICA(props.proveedorSeleccionado.ICA)
-        setNaranja(props.proveedorSeleccionado.N === '' ? false : true)
-        setLimon(props.proveedorSeleccionado.L === '' ? false : true)
-        setMandarina(props.proveedorSeleccionado.M === '' ? false : true)
-        setDepartamento(props.proveedorSeleccionado.DEPARTAMENTO)
-        setProveedores(props.proveedorSeleccionado.PROVEEDORES)
-        setICA(props.proveedorSeleccionado.ICA)
-        setFechaVencimiento(props.proveedorSeleccionado["FECHA VENCIMIENTO GGN"])
-        setId(props.proveedorSeleccionado._id);
+        if (props.proveedorSeleccionado) {
+            setCodigoInterno(props.proveedorSeleccionado["CODIGO INTERNO"])
+            setNombrePredio(props.proveedorSeleccionado.PREDIO)
+            setICA(props.proveedorSeleccionado.ICA)
+            setNaranja(props.proveedorSeleccionado.N === '' ? false : true)
+            setLimon(props.proveedorSeleccionado.L === '' ? false : true)
+            setMandarina(props.proveedorSeleccionado.M === '' ? false : true)
+            setDepartamento(props.proveedorSeleccionado.DEPARTAMENTO)
+            setProveedores(props.proveedorSeleccionado.PROVEEDORES)
+            setICA(props.proveedorSeleccionado.ICA)
+            setFechaVencimiento(props.proveedorSeleccionado["FECHA VENCIMIENTO GGN"])
+        }
+
     }, [props.proveedorSeleccionado])
 
     const handleFileChange = (e): void => {
@@ -57,51 +58,63 @@ export default function IngresarProveedor(props: propsType): JSX.Element {
         let serverRequest
 
         if (!props.isModificar) {
-            if (files === null || files?.length < 3) {
-                setShowError(true)
-                setMessage("Faltan archivos")
-                setInterval(() => {
-                    setShowError(false)
-                }, 5000)
-                return
-            }
-            serverRequest = 'agregarProveedor'
-            for (let i = 0; i < files?.length; i++) {
-                const file = files[i]
-                const promiseBuffer = await new Promise<ArrayBuffer>((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = (event): void => {
-                        resolve(event.target?.result as ArrayBuffer)
-                    }
-                    reader.readAsArrayBuffer(file)
-                })
-                const result = await promiseBuffer;
-                arrayBuffer.push(result)
-            }
+            // if (files === null || files?.length < 3) {
+            //     setShowError(true)
+            //     setMessage("Faltan archivos")
+            //     setInterval(() => {
+            //         setShowError(false)
+            //     }, 5000)
+            //     return
+            // } else {
 
-        } else {
-            serverRequest = 'modificarProveedor'
-        }
-
-
-        Promise.all(arrayBuffer).then((results) => {
-            const request = {
-                action: serverRequest,
-                data: {
-                    id: id,
-                    codigoInterno: codigoInterno,
-                    nombrePredio: nombrePredio,
-                    ICA: ICA,
-                    departamento: departamento,
-                    GGN: GGN,
-                    fechaVencimiento: fechaVencimiento,
-                    naranja: naranja,
-                    limon: limon,
-                    mandarina: mandarina,
-                    documentos: results
+            // }
+            serverRequest = 'addProveedor'
+            if (files !== null) {
+                for (let i = 0; i < files?.length; i++) {
+                    const file = files[i]
+                    const promiseBuffer = await new Promise<ArrayBuffer>((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = (event): void => {
+                            resolve(event.target?.result as ArrayBuffer)
+                        }
+                        reader.readAsArrayBuffer(file)
+                    })
+                    const result = await promiseBuffer;
+                    arrayBuffer.push(result)
                 }
             }
-            window.api.proceso(request).then((response) => {
+
+
+        } else {
+            serverRequest = 'putProveedor'
+        }
+
+        Promise.all(arrayBuffer).then(() => {
+            const request:  { collection: string; action: string; query: string; data: proveedoresType  } = {
+                collection: 'proveedors',
+                action: serverRequest,
+                query: 'proceso',
+                data: {
+                    'CODIGO INTERNO': codigoInterno,
+                    PREDIO: nombrePredio,
+                    ICA: ICA,
+                    DEPARTAMENTO: departamento,
+                    GGN: GGN,
+                    "FECHA VENCIMIENTO GGN": fechaVencimiento,
+                    N: naranja ? "X" : "",
+                    L: limon ? "X" : "",
+                    M: mandarina ? "X" : "",
+                    urlArchivos: arrayBuffer,
+                    PROVEEDORES: proveedores
+                }
+            }
+            if(serverRequest === "putProveedor"){
+                request.data._id = props.proveedorSeleccionado?._id
+            }
+            console.log(request)
+
+            window.api.server(request).then((response) => {
+                console.log(response)
                 if (response.status === 200) {
                     resetearData()
                     props.setRender(previous => !previous)
@@ -138,7 +151,6 @@ export default function IngresarProveedor(props: propsType): JSX.Element {
         setShowError(false);
         setShowSuccess(false);
         setMessage('');
-        setId('');
     }
 
     return (

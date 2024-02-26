@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useContext, useEffect, useState } from 'react'
 import { format } from 'date-fns'
-import { ContenedoresObj, rendimientoType } from '../types/types'
 import { themeType } from '@renderer/env'
 import ObtenerInfoPrediosListaEmpaque from '../functions/ObtenerInfoPrediosListaEmpaque'
 import ObtenerPrediosContenedor from '../functions/ObtenerPrediosContenedor'
@@ -9,9 +8,10 @@ import { userContext } from '@renderer/App'
 import { FaPrint } from "react-icons/fa6";
 import ModalImprimirRotulocaja from '../modal/ModalImprimirRotuloCaja'
 import { isServerResponse } from '../functions/comprobarTypes'
+import { contenedoresType } from '@renderer/types/contenedoresType'
 
 type propsType = {
-  contenedor: ContenedoresObj
+  contenedor: contenedoresType | undefined
   filtro: string
   theme: themeType
 }

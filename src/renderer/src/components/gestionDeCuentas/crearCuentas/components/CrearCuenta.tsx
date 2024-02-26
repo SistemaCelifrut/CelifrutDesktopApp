@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useContext, useEffect, useState } from "react";
 import { permisosType, serverResponse } from "../type/type";
 import { themeContext } from "@renderer/App";
@@ -26,13 +27,17 @@ export default function CrearCuenta(): JSX.Element {
         const obtenerPermisos = async (): Promise<void> => {
             try {
                 const request = {
-                    action: 'obtenerPermisosUsuario',
+                    data:{
+                      query:{},
+                    },
+                    collection:'permisos',
+                    action: 'getPermisos',
                     query: 'personal'
-                };
-                const response: serverResponse<permisosType> = await window.api.user(request);
+                  };
+                const response: serverResponse<permisosType> = await window.api.server(request);
                 if (response.status === 200) {
-                    setPermisos(formatPermisos(response.data.permisos));
-                    setCargos(response.data.cargos);
+                    setPermisos(formatPermisos(response.data[0].permisos));
+                    setCargos(response.data[0].cargos);
                 } else {
                     alert("Error obteniendo los permisos");
                 }
@@ -130,18 +135,19 @@ export default function CrearCuenta(): JSX.Element {
             const permisosConRuta = obtenerPermisosConRuta(permisos, permisosSeleccionados);
 
             const request = {
-                action: 'crearUsuario',
+                collection:'users',
+                action: 'addUser',
                 query: 'personal',
                 data: {
-                    usuario: usuario,
-                    contraseña: contraseña,
+                    user: usuario,
+                    password: contraseña,
                     permisos: permisosConRuta,
                     cargo: cargo,
                     correo: correo
                 }
             };
 
-            const response = await window.api.user(request);
+            const response = await window.api.server(request);
             console.log(request);
             if (response.status === 200) {
                 console.log("nice");
@@ -200,7 +206,7 @@ export default function CrearCuenta(): JSX.Element {
                         <input
                             type="checkbox"
                             checked={permisosSeleccionados.includes(permiso.nombre)}
-                            onChange={() => handlePermisos(permiso.nombre, !permisosSeleccionados.includes(permiso.nombre), permiso.hijos)}
+                            onChange={(): void => handlePermisos(permiso.nombre, !permisosSeleccionados.includes(permiso.nombre), permiso.hijos)}
                         />
                         {permiso.nombre}
                     </label>
@@ -220,7 +226,7 @@ export default function CrearCuenta(): JSX.Element {
                             <input
                                 type="checkbox"
                                 checked={permisosSeleccionados.includes(subPermiso.nombre)}
-                                onChange={() => handlePermisos(subPermiso.nombre, !permisosSeleccionados.includes(subPermiso.nombre))}
+                                onChange={(): void => handlePermisos(subPermiso.nombre, !permisosSeleccionados.includes(subPermiso.nombre))}
                             />
                             {subPermiso.nombre}
                         </label>

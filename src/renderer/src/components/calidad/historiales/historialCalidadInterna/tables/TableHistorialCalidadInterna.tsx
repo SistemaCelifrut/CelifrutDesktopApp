@@ -1,11 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { useContext } from "react"
-import { dataHistorialCalidadInterna } from "../types/calidadInterna"
 import { themeContext } from "@renderer/App"
 import { format } from "date-fns"
+import { lotesType } from "@renderer/types/lotesType"
 
 type propsType = {
-  data: dataHistorialCalidadInterna[]
+  data: lotesType[]
 }
 
 const ordenar = (a, b): number => {
@@ -36,8 +36,8 @@ export default function TableHistorialCalidadInterna(props: propsType): JSX.Elem
             <tr
               className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'}`} key={index}
             >
-              <td className="p-2 text-sm  text-center">{lote._id}</td>
-              <td className="p-2 text-sm  text-center">{lote.nombrePredio}</td>
+              <td className="p-2 text-sm  text-center">{lote.enf}</td>
+              <td className="p-2 text-sm  text-center">{lote.predio.PREDIO}</td>
               <td className="p-2 text-sm  text-center">{lote.tipoFruta}</td>
               <td className="p-2 text-sm  text-center">{lote.calidad.calidadInterna.acidez.toFixed(2)}</td>
               <td className="p-2 text-sm  text-center">{lote.calidad.calidadInterna.brix.toFixed(2)}</td>

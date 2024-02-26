@@ -2,20 +2,19 @@
 
 import { useState, useEffect, useContext } from 'react'
 import NavBarListaEmpaque from './utils/NavBarListaEmpaque'
-import { ContenedoresObj } from './types/types'
 import FiltrosListaEmpaque from './utils/FiltrosListaEmpaque'
 import TablePrincipalGeneral from './tables/TablePrincipalGeneral'
 import TablePallets from './tables/TablePallets'
 import TablePrediosListaEmpaque from './tables/TablePrediosListaEmpaque'
-import { initialContenedor } from './functions/initialContenedor'
 import { themeContext } from '@renderer/App'
+import { contenedoresType } from '@renderer/types/contenedoresType'
 
 
 
 export default function ListaDeEmpaque(): JSX.Element {
   const theme = useContext(themeContext)
-  const [contenedores, setContenedores] = useState<ContenedoresObj[]>([])
-  const [contenedor, setContenedor] = useState<ContenedoresObj>(initialContenedor)
+  const [contenedores, setContenedores] = useState<contenedoresType[]>([])
+  const [contenedor, setContenedor] = useState<contenedoresType | undefined>()
   const [contenedorSelect, setContenedorSelect] = useState<string>('')
   const [filtro, setFiltro] = useState<string>('')
   const [filtro2, setFiltro2] = useState<string>('')
@@ -24,25 +23,25 @@ export default function ListaDeEmpaque(): JSX.Element {
     const obtenerDatos = async (): Promise<void> => {
       try {
         const request = {
-          data:{
-            query:{},
-            select :{},
-            sort:{"infoContenedor.fechaCreacion": -1},
-            limit:50,
-            populate:{
-              path: 'infoContenedor.clienteInfo',
-              select: 'CLIENTE'
-            },
+          data: {
+            query: {"infoContenedor.cerrado": false},
+            select: {},
+            populate:
+              [{
+                path: "infoContenedor.clienteInfo",
+                select: "CLIENTE",
+              }],
           },
-          collection:'contenedores',
+          collection: 'contenedores',
           action: 'getContenedores',
           query: 'proceso'
         };
         const response = await window.api.server(request)
-        console.log(response)
+        console.log(response.data)
+        if(response.status === 200)
         setContenedores(response.data)
       } catch (e) {
-        console.log("Error",e)
+        console.log("Error", e)
       }
     }
     obtenerDatos()
@@ -53,21 +52,21 @@ export default function ListaDeEmpaque(): JSX.Element {
     // })
   }, [])
 
-  const handleChange = (event:React.ChangeEvent<HTMLInputElement>): void => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setContenedorSelect((event.target.value as string))
   }
-  useEffect(()=>{
-    const cont = contenedores.find(item => item._id === Number(contenedorSelect))
-    if(cont){
+  useEffect(() => {
+    const cont = contenedores.find(item => item._id === contenedorSelect)
+    if (cont) {
       setContenedor(cont)
     }
-  },[contenedorSelect, contenedores])
+  }, [contenedorSelect, contenedores])
 
   useEffect(() => {
     setFiltro2('')
   }, [filtro])
 
-  useEffect(()=>{},[filtro2])
+  useEffect(() => { }, [filtro2])
 
   return (
     <div className='w-full'>

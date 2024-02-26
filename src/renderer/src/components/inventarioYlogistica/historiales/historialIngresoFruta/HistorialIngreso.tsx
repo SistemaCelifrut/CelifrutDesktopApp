@@ -2,20 +2,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { format } from 'date-fns';
 import { themeContext } from '@renderer/App';
+import { lotesType } from '@renderer/types/lotesType';
 
-interface DatosIngresoFruta {
-  _id: string;
-  nombrePredio: string;
-  fechaIngreso: string;
-  canastillas: string;
-  tipoFruta: string;
-  observaciones: string;
-  kilos: number;
-  placa: string;
-}
 
 const HistorialIngresoFruta = (): JSX.Element => {
-  const [datos, setDatos] = useState<DatosIngresoFruta[]>([]);
+  const [datos, setDatos] = useState<lotesType[]>([]);
   const [busqueda, setBusqueda] = useState<string>('');
   const theme = useContext(themeContext);
 
@@ -23,11 +14,22 @@ const HistorialIngresoFruta = (): JSX.Element => {
     const obtenerDatosIngresoFruta = async (): Promise<void> => {
       try {
         const request = {
-          action: 'obtenerInformesCalidad',
+          data:{
+            query:{enf: { $regex: '^E', $options: 'i' }},
+            select : {},
+            populate:{
+              path: 'predio',
+              select: 'PREDIO ICA'
+            },
+            sort:{fechaIngreso: -1},
+            limit: 50,
+          },
+          collection:'lotes',
+          action: 'getLotes',
           query: 'proceso'
         };
 
-        const response = await window.api.calidad(request);
+        const response = await window.api.server(request);
 
         if (response.status === 200 && response.data) {
           console.log('Datos de ingreso de fruta:', response.data);
@@ -82,8 +84,8 @@ const HistorialIngresoFruta = (): JSX.Element => {
           <tbody>
             {datosFiltrados.map((item, index) => (
               <tr key={index} className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'} ${theme === 'Dark' ? 'border-b border-white' : 'border-b border-gray-300'}`}>
-                <td className="border px-4 py-2">{item._id}</td>
-                <td className="border px-4 py-2">{item.nombrePredio}</td>
+                <td className="border px-4 py-2">{item.enf}</td>
+                <td className="border px-4 py-2">{item.predio.PREDIO}</td>
                 <td className="border px-4 py-2">{format(new Date(item.fechaIngreso), 'dd/MM/yyyy')}</td>
                 <td className="border px-4 py-2">{item.canastillas}</td>
                 <td className="border px-4 py-2">{item.tipoFruta}</td>

@@ -47,7 +47,7 @@ export default function ProcesoData(): JSX.Element {
             const filtro_request = crear_filtro(filtro);
             const request = {
                 data:{
-                  query:filtro_request,
+                  query:{...filtro_request, enf: { $regex: '^E', $options: 'i' }},
                   select : {},
                   populate:{
                     path: 'predio',
@@ -73,7 +73,9 @@ export default function ProcesoData(): JSX.Element {
             // setDataGrafica(dataGrafica)
         }
         obtenerData()
-      
+        window.api.serverEmit('serverEmit', async () => {
+            await obtenerData()
+          })
         
     }, [filtro, cantidad])
 

@@ -34,14 +34,14 @@ const ObtenerCuentasComponente = (): JSX.Element => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [showCrearCuenta, setShowCrearCuenta] = useState(false);
 
-  const [permisosDisponibles, ] = useState<string[]>([]);
+  const [permisosDisponibles, setPermisosDisponibles ] = useState<string[]>([]);
   const [permisosSeleccionados, setPermisosSeleccionados] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
         await obtenerCuentas();
-        //await obtenerPermisosDisponibles();
+        await obtenerPermisosDisponibles();
       } catch (error) {
         console.error('Error al obtener datos:', error);
       }
@@ -58,12 +58,11 @@ const ObtenerCuentasComponente = (): JSX.Element => {
           query:{},
         },
         collection:'users',
-        action: 'obtenerCuentas',
+        action: 'getUsers',
         query: 'personal'
       };
   
-      const response = await window.api.user(request);
-      console.log(response)
+      const response = await window.api.server(request);
       if (response.status === 200 && response.data) {
         const cuentasData = Array.isArray(response.data) ? response.data : response.data.data;
         setCuentas(cuentasData);
@@ -75,24 +74,28 @@ const ObtenerCuentasComponente = (): JSX.Element => {
     }
   };
 
-  // const obtenerPermisosDisponibles = async (): Promise<void> => {
-  //   try {
-  //     const request = {
-  //       action: 'obtenerPermisosUsuario',
-  //       query: 'personal'
-  //     };
+  const obtenerPermisosDisponibles = async (): Promise<void> => {
+    try {
+      const request = {
+        data:{
+          query:{},
+        },
+        collection:'permisos',
+        action: 'getPermisos',
+        query: 'personal'
+      };
   
-  //     const response = await window.api.user(request);
-  
-  //     if (response.status === 200 && response.data && response.data.permisos) {
-  //       setPermisosDisponibles(response.data.permisos);
-  //     } else {
-  //       console.error('Error al obtener permisos disponibles:', response);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error al realizar la petición de permisos disponibles:', error);
-  //   }
-  // };
+      const response = await window.api.user(request);
+      console.log(response)
+      if (response.status === 200 ) {
+        setPermisosDisponibles(response.data[0].permisos);
+      } else {
+        console.error('Error al obtener permisos disponibles:', response);
+      }
+    } catch (error) {
+      console.error('Error al realizar la petición de permisos disponibles:', error);
+    }
+  };
   
 
   const handleEditar = (index: number): void => {
@@ -123,7 +126,15 @@ const ObtenerCuentasComponente = (): JSX.Element => {
     try {
       if (deleteIndex !== null) {
         const cuenta = cuentas[deleteIndex];
-        await window.api.user({ action: 'eliminarCuenta', id: cuenta._id, query: 'personal' });
+        const request = {
+          data:{
+            id: cuenta._id
+          },
+          collection:'users',
+          action: 'deleteUser',
+          query: 'personal'
+        };
+        await window.api.server(request);
         obtenerCuentas();
         setShowEliminarModal(false);
       }
@@ -137,7 +148,20 @@ const ObtenerCuentasComponente = (): JSX.Element => {
       setShowEditarModal(false);
       const permisosSeleccionadosArray = permisosDisponibles.filter(permiso => permisosSeleccionados.includes(permiso));
       const formDataWithPermisos = { ...formData, permisos: permisosSeleccionadosArray };
-      await window.api.user({ action: 'editarCuenta', query: 'personal', formData: formDataWithPermisos });
+      const request = {
+        data:{
+          _id: formDataWithPermisos._id,
+          user: formDataWithPermisos.user,
+          password: formDataWithPermisos.password,
+          permisos: formDataWithPermisos.permisos,
+          cargo: formDataWithPermisos.cargo,
+          correo: formDataWithPermisos.correo
+        },
+        collection:'users',
+        action: 'putUser',
+        query: 'personal'
+      };
+      await window.api.server(request);
       obtenerCuentas();
     } catch (error) {
       console.error('Error al guardar los cambios:', error);

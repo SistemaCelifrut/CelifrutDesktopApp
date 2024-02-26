@@ -5,14 +5,14 @@ import { useContext, useEffect, useState } from "react"
 import SelectPaises from "../utils/SelectPaises"
 import { FaSave } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
-import { clientesType } from "../type/type";
+import { clienteType } from "@renderer/types/clientesType";
 
 type propsType = {
     setShowFormulario: (e) => void
     setShowSuccess: (e) => void
     setShowError: (e) => void
     setMessage: (e) => void
-    clienteSeleccionado: clientesType
+    clienteSeleccionado: clienteType
     isModify: boolean
     setIsModify: (e) => void
 }
@@ -44,33 +44,37 @@ export default function FormatoAgregarCliente(props: propsType): JSX.Element {
             let response
             if(!props.isModify){
                 const request = {
-                    action:'ingresarCliente',
+                    collection:'clientes',
+                    action: 'deleteCliente',
+                    query: 'proceso',
                     data:{
-                        codigo:codigo,
-                        cliente:cliente,
-                        correo:correo,
-                        direccion:direccion,
-                        pais:pais,
-                        telefono:telefono,
-                        id:id
+                        CODIGO:codigo,
+                        CLIENTE:cliente,
+                        CORREO:correo,
+                        DIRECCIÓN:direccion,
+                        PAIS_DESTINO:pais,
+                        TELEFONO:telefono,
+                        ID:id
                     }
                 }
-                response = await window.api.contenedores(request);
+                response = await window.api.server(request);
             } else {
                 const request = {
-                    action:'modificarCliente',
+                    collection:'clientes',
+                    action: 'putCliente',
+                    query: 'proceso',
                     data:{
-                        codigo:codigo,
-                        cliente:cliente,
-                        correo:correo,
-                        direccion:direccion,
-                        pais:pais,
-                        telefono:telefono,
-                        id:id,
+                        CODIGO:codigo,
+                        CLIENTE:cliente,
+                        CORREO:correo,
+                        DIRECCIÓN:direccion,
+                        PAIS_DESTINO:pais,
+                        TELEFONO:telefono,
+                        ID:id,
                         _id:props.clienteSeleccionado._id
                     }
                 }
-                response = await window.api.contenedores(request);
+                response = await window.api.server(request);
 
             }
          
@@ -84,7 +88,7 @@ export default function FormatoAgregarCliente(props: propsType): JSX.Element {
                 }, 5000)
             } else {
                 props.setShowError(true)
-                props.setMessage("Error guardando el cliente")
+                props.setMessage(`Error guardando el cliente: ${response.message}`)
                 setInterval(() => {
                     props.setShowError(false)
                 }, 5000)

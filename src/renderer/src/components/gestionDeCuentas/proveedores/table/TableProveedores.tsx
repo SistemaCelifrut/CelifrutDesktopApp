@@ -1,11 +1,10 @@
 /* eslint-disable prettier/prettier */
 import { useContext, useState } from "react"
-import { proveedoresType } from "../type/type"
 import { themeContext } from "@renderer/App"
 import ErrorModal from "@renderer/errors/modal/ErrorModal"
 import SuccessModal from "@renderer/errors/modal/SuccessModal"
 import ModalConfirmarEliminarProveedor from "../modals/ModalConfirmarEliminarProveedor"
-import { predioInicial } from "../functions/functions"
+import { proveedoresType } from "@renderer/types/proveedoresType"
 
 type propsType = {
   data: proveedoresType[]
@@ -21,7 +20,7 @@ export default function TableProveedores(props: propsType): JSX.Element {
   const [showError, setShowError] = useState<boolean>(false)
   const [showSuccess, setShowSuccess] = useState<boolean>(false)
   const [message, setMessage] = useState<string>('')
-  const [proveedorSeleccionado, setProveedorSeleccionado] = useState<proveedoresType>(predioInicial)
+  const [proveedorSeleccionado, setProveedorSeleccionado] = useState<proveedoresType>()
 
   const handleModificar = (e): void => {
     props.setProveedorSeleccionado({ ...e })
@@ -34,8 +33,18 @@ export default function TableProveedores(props: propsType): JSX.Element {
   const handleEliminar = async (e): Promise<void> => {
     try {
     if(e){
-      const request = { action: 'eliminarProveedor', data: proveedorSeleccionado }
-      const response = await window.api.proceso(request)
+
+      const request = {
+        data:{
+          id: proveedorSeleccionado?._id
+        },
+        collection:'proveedors',
+        action: 'deleteProveedores',
+        query: 'proceso'
+      };
+
+      const response = await window.api.server(request)
+      console.log(response)
       if (response.status === 200) {
         props.setRender(previous => !previous)
         setShowSuccess(true)

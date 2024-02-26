@@ -2,41 +2,35 @@
 
 import { themeContext } from "@renderer/App"
 import { useContext, useEffect, useState } from "react"
-import { predioInicial } from "../functions/functions"
-import { proveedoresType, serverResponse } from "../type/type"
 import Acciones from "./Acciones"
 import IngresarProveedor from "../forms/IngresarProveedor"
 import TableProveedores from "../table/TableProveedores"
+import { serverResponse } from "@renderer/env"
+import { proveedoresType } from "@renderer/types/proveedoresType"
 
 export default function ProveedoresLista(): JSX.Element {
     const theme = useContext(themeContext)
     const [filtro, setFiltro] = useState<string>('')
     const [isModificar, setIsModificar] = useState<boolean>(false)
     const [showFormulario, setShowFormulario] = useState<boolean>(false)
-    const [proveedorSeleccionado, setProveedorSeleccionado] = useState<proveedoresType>(predioInicial)
+    const [proveedorSeleccionado, setProveedorSeleccionado] = useState<proveedoresType>()
     const [dataOriginal, setDataOriginal] = useState<proveedoresType[]>([])
     const [data, setData] = useState<proveedoresType[]>([])
     const [render, setRender] = useState<boolean>(false)
 
+
     useEffect(() => {
         const obtenerProveedores = async (): Promise<void> => {
-            const request = { action: 'obtenerProveedores' }
-            const response: serverResponse<proveedoresType[]> = await window.api.proceso(request);
+            const request = {
+                data:{
+                  query:{},
+                },
+                collection:'proveedors',
+                action: 'obtenerProveedores',
+                query: 'proceso'
+              };
+            const response: serverResponse<proveedoresType[]> = await window.api.server(request);
             if (Array.isArray(response.data)) {
-                setDataOriginal(response.data)
-                setData(response.data)
-            } else {
-                alert('Error con los datos de los predios')
-            }
-        }
-        obtenerProveedores()
-    }, [])
-    useEffect(() => {
-        const obtenerProveedores = async (): Promise<void> => {
-            const request = { action: 'obtenerProveedores' }
-            const response: serverResponse<proveedoresType[]> = await window.api.proceso(request);
-            if (Array.isArray(response.data)) {
-                setProveedorSeleccionado(predioInicial)
                 setDataOriginal(response.data)
                 setData(response.data)
             } else {
@@ -45,6 +39,7 @@ export default function ProveedoresLista(): JSX.Element {
         }
         obtenerProveedores()
     }, [render])
+
     useEffect(() => {
         setData(dataOriginal.filter(item => item.PREDIO.toLowerCase().includes(filtro)))
         console.log(data)
@@ -53,7 +48,6 @@ export default function ProveedoresLista(): JSX.Element {
     const handleBotonAgregar = (tipoAccion: string): void => {
         if (tipoAccion === 'agregar') {
             setIsModificar(false)
-            setProveedorSeleccionado(predioInicial)
         } else if (tipoAccion === 'modificar') {
             setIsModificar(true)
         }

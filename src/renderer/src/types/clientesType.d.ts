@@ -1,11 +1,11 @@
 /* eslint-disable prettier/prettier */
 export type clienteType = {
-    _id: string
+    _id?: string
     CLIENTE: string
     PAIS_DESTINO: string
     CODIGO: number
     CORREO: string
-    DIRECCION: string
+    DIRECCIÓN: string
     ID: string
     TELEFONO: string
 }

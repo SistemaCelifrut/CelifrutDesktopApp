@@ -100,14 +100,14 @@ export default function SideBar(props: propsType): JSX.Element {
   return (
     <aside
       className={`${theme === 'Dark' ? 'bg-primary border-slate-600' : 'bg-white border-gray-200 '} felx border-solid border-r-2 m-0 
-      cursor-col-resize pr-[1px] text-[15px] h-screen   ${isResizingRef.current ? 'cursor-ew-resize' : 'pointer-events-auto'}`}
+      cursor-col-resize pr-[1px] text-[15px] h-screen max-h-screen pb-[90px]  ${isResizingRef.current ? 'cursor-ew-resize' : 'pointer-events-auto'}`}
       style={{
         width: `${width}px`,
         minWidth: `${width}px`
       }}
       onMouseDown={handleMouseDown}
     >
-      <div className="mx-auto flex justify-between overflow-x-hidden overflow-y-auto mb-[150px]  min-h-[350px] ml-0  w-full m-0 p-0" onClick={(): null => null}>
+      <div className="mx-auto flex h-full justify-between overflow-x-hidden overflow-y-auto   min-h-[350px] ml-0  w-full m-0 p-0" onClick={(): null => null}>
         {props.showSideBar ?
           <ul className="transition-all ease-in-out duration-500 opacity-100 transform scale-100 w-full min-w-[200px] m-0 p-0 hover:cursor-default">
             {areaState.map((item, index) => (

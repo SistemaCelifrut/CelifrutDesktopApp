@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { themeContext } from '@renderer/App';
@@ -5,8 +6,12 @@ import { faTruck, faIdCard, faUser, faMobileAlt, faPalette, faCar, faBoxes, faUs
 
 type Contenedor = {
   _id: number;
+  numeroContenedor: string
   infoContenedor: {
-    nombreCliente: string;
+    clienteInfo: {
+      _id:string
+      CLIENTE:string
+    };
   };
 };
 
@@ -60,10 +65,22 @@ const FormularioMulas: React.FC = () => {
     const obtenerContenedores = async (): Promise<void> => {
       try {
         const request = {
-          action: 'obtenerDataContenedorFormularioProgramacionMulas',
+          data:{
+            query:{formularioInspeccionMula:{ $exists : false}},
+            select :{},
+            sort:{"infoContenedor.fechaCreacion": -1},
+            limit:50,
+            populate:{
+              path: 'infoContenedor.clienteInfo',
+              select: 'CLIENTE'
+            },
+          },
+          collection:'contenedores',
+          action: 'getContenedores',
+          query: 'proceso'
         };
 
-        const response = await window.api.contenedores(request);
+        const response = await window.api.server(request);
 
         if (response.status === 200 && response.data) {
           setState((prev) => ({ ...prev, contenedores: response.data }));
@@ -106,25 +123,33 @@ const FormularioMulas: React.FC = () => {
   
     try {
       const request = {
-        action: 'enviarDatosFormularioProgramacionMulas',
+        query: 'proceso',
+        collection:'contenedores',
+        action: 'putContenedor',
         data: {
-          placa: state.placa,
-          trailer: state.trailer,
-          conductor: state.conductor,
-          cedula: state.cedula,
-          celular: state.celular,
-          color: state.color,
-          modelo: state.modelo,
-          marca: state.marca,
-          contenedor: state.contenedor,
-          prof: state.prof,
-          puerto: state.puerto,
-          naviera: state.naviera,
-          agenciaAduanas: state.agenciaAduanas,
+            contenedor:{
+              _id: state.contenedor,
+              formularioInspeccionMula:{
+                placa: state.placa,
+                trailer: state.trailer,
+                conductor: state.conductor,
+                cedula: state.cedula,
+                celular: state.celular,
+                color: state.color,
+                modelo: state.modelo,
+                marca: state.marca,
+                contenedor: state.contenedor,
+                prof: state.prof,
+                puerto: state.puerto,
+                naviera: state.naviera,
+                agenciaAduanas: state.agenciaAduanas,
+              }
+            }
+         
         },
       };
   
-      const response = await window.api.contenedores(request);
+      const response = await window.api.server(request);
   
       console.log('Respuesta del servidor:', response);
   
@@ -301,7 +326,7 @@ const FormularioMulas: React.FC = () => {
     <option value="">Seleccione...</option>
     {state.contenedores.map(contenedorData => ( // Usar state.contenedores directamente y eliminar el Object.values()
       <option key={contenedorData._id} value={contenedorData._id}>
-        {`${contenedorData._id} - ${contenedorData.infoContenedor.nombreCliente}`}
+        {`${contenedorData.numeroContenedor} - ${contenedorData.infoContenedor.clienteInfo.CLIENTE}`}
       </option>
     ))}
   </select>
