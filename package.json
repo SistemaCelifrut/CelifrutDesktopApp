@@ -36,7 +36,6 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.7.17",
     "@mui/material": "^5.15.7",
-    "bcrypt": "^5.1.1",
     "chart.js": "^4.4.1",
     "date-fns": "^2.30.0",
     "electron-edge-js": "^28.0.1",

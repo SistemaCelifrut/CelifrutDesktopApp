@@ -17,18 +17,18 @@ type propsType = {
   setMessage: (e) => void
 }
 const request = {
-  data:{
-    query:{ 
+  data: {
+    query: {
       "inventarioActual.inventario": { $gt: 0 },
     },
-    select : {nombrePredio: 1, fechaIngreso: 1 , observaciones: 1 , tipoFruta: 1, promedio:1, "inventarioActual.inventario":1, enf:1, kilosVaciados:1, directoNacional:1 },
-    populate:{
+    select: { nombrePredio: 1, fechaIngreso: 1, observaciones: 1, tipoFruta: 1, promedio: 1, "inventarioActual.inventario": 1, enf: 1, kilosVaciados: 1, directoNacional: 1 },
+    populate: {
       path: 'predio',
       select: 'PREDIO ICA'
     },
-    sort:{fechaIngreso: -1}
+    sort: { fechaIngreso: -1 }
   },
-  collection:'lotes',
+  collection: 'lotes',
   action: 'getLotes',
   query: 'proceso',
 };
@@ -73,7 +73,13 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
       }
     }
     asyncFunction()
-  }, [showVaciarModal, showDirectoModal, showDesverdizadoModal])
+
+    window.api.serverEmit('serverEmit', async (data) => {
+      if (data.fn === "vaciado") {
+        await asyncFunction()
+      }
+    })
+  }, [])
 
   const clickLote = (e): void => {
     const id = e.target.value
@@ -117,39 +123,39 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
           closeDirecto={closeDirecto}
           closeDesverdizado={closeDesverdizado}
         />
-        
-         <TableFrutaSinProcesar table={table} theme={theme} clickLote={clickLote} />
+
+        <TableFrutaSinProcesar table={table} theme={theme} clickLote={clickLote} />
 
         {showVaciarModal &&
           createPortal(
-            <Vaciado 
-              closeVaciado={closeVaciado} 
-              propsModal={propsModal} 
-              theme={theme} 
-              setMessage={props.setMessage} 
-              setShowSuccess={props.setShowSuccess} 
+            <Vaciado
+              closeVaciado={closeVaciado}
+              propsModal={propsModal}
+              theme={theme}
+              setMessage={props.setMessage}
+              setShowSuccess={props.setShowSuccess}
               setShowError={props.setShowError} />,
             document.body
           )}
 
         {showDirectoModal &&
           createPortal(
-            <Directo 
-              closeDirecto={closeDirecto} 
-              propsModal={propsModal} 
+            <Directo
+              closeDirecto={closeDirecto}
+              propsModal={propsModal}
               theme={theme}
-              setMessage={props.setMessage} 
-              setShowSuccess={props.setShowSuccess} 
+              setMessage={props.setMessage}
+              setShowSuccess={props.setShowSuccess}
               setShowError={props.setShowError} />,
             document.body
           )}
         {showDesverdizadoModal &&
           createPortal(
-            <Desverdizado 
-              closeDesverdizado={closeDesverdizado} 
-              propsModal={propsModal} 
-              setMessage={props.setMessage} 
-              setShowSuccess={props.setShowSuccess} 
+            <Desverdizado
+              closeDesverdizado={closeDesverdizado}
+              propsModal={propsModal}
+              setMessage={props.setMessage}
+              setShowSuccess={props.setShowSuccess}
               setShowError={props.setShowError} />,
             document.body
           )}

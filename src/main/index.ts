@@ -44,9 +44,10 @@ function createWindow(): void {
 
   socket.on('serverToDesktop', (data) => {
     console.log("serverToDesktop", data)
-    if (data.status === 200) mainWindow.webContents.send('serverEmit', data.data)
+    if (data.status === 200) mainWindow.webContents.send('serverEmit', data)
     else console.log('error')
   })
+  
   socket.off('listaEmpaqueInfo')
   socket.on('listaEmpaqueInfo', (data) => {
     console.log(data)
