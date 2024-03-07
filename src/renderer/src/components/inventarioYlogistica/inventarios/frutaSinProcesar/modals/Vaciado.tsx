@@ -1,17 +1,16 @@
 /* eslint-disable prettier/prettier */
+import useAppContext from '@renderer/hooks/useAppContext'
+import { lotesType } from '@renderer/types/lotesType'
 import { useState } from 'react'
-import { prediosType } from '../types/types'
 
 type vaciadoType = {
     closeVaciado: () => void
-    propsModal: prediosType
-    theme:string
-    setShowSuccess: (e) => void 
-    setShowError: (e) => void
-    setMessage: (e) => void
+    propsModal: lotesType
+    handleInfo: () => void;
   }
 
 export default function Vaciado(props: vaciadoType): JSX.Element {
+  const {theme, messageModal} = useAppContext();
   const [canastillas, setCanastillas] = useState<number>(0)
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -19,15 +18,10 @@ export default function Vaciado(props: vaciadoType): JSX.Element {
     try {
         setLoading(true)
       const canastillasInt = canastillas
-      const propsCanastillasInt = props.propsModal.inventarioActual.inventario
+      const propsCanastillasInt =  props.propsModal.inventarioActual ?  props.propsModal.inventarioActual.inventario : 0
 
-      if (canastillasInt > propsCanastillasInt) {
-        props.closeVaciado()
-        props.setShowError(true)
-        props.setMessage("Error en el numero de canastillas!")
-        setInterval(() => {
-          props.setShowError(false)
-        }, 5000)
+      if (propsCanastillasInt !== undefined && canastillasInt > propsCanastillasInt) {
+        messageModal("error","Error en el numero de canastillas!")
       } else {
         const nuevo_lote = JSON.parse(JSON.stringify(props.propsModal));
         nuevo_lote["inventarioActual.inventario"] = nuevo_lote.inventarioActual.inventario - canastillasInt;
@@ -41,7 +35,6 @@ export default function Vaciado(props: vaciadoType): JSX.Element {
           delete nuevo_lote.inventarioActual;
         }
         
-
         const request = {
           data:{
             lote: nuevo_lote,
@@ -56,38 +49,31 @@ export default function Vaciado(props: vaciadoType): JSX.Element {
         // console.log(request)
         // const response = {status:401};
         if (response.status === 200) {
-          props.closeVaciado()
-          props.setShowSuccess(true)
-          props.setMessage("Fruta vaciada!")
-          setInterval(() => {
-            props.setShowSuccess(false)
-          }, 5000)
+          messageModal("success","Fruta vaciada!")
         } else {
-          props.setShowError(true)
-          props.setMessage(`Error ${response.status}: ${response.message}`)
-          setInterval(() => {
-            props.setShowError(false)
-          }, 5000)
+          messageModal("error",`Error ${response.status}: ${response.message}`)
         }
       }
     } catch (e: unknown) {
-      props.setShowError(true)
-      props.setMessage(e)
-      setInterval(() => {
-        props.setShowError(false)
-      }, 5000)
+      if (e instanceof Error) {
+        messageModal("error", e.message)
+    }
     } finally{
         setLoading(false)
+        props.closeVaciado();
+        props.handleInfo();
     }
   }
   return (
     <div className={` fixed inset-0 flex items-center justify-center bg-black bg-opacity-50`}>
-    <div className={`${props.theme === 'Dark' ? 'bg-slate-800' : 'bg-white'} rounded-xl w-96 h-90 overflow-hidden pb-5`}>
+    <div className={`${theme === 'Dark' ? 'bg-slate-800' : 'bg-white'} rounded-xl w-96 h-90 overflow-hidden pb-5`}>
       <div className={`bg-Celifrut-green flex justify-between items-center border-b-2 border-gray-200 p-3 mb-4 rounded-sm`}>
-        <h2 className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-lg font-semibold`}>{props.propsModal.predio.PREDIO}</h2>
+        <h2 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-lg font-semibold`}>{props.propsModal.predio && props.propsModal.predio.PREDIO}</h2>
       </div>
       <div className="flex justify-center pb-5">
-        <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>Numero de canastillas en inventario: {props.propsModal.inventarioActual.inventario}</p>
+        <p className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>
+          Numero de canastillas en inventario: {props.propsModal.inventarioActual && props.propsModal.inventarioActual.inventario}
+        </p>
       </div>
       <div className="flex justify-center pb-10">
         <input
@@ -107,7 +93,7 @@ export default function Vaciado(props: vaciadoType): JSX.Element {
           Vaciar
         </button>
         <button
-          className={`border-2 border-gray-200 rounded-md px-4 py-2 ${props.theme === 'Dark' ? 'bg-slate-800 text-white' : 'bg-white text-black'} `}
+          className={`border-2 border-gray-200 rounded-md px-4 py-2 ${theme === 'Dark' ? 'bg-slate-800 text-white' : 'bg-white text-black'} `}
           onClick={props.closeVaciado}
         >
           Cancelar

@@ -40,6 +40,7 @@ import HistorialProgramacionMula from './components/transporte/historialInspecci
 import Cuentas from './components/gestionDeCuentas/crearCuentas/Cuentas'
 import Inicio from './components/Inicio'
 import MessagesComponent from './messages/MessagesComponent'
+import VariablesProceso from './components/sistema/variablesDelSistema/VariablesProceso'
 
 type OpenModalFunction = (messageType: string, message: string) => void;
 
@@ -87,7 +88,6 @@ function App(): JSX.Element {
     const funcionAuxiliar = async (): Promise<void> => {
       try {
         const response = await window.api.obtenerTheme()
-        console.log("server");
         setTheme(response)
       } catch (e: unknown) {
         alert(`${e}`)
@@ -178,6 +178,11 @@ function App(): JSX.Element {
                         {section === "Transporte//Formularios//Tractomulas" && <FormularioMulas />}
                         {section === "Transporte//Formularios//Programación tractomulas" && <FormularioProgramacionMula/>}
                         {section === "Transporte//Historiales//Historial programación tractomula" && <HistorialProgramacionMula/>}
+
+
+                        {/* Sistema */}
+                        {section === 'Sistema//Proceso//Variables del Proceso' && <VariablesProceso />}
+
                       </div>
                     </div> 
                   </div> 

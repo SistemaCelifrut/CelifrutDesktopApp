@@ -1,11 +1,8 @@
 /* eslint-disable prettier/prettier */
+import { lotesType } from '@renderer/types/lotesType';
 import { format } from 'date-fns'
-import {
-  prediosType,
-  stateUseReducerTypePredios
-} from '../types/types'
 
-export const predios: prediosType = {
+export const predios: lotesType = {
   _id: '',
   enf: '',
   predio: { ICA: '', PREDIO: '' },
@@ -29,9 +26,9 @@ export const predios: prediosType = {
 
 
 
-export const INITIAL_STATE: prediosType[] = []
+export const INITIAL_STATE: lotesType[] = []
 
-export const reducer = (state: prediosType[], action: stateUseReducerTypePredios): prediosType[] => {
+export const reducer = (state: lotesType[], action: {data:lotesType[], type: string, filtro:string}): lotesType[] => {
   switch (action.type) {
     case 'initialData':
       state = action.data
@@ -39,10 +36,10 @@ export const reducer = (state: prediosType[], action: stateUseReducerTypePredios
     case 'filter':
       state = action.data.filter(
         (lote) =>
-          lote.predio.PREDIO.toLowerCase().indexOf(action.filtro) !== -1 ||
-          String(lote.predio.PREDIO).toLowerCase().indexOf(action.filtro) !== -1 ||
-          format(new Date(lote.fechaIngreso), 'dd-MM-yyyy').toLowerCase().indexOf(action.filtro) !== -1 ||
-          lote.tipoFruta.toLowerCase().indexOf(action.filtro) !== -1
+          lote.predio && lote.predio.PREDIO && lote.predio.PREDIO.toLowerCase().indexOf(action.filtro) !== -1 ||
+          String(lote.predio?.PREDIO || '').toLowerCase().indexOf(action.filtro) !== -1 ||
+          format(lote.fechaIngreso ? new Date(lote.fechaIngreso) : new Date(), 'dd-MM-yyyy').toLowerCase().indexOf(action.filtro) !== -1 ||
+          lote.tipoFruta && lote.tipoFruta.toLowerCase().indexOf(action.filtro) !== -1
       )
       return state
     default:

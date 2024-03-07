@@ -1,12 +1,13 @@
 /* eslint-disable prettier/prettier */
 import { useContext, useState } from "react"
-import { LoteDataType, filtroColumnasType } from "../type/types"
+import { filtroColumnasType } from "../type/types"
 import { themeContext } from "@renderer/App"
 import { format } from "date-fns"
 import { KEYS_FILTROS_COL } from "../functions/constantes"
+import { lotesType } from "@renderer/types/lotesType"
 
 type propsType = {
-  data: LoteDataType[]
+  data: lotesType[]
   columnVisibility: filtroColumnasType
 }
 export default function TableInfoLotes(props: propsType): JSX.Element {
@@ -48,7 +49,7 @@ export default function TableInfoLotes(props: propsType): JSX.Element {
             >
               <td className="p-2 text-sm  text-center">{lote.enf}</td>
               <td className="p-2 text-sm  text-center">{lote.predio?.PREDIO ? lote.predio.PREDIO : lote.predio?.PREDIO}</td>
-              <td className="p-2 text-sm  text-center">{format(new Date(lote.fechaIngreso), 'dd-MM-yyyy')}</td>
+              <td className="p-2 text-sm  text-center">{format(lote.fechaIngreso ? new Date(lote.fechaIngreso) : new Date(), 'dd-MM-yyyy')}</td>
               <td className="p-2 text-sm  text-center">{lote.tipoFruta}</td>
               {Object.keys(props.columnVisibility).map((item, index2) => {
                 if (props.columnVisibility[item]) {
@@ -60,9 +61,9 @@ export default function TableInfoLotes(props: propsType): JSX.Element {
 
                       {showDetailDescarte && (index === Number(indice1) && (index2 === Number(indice2))) ? 
                       <td>{
-                        Object.keys(lote[item]).map(descarte => (
+                        lote[item] ? Object.keys(lote[item]).map(descarte => (
                           <p key={descarte}>{descarte}: {lote[item][descarte]}</p>
-                        ))
+                        )) : <td></td>
                         }</td> : 
                       Object.keys(lote[item]).reduce((acu, descarte) => acu += lote[item][descarte], 0).toFixed(2)} Kg
                     </td>

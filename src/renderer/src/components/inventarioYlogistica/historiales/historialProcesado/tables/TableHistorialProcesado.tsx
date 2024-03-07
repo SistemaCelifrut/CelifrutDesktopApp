@@ -1,21 +1,20 @@
 /* eslint-disable prettier/prettier */
 import { format } from 'date-fns'
-import { historialProcesoType } from '../types/types'
 import HeaderTableHistorialProcesado from '../utils/HeaderTableHistorialProcesado'
 import React from 'react'
+import { historialLotesType } from '@renderer/types/lotesType'
 
 type propsType = {
-  table: historialProcesoType[]
-  theme: string
+  table: historialLotesType[]
   clickLote: (e) => void
 }
 
 export default function TableHistorialProcesado(props: propsType): JSX.Element {
   return (
     <>
-      <div>
+      <div className='p-2'>
         <div className="grid grid-cols-7 gap-0 mt-0">
-          <HeaderTableHistorialProcesado theme={props.theme} />
+          <HeaderTableHistorialProcesado />
         </div>
         <div className="grid grid-cols-7 gap-0 mt-0">
           {props.table && props.table.map((item, index) => (
@@ -38,20 +37,21 @@ export default function TableHistorialProcesado(props: propsType): JSX.Element {
               {item.documento.enf}
             </div>
             <div
-              key={item.documento.predio.PREDIO + 'nombre'}
+              key={item.documento.predio && item.documento.predio.PREDIO + 'nombre'}
               className={` ol-span-1 text-[12px] flex items-center  ${
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {item.documento.predio.PREDIO}
+              {item.documento.predio && item.documento.predio.PREDIO}
             </div>
             <div
-              key={item.documento.kilosVaciados / item.documento.promedio + 'canastillas'}
+              key={item.documento._id + 'canastillas'}
               className={` ol-span-1 text-[12px] flex items-center justify-center ${
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {item.documento.kilosVaciados / item.documento.promedio}
+              { item.documento.kilosVaciados && item.documento.promedio ?  
+              (item.documento.kilosVaciados / item.documento.promedio).toFixed(2): 0}
             </div>
             <div
               key={item.documento.kilosVaciados + 'kilos'}
@@ -59,7 +59,7 @@ export default function TableHistorialProcesado(props: propsType): JSX.Element {
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {item.documento.kilosVaciados.toFixed(2)}
+              {item.documento.kilosVaciados && item.documento.kilosVaciados.toFixed(2)}
             </div>
             <div
               key={item.documento.tipoFruta + 'tipofruta'}

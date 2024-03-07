@@ -4,7 +4,7 @@ import { dataContext, themeContext } from "@renderer/App"
 import { useContext, useEffect, useState } from "react"
 import FiltrosColumnas from "../utils/FiltrosColumnas"
 import FiltrosFilas from "../utils/FiltrosFilas"
-import { LoteDataType, filtroColumnasType, filtroType } from "../type/types"
+import { filtroColumnasType, filtroType } from "../type/types"
 import { filtrosColumnasObj } from "../functions/functions"
 import GraficasBarras from "../utils/GraficasBarras"
 import GraficaLineal from "../utils/GraficaLineal"
@@ -12,6 +12,7 @@ import GraficaCircular from "../utils/GraficaCircular"
 import TableInfoLotes from "../table/TableInfoLotes"
 import PromediosProceso from "../utils/PromediosProceso"
 import { crear_filtro } from "../functions/filtroProceso"
+import { lotesType } from "@renderer/types/lotesType"
 
 export default function ProcesoData(): JSX.Element {
     const theme = useContext(themeContext)
@@ -24,75 +25,81 @@ export default function ProcesoData(): JSX.Element {
     const [prediosData, setPrediosData] = useState<string[]>([])
     const [ef1, setEf1] = useState<string>(dataGlobal.dataComponentes)
     const [tipoGraficas, setTipoGraficas] = useState<string>('')
-    const [data, setData] = useState<LoteDataType[]>([])
-    const [dataOriginal, setDataOriginal] = useState<LoteDataType[]>([])
+    const [data, setData] = useState<lotesType[]>([])
+    const [dataOriginal, setDataOriginal] = useState<lotesType[]>([])
     const [filtroPredio, setFiltroPredio] = useState<string>('');
     const [cantidad, setCantidad] = useState<number>(50);
 
     useEffect(() => {
-        const obtenerData = async (): Promise<void> => {
-            if(prediosData.length === 0){
-                const requestProveedor = {
-                    data:{
-                      query:{},
-                    },
-                    collection:'proveedors',
-                    action: 'obtenerProveedores',
-                    query: 'proceso'
-                  };
-                const response = await window.api.server(requestProveedor);
-                const nombrePredio = await response.data.map((item) => item.PREDIO)
-                 setPrediosData(nombrePredio)
-            }
-            const filtro_request = crear_filtro(filtro);
-            const request = {
-                data:{
-                  query:{...filtro_request, enf: { $regex: '^E', $options: 'i' }},
-                  select : {},
-                  populate:{
-                    path: 'predio',
-                    select: 'PREDIO ICA'
-                  },
-                  sort:{fechaIngreso: -1},
-                  limit: cantidad,
-                },
-                collection:'lotes',
-                action: 'getLotes',
-                query: 'proceso'
-              };
-            const datosLotes = await window.api.server(request);
-            setDataOriginal(datosLotes.data)
-
-            if (ef1 === '') {
-                setData(datosLotes.data)
-            }
-            else if (ef1 !== '') {
-                setData(() => datosLotes.data.filter(item =>item._id.toLowerCase().includes(ef1.toLowerCase())))
-            }
-            // const dataGrafica = datosGraficas(datosLotes.data)
-            // setDataGrafica(dataGrafica)
-        }
         obtenerData()
-        window.api.serverEmit('serverEmit', async () => {
-            await obtenerData()
-          })
-        
+        window.api.serverEmit('serverEmit', handleServerEmit)
+        // Función de limpieza
+        return () => {
+          window.api.removeServerEmit('serverEmit', handleServerEmit)
+        }
     }, [filtro, cantidad])
 
     useEffect(() => {
         let filteredData = dataOriginal;
 
         if (ef1 !== '') {
-          filteredData = filteredData.filter(item => item.enf.startsWith(ef1.toUpperCase()));
+          filteredData = filteredData.filter(item => item.enf && item.enf.startsWith(ef1.toUpperCase()));
         }
         
         if (filtroPredio !== '') {
-          filteredData = filteredData.filter(item => item.predio?.PREDIO.includes(filtroPredio));
+          filteredData = filteredData.filter(item => item.predio?.PREDIO && item.predio?.PREDIO.includes(filtroPredio));
         }
         
         setData(filteredData);
     }, [ef1, filtroPredio])
 
+    const obtenerData = async (): Promise<void> => {
+        if(prediosData.length === 0){
+            const requestProveedor = {
+                data:{
+                  query:{},
+                },
+                collection:'proveedors',
+                action: 'obtenerProveedores',
+                query: 'proceso'
+              };
+            const response = await window.api.server(requestProveedor);
+            const nombrePredio = await response.data.map((item) => item.PREDIO)
+             setPrediosData(nombrePredio)
+        }
+        const filtro_request = crear_filtro(filtro);
+        const request = {
+            data:{
+              query:{...filtro_request, enf: { $regex: '^E', $options: 'i' }},
+              select : {},
+              populate:{
+                path: 'predio',
+                select: 'PREDIO ICA'
+              },
+              sort:{fechaIngreso: -1},
+              limit: cantidad,
+            },
+            collection:'lotes',
+            action: 'getLotes',
+            query: 'proceso'
+          };
+        const datosLotes = await window.api.server(request);
+        setDataOriginal(datosLotes.data)
+
+        if (ef1 === '') {
+            setData(datosLotes.data)
+        }
+        else if (ef1 !== '') {
+            setData(() => datosLotes.data.filter(item =>item._id.toLowerCase().includes(ef1.toLowerCase())))
+        }
+        // const dataGrafica = datosGraficas(datosLotes.data)
+        // setDataGrafica(dataGrafica)
+    }
+    const handleServerEmit = async (data): Promise<void> => {
+        if (data.fn === "vaciado" || data.fn === "ingresoLote" || data.fn === "procesoLote") {
+          await obtenerData()
+        }
+      }
     const handleChange = (e): void => {
         setColumnVisibility({
             ...columnVisibility,

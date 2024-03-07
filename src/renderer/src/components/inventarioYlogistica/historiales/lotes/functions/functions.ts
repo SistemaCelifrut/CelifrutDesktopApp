@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 
 import { format } from 'date-fns'
-import { LoteDataType, graficaDataType, graficaDataTypeCalidad, graficaDonaDataType } from '../type/types'
+import { graficaDataType, graficaDataTypeCalidad, graficaDonaDataType } from '../type/types'
+import { lotesType } from '@renderer/types/lotesType'
 
 export const filtrosColumnasObj = {
   canastillas: false,
@@ -19,7 +20,7 @@ export const filtrosColumnasObj = {
   observaciones: false,
   deshidratacion: false
 }
-export const datosGraficas = (datos: LoteDataType[]): graficaDataType[] => {
+export const datosGraficas = (datos: lotesType[]): graficaDataType[] => {
   const prediosTotal = datos.map((lote) => lote.predio?.PREDIO)
   const prediosSet = new Set(prediosTotal)
   const predios = [...prediosSet]
@@ -28,20 +29,20 @@ export const datosGraficas = (datos: LoteDataType[]): graficaDataType[] => {
     const kilosProm =
       datos
         .filter((item) => item.predio?.PREDIO === nombrepredio)
-        .reduce((acu, kilos) => (acu += kilos.kilos), 0) /
+        .reduce((acu, kilos) => (acu += kilos.kilos ? kilos.kilos : 0), 0) /
       datos.filter((item) => item.predio?.PREDIO === nombrepredio).length
     const kilosVaciadosProm =
       datos
         .filter((item) => item.predio?.PREDIO === nombrepredio)
-        .reduce((acu, kilos) => (acu += kilos.kilosVaciados), 0) /
+        .reduce((acu, kilos) => (acu += kilos.kilosVaciados ? kilos.kilosVaciados : 0), 0) /
       datos.filter((item) => item.predio?.PREDIO === nombrepredio).length
     const descarteLavadoProm =
       datos
         .filter((item) => item.predio?.PREDIO === nombrepredio)
         .reduce(
           (acu, kilos) =>
-            (acu += Object.keys(kilos.descarteLavado).reduce(
-              (acu2, itemdescarte) => (acu2 += kilos.descarteLavado[itemdescarte]),
+            (acu += Object.keys(kilos.descarteLavado ? kilos.descarteLavado : []).reduce(
+              (acu2, itemdescarte) => (acu2 += kilos.descarteLavado && kilos.descarteLavado[itemdescarte]),
               0
             )),
           0
@@ -51,28 +52,16 @@ export const datosGraficas = (datos: LoteDataType[]): graficaDataType[] => {
         .filter((item) => item.predio?.PREDIO === nombrepredio)
         .reduce(
           (acu, kilos) =>
-            (acu += Object.keys(kilos.descarteEncerado).reduce(
-              (acu2, itemdescarte) => (acu2 += kilos.descarteEncerado[itemdescarte]),
+            (acu += Object.keys(kilos.descarteEncerado ? kilos.descarteEncerado : 0).reduce(
+              (acu2, itemdescarte) => (acu2 += kilos.descarteEncerado && kilos.descarteEncerado[itemdescarte]),
               0
             )),
           0
         ) / datos.filter((item) => item.predio?.PREDIO === nombrepredio).length
-    const exportacionProm =
-      datos
-        .filter((item) => item.predio?.PREDIO === nombrepredio)
+    const exportacionProm = datos.filter((item) => item.predio?.PREDIO === nombrepredio)
         .reduce(
-          (acu1, lote) =>
-            (acu1 += Object.prototype.hasOwnProperty.call(lote, 'exportacion')
-              ? Object.keys(lote.exportacion).reduce(
-                  (acu2, contenedor) =>
-                    (acu2 += Object.keys(lote.exportacion[contenedor]).reduce(
-                      (acu3, calidad) => (acu3 += lote.exportacion[contenedor][calidad]),
-                      0
-                    )),
-                  0
-                )
-              : 0),
-          0
+          (acu, lote) =>  acu += (lote.calidad1 && lote.calidad15 && lote.calidad2) ? 
+          lote.calidad1 + lote.calidad15 + lote.calidad2 : 0, 0
         ) / datos.filter((item) => item.predio?.PREDIO === nombrepredio).length
 
     return {
@@ -86,7 +75,7 @@ export const datosGraficas = (datos: LoteDataType[]): graficaDataType[] => {
   })
   return salida
 }
-export const datosGraficasCalidad = (datos: LoteDataType[]): graficaDataTypeCalidad[] => {
+export const datosGraficasCalidad = (datos: lotesType[]): graficaDataTypeCalidad[] => {
   const prediosTotal = datos.map((lote) => lote.predio?.PREDIO)
   const prediosSet = new Set(prediosTotal)
   const predios = [...prediosSet]
@@ -109,16 +98,16 @@ export const datosGraficasCalidad = (datos: LoteDataType[]): graficaDataTypeCali
   })
   return salida
 }
-export const datosGraficasHistogramaCalidad = (datos: LoteDataType[]): graficaDataTypeCalidad[] => {
-  const fechaTotal = datos.map((lote) => format(new Date(lote.fechaIngreso), 'dd-MM-yyyy'))
+export const datosGraficasHistogramaCalidad = (datos: lotesType[]): graficaDataTypeCalidad[] => {
+  const fechaTotal = datos.map((lote) => format(lote.fechaIngreso ? new Date(lote.fechaIngreso) : new Date(), 'dd-MM-yyyy'))
   const fechasSet = new Set(fechaTotal)
   const fechas = [...fechasSet]
   const salida = fechas.map((fecha) => {
-    const acidezPromedio = promedioCalidad(datos.filter((item) =>  format(new Date(item.fechaIngreso), 'dd-MM-yyyy') === fecha), "acidez")
-    const brixPromedio = promedioCalidad(datos.filter((item) => format(new Date(item.fechaIngreso), 'dd-MM-yyyy') === fecha), "brix")
-    const ratioPromedio = promedioCalidad(datos.filter((item) => format(new Date(item.fechaIngreso), 'dd-MM-yyyy') === fecha), "ratio")
-    const pesoPromedio = promedioCalidad(datos.filter((item) => format(new Date(item.fechaIngreso), 'dd-MM-yyyy') === fecha), "peso")
-    const zumoPromedio = promedioCalidad(datos.filter((item) => format(new Date(item.fechaIngreso), 'dd-MM-yyyy') === fecha), "zumo")
+    const acidezPromedio = promedioCalidad(datos.filter((item) =>  format(item.fechaIngreso ? new Date(item.fechaIngreso) : new Date(), 'dd-MM-yyyy') === fecha), "acidez")
+    const brixPromedio = promedioCalidad(datos.filter((item) => format(item.fechaIngreso ? new Date(item.fechaIngreso) : new Date(), 'dd-MM-yyyy') === fecha), "brix")
+    const ratioPromedio = promedioCalidad(datos.filter((item) => format(item.fechaIngreso ? new Date(item.fechaIngreso) : new Date(), 'dd-MM-yyyy') === fecha), "ratio")
+    const pesoPromedio = promedioCalidad(datos.filter((item) => format(item.fechaIngreso ? new Date(item.fechaIngreso) : new Date(), 'dd-MM-yyyy') === fecha), "peso")
+    const zumoPromedio = promedioCalidad(datos.filter((item) => format(item.fechaIngreso ? new Date(item.fechaIngreso) : new Date(), 'dd-MM-yyyy') === fecha), "zumo")
 
     return {
       nombrePredio: fecha,
@@ -131,42 +120,31 @@ export const datosGraficasHistogramaCalidad = (datos: LoteDataType[]): graficaDa
   })
   return salida
 }
-export const datosGraficaDona = (datos: LoteDataType[]): graficaDonaDataType => {
+export const datosGraficaDona = (datos: lotesType[]): graficaDonaDataType => {
   const totalDescarteEncerado = datos.reduce(
     (acu, kilos) =>
-      (acu += Object.keys(kilos.descarteEncerado).reduce(
-        (acu2, itemdescarte) => (acu2 += kilos.descarteEncerado[itemdescarte]),
+      (acu += Object.keys(kilos.descarteEncerado ? kilos.descarteEncerado : {}).reduce(
+        (acu2, itemdescarte) => (acu2 += kilos.descarteEncerado ? kilos.descarteEncerado[itemdescarte] : 0),
         0
       )),
     0
   )
   const totalDescarteLavado = datos.reduce(
     (acu, kilos) =>
-      (acu += Object.keys(kilos.descarteLavado).reduce(
-        (acu2, itemdescarte) => (acu2 += kilos.descarteLavado[itemdescarte]),
+      (acu += Object.keys(kilos.descarteLavado ? kilos.descarteLavado : {}).reduce(
+        (acu2, itemdescarte) => (acu2 += kilos.descarteLavado ? kilos.descarteLavado[itemdescarte] : 0),
         0
       )),
     0
   )
   const totalExportacion = datos.reduce(
-    (acu1, lote) =>
-      (acu1 += Object.prototype.hasOwnProperty.call(lote, 'exportacion')
-        ? Object.keys(lote.exportacion).reduce(
-            (acu2, contenedor) =>
-              (acu2 += Object.keys(lote.exportacion[contenedor]).reduce(
-                (acu3, calidad) => (acu3 += lote.exportacion[contenedor][calidad]),
-                0
-              )),
-            0
-          )
-        : 0),
-    0
-  )
-  const totalDeshidratacion = datos.reduce((acu, kilos) => (acu += kilos.deshidratacion), 0)
+    (acu, lote) =>  acu += (lote.calidad1 && lote.calidad15 && lote.calidad2) ? 
+      lote.calidad1 + lote.calidad15 + lote.calidad2 : 0, 0)
+  const totalDeshidratacion = datos.reduce((acu, kilos) => (acu += kilos.deshidratacion ? kilos.deshidratacion : 0), 0)
 
-  const totalFrutaNacional = datos.reduce((acu, kilos) => (acu += kilos.frutaNacional), 0)
+  const totalFrutaNacional = datos.reduce((acu, kilos) => (acu += kilos.frutaNacional ? kilos.frutaNacional : 0), 0)
 
-  const totalDirectoNacional = datos.reduce((acu, kilos) => (acu += kilos.directoNacional), 0)
+  const totalDirectoNacional = datos.reduce((acu, kilos) => (acu += kilos.directoNacional ? kilos.directoNacional : 0), 0)
 
   const total = totalDescarteEncerado + totalDescarteLavado + totalExportacion + totalDeshidratacion + totalFrutaNacional + totalDirectoNacional
 
@@ -186,12 +164,12 @@ export const datosGraficaDona = (datos: LoteDataType[]): graficaDonaDataType => 
     directoNacional:porcentajeDirectoNacionall
   }
 }
-export const promedio = (datos: LoteDataType[], llave): number => {
+export const promedio = (datos: lotesType[], llave): number => {
   const sumatoria = datos.reduce((acu, item) => acu += Number(item[llave]), 0);
   const promedio = sumatoria /  datos.length
   return promedio
 }
-export const promedioDescartes = (datos: LoteDataType[], llave): number => {
+export const promedioDescartes = (datos: lotesType[], llave): number => {
   const sumatoria = datos.reduce(
     (acu, kilos) =>
       (acu += Object.keys(kilos[llave]).reduce(
@@ -203,28 +181,17 @@ export const promedioDescartes = (datos: LoteDataType[], llave): number => {
   const promedio = sumatoria / datos.length
   return promedio
 }
-export const promedioExportacion = (datos: LoteDataType[]): number => {
+export const promedioExportacion = (datos: lotesType[]): number => {
   const sumatoria = datos.reduce(
-    (acu1, lote) =>
-      (acu1 += Object.prototype.hasOwnProperty.call(lote, 'exportacion')
-        ? Object.keys(lote.exportacion).reduce(
-            (acu2, contenedor) =>
-              (acu2 += Object.keys(lote.exportacion[contenedor]).reduce(
-                (acu3, calidad) => (acu3 += lote.exportacion[contenedor][calidad]),
-                0
-              )),
-            0
-          )
-        : 0),
-    0
-  )
+    (acu, lote) => acu += (lote.calidad1 && lote.calidad15 && lote.calidad2) ? 
+      lote.calidad1 + lote.calidad15 + lote.calidad2 : 0 ,0)
   const promedio = sumatoria / datos.length
   return promedio
 }
-export const promedioCalidad = (datos: LoteDataType[], llave): number => {
+export const promedioCalidad = (datos: lotesType[], llave): number => {
   const sumatoria = datos.reduce((acu, item) => {
     if(Object.prototype.hasOwnProperty.call(item,'calidad') && Object.prototype.hasOwnProperty.call(item.calidad, 'calidadInterna')){
-      return acu += Number(item.calidad.calidadInterna[llave])
+      return acu += Number(item.calidad && item.calidad.calidadInterna[llave])
     } else {
       return acu += 0
     }

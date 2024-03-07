@@ -1,34 +1,27 @@
 /* eslint-disable prettier/prettier */
-import { themeContext } from '@renderer/App'
-import { useContext, useState } from 'react'
-import { prediosType } from '../types/types'
+import useAppContext from '@renderer/hooks/useAppContext'
+import { lotesType } from '@renderer/types/lotesType'
+import {  useState } from 'react'
 
 type vaciadoType = {
     closeDesverdizado: () => void
-    propsModal: prediosType
-    setShowSuccess: (e) => void 
-    setShowError: (e) => void
-    setMessage: (e) => void
+    propsModal: lotesType
+    handleInfo: () => void
   }
 
 export default function Desverdizado(props: vaciadoType): JSX.Element {
-  const theme = useContext(themeContext);
+  const {theme, messageModal} = useAppContext();
   const [canastillas, setCanastillas] = useState<number>(0)
   const [cuartoDesverdizado, setCuartoDesverdizado] = useState<string>('')
 
   const vaciar = async (): Promise<void> => {
     try {
       const canastillasInt = canastillas
-      const propsCanastillasInt = props.propsModal.inventarioActual.inventario
+      const propsCanastillasInt = props.propsModal.inventarioActual ? props.propsModal.inventarioActual.inventario : 0
 
-      if (canastillasInt > propsCanastillasInt) {
-        props.setShowError(true)
-        props.setMessage("Error en el numero de canastillas!")
-        setInterval(() => {
-          props.setShowError(false)
-        }, 5000)
+      if (propsCanastillasInt !== undefined && canastillasInt > propsCanastillasInt) {
+        messageModal("error","Error en el numero de canastillas!")
       } else {
-        console.log(props.propsModal)
         const nuevo_lote = JSON.parse(JSON.stringify(props.propsModal));
         nuevo_lote["inventarioActual.inventario"] = nuevo_lote.inventarioActual.inventario - canastillasInt;
         delete nuevo_lote.inventarioActual;
@@ -49,40 +42,33 @@ export default function Desverdizado(props: vaciadoType): JSX.Element {
           query: 'proceso',
           record: "desverdizado"
         }
-        console.log(request)
         const response = await window.api.server(request)
         console.log(response)
         if (response.status === 200) {
-          props.closeDesverdizado()
-          props.setShowSuccess(true)
-          props.setMessage("Fruta puesta a desverdizar!")
-          setInterval(() => {
-            props.setShowSuccess(false)
-          }, 5000)
+          messageModal("success","Fruta puesta a desverdizar!")
         } else {
-          props.setShowError(true)
-          props.setMessage(`Error ${response.status}: ${response.message}`)
-          setInterval(() => {
-            props.setShowError(false)
-          }, 5000)
+          messageModal("error",`Error ${response.status}: ${response.message}`)
         }
       }
     } catch (e: unknown) {
-      props.setShowError(true)
-      props.setMessage(`Error ${e}`)
-      setInterval(() => {
-        props.setShowError(false)
-      }, 5000)
+      if (e instanceof Error) {
+        messageModal("error", e.message)
+    }
+    } finally{
+      props.closeDesverdizado();
+      props.handleInfo();
     }
   }
   return (
     <div className={` fixed inset-0 flex items-center justify-center bg-black bg-opacity-50`}>
     <div className={`${theme === 'Dark' ? 'bg-slate-800' : 'bg-white'} rounded-xl w-96 h-90 overflow-hidden pb-5`}>
       <div className={`flex bg-yellow-500 justify-between items-center border-b-2 border-gray-200 p-3 mb-4 rounded-sm`}>
-        <h2 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-lg font-semibold`}>{props.propsModal.predio.PREDIO}</h2>
+        <h2 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-lg font-semibold`}>{props.propsModal.predio && props.propsModal.predio.PREDIO}</h2>
       </div>
       <div className="flex justify-center pb-2">
-        <p className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>Numero de canastillas en inventario: {props.propsModal.inventarioActual.inventario}</p>
+        <p className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>
+          Numero de canastillas en inventario: {props.propsModal.inventarioActual && props.propsModal.inventarioActual.inventario}
+        </p>
       </div>
       <div className="flex justify-center pb-5">
         <input

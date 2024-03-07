@@ -1,20 +1,18 @@
 /* eslint-disable prettier/prettier */
+import useAppContext from '@renderer/hooks/useAppContext';
+import { lotesType } from '@renderer/types/lotesType';
 import { useState } from 'react'
-import { descarteType } from '../types/descartes';
 
 type propsType = {
   procesar: (data: string) => void
   propsModal: { action: string; data: object }
-  theme: string
   unCheck: (data: boolean) => void
   reset: () => void
-  table: descarteType[]
-  setShowSuccess: (e) => void
-  setShowError: (e) => void
-  setMessage: (e) => void
+  table: lotesType[]
 }
 
 export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Element {
+  const { messageModal} = useAppContext();
   const [cliente, setCliente] = useState<string>('')
   const [placa, setPlaca] = useState<string>('')
   const [nombreConductor, setNombreConductor] = useState<string>('')
@@ -62,7 +60,7 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
             record: "salidaDescarte"
           };
           await window.api.server(request);
-          if (enf) {
+          if (enf && enf.enf && enf?.inventarioActual) {
             historial.predios[enf?.enf] = {
               descarteLavado: enf?.inventarioActual.descarteLavado,
               descarteEncerado: enf?.inventarioActual.descarteEncerado
@@ -125,7 +123,7 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
             record: "reprocesoCelifrut"
           };
           await window.api.server(request);
-          if (enf) {
+          if (enf && enf.enf && enf?.inventarioActual) {
             historial.predios[enf?.enf] = {
               descarteLavado: enf?.inventarioActual.descarteLavado,
               descarteEncerado: enf?.inventarioActual.descarteEncerado
@@ -191,8 +189,8 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
               _id: _id,
               enf: lote?.enf,
               predio: {
-                _id: lote?.predio._id,
-                PREDIO: lote?.predio.PREDIO
+                _id: lote?.predio && lote?.predio._id,
+                PREDIO: lote?.predio && lote?.predio.PREDIO
               },
               tipoFruta: lote?.tipoFruta
             }
@@ -211,18 +209,11 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
         }
       }
 
-      props.setShowSuccess(true)
-      props.setMessage("Fruta vaciada!")
-      setInterval(() => {
-        props.setShowSuccess(false)
-      }, 5000)
+      messageModal("success","Fruta vaciada!")
     } catch (e) {
-
-      props.setShowError(true)
-      props.setMessage(`Error: ${e}`)
-      setInterval(() => {
-        props.setShowError(false)
-      }, 5000)
+      if(e  instanceof Error){
+        messageModal("error", `Error: ${e.message}`)
+      }
     } finally {
       propsAction()
     }

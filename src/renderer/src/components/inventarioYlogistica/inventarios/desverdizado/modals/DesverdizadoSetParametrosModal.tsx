@@ -1,18 +1,18 @@
 /* eslint-disable prettier/prettier */
 import { useState } from 'react'
 import { GiSave } from 'react-icons/gi'
-import { prediosDesverdizadoType } from '../type/type'
+import useAppContext from '@renderer/hooks/useAppContext'
+import { lotesType } from '@renderer/types/lotesType'
 
 type vaciadoType = {
   closeParametros: () => void
-  propsModal: prediosDesverdizadoType
-  theme: string
-  setShowSuccess: (e) => void
-  setShowError: (e) => void
-  setMessage: (e) => void
+  propsModal: lotesType
+  handleInfo: () => void
+
 }
 
 export default function DesverdizadoSetParametrosModal(props: vaciadoType): JSX.Element {
+  const { theme, messageModal } = useAppContext();
   const [temperatura, setTemperatura] = useState<number>(0)
   const [etileno, setEtileno] = useState<number>(0)
   const [dioxido, setDioxido] = useState<number>(0)
@@ -48,30 +48,18 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType): JSX.
       }
       const response = await window.api.server(request)
       if (response.status === 200) {
-        props.closeParametros()
-        props.setShowSuccess(true)
-        props.setMessage("Parametros guardados con exito!")
-        setInterval(() => {
-          props.setShowSuccess(false)
-        }, 5000)
+       messageModal("success","Parametros guardados con exito!");
       } else if (response.status === 400) {
-        props.setShowError(true)
-        props.setMessage("Error enviando los datos a el servidor!")
-        setInterval(() => {
-          props.setShowError(false)
-        }, 5000)
+        messageModal("error","Error enviando los datos a el servidor!");
       } else {
-        props.setShowError(true)
-        props.setMessage("Error enviando los datos a el servidor!")
-        setInterval(() => {
-          props.setShowError(false)
-        }, 5000)
+       messageModal("error","Error enviando los datos a el servidor!")
       }
     } catch (e: unknown) {
       alert(`${e}`)
     } finally {
-      setLoading(false)
-      props.closeParametros()
+      setLoading(false);
+      props.closeParametros();
+      props.handleInfo();
     }
   }
 
@@ -79,7 +67,7 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType): JSX.
     <div className={` fixed inset-0 flex items-center justify-center bg-black bg-opacity-50`}>
       <div
         className={`${
-          props.theme === 'Dark' ? 'bg-slate-800' : 'bg-white'
+          theme === 'Dark' ? 'bg-slate-800' : 'bg-white'
         } rounded-xl w-96 h-90 overflow-hidden pb-5`}
       >
         <div
@@ -87,14 +75,14 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType): JSX.
         >
           <h2
             className={`${
-              props.theme === 'Dark' ? 'text-white' : 'text-black'
+              theme === 'Dark' ? 'text-white' : 'text-black'
             } text-lg font-semibold`}
           >
-            {props.propsModal.predio.PREDIO}
+            {props.propsModal.predio && props.propsModal.predio.PREDIO}
           </h2>
         </div>
         <div className="flex justify-center pb-2">
-          <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>
+          <p className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>
             Temperatura C°
           </p>
         </div>
@@ -108,7 +96,7 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType): JSX.
           />
         </div>
         <div className="flex justify-center pb-2">
-          <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>
+          <p className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>
             Etileno (ppm)
           </p>
         </div>
@@ -122,7 +110,7 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType): JSX.
           />
         </div>
         <div className="flex justify-center pb-2">
-          <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>
+          <p className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>
             Dioxido de carbono (ppm)
           </p>
         </div>
@@ -136,7 +124,7 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType): JSX.
           />
         </div>
         <div className="flex justify-center pb-2">
-          <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>
+          <p className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>
             Humedad %
           </p>
         </div>
@@ -162,7 +150,7 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType): JSX.
           </button>
           <button
             className={`border-2 border-gray-200 rounded-md px-4 py-2 ${
-              props.theme === 'Dark' ? 'bg-slate-800 text-white' : 'bg-white text-black'
+              theme === 'Dark' ? 'bg-slate-800 text-white' : 'bg-white text-black'
             } `}
             onClick={props.closeParametros}
           >

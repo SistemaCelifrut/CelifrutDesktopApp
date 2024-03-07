@@ -10,6 +10,7 @@ export interface Api {
   user: (datos) => Promise<serverResponse>
   server: (datos) => Promise<serverResponse>
   serverEmit: (data, callback) => any
+  removeServerEmit: (channel, callback) => void
 }
 
 declare global {

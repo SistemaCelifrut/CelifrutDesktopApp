@@ -8,7 +8,6 @@ export default function Lotes(): JSX.Element {
     const [seccion, setSeccion] = useState<string>('Proceso')
 
     const handleSectionSelect = (data: string): void => {
-        console.log(seccion)
         setSeccion(data)
     }
     return (

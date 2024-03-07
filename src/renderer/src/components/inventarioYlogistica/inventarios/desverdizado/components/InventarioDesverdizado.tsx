@@ -2,20 +2,16 @@
 import { useEffect, useReducer, useState } from 'react'
 import { INITIAL_STATE, predios, reducer } from '../functions/reduce'
 import TableInventarioDesverdizado from '../tables/TableInventarioDesverdizado'
-import { prediosDesverdizadoType } from '../type/type'
 import BotonesInventarioDesverdizado from '../utils/BotonesInventarioDesverdizado'
 import { createPortal } from 'react-dom'
 import DesverdizadoSetParametrosModal from '../modals/DesverdizadoSetParametrosModal'
 import DesverdizadoFInalizarDesverdizado from '../modals/DesverdizadoFInalizarDesverdizado'
 import DesverdizadoProcesarModal from '../modals/DesverdizadoProcesarModal'
+import useAppContext from '@renderer/hooks/useAppContext'
+import { lotesType } from '@renderer/types/lotesType'
 
 type propsType = {
-  theme: string
-  user: string
   filtro: string
-  setShowSuccess: (e) => void
-  setShowError: (e) => void
-  setMessage: (e) => void
 }
 const request = {
   data:{
@@ -36,8 +32,9 @@ const request = {
 };
 
 export default function InventarioDesverdizado(props: propsType): JSX.Element {
+  const { messageModal } = useAppContext();
   const [datosOriginales, setDatosOriginales] = useState([])
-  const [propsModal, setPropsModal] = useState<prediosDesverdizadoType>(predios)
+  const [propsModal, setPropsModal] = useState<lotesType>(predios)
   const [titleTable, setTitleTable] = useState('Lotes')
   const [showButton, setShowButton] = useState<string>('')
   const [showModalParametros, setShowModalParametros] = useState<boolean>(false)
@@ -48,43 +45,44 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
   const [table, dispatch] = useReducer(reducer, INITIAL_STATE)
 
 
+  const obtenerFruta = async (): Promise<void> => {
+    try {
+      setRender(!render)
+      const frutaActual = await window.api.server(request)
 
-  useEffect(() => {
-    const asyncFunction = async (): Promise<void> => {
-      try {
-        setRender(!render)
-        const frutaActual = await window.api.server(request)
-
-        if (frutaActual.status === 200) {
-          setDatosOriginales(frutaActual.data)
-          dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
-        } else {
-          props.setShowError(true)
-          props.setMessage(`Error ${frutaActual.status}: ${frutaActual.message}`)
-          setInterval(() => {
-            props.setShowError(false)
-          }, 5000)
-        }
-      } catch (e: unknown) {
-        props.setShowError(true)
-        props.setMessage(`Error ${e}`)
-        setInterval(() => {
-          props.setShowError(false)
-        }, 5000)
+      if (frutaActual.status === 200) {
+        setDatosOriginales(frutaActual.data)
+        dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
+      } else {
+        messageModal("error", `Error ${frutaActual.status}: ${frutaActual.message}`);
       }
+    } catch (e: unknown) {
+     messageModal("error", `Error ${e}`)
     }
-    asyncFunction()
-  }, [showModalFinalizar, showModalParametros, showModalProcesar])
+  }
+  const handleServerEmit = async (data): Promise<void> => {
+    if (data.fn === "procesoLote") {
+      await obtenerFruta()
+    }
+  }
+  useEffect(() => {
+    obtenerFruta()
+    window.api.serverEmit('serverEmit', handleServerEmit)
+    // Función de limpieza
+    return () => {
+      window.api.removeServerEmit('serverEmit', handleServerEmit)
+    }
+
+  }, [])
 
   const clickLote = (e): void => {
     const enf = e.target.value
-    console.log(enf)
-    const lote: prediosDesverdizadoType | undefined = table.find((item) => item.enf === enf)
+    const lote: lotesType | undefined = table.find((item) => item.enf === enf)
     if (lote !== undefined) {
       setPropsModal(lote)
     }
     if (e.target.checked) {
-      setTitleTable(enf + ' ' + lote?.predio.PREDIO)
+      setTitleTable(enf + ' ' +  (lote?.predio?.PREDIO || ""))
       if (lote?.desverdizado?.fechaFinalizar) {
         setShowButton('finalizado')
       } else {
@@ -104,26 +102,28 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
   const closeProcesarDesverdizado = (): void => {
     setShowModalProcesar(!showModalProcesar)
   }
+  const handleInfo = ():void => {
+    setPropsModal(predios)
+    setTitleTable("Lotes")
+  }
 
   useEffect(() => {
     dispatch({ type: 'filter', data: datosOriginales, filtro: props.filtro })
   }, [props.filtro])
 
   return (
-    <div>
+    <div className='p-2'>
       <BotonesInventarioDesverdizado
         title={titleTable}
         table={table}
-        theme={props.theme}
         showButton={showButton}
-        user={props.user}
         closeParametros={closeParametros}
         closeFinalizarDesverdizado={closeFinalizarDesverdizado}
         closeProcesarDesverdizado={closeProcesarDesverdizado}
       />
 
       <TableInventarioDesverdizado
-        theme={props.theme}
+        propsModal={propsModal}
         table={table}
         clickLote={clickLote}
         render={render}
@@ -133,10 +133,7 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
           <DesverdizadoSetParametrosModal
             closeParametros={closeParametros}
             propsModal={propsModal}
-            theme={props.theme}
-            setMessage={props.setMessage} 
-            setShowSuccess={props.setShowSuccess} 
-            setShowError={props.setShowError} 
+            handleInfo={handleInfo}
           />,
           document.body
         )}
@@ -145,10 +142,7 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
           <DesverdizadoFInalizarDesverdizado
             closeFinalizarDesverdizado={closeFinalizarDesverdizado}
             propsModal={propsModal}
-            theme={props.theme}
-            setMessage={props.setMessage} 
-            setShowSuccess={props.setShowSuccess} 
-            setShowError={props.setShowError} 
+            handleInfo={handleInfo}
           />,
           document.body
         )}
@@ -157,10 +151,7 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
           <DesverdizadoProcesarModal
             closeProcesarDesverdizado={closeProcesarDesverdizado}
             propsModal={propsModal}
-            theme={props.theme}
-            setMessage={props.setMessage} 
-            setShowSuccess={props.setShowSuccess} 
-            setShowError={props.setShowError} 
+            handleInfo={handleInfo}
           />,
           document.body
         )}

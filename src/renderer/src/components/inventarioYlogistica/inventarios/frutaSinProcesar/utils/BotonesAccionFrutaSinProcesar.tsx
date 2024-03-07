@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
 import { useContext } from 'react'
-import { prediosType } from '../types/types'
 import { HiSwitchHorizontal } from 'react-icons/hi'
 import { themeContext } from '@renderer/App'
+import { lotesType } from '@renderer/types/lotesType'
 
 type propsType = {
   title: string
-  table: prediosType[]
+  table: lotesType[]
   tipoFruta: string
   closeVaciado: () => void
   closeDirecto: () => void
@@ -21,7 +21,7 @@ export default function BotonesAccionFrutaSinProcesar(props: propsType): JSX.Ele
                       ${theme === 'Dark' ? 'text-white' : 'text-black'}`}
     >
       <h2>{props.title}</h2>
-      <h2>{props.table && props.table.reduce((acu, lote) => (acu += lote.inventarioActual.inventario * lote.promedio), 0).toFixed(2)} Kg</h2>
+      <h2>{props.table && props.table.reduce((acu, lote) => (acu += (lote.inventarioActual?.inventario && lote.promedio) ? lote.inventarioActual.inventario * lote.promedio : 0), 0).toFixed(2)} Kg</h2>
       <button
         onClick={props.closeDesverdizado}
         className={

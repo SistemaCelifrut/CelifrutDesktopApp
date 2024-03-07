@@ -1,15 +1,15 @@
 /* eslint-disable prettier/prettier */
-import React, { useEffect } from 'react'
-import { prediosDesverdizadoType } from '../type/type'
+import React, { useEffect, useState } from 'react'
 import HeaderTableDesverdizado from '../utils/HeaderTableInventarioDesverdizado'
 import { format } from 'date-fns'
+import { lotesType } from '@renderer/types/lotesType'
 
 type propsType = {
-  table: prediosDesverdizadoType[]
-  theme: string
+  table: lotesType[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   clickLote: (e: any) => void
   render: boolean
+  propsModal: lotesType
 }
 
 export default function TableInventarioDesverdizado(props: propsType):JSX.Element {
@@ -22,11 +22,22 @@ export default function TableInventarioDesverdizado(props: propsType):JSX.Elemen
       radios[i].checked = false
     }
   }, [props.render])
+
+  const [selectedValue, setSelectedValue] = useState(null);
+
+  const handleClick = (e): void => {
+    if (selectedValue === e.target.value) {
+      setSelectedValue(null);
+    } else {
+      setSelectedValue(e.target.value);
+      props.clickLote(e);
+    }
+  };
   
   return (
     <div>
       <div className="grid grid-cols-7 gap-0 mt-0">
-        <HeaderTableDesverdizado theme={props.theme} />
+        <HeaderTableDesverdizado />
       </div>
       <div className="grid grid-cols-7 gap-0 mt-0">
         {props.table.map((lote, index) => (
@@ -38,8 +49,9 @@ export default function TableInventarioDesverdizado(props: propsType):JSX.Elemen
             >
               <input
                 type="radio"
-                onClick={props.clickLote}
+                onClick={handleClick}
                 id={lote.enf}
+                checked={props.propsModal.enf === selectedValue } 
                 value={lote.enf}
                 name="lote"
               ></input>
@@ -56,7 +68,7 @@ export default function TableInventarioDesverdizado(props: propsType):JSX.Elemen
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {lote.predio.PREDIO}
+              {lote.predio && lote.predio.PREDIO}
             </div>
             <div
               className={`flex justify-center ol-span-1 text-[12px] items-center  ${

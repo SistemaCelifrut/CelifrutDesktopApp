@@ -1,11 +1,34 @@
 /* eslint-disable prettier/prettier */
-
 import { EF1Type, contenedoresType, palletType } from "@renderer/types/contenedoresType";
 
-export const crearObjetoContenedor = (data): contenedoresType => {
+type requestGuardarType = {
+  data: contenedoresType
+  collection:string
+  action: string
+  query: string
+  record :string
+}
+
+export const crearObjetoContenedor = (formState, calidad, tipoCaja): requestGuardarType => {
     const subDocumentos = [] as palletType[]
+    const data = {
+      cliente: formState.cliente,
+      numeroContenedor: Number(formState.numeroContenedor),
+      pallets: Number(formState.pallets),
+      tipoFruta: formState.tipoFruta,
+      desverdizado: formState.desverdizado,
+      observaciones: formState.observaciones,
+      tipoEmpaque: formState.tipoEmpaque,
+      fechaInicioProceso: formState.fechaInicioProceso,
+      fechaEstimadaCargue: formState.fechaEstimadaCargue,
+      calidad: calidad,
+      tipoCaja: tipoCaja,
+      calibres: formState.calibres
+    }
+
     for (let i = 1; i<=data.pallets; i++){
-        const subDocumento = {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const subDocumento: any = {
             EF1: [] as EF1Type[],
             listaLiberarPallet: {
               rotulado: false,
@@ -45,6 +68,35 @@ export const crearObjetoContenedor = (data): contenedoresType => {
         pallets: subDocumentos,
     }
 
-    return new_contenedor;
+    const request = {
+      data: new_contenedor,
+      collection: 'contenedores',
+      action: 'crearContenedor',
+      query: 'proceso',
+      record: 'crearContenedor'
+    }
+    return request;
 }
 
+
+export const formInit = {
+  numeroContenedor: '',
+  cliente: '',
+  tipoFruta: '',
+  tipoEmpaque: '',
+  pallets: '',
+  desverdizado: false,
+  observaciones: '',
+  fechaInicioProceso: '',
+  fechaEstimadaCargue: '',
+  calibres: ''
+}
+
+export const requestClientes = {
+  data: {
+    query: {}
+  },
+  collection: 'clientes',
+  action: 'getClientes',
+  query: 'proceso'
+}

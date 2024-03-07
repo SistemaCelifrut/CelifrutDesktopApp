@@ -1,20 +1,17 @@
 /* eslint-disable prettier/prettier */
 import TableFrutaSinProcesar from '../tables/TableFrutaSinProcesar'
-import { useContext, useEffect, useReducer, useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import { INITIAL_STATE, predios, reducer } from '../functions/reducer'
 import BotonesAccionFrutaSinProcesar from '../utils/BotonesAccionFrutaSinProcesar'
-import { prediosType } from '../types/types'
 import { createPortal } from 'react-dom'
 import Vaciado from '../modals/Vaciado'
 import Directo from '../modals/Directo'
 import Desverdizado from '../modals/Desverdizado'
-import { themeContext } from '@renderer/App'
+import useAppContext from '@renderer/hooks/useAppContext'
+import { lotesType } from '@renderer/types/lotesType'
 
 type propsType = {
   filtro: string
-  setShowSuccess: (e) => void
-  setShowError: (e) => void
-  setMessage: (e) => void
 }
 const request = {
   data: {
@@ -34,10 +31,8 @@ const request = {
 };
 
 export default function FrutaSinProcesar(props: propsType): JSX.Element {
-  const theme = useContext(themeContext);
-  const [propsModal, setPropsModal] = useState<prediosType>(predios)
-
-
+  const { messageModal} = useAppContext();
+  const [propsModal, setPropsModal] = useState<lotesType>(predios)
   const [titleTable, setTitleTable] = useState('Lotes')
   const [datosOriginales, setDatosOriginales] = useState([])
   //states de los modales
@@ -50,45 +45,46 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
   const [table, dispatch] = useReducer(reducer, INITIAL_STATE)
 
   useEffect(() => {
-    const asyncFunction = async (): Promise<void> => {
-      try {
-        const frutaActual = await window.api.server(request)
-        console.log("frutaActual")
-        if (frutaActual.status === 200) {
-          setDatosOriginales(frutaActual.data)
-          dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
-        } else {
-          props.setShowError(true)
-          props.setMessage(`Error ${frutaActual.status}: ${frutaActual.message}`)
-          setInterval(() => {
-            props.setShowError(false)
-          }, 5000)
-        }
-      } catch (e: unknown) {
-        props.setShowError(true)
-        props.setMessage(`Error ${e}`)
-        setInterval(() => {
-          props.setShowError(false)
-        }, 5000)
+    obtenerFruta()
+    
+    const handleServerEmit = async (data): Promise<void> => {
+      if (data.fn === "vaciado" || data.fn === "ingresoLote" || data.fn === "procesoLote") {
+        await obtenerFruta()
       }
     }
-    asyncFunction()
-
-    window.api.serverEmit('serverEmit', async (data) => {
-      if (data.fn === "vaciado") {
-        await asyncFunction()
-      }
-    })
+  
+    window.api.serverEmit('serverEmit', handleServerEmit)
+  
+    // Función de limpieza
+    return () => {
+      window.api.removeServerEmit('serverEmit', handleServerEmit)
+    }
   }, [])
+  
 
+  const obtenerFruta = async (): Promise<void> => {
+    try {
+      const frutaActual = await window.api.server(request)
+      if (frutaActual.status === 200) {
+        setDatosOriginales(frutaActual.data)
+        dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
+      } else {
+        messageModal("error",`Error ${frutaActual.status}: ${frutaActual.message}`)
+      }
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        messageModal("error", e.message)
+    }
+    }
+  }
   const clickLote = (e): void => {
     const id = e.target.value
-    const lote: prediosType | undefined = table.find((item) => item.enf === id)
+    const lote: lotesType | undefined = table.find((item) => item.enf === id)
     if (lote !== undefined) {
       setPropsModal(lote)
     }
     if (e.target.checked) {
-      setTitleTable(lote?.enf + ' ' + lote?.predio.PREDIO)
+      setTitleTable(id + ' ' +  (lote?.predio?.PREDIO || ""))
       if (lote?.tipoFruta === 'Naranja') {
         setTipoFruta('Naranja')
       } else if (lote?.tipoFruta == 'Limon') {
@@ -106,14 +102,17 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
   const closeDesverdizado = (): void => {
     setShowDesverdizadoModal(!showDesverdizadoModal)
   }
+  const handleInfo = ():void => {
+    setPropsModal(predios)
+    setTitleTable("Lotes")
+  }
   //
   useEffect(() => {
     dispatch({ type: 'filter', data: datosOriginales, filtro: props.filtro })
   }, [props.filtro])
-
   return (
     <>
-      <div className='flex flex-col'>
+      <div className='flex flex-col p-2'>
 
         <BotonesAccionFrutaSinProcesar
           title={titleTable}
@@ -124,39 +123,35 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
           closeDesverdizado={closeDesverdizado}
         />
 
-        <TableFrutaSinProcesar table={table} theme={theme} clickLote={clickLote} />
+        <TableFrutaSinProcesar 
+          table={table} 
+          clickLote={clickLote} 
+          propsModal={propsModal}
+        />
 
         {showVaciarModal &&
           createPortal(
             <Vaciado
               closeVaciado={closeVaciado}
-              propsModal={propsModal}
-              theme={theme}
-              setMessage={props.setMessage}
-              setShowSuccess={props.setShowSuccess}
-              setShowError={props.setShowError} />,
+              propsModal={propsModal} 
+              handleInfo={handleInfo} />,
             document.body
           )}
 
         {showDirectoModal &&
           createPortal(
             <Directo
+              handleInfo={handleInfo}
               closeDirecto={closeDirecto}
-              propsModal={propsModal}
-              theme={theme}
-              setMessage={props.setMessage}
-              setShowSuccess={props.setShowSuccess}
-              setShowError={props.setShowError} />,
+              propsModal={propsModal} />,
             document.body
           )}
         {showDesverdizadoModal &&
           createPortal(
             <Desverdizado
+              handleInfo={handleInfo}
               closeDesverdizado={closeDesverdizado}
-              propsModal={propsModal}
-              setMessage={props.setMessage}
-              setShowSuccess={props.setShowSuccess}
-              setShowError={props.setShowError} />,
+              propsModal={propsModal} />,
             document.body
           )}
       </div>

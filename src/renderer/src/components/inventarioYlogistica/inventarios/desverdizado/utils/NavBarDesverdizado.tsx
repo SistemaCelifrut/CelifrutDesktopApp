@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useState } from 'react'
 import { HiOutlineSearch } from 'react-icons/hi'
-import { HiOutlineViewList } from 'react-icons/hi'
 
 type propsType = {
   handleFilter: (data: string) => void
@@ -23,10 +22,7 @@ export default function NavBarDesverdizado(props: propsType): JSX.Element {
       className={`w-[100%] h-16 flex justify-between items-center bg-Celifrut-green rounded-t-sm m-0 border-1 border-Celifrut-green-dark pl-5`}
     >
       <div className="flex justify-center items-center  hover:bg-Celifrut-green-dark rounded-full p-2">
-        <button className={` text-3xl text-white`} onClick={(): void => setIsOpen(!isOpen)}>
-          <HiOutlineViewList />
-        </button>
-
+      
         {isOpen && (
           <div className={` fixed inset-0 `} onClick={(): void => setIsOpen(false)}>
             <div

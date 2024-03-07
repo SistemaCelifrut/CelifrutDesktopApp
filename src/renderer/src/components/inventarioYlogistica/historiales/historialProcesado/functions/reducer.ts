@@ -1,11 +1,10 @@
 /* eslint-disable prettier/prettier */
+import { historialLotesType } from '@renderer/types/lotesType'
 import { format } from 'date-fns'
-import {
-  historialProcesoType,
-  stateUseReducerTypeHistorial,
-} from '../types/types'
+import { historialProcesoType } from '../../historialDirectoNacional/types/types'
 
-export const documentoInit: historialProcesoType = {
+
+export const documentoInit: historialLotesType = {
   _id: "",
   fecha: "",
   operacionRealizada: "",
@@ -34,7 +33,7 @@ export const INITIAL_STATE_HISTORIAL_PROCESO: historialProcesoType[] = []
 
 export const reducerHistorial = (
   state: historialProcesoType[],
-  action: stateUseReducerTypeHistorial
+  action: {data:historialProcesoType[], type:string, filtro:string}
 ): historialProcesoType[] => {
   switch (action.type) {
     case 'initialData':

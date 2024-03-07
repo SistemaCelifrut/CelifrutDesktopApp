@@ -24,6 +24,9 @@ const api = {
       return callback(...args)
     })
   },
+  removeServerEmit: (channel, callback) => {
+    ipcRenderer.removeListener(channel, callback)
+  },
 
 }
 

@@ -6,27 +6,41 @@ import { proveedoresType } from "./proveedoresType"
 
 /* eslint-disable @typescript-eslint/ban-types */
 export type lotesType = {
+    _id?: string
+    enf?: string
+    predio?:proveedoresType
+    canastillas?: string
+    tipoFruta?: string
+    observaciones?: string
+    kilos?: number
+    placa?: string
+    kilosVaciados?: number
+    promedio?: number
+    rendimiento?: number
+    deshidratacion?: number
+    descarteLavado?: descarteLavadoType
+    descarteEncerado?: descarteEnceradoType
+    directoNacional?: number
+    informeEnviado?: boolean
+    inventarioActual?: inventarioActualType
+    fechaIngreso?: string
+    calidad?: calidadType
+    frutaNacional?: number
+    urlInformeCalidad?: string
+    desverdizado?:desverdizadoType
+    contenedores?: string[]
+    calidad1?: number
+    calidad15?: number
+    calidad2?: number
+    __v?: number
+}
+
+export type historialLotesType = {
+    documento: lotesType
+    fecha: string
     _id: string
-    enf: string
-    predio:proveedoresType
-    canastillas: string
-    tipoFruta: string
-    observaciones: string
-    kilos: number
-    placa: string
-    kilosVaciados: number
-    promedio: number
-    rendimiento: number
-    deshidratacion: number
-    descarteLavado: descarteLavadoType
-    descarteEncerado: descarteEnceradoType
-    directoNacional: number
-    informeEnviado: boolean
-    inventarioActual: inventarioActualType
-    fechaIngreso: string
-    calidad: calidadType
-    urlInformeCalidad: string
-    __v: number
+    operacionRealizada: string
+
 }
 
 type descarteLavadoType = {
@@ -48,14 +62,14 @@ type descarteEnceradoType = {
 }
 
 type inventarioActualType = {
-    inventario: number
-    descarteEncerado: {
+    inventario?: number
+    descarteEncerado?: {
         descarteGeneral: number
         pareja: number
         balin: number
         extra: number
     }
-    descarteLavado: {
+    descarteLavado?: {
         descarteGeneral: number
         pareja: number
         balin: number
@@ -94,4 +108,24 @@ type calidadType = {
         fecha: string
     }
     fotosCalidad: {[key: string]: string}
+}
+
+type desverdizadoType = {
+    canastillasIngreso?: number
+    canastillas?: number
+    kilos?: number
+    kilosIngreso?: number
+    cuartoDesverdizado?: string
+    fechaIngreso?: string
+    fechaFinalizar?: string
+    _id?: string
+    parametros?: parametrosDesverdizadoType[]
+}
+
+type parametrosDesverdizadoType = {
+    fecha: string
+    temperatura: number
+    etileno: number
+    carbono: number
+    humedad: number
 }

@@ -1,15 +1,11 @@
 /* eslint-disable prettier/prettier */
+import { historialLotesType } from '@renderer/types/lotesType'
 import { format } from 'date-fns'
-import {
-  historialProcesoType,
-  prediosType,
-  stateUseReducerTypeHistorial,
-} from '../types/types'
 
-export const INITIAL_STATE: prediosType[] = []
-export const INITIAL_STATE_HISTORIAL_PROCESO: historialProcesoType[] = []
 
-export const documentoInit: historialProcesoType = {
+export const INITIAL_STATE_HISTORIAL_PROCESO: historialLotesType[] = []
+
+export const documentoInit: historialLotesType = {
   _id: "",
   fecha: "",
   operacionRealizada: "",
@@ -35,9 +31,9 @@ export const documentoInit: historialProcesoType = {
 }
 
 export const reducerHistorial = (
-  state: historialProcesoType[],
-  action: stateUseReducerTypeHistorial
-): historialProcesoType[] => {
+  state: historialLotesType[],
+  action: {data:historialLotesType[], type: string, filtro: string}
+): historialLotesType[] => {
   switch (action.type) {
     case 'initialData':
       state = action.data
@@ -45,10 +41,10 @@ export const reducerHistorial = (
     case 'filter':
       state = action.data.filter(
         (lote) =>
-          lote.documento.predio.PREDIO.toLowerCase().indexOf(action.filtro) !== -1 ||
-          lote.documento.enf.toLowerCase().indexOf(action.filtro) !== -1 ||
+          lote.documento.predio && lote.documento.predio.PREDIO && lote.documento.predio.PREDIO.toLowerCase().indexOf(action.filtro) !== -1 ||
+          lote.documento.enf && lote.documento.enf.toLowerCase().indexOf(action.filtro) !== -1 ||
           format(new Date(lote.fecha), 'dd-MM-yyyy').toLowerCase().indexOf(action.filtro) !== -1 ||
-          lote.documento.tipoFruta.toLowerCase().indexOf(action.filtro) !== -1
+          lote.documento.tipoFruta && lote.documento.tipoFruta.toLowerCase().indexOf(action.filtro) !== -1
       )
       return state
     default:

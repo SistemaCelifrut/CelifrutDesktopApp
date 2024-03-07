@@ -1,20 +1,30 @@
 /* eslint-disable prettier/prettier */
 import { format } from 'date-fns'
-import { prediosType } from '../types/types'
 import HeaderTableFurtaSinProcesar from '../utils/HeaderTableFurtaSinProcesar'
-import React from 'react'
+import React, { useState } from 'react'
+import { lotesType } from '@renderer/types/lotesType'
 
 type propsType = {
-  table: prediosType[]
-  theme: string
+  table: lotesType[]
+  propsModal: lotesType
   clickLote: (e) => void
 }
 
 export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
+  const [selectedValue, setSelectedValue] = useState(null);
+
+  const handleClick = (e): void => {
+    if (selectedValue === e.target.value) {
+      setSelectedValue(null);
+    } else {
+      setSelectedValue(e.target.value);
+      props.clickLote(e);
+    }
+  };
   return (
     <div>
       <div className="grid grid-cols-9 gap-0 mt-0">
-        <HeaderTableFurtaSinProcesar theme={props.theme} />
+        <HeaderTableFurtaSinProcesar/>
       </div>
       <div className="grid grid-cols-9 gap-0 mt-0">
         {props.table.sort().map((lote, index) => (
@@ -25,7 +35,13 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              <input type="radio" onClick={props.clickLote} id={lote.enf} value={lote.enf} name='lote' ></input>
+              <input 
+                type="radio" 
+                onChange={handleClick} 
+                id={lote.enf} 
+                checked={props.propsModal.enf === selectedValue } 
+                value={lote.enf} 
+                name='lote' ></input>
             </div>
             <div
 
@@ -57,7 +73,7 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {format(new Date(lote.fechaIngreso), 'dd-MM-yyyy')}
+              {lote.fechaIngreso ? format(new Date(lote.fechaIngreso), 'dd-MM-yyyy') : ""}
             </div>
             <div
 
@@ -65,7 +81,7 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {(lote.inventarioActual.inventario * lote.promedio).toFixed(2)}
+              {(lote.inventarioActual?.inventario && lote.promedio) ? (lote.inventarioActual.inventario * lote.promedio).toFixed(2) : 0}
             </div>
             <div
  
@@ -73,7 +89,7 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {lote.inventarioActual.inventario}
+              { lote.inventarioActual?.inventario && lote.inventarioActual.inventario}
             </div>
             <div
    

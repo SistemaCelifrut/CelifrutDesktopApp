@@ -1,12 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { format } from 'date-fns'
-import { historialProcesoType } from '../types/types'
 import React from 'react'
 import HeaderTableHistorialDirecto from '../utils/HeaderTableHistorialDirecto'
+import { historialLotesType } from '@renderer/types/lotesType'
 
 type propsType = {
-  table: historialProcesoType[]
-  theme: string
+  table: historialLotesType[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   clickLote: (e:any) => void
 }
@@ -16,7 +15,7 @@ export default function TableHistorialDirectoNacional(props: propsType): JSX.Ele
     <>
       <div>
         <div className="grid grid-cols-7 gap-0 mt-0">
-          <HeaderTableHistorialDirecto theme={props.theme} />
+          <HeaderTableHistorialDirecto  />
         </div>
         <div className="grid grid-cols-7 gap-0 mt-0">
           {props.table.map((item, index) => (
@@ -39,12 +38,12 @@ export default function TableHistorialDirectoNacional(props: propsType): JSX.Ele
               {item.documento.enf }
             </div>
             <div
-              key={item.documento.predio.PREDIO + 'nombre'}
+              key={item.documento.predio && item.documento.predio.PREDIO + 'nombre'}
               className={` ol-span-1 text-[12px] flex items-center  ${
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {item.documento.predio.PREDIO}
+              {item.documento.predio && item.documento.predio.PREDIO}
             </div>
             <div
               key={item._id + 'canastillas'}
@@ -52,7 +51,8 @@ export default function TableHistorialDirectoNacional(props: propsType): JSX.Ele
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {item.documento.directoNacional / item.documento.promedio}
+              {(item.documento.directoNacional && item.documento.promedio) ? 
+              (item.documento.directoNacional / item.documento.promedio).toFixed(2) : 0}
             </div>
             <div
               key={item.documento.directoNacional + 'kilos'}
@@ -60,7 +60,7 @@ export default function TableHistorialDirectoNacional(props: propsType): JSX.Ele
                 index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
               }`}
             >
-              {item.documento.directoNacional.toFixed(2)}
+              {item.documento.directoNacional && item.documento.directoNacional.toFixed(2)}
             </div>
             <div
               key={item.documento.tipoFruta + 'tipofruta'}

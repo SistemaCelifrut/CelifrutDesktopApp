@@ -1,24 +1,24 @@
 /* eslint-disable prettier/prettier */
-import { historialProcesoType } from '../types/types'
+import useAppContext from '@renderer/hooks/useAppContext'
+import { historialLotesType } from '@renderer/types/lotesType'
 import { HiRefresh } from 'react-icons/hi'
 
 type propsType = {
-  theme: string
   title: string
-  table: historialProcesoType[]
-  user: string
+  table: historialLotesType[]
   modificar: boolean
   closeModal: () => void
 }
 
 export default function BotonesAccionHistorialFrutaProcesada(props: propsType):JSX.Element {
+  const {theme} = useAppContext();
   return (
     <div
       className={`flex justify-between items-center m-4 
-    ${props.theme === 'Dark' ? 'text-white' : 'text-black'}`}
+    ${theme === 'Dark' ? 'text-white' : 'text-black'}`}
     >
       <h2>{props.title}</h2>
-      <h2>{props.table && props.table.reduce((acu, lote) => (acu += lote.documento.directoNacional), 0).toFixed(2)} Kg</h2>
+      <h2>{props.table && props.table.reduce((acu, lote) => (acu += lote.documento.directoNacional ? lote.documento.directoNacional : 0), 0).toFixed(2)} Kg</h2>
       <button
         onClick={props.closeModal}
         className={

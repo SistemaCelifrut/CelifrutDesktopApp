@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-import { descarteType } from '../types/descartes'
 import {
   sumatoriaDescarteEspecifico,
   sumatoriaDescarteSeleccionado,
@@ -9,17 +8,18 @@ import { useEffect } from 'react'
 import { ImExit } from 'react-icons/im'
 import { RiRecycleFill } from 'react-icons/ri'
 import { llavesVisualizar } from '../function/llaves'
+import { lotesType } from '@renderer/types/lotesType'
+import useAppContext from '@renderer/hooks/useAppContext'
 
 type propsType = {
-  theme: string
-  user: string
-  table: descarteType[]
+  table: lotesType[]
   enfObj: object
   reprocesar: boolean
   procesar: (action:string) => void
 }
 
 export default function BotonesInventarioDescartes(props: propsType): JSX.Element {
+  const {theme} = useAppContext();
   useEffect(() => {
     console.log(props.enfObj)
   }, [props.enfObj])
@@ -27,14 +27,14 @@ export default function BotonesInventarioDescartes(props: propsType): JSX.Elemen
   return (
     <div>
       <div
-        className={` ${props.theme === 'Dark' ? 'bg-gray-600' : 'bg-gray-200'} m-2 p-4 rounded-md `}
+        className={` ${theme === 'Dark' ? 'bg-gray-600' : 'bg-gray-200'} m-2 p-4 rounded-md `}
       >
         <div>
           <div className="flex flex-row justify-between">
-            <h2 className={`${props.theme === 'Dark' ? 'text-white' : 'texy-black'} font-bold`}>
+            <h2 className={`${theme === 'Dark' ? 'text-white' : 'texy-black'} font-bold`}>
               Kilos Totales: {sumatoriaDescartes(props.table).toFixed(2)} Kg
             </h2>
-            <h2 className={`${props.theme === 'Dark' ? 'text-white' : 'texy-black'} font-bold`}>
+            <h2 className={`${theme === 'Dark' ? 'text-white' : 'texy-black'} font-bold`}>
               Kilos seleccionados: {sumatoriaDescarteSeleccionado(props.enfObj).toFixed(2)} Kg
             </h2>
             {props.reprocesar && (
@@ -55,11 +55,8 @@ export default function BotonesInventarioDescartes(props: propsType): JSX.Elemen
               <button
               onClick={(): void => props.procesar("Reprocesar como Celifrut")}
                 className={
-                  props.user === 'recepcion' || props.user === 'admin'
-                    ? 'group relative inline-flex w-40 h-10 items-center overflow-hidden rounded bg-blue-700 px-8 py-3 text-white focus:outline-none active:bg-blue-900 active:border-blue-700'
-                    : 'invisible group relative inline-flex w-40 h-10 items-center overflow-hidden'
-                }
-              >
+                     'group relative inline-flex w-40 h-10 items-center overflow-hidden rounded bg-blue-700 px-8 py-3 text-white focus:outline-none active:bg-blue-900 active:border-blue-700'
+                }>
                 <span className="absolute -end-full transition-all group-hover:end-4 text-xl">
                   <RiRecycleFill />
                 </span>
@@ -72,11 +69,8 @@ export default function BotonesInventarioDescartes(props: propsType): JSX.Elemen
             <button
             onClick={(): void => props.procesar("Enviar descarte")}
               className={
-                props.user === 'recepcion' || props.user === 'admin'
-                  ? 'group relative inline-flex w-40 h-10 items-center overflow-hidden rounded bg-blue-700 px-8 py-3 text-white focus:outline-none active:bg-blue-900 active:border-blue-700'
-                  : 'invisible group relative inline-flex w-40 h-10 items-center overflow-hidden'
-              }
-            >
+                   'group relative inline-flex w-40 h-10 items-center overflow-hidden rounded bg-blue-700 px-8 py-3 text-white focus:outline-none active:bg-blue-900 active:border-blue-700'
+                 }>
               <span className="absolute  -end-full transition-all group-hover:end-4">
                 <ImExit />
               </span>
@@ -87,17 +81,17 @@ export default function BotonesInventarioDescartes(props: propsType): JSX.Elemen
           <div className="flex gap-2 md:flex-col lg:flex-row justify-between">
             <div
               className={`p-2 border-2 mt-2 rounded-md  w-full ${
-                props.theme === 'Dark' ? '' : 'border-gray-700'
+                theme === 'Dark' ? '' : 'border-gray-700'
               }`}
             >
-              <h3 className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} font-bold`}>
+              <h3 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} font-bold`}>
                 Descarte Lavado:
               </h3>
               <div className="p-2 flex flex-row gap-4">
-                {props.table[0] &&
+                {props.table[0] && props.table[0].inventarioActual && props.table[0].inventarioActual.descarteLavado &&
                   Object.keys(props.table[0].inventarioActual.descarteLavado).map((item) => (
                     <h4
-                      className={`${props.theme === 'Dark' ? 'text-white' : 'texy-black'}`}
+                      className={`${theme === 'Dark' ? 'text-white' : 'texy-black'}`}
                       key={item}
                     >
                       {llavesVisualizar[item]}: {sumatoriaDescarteEspecifico(props.table, 'descarteLavado', item)} Kg
@@ -107,17 +101,17 @@ export default function BotonesInventarioDescartes(props: propsType): JSX.Elemen
             </div>
             <div
               className={`p-2 border-2 mt-2 rounded-md  w-full ${
-                props.theme === 'Dark' ? '' : 'border-gray-700'
+                theme === 'Dark' ? '' : 'border-gray-700'
               }`}
             >
-              <h3 className={`${props.theme === 'Dark' ? 'text-white' : 'texy-black'} font-bold`}>
+              <h3 className={`${theme === 'Dark' ? 'text-white' : 'texy-black'} font-bold`}>
                 Descarte Encerado:
               </h3>
               <div className="p-2 flex flex-row gap-4 ">
-                {props.table[0] &&
+                {props.table[0] && props.table[0].inventarioActual && props.table[0].inventarioActual.descarteEncerado && 
                   Object.keys(props.table[0].inventarioActual.descarteEncerado).map((item) => (
                     <h4
-                      className={`${props.theme === 'Dark' ? 'text-white' : 'texy-black'}`}
+                      className={`${theme === 'Dark' ? 'text-white' : 'texy-black'}`}
                       key={item}
                     >
                       {llavesVisualizar[item]}: {sumatoriaDescarteEspecifico(props.table, 'descarteEncerado', item).toFixed(2)}{' '}

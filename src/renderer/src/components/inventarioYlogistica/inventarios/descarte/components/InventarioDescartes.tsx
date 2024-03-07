@@ -1,18 +1,13 @@
 /* eslint-disable prettier/prettier */
 import { INITIAL_STATE, reducer } from '../function/reducer'
-import { useContext, useEffect, useReducer, useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import TarjetaInvetarioDescartes from '../utils/TarjetaInvetarioDescartes'
-import TableDescartes from '../tables/TableDescartes'
 import BotonesInventarioDescartes from '../utils/BotonesInventarioDescartes'
 import { createPortal } from 'react-dom'
 import ModalConfirmarProcesoDescarte from '../modals/ModalConfirmarProcesoDescarte'
-import { themeContext, userContext } from '@renderer/App'
 
 type propsType = {
   filtro: string
-  setShowSuccess: (e) => void
-  setShowError: (e) => void
-  setMessage: (e) => void
 }
 
 let enfObj = {}
@@ -44,8 +39,6 @@ const request = {
 
 
 export default function InventarioDescartes(props: propsType): JSX.Element {
-  const theme = useContext(themeContext);
-  const user = useContext(userContext);
   const [datosOriginales, setDatosOriginales] = useState([])
   const [render, setRender] = useState<boolean>(false)
   const [reprocesar, setReprocesar] = useState<boolean>(true)
@@ -92,11 +85,10 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
 
   const seleccionarItems = (e): void => {
     const id = e.target.value
-    console.log(id)
     const [enf, descarte, tipoDescarte] = e.target.value.split('/')
       const lote = table.find((lote) => enf === lote._id)
     if (e.target.checked && lote) {
-      enfObj[id] = lote.inventarioActual[descarte][tipoDescarte]
+      enfObj[id] = lote.inventarioActual && lote.inventarioActual[descarte][tipoDescarte]
     } else if (!e.target.checked && lote) {
       delete enfObj[id]
     }
@@ -111,7 +103,7 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
       const [enf, descarte, tipoDescarte] = i.value.split('/')
       const lote = table.find((lote) => enf === lote._id)
       if (i.checked && lote) {
-        enfObj[id] = lote.inventarioActual[descarte][tipoDescarte]
+        enfObj[id] = lote.inventarioActual && lote.inventarioActual[descarte][tipoDescarte]
       } else if (!i.checked && lote) {
         delete enfObj[id]
       }
@@ -143,10 +135,7 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
 
   return (
     <div>
-      <TableDescartes />
       <BotonesInventarioDescartes
-        theme={theme}
-        user={user.cargo}
         table={table}
         enfObj={enfObj}
         reprocesar={reprocesar}
@@ -156,8 +145,6 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
         table.map((lote) => (
           <div key={lote._id}>
             <TarjetaInvetarioDescartes
-              theme={theme}
-              user={user.cargo}
               lote={lote}
               seleccionarItems={seleccionarItems}
               seleccionarVariosItems={seleccionarVariosItems}
@@ -168,13 +155,9 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
       {modal &&
         createPortal(
           <ModalConfirmarProcesoDescarte
-            setMessage={props.setMessage}
-            setShowError={props.setShowError}
-            setShowSuccess={props.setShowSuccess}
             table={table}
             procesar={procesar}
             propsModal={propsModal}
-            theme={theme}
             unCheck={unCheck}
             reset={reset}
           />,

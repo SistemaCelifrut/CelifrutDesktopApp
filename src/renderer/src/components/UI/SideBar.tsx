@@ -46,7 +46,6 @@ export default function SideBar(props: propsType): JSX.Element {
     setAreaState(areaArr);
     setElementoState(elementoArr2)
     setPermisos(permisosArr)
-    console.log(elementos)
   }, [])
 
   useEffect(() => {

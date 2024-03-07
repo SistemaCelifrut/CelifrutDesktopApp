@@ -41,9 +41,9 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
-
+  socket.off('serverToDesktop')
   socket.on('serverToDesktop', (data) => {
-    console.log("serverToDesktop", data)
+    console.log("serverToDesktop")
     if (data.status === 200) mainWindow.webContents.send('serverEmit', data)
     else console.log('error')
   })
@@ -176,7 +176,7 @@ ipcMain.handle('server', async (event, data) => {
     const request = { data:data }
     const response = await new Promise((resolve) => {
      socket.emit("Desktop", request, (serverResponse) => {
-      console.log(serverResponse)
+      // console.log(serverResponse)
       resolve(serverResponse);
      })
     })
