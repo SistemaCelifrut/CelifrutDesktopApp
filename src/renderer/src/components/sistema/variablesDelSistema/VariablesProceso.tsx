@@ -7,6 +7,7 @@ export default function VariablesProceso(): JSX.Element {
     const theme = useContext(themeContext);
     const [kilosVaciadosHoy, setKilosVaciadosHoy] = useState<number>(0);
     const [kilosProcesadosHoy, setKilosProcesadosHoy] = useState<number>(0);
+    const [kilosProcesadosHora, setKilosProcesadosHora] = useState<number>(0);
     const [predioProcesando, setPredioProcesando] = useState<string>('');
     const [nombrePredio, setNombrePredio] = useState<string>('');
     const [horaInicio, setHoraInicio] = useState<string>('');
@@ -22,6 +23,7 @@ export default function VariablesProceso(): JSX.Element {
                 const response = await window.api.server(request);
                 setKilosVaciadosHoy(Number(response.kilosVaciadosHoy));
                 setKilosProcesadosHoy(Number(response.kilosProcesadosHoy));
+                setKilosProcesadosHora(Number(response.kilosProcesadosHora));
                 setPredioProcesando(response.predioProcesando.enf);
                 setNombrePredio(response.predioProcesando.nombrePredio);
                 setHoraInicio(response.inicioProceso);
@@ -58,10 +60,16 @@ export default function VariablesProceso(): JSX.Element {
                                 {kilosVaciadosHoy} Kg
                             </td>
                         </tr>
-                        <tr className={`transition-colors duration-300 ${hoveredRow === 5 ? (theme === 'Dark' ? 'bg-gray-700' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(5)} onMouseLeave={() => setHoveredRow(null)}>
+                        <tr className={`border-b transition-colors duration-300 ${hoveredRow === 5 ? (theme === 'Dark' ? 'bg-gray-700' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(5)} onMouseLeave={() => setHoveredRow(null)}>
                             <td className={`py-3 px-6 text-xl font-bold`}><FontAwesomeIcon icon={faWeight} className="mr-2"/>Kilos procesados hoy:</td>
                             <td className={`py-3 px-6 text-xl`}>
                                 {kilosProcesadosHoy} Kg
+                            </td>
+                        </tr>
+                        <tr className={`transition-colors duration-300 ${hoveredRow === 6 ? (theme === 'Dark' ? 'bg-gray-700' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(6)} onMouseLeave={() => setHoveredRow(null)}>
+                            <td className={`py-3 px-6 text-xl font-bold`}><FontAwesomeIcon icon={faWeight} className="mr-2"/>Kilos procesados hora:</td>
+                            <td className={`py-3 px-6 text-xl`}>
+                                {kilosProcesadosHora} Kg
                             </td>
                         </tr>
                     </tbody>

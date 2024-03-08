@@ -249,23 +249,20 @@ const MiComponente: React.FC = () => {
         try {
             const removedLote = lotesOrdenVaceo[index];
             if (removedLote) {
-                // Mostrar el predio eliminado solo si no está desverdizado
-                if (!removedLote.lote.desverdizado) {
-                    const newShowPredios = { ...showPredios };
-                    newShowPredios[removedLote.lote._id] = true; // Mostrar el predio eliminado
-                    setShowPredios(newShowPredios);
-                }
-    
+                const newShowPredios = { ...showPredios };
+                newShowPredios[removedLote.lote._id] = true;
+                setShowPredios(newShowPredios);
+
                 const newLotesOrdenVaceo = lotesOrdenVaceo.filter((_, i) => i !== index);
                 setLotesOrdenVaceo(newLotesOrdenVaceo);
-    
+
                 await enviarOrdenVaceoAlServidor(newLotesOrdenVaceo.map(item => item.lote));
             }
         } catch (error) {
             console.error('Error al eliminar el lote del orden de vaceo:', error);
             alert('Error al eliminar el lote del orden de vaceo.');
         }
-    };   
+    };
 
     const enviarOrdenVaceoAlServidor = async (newLotesOrdenVaceo: Lote[]) => {
         try {
