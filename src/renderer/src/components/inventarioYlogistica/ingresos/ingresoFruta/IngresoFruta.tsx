@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import {  useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { proveedoresType } from '@renderer/types/proveedoresType';
 import * as strings from './json/strings_ES.json';
 import { crear_request_guardar, formInit, handleServerResponse, request_EF1, request_predios } from './functions/functions';
@@ -28,9 +28,13 @@ export default function IngresoFruta(): JSX.Element {
     obtenerEF1()
   }, [])
   const handleChange = (event): void => {
+    const { name, value } = event.target;
+
+    const uppercaseValue = name === 'placa' ? value.toUpperCase() : value;
+
     setFormState({
       ...formState,
-      [event.target.name]: event.target.value,
+      [name]: uppercaseValue,
     });
   };
   const guardarLote: React.FormEventHandler<HTMLFormElement> = async (event) => {

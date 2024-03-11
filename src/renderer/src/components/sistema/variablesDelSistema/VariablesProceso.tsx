@@ -1,13 +1,16 @@
 import { themeContext } from "@renderer/App";
 import { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faIndustry, faBuilding, faClock, faWeight } from "@fortawesome/free-solid-svg-icons";
+import { faIndustry, faBuilding, faClock, faWeight, faBolt  } from "@fortawesome/free-solid-svg-icons";
 
 export default function VariablesProceso(): JSX.Element {
     const theme = useContext(themeContext);
     const [kilosVaciadosHoy, setKilosVaciadosHoy] = useState<number>(0);
     const [kilosProcesadosHoy, setKilosProcesadosHoy] = useState<number>(0);
     const [kilosProcesadosHora, setKilosProcesadosHora] = useState<number>(0);
+    const [kilosExportacionHoy, setKilosExportacionHoy] = useState<number>(0);
+    const [kilosExpotacionHora, setKilosExportacionHora] = useState<number>(0);
+    const [rendimiento, setRendimiento] = useState<number>(0);
     const [predioProcesando, setPredioProcesando] = useState<string>('');
     const [nombrePredio, setNombrePredio] = useState<string>('');
     const [horaInicio, setHoraInicio] = useState<string>('');
@@ -24,6 +27,9 @@ export default function VariablesProceso(): JSX.Element {
                 setKilosVaciadosHoy(Number(response.kilosVaciadosHoy));
                 setKilosProcesadosHoy(Number(response.kilosProcesadosHoy));
                 setKilosProcesadosHora(Number(response.kilosProcesadosHora));
+                setKilosExportacionHoy(Number(response.kilosExportacionHoy));
+                setKilosExportacionHora(Number(response.kilosExportacionHora));
+                setRendimiento(Number(response.rendimiento));
                 setPredioProcesando(response.predioProcesando.enf);
                 setNombrePredio(response.predioProcesando.nombrePredio);
                 setHoraInicio(response.inicioProceso);
@@ -42,34 +48,52 @@ export default function VariablesProceso(): JSX.Element {
             <div className={`border rounded-lg overflow-hidden shadow-lg ${theme === 'Dark' ? 'border-gray-600 bg-gray-300' : 'border-gray-300 bg-white'}`}>
                 <table className="w-full border-collapse">
                     <tbody className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'}`}>
-                        <tr className={`border-b transition-colors duration-300 ${hoveredRow === 1 ? (theme === 'Dark' ? 'bg-gray-700' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(1)} onMouseLeave={() => setHoveredRow(null)}>
+                        <tr className={`border-b transition-colors duration-300 ${hoveredRow === 1 ? (theme === 'Dark' ? 'bg-gray-900' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(1)} onMouseLeave={() => setHoveredRow(null)}>
                             <td className={`py-3 px-6 text-xl font-bold`}><FontAwesomeIcon icon={faIndustry} className="mr-2"/>Predio procesando:</td>
                             <td className={`py-3 px-6 text-xl`}>{predioProcesando}</td>
                         </tr>
-                        <tr className={`border-b transition-colors duration-300 ${hoveredRow === 2 ? (theme === 'Dark' ? 'bg-gray-700' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(2)} onMouseLeave={() => setHoveredRow(null)}>
+                        <tr className={`border-b transition-colors duration-300 ${hoveredRow === 2 ? (theme === 'Dark' ? 'bg-gray-900' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(2)} onMouseLeave={() => setHoveredRow(null)}>
                             <td className={`py-3 px-6 text-xl font-bold`}><FontAwesomeIcon icon={faBuilding} className="mr-2"/>Nombre del predio:</td>
                             <td className={`py-3 px-6 text-xl`}>{nombrePredio}</td>
                         </tr>
-                        <tr className={`border-b transition-colors duration-300 ${hoveredRow === 3 ? (theme === 'Dark' ? 'bg-gray-700' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(3)} onMouseLeave={() => setHoveredRow(null)}>
+                        <tr className={`border-b transition-colors duration-300 ${hoveredRow === 3 ? (theme === 'Dark' ? 'bg-gray-900' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(3)} onMouseLeave={() => setHoveredRow(null)}>
                             <td className={`py-3 px-6 text-xl font-bold`}><FontAwesomeIcon icon={faClock} className="mr-2"/>Inicio proceso:</td>
                             <td className={`py-3 px-6 text-xl`}>{new Date(horaInicio).toLocaleString()}</td>
                         </tr>
-                        <tr className={`border-b transition-colors duration-300 ${hoveredRow === 4 ? (theme === 'Dark' ? 'bg-gray-700' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(4)} onMouseLeave={() => setHoveredRow(null)}>
+                        <tr className={`border-b transition-colors duration-300 ${hoveredRow === 4 ? (theme === 'Dark' ? 'bg-gray-900' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(4)} onMouseLeave={() => setHoveredRow(null)}>
                             <td className={`py-3 px-6 text-xl font-bold`}><FontAwesomeIcon icon={faWeight} className="mr-2"/>Kilos vaciados hoy:</td>
                             <td className={`py-3 px-6 text-xl`}>
-                                {kilosVaciadosHoy} Kg
+                                {kilosVaciadosHoy.toFixed(0)} Kg
                             </td>
                         </tr>
-                        <tr className={`border-b transition-colors duration-300 ${hoveredRow === 5 ? (theme === 'Dark' ? 'bg-gray-700' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(5)} onMouseLeave={() => setHoveredRow(null)}>
+                        <tr className={`border-b transition-colors duration-300 ${hoveredRow === 5 ? (theme === 'Dark' ? 'bg-gray-900' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(5)} onMouseLeave={() => setHoveredRow(null)}>
                             <td className={`py-3 px-6 text-xl font-bold`}><FontAwesomeIcon icon={faWeight} className="mr-2"/>Kilos procesados hoy:</td>
                             <td className={`py-3 px-6 text-xl`}>
-                                {kilosProcesadosHoy} Kg
+                                {kilosProcesadosHoy.toFixed(0)} Kg
                             </td>
                         </tr>
-                        <tr className={`transition-colors duration-300 ${hoveredRow === 6 ? (theme === 'Dark' ? 'bg-gray-700' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(6)} onMouseLeave={() => setHoveredRow(null)}>
+                        <tr className={`border-b transition-colors duration-300 ${hoveredRow === 6 ? (theme === 'Dark' ? 'bg-gray-900' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(6)} onMouseLeave={() => setHoveredRow(null)}>
                             <td className={`py-3 px-6 text-xl font-bold`}><FontAwesomeIcon icon={faWeight} className="mr-2"/>Kilos procesados hora:</td>
                             <td className={`py-3 px-6 text-xl`}>
-                                {kilosProcesadosHora} Kg
+                                {kilosProcesadosHora.toFixed(0)} Kg
+                            </td>
+                        </tr>
+                        <tr className={`border-b transition-colors duration-300 ${hoveredRow === 7 ? (theme === 'Dark' ? 'bg-gray-900' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(7)} onMouseLeave={() => setHoveredRow(null)}>
+                            <td className={`py-3 px-6 text-xl font-bold`}><FontAwesomeIcon icon={faWeight} className="mr-2"/>Kilos exportación hoy:</td>
+                            <td className={`py-3 px-6 text-xl`}>
+                                {kilosExportacionHoy.toFixed(0)} Kg
+                            </td>
+                        </tr>
+                        <tr className={`border-b transition-colors duration-300 ${hoveredRow === 8 ? (theme === 'Dark' ? 'bg-gray-900' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(8)} onMouseLeave={() => setHoveredRow(null)}>
+                            <td className={`py-3 px-6 text-xl font-bold`}><FontAwesomeIcon icon={faWeight} className="mr-2"/>Kilos exportación hora:</td>
+                            <td className={`py-3 px-6 text-xl`}>
+                                {kilosExpotacionHora.toFixed(0)} Kg
+                            </td>
+                        </tr>
+                        <tr className={`border-b transition-colors duration-300 ${hoveredRow === 9 ? (theme === 'Dark' ? 'bg-gray-900' : 'bg-gray-100') : ''}`} onMouseEnter={() => setHoveredRow(9)} onMouseLeave={() => setHoveredRow(null)}>
+                            <td className={`py-3 px-6 text-xl font-bold`}><FontAwesomeIcon icon={faBolt} className="mr-2"/>Rendimiento:</td>
+                            <td className={`py-3 px-6 text-xl`}>
+                                {rendimiento.toFixed(0)} %
                             </td>
                         </tr>
                     </tbody>

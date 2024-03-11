@@ -264,34 +264,62 @@ const MiComponente: React.FC = () => {
         }
     };
 
+    const handleVaciado = async () => {
+        try {
+            const idsPrediosVaciados = lotesOrdenVaceo.map(item => item.lote._id);
+
+            const response = await window.api.server({
+                data: idsPrediosVaciados,
+                action: 'vaciarPredios',
+                collection: 'variablesDesktop',
+                query: 'variablesDelProceso'
+            });
+
+            console.log('Respuesta del servidor al vaciar predios:', response);
+
+            if (response && response.status === 200) {
+                console.log('Predios vaciados correctamente.');
+                // Aquí puedes agregar lógica adicional si es necesario
+            } else {
+                throw new Error('Error al vaciar los predios. Respuesta:', response);
+            }
+        } catch (error) {
+            console.error('Error al vaciar los predios:', error);
+            alert('Error al vaciar los predios.');
+        }
+    };
+
     const enviarOrdenVaceoAlServidor = async (newLotesOrdenVaceo: Lote[]) => {
         try {
+            console.log('Enviando lotes a orden de vaceo:', newLotesOrdenVaceo);
+    
+            let idsLotesOrdenVaceo: string[];
             if (newLotesOrdenVaceo.length === 0) {
                 console.log('No hay lotes para enviar la orden de vaceo.');
-                return;
+                idsLotesOrdenVaceo = []; // Enviar un arreglo vacío al servidor
+            } else {
+                idsLotesOrdenVaceo = newLotesOrdenVaceo.map(lote => lote._id);
             }
-
-            console.log('Enviando lotes a orden de vaceo:', newLotesOrdenVaceo);
-
-            const idsLotesOrdenVaceo = newLotesOrdenVaceo.map(lote => lote._id);
+    
             const response = await window.api.server({
                 data: idsLotesOrdenVaceo,
                 action: 'guardarOrdenDeVaceo',
                 collection: 'variablesDesktop',
                 query: 'variablesDelProceso'
             });
-            console.log('id:', idsLotesOrdenVaceo);
+    
             console.log('Respuesta del servidor:', response);
-
+    
             if (response && response.status === 200) {
                 console.log('Orden de vaceo enviada correctamente al servidor.');
             } else {
                 throw new Error('Error al enviar la orden de vaceo al servidor. Respuesta:', response);
             }
         } catch (error) {
-            throw error;
+            console.error('Error al enviar la orden de vaceo al servidor:', error);
+            alert('Error al enviar la orden de vaceo al servidor.');
         }
-    };
+    };    
 
     return (
         <div className="flex justify-center items-start">
@@ -333,7 +361,7 @@ const MiComponente: React.FC = () => {
                     })}
                 </ul>
             </div>
-            <div className="w-1/2 p-4 border border-gray-300 rounded-md max-h-96 overflow-y-auto drop-zone" style={{ backgroundColor: '#f3f4f6', boxShadow: '0px 0px 10px 2px rgba(0,0,0,0.1)', position: 'sticky', top: '20px' }} onDragOver={handleDragOverOrdenVaceo} onDrop={handleDropOrdenVaceo}>
+            <div className="w-1/2 p-4 border border-gray-300 rounded-md max-h-96 overflow-y-auto drop-zone" style={{ backgroundColor: '#f3f4f6', boxShadow: '0px 0px 10px 2px rgba(0,0,0,0.1)', position: 'sticky', top: '80px', marginRight: '18px' }} onDragOver={handleDragOverOrdenVaceo} onDrop={handleDropOrdenVaceo}>
                 <h1 className="text-lg font-bold mb-4">Arrastra aquí para ordenar el vaceo</h1>
                 <ul className="space-y-4">
                     {lotesOrdenVaceo.map((loteOrdenVaceo, index) => (
@@ -350,6 +378,7 @@ const MiComponente: React.FC = () => {
                         </div>
                     ))}
                 </ul>
+                <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4" onClick={handleVaciado}>Vaciar Predios</button>
             </div>
         </div>
     );
