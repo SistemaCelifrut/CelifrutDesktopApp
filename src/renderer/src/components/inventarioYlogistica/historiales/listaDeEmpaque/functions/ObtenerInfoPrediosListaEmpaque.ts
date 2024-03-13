@@ -1,23 +1,25 @@
-import { ContenedoresObj } from '../types/types'
-import ObtenerPrediosContenedor from './ObtenerPrediosContenedor'
+/* eslint-disable prettier/prettier */
+import { contenedoresType } from '@renderer/types/contenedoresType'
+import ObtenerListaIdsPredios from './ObtenerListaIdsPredios'
 
 
-export default function (contenedor: ContenedoresObj, filtro: string) {
+
+export default function (contenedor: contenedoresType, filtro: string): object {
   try {
-    let outObj = {}
-    let enfs = ObtenerPrediosContenedor(contenedor)
-    enfs.forEach((enf) => {
-      outObj[enf] = {}
-      Object.keys(contenedor.pallets).forEach((pallet) => {
-        contenedor.pallets[pallet].EF1.map(item => {
-            if(item.id === enf){
-                if(outObj[enf].hasOwnProperty(pallet)){
-                    outObj[enf][pallet].push(item)
-                } else{
-                    outObj[enf][pallet] = []
-                    outObj[enf][pallet].push(item)
-                }
+    const outObj = {}
+    const enfs = ObtenerListaIdsPredios(contenedor)
+    enfs.forEach((_id) => {
+      outObj[_id] = {}
+      contenedor.pallets && contenedor.pallets.forEach((pallet, index) => {
+        pallet.EF1.map((item) => {
+          if (item.lote?._id === _id) {
+            if (Object.prototype.hasOwnProperty.call(outObj[_id], index)) {
+              outObj[_id][index].push(item)
+            } else {
+              outObj[_id][index] = []
+              outObj[_id][index].push(item)
             }
+          }
         })
       })
     })

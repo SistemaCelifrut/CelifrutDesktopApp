@@ -2,41 +2,43 @@
 import { useEffect, useState } from 'react'
 import TablaClasificacionCalidad from './components/TablaClasificacionCalidad'
 import NavClasificacionCalidad from './utils/NavClasificacionCalidad'
-import { lotesInventarioType } from './types/clasificacionTypes'
-
-const request = {
-  data:{
-    query:{ 
-      "calidad.clasificacionCalidad": { $exists : false},
-      enf: { $regex: '^E', $options: 'i' }
-    },
-    select : { enf:1, tipoFruta: 1, calidad:1 },
-    populate:{
-      path: 'predio',
-      select: 'PREDIO'
-    },
-    sort:{fechaIngreso: -1}
-  },
-  collection:'lotes',
-  action: 'getLotes',
-  query: 'proceso'
-};
+import { lotesType } from '@renderer/types/lotesType';
+import { requestlotes } from './functions/request';
+import useAppContext from '@renderer/hooks/useAppContext';
 
 export default function IngresoClasificacionCalidad(): JSX.Element {
-  const [lotesData, setLotesData] = useState<lotesInventarioType[]>([])
-  const [lote, setLote] = useState<lotesInventarioType>({_id:"", enf:"", predio:{PREDIO:""}, tipoFruta:'Limon'})
+  const {messageModal} = useAppContext();
+  const [lotesData, setLotesData] = useState<lotesType[]>([])
+  const [lote, setLote] = useState<lotesType>({_id:"", enf:"", predio:{PREDIO:""}, tipoFruta:'Limon'})
 
   useEffect(() => {
-    const interval = async (): Promise<void> => {
-      try {
-        const lotes = await window.api.server(request)
-        setLotesData(lotes.data)
-      } catch (e) {
-        alert(e)
+    interval()
+    window.api.serverEmit('serverEmit', handleServerEmit)
+    // Función de limpieza
+    return () => {
+      window.api.removeServerEmit('serverEmit', handleServerEmit)
+    }
+  }, [])
+
+  const handleServerEmit = async (data): Promise<void> => {
+    if (data.fn === "procesoLote" || data.fn === 'ingresoLote') {
+      await interval()
+    }
+  }
+
+  const interval = async (): Promise<void> => {
+    try {
+      const lotes = await window.api.server(requestlotes)
+      if(lotes.status !== 200){
+        throw new Error(`${lotes.message}`);
+      }
+      setLotesData(lotes.data)
+    } catch (e) {
+      if(e instanceof Error){
+        messageModal("error", `${e.message}`)
       }
     }
-    interval()
-  }, [])
+  }
 
   return (
     <div>

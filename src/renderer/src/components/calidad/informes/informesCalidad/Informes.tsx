@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useContext, useEffect, useState } from "react";
-import { dataContext, sectionContext, themeContext } from "@renderer/App";
+import { dataContext, sectionContext } from "@renderer/App";
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { GrTest } from "react-icons/gr";
@@ -13,9 +13,11 @@ import { GiBottleVapors } from "react-icons/gi";
 import { GrLinkNext } from "react-icons/gr";
 import { GrLinkPrevious } from "react-icons/gr";
 import { lotesType } from "@renderer/types/lotesType";
+import useAppContext from "@renderer/hooks/useAppContext";
+import { request } from "./functions/request";
 
 export default function Informes(): JSX.Element {
-  const theme = useContext(themeContext);
+  const {theme, messageModal} = useAppContext();
   const secctionMenu = useContext(sectionContext);
   const dataGlobal = useContext(dataContext);
   const [datos, setDatos] = useState<lotesType[]>([]);
@@ -23,51 +25,40 @@ export default function Informes(): JSX.Element {
   const [filtro, setFiltro] = useState('');
   const [countPage, setCountPage] = useState<number>(0);
 
-  useEffect(() => {
-    const obtenerDatosDelServidor = async (): Promise<void> => {
-      try {
-        const request = {
-          data:{
-            query:{enf: { $regex: '^E', $options: 'i' }},
-            select : {},
-            populate:{
-              path: 'predio',
-              select: 'PREDIO ICA'
-            },
-            sort:{fechaIngreso: -1},
-            limit: 50,
-          },
-          collection:'lotes',
-          action: 'getLotes',
-          query: 'proceso'
-        };
-        const response = await window.api.server(request);
-        const lotes: lotesType[] = response.data;
-
-        console.log('Datos del servidor:', lotes);
-
-        if (Array.isArray(lotes) && lotes.length > 0) {
-          setDatos(lotes);
-          setDatosFiltrados(lotes); // Inicializa los datos filtrados con los datos originales
-        } else {
-          console.error('El formato de lotes no es el esperado o está vacío.');
-        }
-      } catch (error) {
-        console.error('Error al obtener informes:', error);
+  const obtenerDatosDelServidor = async (): Promise<void> => {
+    try {
+      const response = await window.api.server(request);
+      if(response.status !== 200){
+        throw new Error(response.message);
       }
-    };
-
+      setDatos(response.data);
+      setDatosFiltrados(response.data); 
+    } catch (error) {
+      if(error instanceof Error){
+        messageModal("error",`${error.message}`)
+      }
+    }
+  };
+  const handleServerEmit = async (data): Promise<void> => {
+    if (data.fn === "procesoLote" || data.fn === 'ingresoLote' || data.fn === 'descartesToDescktop') {
+      await obtenerDatosDelServidor()
+    }
+  }
+  useEffect(() => {
     obtenerDatosDelServidor();
+    window.api.serverEmit('serverEmit', handleServerEmit)
+    // Función de limpieza
+    return () => {
+      window.api.removeServerEmit('serverEmit', handleServerEmit)
+    }
   }, [countPage]);
-
-
-
+ 
   useEffect(() => {
     const datosFiltrados = datos.filter(
       (item) =>
-        item._id.toLowerCase().includes(filtro.toLowerCase()) ||
-        item.predio.PREDIO.toLowerCase().includes(filtro.toLowerCase()) ||
-        item.tipoFruta.toLowerCase().includes(filtro.toLowerCase())
+        item._id && item._id.toLowerCase().includes(filtro.toLowerCase()) ||
+        item.predio && item.predio.PREDIO && item.predio.PREDIO.toLowerCase().includes(filtro.toLowerCase()) ||
+        item.tipoFruta && item.tipoFruta.toLowerCase().includes(filtro.toLowerCase())
     );
     setDatosFiltrados(datosFiltrados);
   }, [filtro, datos]);
@@ -77,15 +68,20 @@ export default function Informes(): JSX.Element {
   };
 
   const handleClickEF1 = (EF1): void => {
-    if(!secctionMenu){
-      throw new Error("Error informes context secction menu")
+    try{
+      if(!secctionMenu){
+        throw new Error("Error informes context secction menu")
+      }
+      if(!dataGlobal){
+        throw new Error("Error informes context data global")
+      }
+      secctionMenu.setSection("Inventario y Logística//Historiales//Lotes")
+      dataGlobal.setDataComponentes(EF1)
+    } catch(e){
+      if(e instanceof Error){
+        messageModal("error", `${e.message}`);
+      }
     }
-    if(!dataGlobal){
-      throw new Error("Error informes context data global")
-    }
-    secctionMenu.setSection("Inventario y Logística//Historiales//Lotes")
-    dataGlobal.setDataComponentes(EF1)
-
   }
 
   return (
@@ -131,7 +127,7 @@ export default function Informes(): JSX.Element {
                   onClick={(): void => handleClickEF1(item.enf)}>
                 {item.enf}
               </td>
-              <td className="p-2   text-center text-[11px]">{item.predio.PREDIO}</td>
+              <td className="p-2   text-center text-[11px]">{item.predio && item.predio.PREDIO}</td>
               <td className="p-2   text-center text-[11px]">{item.tipoFruta}</td>
               <td className="p-2   text-center text-[11px]">
                 <div className="flex flex-row justify-center">
@@ -150,14 +146,14 @@ export default function Informes(): JSX.Element {
               </td>
               <td className="p-2   text-center text-[11px]">
                 <div className="flex flex-row justify-center">
-                  {item.deshidratacion <= 2 ? <FcOk /> : <FcCancel />}
+                  {item.deshidratacion !== undefined && item.deshidratacion <= 2 ? <FcOk /> : <FcCancel />}
                 </div>
               </td>
               <td className="p-2   text-center text-[11px]">
               {item.calidad && Object.prototype.hasOwnProperty.call(item.calidad, 'calidadInterna') && 
                 Object.prototype.hasOwnProperty.call(item.calidad, 'clasificacionCalidad') && 
                 Object.prototype.hasOwnProperty.call(item.calidad, 'fotosCalidad') && 
-                item.deshidratacion <= 2 ? 
+                item.deshidratacion && item.deshidratacion <= 2 ? 
                   <button
                     className="text-white border-0 rounded-md p-2 cursor-pointer bg-Celifrut-green shadow-lg"
                     onClick={(): void => handleAccederDocumento(item.urlInformeCalidad)}>

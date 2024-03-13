@@ -65,7 +65,7 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
   const obtenerFruta = async (): Promise<void> => {
     try {
       const frutaActual = await window.api.server(request)
-      if (frutaActual.status === 200) {
+      if (frutaActual.status === 200 && Object.prototype.hasOwnProperty.call(frutaActual,"data")) {
         setDatosOriginales(frutaActual.data)
         dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
       } else {

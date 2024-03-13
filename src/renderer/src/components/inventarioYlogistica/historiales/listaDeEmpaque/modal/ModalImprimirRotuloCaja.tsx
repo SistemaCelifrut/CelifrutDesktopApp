@@ -1,11 +1,11 @@
 /* eslint-disable prettier/prettier */
-import { useContext, useState } from 'react'
-import { ContenedoresObj } from '../types/types'
+import { useContext } from 'react'
 import { themeContext } from '@renderer/App'
+// import { contenedoresType } from '@renderer/types/contenedoresType'
 
 type vaciadoType = {
     closeModal: () => void
-    contenedor: ContenedoresObj
+    // contenedor: contenedoresType
     predio: enfType
   }
   
@@ -15,24 +15,24 @@ type vaciadoType = {
 
 export default function ModalImprimirRotulocaja(props: vaciadoType): JSX.Element {
 const theme = useContext(themeContext)
-  const [caja, setCajas] = useState<number>(0)
-  const [tipoCaja, setTipoCaja] = useState<string>('')
+  // const [caja, setCajas] = useState<number>(0)
+  // const [tipoCaja, setTipoCaja] = useState<string>('')
 
-  const handleImprimir = async (): Promise<void> => {
-    console.log(props.predio)
-    const key = Object.keys(props.predio);
-    const data = {
-      tipoRotulo:'rotuloCaja',
-      cliente:props.contenedor.infoContenedor.nombreCliente,
-      enf:props.predio[key[0]][0].id,
-      nombrePredio: props.predio[key[0]][0].nombre,
-      contenedor: props.contenedor._id,
-      cajas: caja,
-      tipoCaja: tipoCaja
-    }
-    window.api.imprimirRotulos(data);
-    props.closeModal()
-  }
+  // const handleImprimir = async (): Promise<void> => {
+  //   console.log(props.predio)
+  //   const key = Object.keys(props.predio);
+  //   const data = {
+  //     tipoRotulo:'rotuloCaja',
+  //     cliente:props.contenedor.infoContenedor.nombreCliente,
+  //     enf:props.predio[key[0]][0].id,
+  //     nombrePredio: props.predio[key[0]][0].nombre,
+  //     contenedor: props.contenedor._id,
+  //     cajas: caja,
+  //     tipoCaja: tipoCaja
+  //   }
+  //   window.api.imprimirRotulos(data);
+  //   props.closeModal()
+  // }
 
   return (
     <div className={` fixed inset-0 flex items-center justify-center bg-black bg-opacity-50`}>
@@ -49,7 +49,7 @@ const theme = useContext(themeContext)
           min="0"
           step="1"
           className="border-2 border-gray-200 rounded-md p-2"
-          onChange={(e): void => setCajas(Number(e.target.value))}
+          // onChange={(e): void => setCajas(Number(e.target.value))}
         />
       </div>
       <div className="flex justify-center pb-5">
@@ -59,13 +59,13 @@ const theme = useContext(themeContext)
         <input
           type="text"
           className="border-2 border-gray-200 rounded-md p-2"
-          onChange={(e): void => setTipoCaja(e.target.value)}
+          // onChange={(e): void => setTipoCaja(e.target.value)}
         />
       </div>
       <div className="flex justify-center gap-4">
         <button
           className={`flex items-center justify-center bg-blue-600 text-white rounded-md px-4 py-2`}
-          onClick={handleImprimir}
+          // onClick={handleImprimir}
         >
           Imprimir
         </button>

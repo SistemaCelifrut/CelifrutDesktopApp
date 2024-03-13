@@ -17,7 +17,7 @@ export default function TarjetaHistorialClasificacionCalidad(props: propsType): 
             font-bold p-0 pl-4 flex flex-col gap-4 h-full justify-start `}>
                 <div className="flex flex-row gap-2">
                     <h2>{props.lote._id}</h2>
-                    <p>{props.lote.nombrePredio}</p>
+                    <p>{props.lote.predio.PREDIO}</p>
                     <p>{props.lote.tipoFruta}</p>
                     <p>{Object.prototype.hasOwnProperty.call(props.lote.calidad.clasificacionCalidad, 'fecha') &&
                         format(new Date(props.lote.calidad.clasificacionCalidad.fecha), 'dd-MM-yyyy')}

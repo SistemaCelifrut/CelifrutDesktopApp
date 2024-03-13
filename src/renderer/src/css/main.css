@@ -1,0 +1,39 @@
+:root {
+    --color-fondo: #fff;
+    --color-texto: #000000;
+    --color-Celifrut: #7D9F3A;
+    --color-Celifrut-dark: #6e8b34;
+
+    --color-ListaEmpaqueTexto: rgb(59 130 246);
+    --color-ListaEmpaqueFondo: rgb(233, 240, 251);
+    --color-shadow: rgba(186, 186, 186, 1);
+}
+
+.dark-theme {
+    --color-fondo: #090224;
+    --color-texto: #fff;
+    --color-ListaEmpaqueTexto: #fff;
+    --color-ListaEmpaqueFondo: rgb(54, 69, 94);
+    --color-shadow: rgb(68, 66, 73);
+
+}
+
+body {
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+}
+
+.defaultSelect {
+    color: black;
+    width: 100%;
+    height: auto;
+    border: 1px;
+    padding: 4px 8px;
+    border-style: solid;
+    border-color: #999;
+    border-radius: 8px;
+    margin-right: 8px;
+
+}
+
+

@@ -1,15 +1,14 @@
 /* eslint-disable prettier/prettier */
-import { themeType } from '@renderer/env'
+import useAppContext from '@renderer/hooks/useAppContext'
 import { calidadInternaType } from '../types/calidadInterna'
 
 type propsType = {
-  theme: themeType
-  user: string
   handleChange: (data: React.ChangeEvent<HTMLInputElement>, action: string) => void
   formulario: calidadInternaType
 }
 
 export default function ContenidoZumo(props: propsType): JSX.Element {
+  const {theme} = useAppContext();
   const calcularPorcentaje = (): string => {
     const pesoInicial = parseFloat(props.formulario.pesoInicial)
     const pesoZumo = parseFloat(props.formulario.zumo)
@@ -22,11 +21,11 @@ export default function ContenidoZumo(props: propsType): JSX.Element {
 
   return (
     <div
-      className={`${props.theme === 'Dark' ? 'bg-slate-500' : 'bg-slate-100'} 
-                        flex flex-col gap-4 w-[470] p-4 rounded-lg shadow-lg m-4`}
+      className={`${theme === 'Dark' ? 'bg-slate-500' : 'bg-slate-100'} 
+                        flex flex-col gap-4 w-8/12 p-4 rounded-lg shadow-lg m-4 `}
     >
       <h2
-        className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}
+        className={`${theme === 'Dark' ? 'text-white' : 'text-black'}
                         text-xl font-bold mb-4 text-center`}
       >
         Contenido Zumo
@@ -48,7 +47,7 @@ export default function ContenidoZumo(props: propsType): JSX.Element {
       <div className="checkBoxContainer">
         <label
           htmlFor="semillas"
-          className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}
+          className={`${theme === 'Dark' ? 'text-white' : 'text-black'}
                         text-xl font-bold mb-4 text-center mr-2`}
         >
           Semillas
@@ -61,7 +60,7 @@ export default function ContenidoZumo(props: propsType): JSX.Element {
         />
       </div>
       <p
-        className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}
+        className={`${theme === 'Dark' ? 'text-white' : 'text-black'}
                         text-xl mb-4 text-center`}
       >
         Porcentaje de Llenado de Contenido Zumo: {calcularPorcentaje()}%

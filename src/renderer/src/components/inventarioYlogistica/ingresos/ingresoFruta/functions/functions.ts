@@ -1,11 +1,11 @@
 /* eslint-disable prettier/prettier */
-import { proveedorType } from '@renderer/components/inventarioYlogistica/inventarios/frutaSinProcesar/types/types'
 import { serverResponse } from '@renderer/types/login'
+import { proveedoresType } from '@renderer/types/proveedoresType'
 
 export const handleServerResponse = (
   response,
   messageModal
-): serverResponse<proveedorType[] | { enf: string }> | never => {
+): serverResponse<proveedoresType[] | { enf: string }> | never => {
   console.log(response)
   if (response.status === 200) {
     return response.data

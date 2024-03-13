@@ -2,40 +2,39 @@
 import { useEffect, useState } from 'react'
 import NavCalidadInternaForm from './utils/NavCalidadInternaForm'
 import PruebasCalidadInterna from './components/PruebasCalidadInterna'
-import { calidadInternalote } from './types/calidadInterna';
+import { lotesType } from '@renderer/types/lotesType';
+import { requestLotes } from './functions/request';
+import useAppContext from '@renderer/hooks/useAppContext';
 
-const request = {
-  data:{
-    query:{ 
-      "calidad.calidadInterna": { $exists : false},
-      enf: { $regex: '^E', $options: 'i' }
-    },
-    select : { enf:1 },
-    populate:{
-      path: 'predio',
-      select: 'PREDIO ICA'
-    },
-    sort:{fechaIngreso: -1}
-  },
-  collection:'lotes',
-  action: 'getLotes',
-  query: 'proceso'
-};
+
 
 export default function CalidadInterna(): JSX.Element {
+  const {messageModal} = useAppContext();
   const [lotesData, setLotesData] = useState([])
-  const [lote, setLote] = useState<calidadInternalote>({_id:"",enf:"",})
+  const [lote, setLote] = useState<lotesType>({_id:"",enf:"",})
 
-  useEffect(() => {
-    const interval = async (): Promise<void> => {
-      try {
-        const lotes = await window.api.server(request)
-        setLotesData(lotes.data)
-      } catch (e) {
-        alert(e)
+  const interval = async (): Promise<void> => {
+    try {
+      const lotes = await window.api.server(requestLotes)
+      setLotesData(lotes.data)
+    } catch (e: unknown) {
+      if(e instanceof Error){
+        messageModal("error",`Error: ${e.message}`)
       }
     }
+  }
+  useEffect(() => {
     interval()
+    const handleServerEmit = async (data): Promise<void> => {
+      if (data.fn === "procesoLote") {
+        await interval()
+      }
+    }
+    window.api.serverEmit('serverEmit', handleServerEmit)
+    // Función de limpieza
+    return () => {
+      window.api.removeServerEmit('serverEmit', handleServerEmit)
+    }
   }, [])
 
   return (

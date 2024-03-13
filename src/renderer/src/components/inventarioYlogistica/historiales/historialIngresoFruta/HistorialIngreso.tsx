@@ -85,8 +85,8 @@ const HistorialIngresoFruta = (): JSX.Element => {
             {datosFiltrados.map((item, index) => (
               <tr key={index} className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'} ${theme === 'Dark' ? 'border-b border-white' : 'border-b border-gray-300'}`}>
                 <td className="border px-4 py-2">{item.enf}</td>
-                <td className="border px-4 py-2">{item.predio.PREDIO}</td>
-                <td className="border px-4 py-2">{format(new Date(item.fechaIngreso), 'dd/MM/yyyy')}</td>
+                <td className="border px-4 py-2">{item.predio && item.predio.PREDIO}</td>
+                <td className="border px-4 py-2">{format(item.fechaIngreso ? new Date(item.fechaIngreso) : new Date(), 'dd/MM/yyyy')}</td>
                 <td className="border px-4 py-2">{item.canastillas}</td>
                 <td className="border px-4 py-2">{item.tipoFruta}</td>
                 <td className="border px-4 py-2">{item.observaciones}</td>

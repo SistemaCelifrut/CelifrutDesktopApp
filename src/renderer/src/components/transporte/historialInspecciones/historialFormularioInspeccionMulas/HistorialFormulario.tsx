@@ -28,7 +28,7 @@ const HistorialFormulario: React.FC = () => {
         };
 
         // Reemplaza esto con tu llamada real a la API
-        const response = await window.api.contenedores(request);
+        const response = await window.api.server(request);
 
         if (response.status === 200 && response.data) {
           setHistorialData(response.data);

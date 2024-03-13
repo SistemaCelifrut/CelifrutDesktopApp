@@ -1,9 +1,8 @@
 /* eslint-disable prettier/prettier */
-import { lotesInventarioType } from '../types/calidadInterna'
-
+import { lotesType } from "@renderer/types/lotesType";
 
 type propsType = {
-  lotesData: lotesInventarioType[]
+  lotesData: lotesType[]
   setLote: (e) => void
 }
 
@@ -31,7 +30,9 @@ export default function NavCalidadInternaForm(props: propsType): JSX.Element {
       >
         <option>Lotes</option>
         {props.lotesData.map((lote) => (
-          <option key={lote._id} value={lote._id}>{lote.enf + ' ' + ' ' + lote.predio.PREDIO}</option>
+          <option key={lote._id} value={lote._id}>
+            {lote && lote.predio ?  lote.enf + ' ' + ' ' + lote.predio.PREDIO : ' '}
+          </option>
         ))}
       </select>
     </div>

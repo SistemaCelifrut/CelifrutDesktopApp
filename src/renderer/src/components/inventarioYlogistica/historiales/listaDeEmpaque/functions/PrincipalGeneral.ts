@@ -22,8 +22,8 @@ export default function (contenedor: contenedoresType | undefined): PrincipalGen
     const calibre = {}
     const tipoCaja = {}
 
-    contenedor.pallets.forEach((pallet) => {
-      total += pallet.cajasTotal
+    contenedor.pallets && contenedor.pallets.forEach((pallet) => {
+      total += pallet.EF1.reduce((acu , item) => acu += item.cajas ? item.cajas : 0 , 0)
 
       pallet.EF1.forEach((item) => {
         if (item.calidad !== undefined) {

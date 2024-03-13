@@ -12,9 +12,11 @@ export type filtroColumnasType = {
   directoNacional: boolean,
   frutaNacional: boolean,
   desverdizado: boolean,
-  exportacion: boolean,
   observaciones: boolean,
   deshidratacion: boolean,
+  exportacion: boolean,
+  contenedores: boolean,
+
 }
 
 export type graficaDataType = {

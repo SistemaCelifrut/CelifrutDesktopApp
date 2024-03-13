@@ -2,12 +2,13 @@
 
 import { themeContext } from "@renderer/App"
 import { useContext } from "react"
-import { LoteDataType, filtroColumnasCalidadType } from "../type/types"
+import { filtroColumnasCalidadType } from "../type/types"
 import { KEY_FILTRO_COL_CALIDAD } from "../functions/constantes"
 import { format } from "date-fns"
+import { lotesType } from "@renderer/types/lotesType"
 
 type propsType = {
-    data: LoteDataType[]
+    data: lotesType[]
     columnVisibility: filtroColumnasCalidadType
 }
 export default function TableInfolotesCalidad(props: propsType): JSX.Element {
@@ -43,16 +44,16 @@ export default function TableInfolotesCalidad(props: propsType): JSX.Element {
                                     <td className="p-2 text-sm  text-center">{lote.enf}</td>
                                     <td className="p-2 text-sm  text-center">{lote.predio?.PREDIO}</td>
                                     <td className="p-2 text-sm  text-center">
-                                        {format(new Date(lote.fechaIngreso), 'dd-MM-yyyy')}
+                                        {format(lote.fechaIngreso ? new Date(lote.fechaIngreso) : new Date(), 'dd-MM-yyyy')}
                                     </td>
                                     <td className="p-2 text-sm  text-center">
-                                        {Object.prototype.hasOwnProperty.call(lote.calidad.calidadInterna, 'fecha') && format(new Date(lote.calidad.calidadInterna.fecha), 'dd-MM-yyyy')}
+                                        {lote.calidad && Object.prototype.hasOwnProperty.call(lote.calidad.calidadInterna, 'fecha') && format(lote.calidad.calidadInterna ? new Date(lote.calidad.calidadInterna.fecha) : new Date(), 'dd-MM-yyyy')}
                                     </td>
                                     <td className="p-2 text-sm  text-center">{lote.tipoFruta}</td>
                                     {Object.keys(props.columnVisibility).map((item, index) => {
                                         if(props.columnVisibility[item]){
                                             return(
-                                                <td key={index + item} className="p-2 text-sm  text-center">{lote.calidad.calidadInterna[item].toFixed(2)}</td>
+                                                <td key={index + item} className="p-2 text-sm  text-center">{lote.calidad && lote.calidad.calidadInterna && lote.calidad.calidadInterna[item].toFixed(2)}</td>
                                             )
                                         } else {
                                             return null

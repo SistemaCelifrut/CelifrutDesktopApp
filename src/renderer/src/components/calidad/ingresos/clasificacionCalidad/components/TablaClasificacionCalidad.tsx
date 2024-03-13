@@ -1,8 +1,7 @@
 /* eslint-disable prettier/prettier */
-import { lotesInventarioType, serverResponse } from '../types/clasificacionTypes'
 import FormClasificacionCalidadLimon from './FormClasificacionCalidadLimon'
 import FormClasificacionCalidadNaranja from './FormClasificacionCalidadNaranja'
-import { useState, useReducer, createContext, useEffect, useContext } from 'react'
+import { useState, useReducer, createContext, useEffect } from 'react'
 import {
   INITIAL_STATE_LIMON,
   INITIAL_STATE_NARANJA,
@@ -10,26 +9,27 @@ import {
   reducerNaranja
 } from '../functions/reduce'
 import { obtenerPorcentage } from '../functions/obtenerPorcentage'
-import { themeContext } from '@renderer/App'
+import { lotesType } from '@renderer/types/lotesType'
+import useAppContext from '@renderer/hooks/useAppContext'
 
 type propsType = {
-  lote: lotesInventarioType
+  lote: lotesType
 }
 
 export const formLimonContext = createContext(INITIAL_STATE_LIMON)
 export const formNaranjaContext = createContext(INITIAL_STATE_NARANJA)
 
 export default function TablaClasificacionCalidad(props: propsType): JSX.Element {
-  const theme = useContext(themeContext)
+  const {theme, messageModal} = useAppContext();
   const [totalPorcentaje, setTotalPorcentaje] = useState(0)
   const [formularioLimon, dispatchLimon] = useReducer(reducerLimon, INITIAL_STATE_LIMON)
   const [formularioNaranja, dispatchNaranja] = useReducer(reducerNaranja, INITIAL_STATE_NARANJA)
 
   const handleGuardar = async (): Promise<void> => {
     try {
+      console.log(props.lote)
       if (totalPorcentaje !== 100) {
-        alert('Error: el porcentaje debe ser igual a 100%')
-        return
+        throw new Error("Error: el porcentaje debe ser igual a 100%")
       }
       const objRes = { lote: '' }
       if (props.lote.tipoFruta === 'Limon') {
@@ -44,7 +44,7 @@ export default function TablaClasificacionCalidad(props: propsType): JSX.Element
       const new_lote = {
         ...props.lote,
         calidad:{
-          calidadInterna:props.lote.calidad?.calidadInterna,
+          ...props.lote.calidad,
           clasificacionCalidad:objRes
         }
       }
@@ -57,38 +57,22 @@ export default function TablaClasificacionCalidad(props: propsType): JSX.Element
           lote:new_lote
         }
     }
-      const response: serverResponse = await window.api.server(request)
-
-      const requestLotes = {
-        data:{
-          query:{ 
-            "calidad.clasificacionCalidad": { $exists : false},
-          },
-          select : { enf:1, tipoFruta: 1 },
-          populate:{
-            path: 'predio',
-            select: 'PREDIO'
-          },
-          sort:{fechaIngreso: -1}
-        },
-        collection:'lotes',
-        action: 'getLotes',
-        query: 'proceso'
-      };
-
-      await window.api.server(requestLotes)
-      if (response.status === 200) {
-        alert('Guardado exitoso')
-        if(props.lote.tipoFruta === 'Limon'){
-          dispatchLimon({ type: 'initialData', data: '', cardData: '' })
-        } else if(props.lote.tipoFruta === 'Naranja'){
-          dispatchNaranja({ type: 'initialData', data: '', cardData: '' })
-        }
-      } else {
-        alert('Error al guardar los datos')
-      }
+      const response = await window.api.server(request)
+      console.log(response)
+      if (response.status !== 200) {
+        throw new Error(`${response.message}`);
+      } 
+      messageModal("success","Datos guardados con exito!")
     } catch (e: unknown) {
-      alert(`${e}`)
+      if(e instanceof Error){
+        messageModal("error",`${e.message}`);
+      }
+    } finally {
+      if(props.lote.tipoFruta === 'Limon'){
+        dispatchLimon({ type: 'initialData', data: '', cardData: '' });
+      } else if(props.lote.tipoFruta === 'Naranja'){
+        dispatchNaranja({ type: 'initialData', data: '', cardData: '' });
+      }
     }
   }
 
@@ -134,7 +118,7 @@ export default function TablaClasificacionCalidad(props: propsType): JSX.Element
         </formLimonContext.Provider>
       ) : (
         <formNaranjaContext.Provider value={formularioNaranja}>
-          <FormClasificacionCalidadNaranja handleChange={handleChangeNaranja} tipoFruta={props.lote.tipoFruta}/>
+          <FormClasificacionCalidadNaranja handleChange={handleChangeNaranja} tipoFruta={props.lote.tipoFruta ? props.lote.tipoFruta : 'Limon'}/>
         </formNaranjaContext.Provider>
       )}
       <button

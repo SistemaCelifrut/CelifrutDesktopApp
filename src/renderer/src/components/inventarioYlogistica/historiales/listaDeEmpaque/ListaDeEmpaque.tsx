@@ -1,18 +1,18 @@
 /* eslint-disable prettier/prettier */
 
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect } from 'react'
 import NavBarListaEmpaque from './utils/NavBarListaEmpaque'
 import FiltrosListaEmpaque from './utils/FiltrosListaEmpaque'
 import TablePrincipalGeneral from './tables/TablePrincipalGeneral'
 import TablePallets from './tables/TablePallets'
 import TablePrediosListaEmpaque from './tables/TablePrediosListaEmpaque'
-import { themeContext } from '@renderer/App'
 import { contenedoresType } from '@renderer/types/contenedoresType'
+import useAppContext from '@renderer/hooks/useAppContext'
 
 
 
 export default function ListaDeEmpaque(): JSX.Element {
-  const theme = useContext(themeContext)
+  const {messageModal} = useAppContext();
   const [contenedores, setContenedores] = useState<contenedoresType[]>([])
   const [contenedor, setContenedor] = useState<contenedoresType | undefined>()
   const [contenedorSelect, setContenedorSelect] = useState<string>('')
@@ -20,38 +20,47 @@ export default function ListaDeEmpaque(): JSX.Element {
   const [filtro2, setFiltro2] = useState<string>('')
 
   useEffect(() => {
-    const obtenerDatos = async (): Promise<void> => {
-      try {
-        const request = {
-          data: {
-            query: {"infoContenedor.cerrado": false},
-            select: {},
-            populate:
-              [{
-                path: "infoContenedor.clienteInfo",
-                select: "CLIENTE",
-              }],
-          },
-          collection: 'contenedores',
-          action: 'getContenedores',
-          query: 'proceso'
-        };
-        const response = await window.api.server(request)
-        console.log(response.data)
-        if(response.status === 200)
-        setContenedores(response.data)
-      } catch (e) {
-        console.log("Error", e)
-      }
-    }
     obtenerDatos()
-
-    // window.api.listaEmpaqueInfo('listaEmpaqueInfo', (response) => {
-    //   setContenedores(response.data.contenedores)
-    //   console.log(response);
-    // })
+    window.api.serverEmit('serverEmit', handleServerEmit)
+        // Función de limpieza
+        return () => {
+          window.api.removeServerEmit('serverEmit', handleServerEmit)
+        }
   }, [])
 
+  const obtenerDatos = async (): Promise<void> => {
+    try {
+      const request = {
+        data: {
+          query: {"infoContenedor.cerrado": false},
+          select: {},
+          populate:
+            [{
+              path: "infoContenedor.clienteInfo",
+              select: "CLIENTE",
+            }],
+        },
+        collection: 'contenedores',
+        action: 'getContenedores',
+        query: 'proceso'
+      };
+      const response = await window.api.server(request)
+      if(response.status !== 200){
+        throw new Error(response.message);
+      }
+      setContenedores(response.data)
+    } catch (e) {
+      if(e instanceof Error){
+        messageModal("error", e.message)
+      }
+    }
+  }
+
+  const handleServerEmit = async (data): Promise<void> => {
+    if (data.fn === "vaciado" || data.fn === "ingresoLote" || data.fn === "procesoLote" || data.fn === "descartesToDescktop") {
+      await obtenerDatos()
+    }
+}
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setContenedorSelect((event.target.value as string))
   }
@@ -69,17 +78,16 @@ export default function ListaDeEmpaque(): JSX.Element {
   useEffect(() => { }, [filtro2])
 
   return (
-    <div className='w-full'>
+    <div className='componentContainer'>
       <NavBarListaEmpaque contenedores={contenedores} handleChange={handleChange} />
       <FiltrosListaEmpaque
         contenedor={contenedor}
         setFiltro={setFiltro}
         setFiltro2={setFiltro2}
-        theme={theme}
       />
       <div>
         {filtro === '' ? (
-          <TablePrincipalGeneral contenedor={contenedor} theme={theme} />
+          <TablePrincipalGeneral contenedor={contenedor} />
         ) : null}
       </div>
       <div>
@@ -87,13 +95,11 @@ export default function ListaDeEmpaque(): JSX.Element {
           <TablePallets
             contenedor={contenedor}
             filtro={filtro2}
-            theme={theme}
           />
         ) : null}
         <div>
           {filtro === 'predio' ? (
             <TablePrediosListaEmpaque
-              theme={theme}
               contenedor={contenedor}
               filtro={filtro2}
             />

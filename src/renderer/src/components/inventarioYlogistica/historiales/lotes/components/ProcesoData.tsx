@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 
-import { dataContext, themeContext } from "@renderer/App"
+import { dataContext } from "@renderer/App"
 import { useContext, useEffect, useState } from "react"
 import FiltrosColumnas from "../utils/FiltrosColumnas"
 import FiltrosFilas from "../utils/FiltrosFilas"
@@ -13,9 +13,11 @@ import TableInfoLotes from "../table/TableInfoLotes"
 import PromediosProceso from "../utils/PromediosProceso"
 import { crear_filtro } from "../functions/filtroProceso"
 import { lotesType } from "@renderer/types/lotesType"
+import useAppContext from "@renderer/hooks/useAppContext"
+import { requestLotes, requestProveedor } from "../functions/request"
 
 export default function ProcesoData(): JSX.Element {
-    const theme = useContext(themeContext)
+    const {theme, messageModal} = useAppContext();
     const dataGlobal = useContext(dataContext);
     if(!dataGlobal){
         throw new Error("Error informes context data global")
@@ -54,52 +56,33 @@ export default function ProcesoData(): JSX.Element {
     }, [ef1, filtroPredio])
 
     const obtenerData = async (): Promise<void> => {
+      try{
         if(prediosData.length === 0){
-            const requestProveedor = {
-                data:{
-                  query:{},
-                },
-                collection:'proveedors',
-                action: 'obtenerProveedores',
-                query: 'proceso'
-              };
             const response = await window.api.server(requestProveedor);
             const nombrePredio = await response.data.map((item) => item.PREDIO)
              setPrediosData(nombrePredio)
         }
         const filtro_request = crear_filtro(filtro);
-        const request = {
-            data:{
-              query:{...filtro_request, enf: { $regex: '^E', $options: 'i' }},
-              select : {},
-              populate:{
-                path: 'predio',
-                select: 'PREDIO ICA'
-              },
-              sort:{fechaIngreso: -1},
-              limit: cantidad,
-            },
-            collection:'lotes',
-            action: 'getLotes',
-            query: 'proceso'
-          };
+        const request = requestLotes(filtro_request, cantidad)
         const datosLotes = await window.api.server(request);
         setDataOriginal(datosLotes.data)
-
         if (ef1 === '') {
             setData(datosLotes.data)
         }
         else if (ef1 !== '') {
             setData(() => datosLotes.data.filter(item =>item._id.toLowerCase().includes(ef1.toLowerCase())))
         }
-        // const dataGrafica = datosGraficas(datosLotes.data)
-        // setDataGrafica(dataGrafica)
-    }
-    const handleServerEmit = async (data): Promise<void> => {
-        if (data.fn === "vaciado" || data.fn === "ingresoLote" || data.fn === "procesoLote") {
-          await obtenerData()
+      } catch (e: unknown){
+        if(e instanceof Error){
+            messageModal("error",`Error: ${e.message}`);
         }
       }
+    }
+    const handleServerEmit = async (data): Promise<void> => {
+        if (data.fn === "vaciado" || data.fn === "ingresoLote" || data.fn === "procesoLote" || data.fn === "descartesToDescktop") {
+          await obtenerData()
+        }
+    }
     const handleChange = (e): void => {
         setColumnVisibility({
             ...columnVisibility,

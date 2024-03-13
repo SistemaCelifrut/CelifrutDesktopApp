@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { format } from 'date-fns'
 import HeaderTableFurtaSinProcesar from '../utils/HeaderTableFurtaSinProcesar'
-import React, { useState } from 'react'
+import React from 'react'
 import { lotesType } from '@renderer/types/lotesType'
 
 type propsType = {
@@ -11,15 +11,9 @@ type propsType = {
 }
 
 export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
-  const [selectedValue, setSelectedValue] = useState(null);
 
   const handleClick = (e): void => {
-    if (selectedValue === e.target.value) {
-      setSelectedValue(null);
-    } else {
-      setSelectedValue(e.target.value);
       props.clickLote(e);
-    }
   };
   return (
     <div>
@@ -39,7 +33,6 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
                 type="radio" 
                 onChange={handleClick} 
                 id={lote.enf} 
-                checked={props.propsModal.enf === selectedValue } 
                 value={lote.enf} 
                 name='lote' ></input>
             </div>

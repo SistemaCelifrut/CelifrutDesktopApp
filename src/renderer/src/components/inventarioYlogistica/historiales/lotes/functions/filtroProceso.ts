@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-type consultaType = {
+export type consultaType = {
     tipoFruta?: string
     fechaIngreso?: {
         $gte?: Date

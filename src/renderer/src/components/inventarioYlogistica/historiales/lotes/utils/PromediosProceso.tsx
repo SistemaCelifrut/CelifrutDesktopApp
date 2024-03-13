@@ -2,13 +2,14 @@
 
 import { themeContext } from "@renderer/App"
 import { useContext } from "react"
-import { LoteDataType, filtroColumnasType } from "../type/types"
+import { filtroColumnasType } from "../type/types"
 import { KEYS_FILTROS_COL } from "../functions/constantes"
 import { promedio, promedioDescartes, promedioExportacion } from "../functions/functions"
+import { lotesType } from "@renderer/types/lotesType"
 
 type propsType = {
     columnVisibility: filtroColumnasType
-    data: LoteDataType[]
+    data: lotesType[]
 }
 
 export default function PromediosProceso(props:propsType): JSX.Element {

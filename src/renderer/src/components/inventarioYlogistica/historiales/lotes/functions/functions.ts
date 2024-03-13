@@ -17,6 +17,7 @@ export const filtrosColumnasObj = {
   frutaNacional: false,
   desverdizado: false,
   exportacion: false,
+  contenedores: false,
   observaciones: false,
   deshidratacion: false
 }
@@ -60,7 +61,7 @@ export const datosGraficas = (datos: lotesType[]): graficaDataType[] => {
         ) / datos.filter((item) => item.predio?.PREDIO === nombrepredio).length
     const exportacionProm = datos.filter((item) => item.predio?.PREDIO === nombrepredio)
         .reduce(
-          (acu, lote) =>  acu += (lote.calidad1 && lote.calidad15 && lote.calidad2) ? 
+          (acu, lote) =>  acu += (lote.calidad1 !== undefined && lote.calidad15 !==  undefined && lote.calidad2 !== undefined) ? 
           lote.calidad1 + lote.calidad15 + lote.calidad2 : 0, 0
         ) / datos.filter((item) => item.predio?.PREDIO === nombrepredio).length
 
@@ -138,7 +139,7 @@ export const datosGraficaDona = (datos: lotesType[]): graficaDonaDataType => {
     0
   )
   const totalExportacion = datos.reduce(
-    (acu, lote) =>  acu += (lote.calidad1 && lote.calidad15 && lote.calidad2) ? 
+    (acu, lote) =>  acu += (lote.calidad1 !== undefined && lote.calidad15 !== undefined && lote.calidad2 !== undefined) ? 
       lote.calidad1 + lote.calidad15 + lote.calidad2 : 0, 0)
   const totalDeshidratacion = datos.reduce((acu, kilos) => (acu += kilos.deshidratacion ? kilos.deshidratacion : 0), 0)
 
@@ -191,7 +192,7 @@ export const promedioExportacion = (datos: lotesType[]): number => {
 export const promedioCalidad = (datos: lotesType[], llave): number => {
   const sumatoria = datos.reduce((acu, item) => {
     if(Object.prototype.hasOwnProperty.call(item,'calidad') && Object.prototype.hasOwnProperty.call(item.calidad, 'calidadInterna')){
-      return acu += Number(item.calidad && item.calidad.calidadInterna[llave])
+      return acu += Number(item.calidad && item.calidad.calidadInterna && item.calidad.calidadInterna[llave])
     } else {
       return acu += 0
     }

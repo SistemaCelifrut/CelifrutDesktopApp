@@ -1,11 +1,10 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react'
-import { themeType } from '@renderer/env'
 import ObtenerPrediosContenedor from '../functions/ObtenerPrediosContenedor'
 import { contenedoresType } from '@renderer/types/contenedoresType'
+import "@renderer/css/filtros.css"
 
 type propsType = {
-  theme: themeType
   contenedor: contenedoresType | undefined
   setFiltro: (data: string) => void
   setFiltro2: (data: string) => void
@@ -13,12 +12,8 @@ type propsType = {
 
 export default function FiltrosListaEmpaque(props: propsType): JSX.Element {
   const [value1, setValue1] = useState<string>('')
-
   const [predios, setPredios] = useState<string[]>([])
 
-  useEffect(()=>{
-    console.log("awswads", props.contenedor)
-  }, [])
 
   const handleFiltro1 = (e): void => {
     props.setFiltro(e.target.value)
@@ -30,58 +25,50 @@ export default function FiltrosListaEmpaque(props: propsType): JSX.Element {
   }
 
   useEffect(() => {
-    if(props.contenedor){
+    if (props.contenedor) {
       const response: string[] = ObtenerPrediosContenedor(props.contenedor)
-      console.log("filtros component",response)
       setPredios(response)
     }
   }, [value1])
 
   return (
-    <div className="m-4">
-      <p className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}`}>
+    <div className='filtroContainer'>
+      <h3>
         Opciones de busqueda
-      </p>
+      </h3>
       <hr />
-      <div className="m-2">
-        <select
-          onChange={handleFiltro1}
-          className={`border focus:outline-none appearance-none w-38 mr-5 rounded-md h-10 pl-5 pr-10
-                          ${'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '}`}
-        >
+      <div className='div-filter-actions'>
+        <select onChange={handleFiltro1}>
           <option value={''}>None</option>
           {props.contenedor && (
             <>
               <option value={'predio'}>Predios</option>
               <option value={'pallet'}>
-                {props.contenedor && props.contenedor.infoContenedor.tipoEmpaque === 'Caja'
+                {props.contenedor && props.contenedor.infoContenedor && 
+                  props.contenedor.infoContenedor.tipoEmpaque === 'Caja'
                   ? 'Pallets'
                   : 'Estibas'}
               </option>
             </>
           )}
         </select>
-
         <select
-          onChange={handleFiltro2}
-          className={`border focus:outline-none appearance-none w-38 mr-5 rounded-md h-10 pl-5 pr-10
-                          ${'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '}`}
-        >
+          onChange={handleFiltro2}>
           <option value={''}>None</option>
-          {props.contenedor && value1 === 'pallet'
+          {props.contenedor && value1 === 'pallet' && props.contenedor && props.contenedor.pallets
             ? Object.keys(props.contenedor.pallets).map((pallet) => (
-                <option key={pallet} value={pallet}>
-                  {pallet}
-                </option>
-              ))
+              <option key={pallet} value={pallet}>
+                {Number(pallet) + 1}
+              </option>
+            ))
             : null}
 
           {props.contenedor && value1 === 'predio'
             ? predios.map((enf) => (
-                <option key={enf} value={enf}>
-                  {enf}
-                </option>
-              ))
+              <option key={enf} value={enf}>
+                {enf}
+              </option>
+            ))
             : null}
         </select>
       </div>

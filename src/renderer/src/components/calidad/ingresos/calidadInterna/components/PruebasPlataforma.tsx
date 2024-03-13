@@ -1,31 +1,30 @@
 /* eslint-disable prettier/prettier */
-import { themeType } from '@renderer/env'
+import useAppContext from '@renderer/hooks/useAppContext'
 import { calidadInternaType } from '../types/calidadInterna'
 
 
 type propsType = {
-  theme: themeType
-  user: string
   handleChange: (data: React.ChangeEvent<HTMLInputElement>, action: string) => void
   formulario: calidadInternaType
 }
 
 export default function PruebasPlataforma(props: propsType):JSX.Element {
+  const {theme} = useAppContext();
   return (
     <div
-      className={`${props.theme === 'Dark' ? 'bg-slate-500' : 'bg-slate-100'} 
-    flex flex-col gap-4 w-[470px] p-4 rounded-lg shadow-lg m-4`}
+      className={`${theme === 'Dark' ? 'bg-slate-500' : 'bg-slate-100'} 
+    flex flex-row gap-4 w-10/12 p-4 rounded-lg shadow-lg m-4 items-center justify-between overflow-hidden`}
     >
       <h2
-        className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}
-                        text-xl font-bold mb-4 text-center`}
+        className={`${theme === 'Dark' ? 'text-white' : 'text-black'}
+                        text-xl font-bold mb-4 text-center 1/4`}
       >
         Pruebas de plataforma
       </h2>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 w-1/4">
         <p
-          className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}
+          className={`${theme === 'Dark' ? 'text-white' : 'text-black'}
                         text-lg font-bold mb-2 text-center`}
         >
           N° muestra 1
@@ -46,9 +45,9 @@ export default function PruebasPlataforma(props: propsType):JSX.Element {
         />
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 w-1/4">
         <p
-          className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}
+          className={`${theme === 'Dark' ? 'text-white' : 'text-black'}
                         text-lg font-bold mb-2 text-center`}
         >
           N° muestra 2
@@ -68,10 +67,10 @@ export default function PruebasPlataforma(props: propsType):JSX.Element {
           value={props.formulario.acidez2}
         />
       </div>
-
-      <div className="flex flex-col gap-4">
+ 
+      <div className="flex flex-col gap-4 w-1/4">
         <p
-          className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}
+          className={`${theme === 'Dark' ? 'text-white' : 'text-black'}
                         text-lg font-bold mb-2 text-center`}
         >
           N° muestra 3

@@ -1,12 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { useEffect, useState } from 'react'
 import PrincipalGeneral from '../functions/PrincipalGeneral'
-import { themeType } from '@renderer/env'
 import { contenedoresType } from '@renderer/types/contenedoresType'
+import "../css/table.css"
 
 type propsType = {
   contenedor: contenedoresType | undefined
-  theme: themeType
 }
 type calidadType = {
   1.5: number
@@ -39,20 +38,11 @@ export default function TablePrincipalGeneral(props: propsType): JSX.Element {
   }, [props.contenedor])
 
   return (
-    <div
-      className={`${props.theme === 'Dark' ? 'bg-slate-700' : 'bg-slate-100'}
-                  p-2 ml-2 mt-2 bg-gray-100 border border-gray-300 rounded shadow-md`}
-    >
-      <h1 className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}`}>Resumen</h1>
+    <div className='listaEmpaque-table-container'>
+      <h3>Resumen</h3>
       <hr />
-      <h3 className={`${props.theme === 'Dark' ? 'text-white' : 'text-blue-500'}`}>Total</h3>
-
-      <div
-        className={`${
-          props.theme === 'Dark' ? 'bg-slate-900 text-white' : 'bg-slate-200 text-black'
-        }
-                    p-4 rounded-md mb-2`}
-      >
+      <h3>Total</h3>
+      <div className='listaEmpaque-table-containter-tipo'>
         <span className="font-bold">
           {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
             ? 'Cajas: '
@@ -61,30 +51,25 @@ export default function TablePrincipalGeneral(props: propsType): JSX.Element {
         {total}
       </div>
       <hr />
-      <h3 className={`${props.theme === 'Dark' ? 'text-white' : 'text-blue-500'}`}>Calidad</h3>
-      <div
-        className={`${
-          props.theme === 'Dark' ? 'bg-slate-900 text-white' : 'bg-slate-200 text-black'
-        }
-        p-4 rounded-md mb-2 flex`}
-      >
-        <div className="flex flex-col items-center">
+      <h3>Calidad</h3>
+      <div className="listaEmpaque-table-containter-tipo">
+        <div>
           {' '}
-          <div className='flex flex-row gap-10' >
+          <div className='listaEmpaque-table-show-items' >
             <div>
-              <span className='font-bold'>Calidad 1:</span> {calidad[1]}{' '}
+              <span >Calidad 1:</span> {calidad[1]}{' '}
               {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
                 ? 'Cajas '
                 : 'Sacos '}
             </div>
             <div>
-              <span className='font-bold'>Calidad 1.5:</span> {calidad['1.5']}{' '}
+              <span>Calidad 1.5:</span> {calidad['1.5']}{' '}
               {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
                 ? 'Cajas '
                 : 'Sacos '}
             </div>
             <div>
-              <span className='font-bold'>Calidad 2:</span> {calidad['2']}{' '}
+              <span>Calidad 2:</span> {calidad['2']}{' '}
               {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
                 ? 'Cajas '
                 : 'Sacos '}
@@ -93,19 +78,15 @@ export default function TablePrincipalGeneral(props: propsType): JSX.Element {
         </div>
       </div>
       <hr />
-      <h3 className={`${props.theme === 'Dark' ? 'text-white' : 'text-blue-500'}`}>Calibre</h3>
+      <h3>Calibre</h3>
       {calibre !== null &&
         Object.keys(calibre).map((item) => (
           <div
             key={item + 'div'}
-            className={`${
-              props.theme === 'Dark' ? 'bg-slate-900 text-white' : 'bg-slate-200 text-black'
-            }
-                        p-4 rounded-md mb-2`}
-          >
-            <div className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'} font-bold`}>Calibre {item}:</div>
+            className="listaEmpaque-table-containter-tipo">
+            <div className="listaEmpaque-table-show-items"><span>Calibre {item}:</span> </div>
             <div>
-              {calibre[item]}{' '}
+              <span> {calibre[item]}{' '}</span>
               {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
                 ? 'Cajas '
                 : 'Sacos '}
@@ -113,7 +94,7 @@ export default function TablePrincipalGeneral(props: propsType): JSX.Element {
           </div>
         ))}
       <hr />
-      <h3 className={`${props.theme === 'Dark' ? 'text-white' : 'text-blue-500'}`}>
+      <h3>
         Tipo{' '}
         {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
           ? 'Cajas: '
@@ -123,17 +104,13 @@ export default function TablePrincipalGeneral(props: propsType): JSX.Element {
         Object.keys(tipoCaja).map((item) => (
           <div
           key={item}
-          className={`${
-            props.theme === 'Dark' ? 'bg-slate-900 text-white' : 'bg-slate-200 text-black'
-          }
-          p-4 rounded-md mb-2 flex gap-4`}
-          >
-            <div className='font-bold'>
-              Tipo de{' '}
+          className="listaEmpaque-table-containter-tipo">
+            <div className='listaEmpaque-table-show-items'>
+              <span>Tipo de{' '}
               {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
                 ? 'Cajas: '
                 : 'Sacos: '}{' '}
-              {item}
+              {item}</span>
             </div>
             <div>
               {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'

@@ -2,13 +2,12 @@
 
 /* eslint-disable prettier/prettier */
 import Chart from 'chart.js/auto';
-import { LoteDataType } from '../type/types';
 import {  useEffect, useRef } from 'react';
-
 import { datosGraficaDona } from '../functions/functions';
+import { lotesType } from '@renderer/types/lotesType';
 
 type propsType = {
-  data: LoteDataType[]
+  data: lotesType[]
 
 }
 

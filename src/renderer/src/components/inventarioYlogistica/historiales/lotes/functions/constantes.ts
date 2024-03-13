@@ -11,9 +11,11 @@ export const KEYS_FILTROS_COL = {
     directoNacional: "Directo nacional",
     frutaNacional: "Fruta nacional",
     desverdizado: "Desverdizado",
-    exportacion: "Exportación",
     observaciones: "Observaciones",
-    deshidratacion: "Deshidratación"
+    deshidratacion: "Deshidratación",
+    exportacion: "Exportacion",
+    contenedores: "Contenedores",
+
 }
 
 export const KEY_FILTRO_COL_CALIDAD = {

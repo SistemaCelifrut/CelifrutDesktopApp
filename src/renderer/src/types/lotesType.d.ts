@@ -25,7 +25,7 @@ export type lotesType = {
     inventarioActual?: inventarioActualType
     fechaIngreso?: string
     calidad?: calidadType
-    frutaNacional?: number
+    frutaNacional?:number
     urlInformeCalidad?: string
     desverdizado?:desverdizadoType
     contenedores?: string[]
@@ -77,15 +77,16 @@ type inventarioActualType = {
 }
 
 type calidadType = {
-    calidadInterna:{
+    calidadInterna?:{
         acidez: number
         brix: number
         ratio: number
         peso: number
         zumo: number
         fecha: string
+        semillas: boolean
     }
-    clasificacionCalidad: {
+    clasificacionCalidad?: {
         acaro: number
         alsinoe:number
         dannosMecanicos:number
@@ -107,7 +108,7 @@ type calidadType = {
         despezonada:number
         fecha: string
     }
-    fotosCalidad: {[key: string]: string}
+    fotosCalidad?: {[key: string]: string}
 }
 
 type desverdizadoType = {

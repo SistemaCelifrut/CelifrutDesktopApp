@@ -2,7 +2,7 @@
 
 import { themeContext } from "@renderer/App"
 import { useContext, useEffect, useState } from "react"
-import { LoteDataType, filtroCalidadType, filtroColumnasCalidadType } from "../type/types"
+import { filtroCalidadType, filtroColumnasCalidadType } from "../type/types"
 import { KEY_FILTRO_COL_CALIDAD, filtrosColumnasObjCalidad } from "../functions/constantes"
 import FiltroFilasCalidad from "../utils/FiltrosFilasCalidad"
 import TableInfolotesCalidad from "../table/TableInfolotesCalidad"
@@ -10,6 +10,7 @@ import PromediosCalidad from "../utils/PromediosCalidad"
 import GraficasBarrasCalidad from "../utils/GraficasBarrasCalidad"
 import GraficasLinealCalidad from "../utils/GraficaLinealCalidad"
 import { crear_filtro } from "../functions/filtroProceso"
+import { lotesType } from "@renderer/types/lotesType"
 
 export default function CalidadData(): JSX.Element {
   const theme = useContext(themeContext)
@@ -17,58 +18,21 @@ export default function CalidadData(): JSX.Element {
   const [filtro, setFiltro] = useState<filtroCalidadType>({ tipoFruta: '', fechaIngreso: { $gte: null, $lt: null }, nombrePredio: '', rendimiento:{ $gte: "", $lt: "" } ,cantidad: '', tipoDato:{} })
   const [prediosData, setPrediosData] = useState<string[]>([])
   const [ef1, setEf1] = useState<string>('')
-  const [data, setData] = useState<LoteDataType[]>([])
+  const [data, setData] = useState<lotesType[]>([])
   const [tipoGraficas, setTipoGraficas] = useState<string>('')
   const [filtroPredio, setFiltroPredio] = useState<string>('');
   const [cantidad, setCantidad] = useState<number>(50);
-  const [dataOriginal, setDataOriginal] = useState<LoteDataType[]>([])
+  const [dataOriginal, setDataOriginal] = useState<lotesType[]>([])
   const [ordenar, seteOrdenar] = useState<object>({"fechaIngreso":-1})
 
   useEffect(() => {
-    const obtenerData = async (): Promise<void> => {
-        if(prediosData.length === 0){
-            const requestProveedor = {
-                data:{
-                  query:{},
-                },
-                collection:'proveedors',
-                action: 'obtenerProveedores',
-                query: 'proceso'
-              };
-            const response = await window.api.server(requestProveedor);
-            const nombrePredio = await response.data.map((item) => item.PREDIO)
-             setPrediosData(nombrePredio)
-        }
-        const filtro_request = crear_filtro(filtro);
-        const request = {
-            data:{
-              query:{...filtro_request, enf: { $regex: '^E', $options: 'i' }},
-              select : {},
-              populate:{
-                path: 'predio',
-                select: 'PREDIO ICA'
-              },
-              sort:ordenar,
-              limit: cantidad,
-            },
-            collection:'lotes',
-            action: 'getLotes',
-            query: 'proceso'
-          };
-        const datosLotes = await window.api.server(request);
-        setDataOriginal(datosLotes.data)
-
-        if (ef1 === '') {
-            setData(datosLotes.data)
-        }
-        else if (ef1 !== '') {
-            setData(() => datosLotes.data.filter(item =>item._id.toLowerCase().includes(ef1.toLowerCase())))
-        }
-        // const dataGrafica = datosGraficas(datosLotes.data)
-        // setDataGrafica(dataGrafica)
-    }
-    obtenerData()
   
+    obtenerData()
+    window.api.serverEmit('serverEmit', handleServerEmit)
+    // Función de limpieza
+    return () => {
+      window.api.removeServerEmit('serverEmit', handleServerEmit)
+    }
     
 }, [filtro, cantidad])
 
@@ -76,15 +40,62 @@ useEffect(() => {
   let filteredData = dataOriginal;
 
   if (ef1 !== '') {
-    filteredData = filteredData.filter(item => item.enf.startsWith(ef1.toUpperCase()));
+    filteredData = filteredData.filter(item => item.enf && item.enf.startsWith(ef1.toUpperCase()));
   }
   
   if (filtroPredio !== '') {
-    filteredData = filteredData.filter(item => item.predio?.PREDIO.includes(filtroPredio));
+    filteredData = filteredData.filter(item => item.predio?.PREDIO && item.predio?.PREDIO.includes(filtroPredio));
   }
   
   setData(filteredData);
 }, [ef1, filtroPredio])
+const obtenerData = async (): Promise<void> => {
+  if(prediosData.length === 0){
+      const requestProveedor = {
+          data:{
+            query:{},
+          },
+          collection:'proveedors',
+          action: 'obtenerProveedores',
+          query: 'proceso'
+        };
+      const response = await window.api.server(requestProveedor);
+      const nombrePredio = await response.data.map((item) => item.PREDIO)
+       setPrediosData(nombrePredio)
+  }
+  const filtro_request = crear_filtro(filtro);
+  const request = {
+      data:{
+        query:{...filtro_request, enf: { $regex: '^E', $options: 'i' }},
+        select : {},
+        populate:{
+          path: 'predio',
+          select: 'PREDIO ICA'
+        },
+        sort:ordenar,
+        limit: cantidad,
+      },
+      collection:'lotes',
+      action: 'getLotes',
+      query: 'proceso'
+    };
+  const datosLotes = await window.api.server(request);
+  setDataOriginal(datosLotes.data)
+
+  if (ef1 === '') {
+      setData(datosLotes.data)
+  }
+  else if (ef1 !== '') {
+      setData(() => datosLotes.data.filter(item =>item._id.toLowerCase().includes(ef1.toLowerCase())))
+  }
+  // const dataGrafica = datosGraficas(datosLotes.data)
+  // setDataGrafica(dataGrafica)
+}
+const handleServerEmit = async (data): Promise<void> => {
+  if (data.fn === "ingresoLote" || data.fn === "procesoLote") {
+    await obtenerData()
+  }
+}
 
   const handleChange = (e): void => {
     setColumnVisibility({

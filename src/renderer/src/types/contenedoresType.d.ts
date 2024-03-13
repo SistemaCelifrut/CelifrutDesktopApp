@@ -3,8 +3,8 @@ import { clienteType } from "./clientesType"
 
 export type contenedoresType = {
   _id?: string
-  numeroContenedor: number
-  pallets: palletType[]
+  numeroContenedor?: number
+  pallets?: palletType[]
   infoContenedor?: infoContendorType
   formularioInspeccionMula?: formularioInspeccionMulaType
   __v?: number
@@ -27,7 +27,7 @@ export type palletType = {
     }
 }
 
-type infoContendorType = {
+export type infoContendorType = {
     clienteInfo?: clienteType
     fechaCreacion?: string
     fechaInicio?: string
@@ -60,18 +60,35 @@ export type formularioInspeccionMulaType = {
   empresaTransporte?: string;
   cumpleRequisitos?: boolean;
   responsable?: string;
-  criterios?: Map<string, criteriosType>; 
+  criterios?: inspeccionMulasCriterios; 
 }
 
+type inspeccionMulasCriterios ={
+  funcionamiento: Criterios;
+  temperatura: Criterios;
+  talanquera: Criterios;
+  dannos: Criterios;
+  sellos_puertas: Criterios;
+  materiales: Criterios;
+  reparaciones: Criterios;
+  limpio: Criterios;
+  plagas: Criterios;
+  olores: Criterios;
+  insumos: Criterios;
+  medidas: Criterios;
+}
 
 type criteriosType = {
-    nombre?: string;
-    cumplimiento?: boolean;
-    observaciones?: string;
+  cumple?: boolean;
+  observaciones?: string;
   }
 
   export type EF1Type = {
-    lote?: string,
+    lote?: {
+      enf?:string
+      predio?:string
+      _id?:string
+    },
     cajas?: number
     tipoCaja?: string
     calibre?:number

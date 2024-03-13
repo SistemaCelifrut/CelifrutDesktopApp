@@ -1,0 +1,28 @@
+.componentContainer{
+    padding: .1rem;
+    width: 100%;
+}
+
+.componentContainer h2 {
+    font-size: 26px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.navBar {
+    height: 4rem;
+    width: 100%;
+    background-color: var(--color-Celifrut);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.navBar select {
+    width: 35%;
+    height: 35px;
+    color: black;
+    border-radius: 8px;
+}

@@ -2,7 +2,7 @@
 
 import { useContext, useState } from "react";
 import NavBarProveedores from "./utils/NavBarProveedores";
-import ProveedoresLista from "./components/ProveedoresLista";
+// import ProveedoresLista from "./components/ProveedoresLista";
 import { themeContext } from "@renderer/App";
 import ErrorModal from "@renderer/errors/modal/ErrorModal";
 import SuccessModal from "@renderer/errors/modal/SuccessModal";
@@ -23,7 +23,7 @@ export default function Proveedores(): JSX.Element {
                 <NavBarProveedores  />
             </div>
             <div className="z-0">
-               <ProveedoresLista />
+               {/* <ProveedoresLista /> */}
 
             </div>
             <div className='fixed bottom-0 right-0 flex items-center justify-center'>

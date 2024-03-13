@@ -95,7 +95,7 @@ export default function IngresoFruta(): JSX.Element {
             }`}>
           <option>{strings.input_predios}</option>
           {prediosDatos.map((item, index) => (
-            <option key={item.PREDIO + index} value={item._id}>{item.PREDIO}</option>
+            <option key={item.PREDIO && item.PREDIO + index} value={item._id}>{item.PREDIO}</option>
           ))}
         </select>
       </div>

@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import HeaderTableDesverdizado from '../utils/HeaderTableInventarioDesverdizado'
 import { format } from 'date-fns'
 import { lotesType } from '@renderer/types/lotesType'
@@ -23,15 +23,10 @@ export default function TableInventarioDesverdizado(props: propsType):JSX.Elemen
     }
   }, [props.render])
 
-  const [selectedValue, setSelectedValue] = useState(null);
 
   const handleClick = (e): void => {
-    if (selectedValue === e.target.value) {
-      setSelectedValue(null);
-    } else {
-      setSelectedValue(e.target.value);
       props.clickLote(e);
-    }
+    
   };
   
   return (
@@ -51,7 +46,6 @@ export default function TableInventarioDesverdizado(props: propsType):JSX.Elemen
                 type="radio"
                 onClick={handleClick}
                 id={lote.enf}
-                checked={props.propsModal.enf === selectedValue } 
                 value={lote.enf}
                 name="lote"
               ></input>

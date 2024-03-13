@@ -1,13 +1,4 @@
 /* eslint-disable prettier/prettier */
-export type lotesInventarioType = {
-  _id: string
-  enf: string
-  predio:{
-    PREDIO: string
-  }
-  tipoFruta: 'Limon' | 'Naranja'
-  calidad?:calidadHistorialType
-}
 
 export type formularioType = {
   id: string
@@ -22,9 +13,6 @@ export type stateReduceClasificacionCalidadType = {
   cardData: string
 }
 
-export type serverResponse = {
-  status: number
-}
 
 export type dataHistorialCalidadClasificacion = {
     _id: string

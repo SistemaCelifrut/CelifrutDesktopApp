@@ -44,6 +44,7 @@ export default function TableInfoLotes(props: propsType): JSX.Element {
         </thead>
         <tbody>
           {Array.isArray(props.data) && props.data.map((lote, index) => (
+            lote && typeof lote === 'object' && typeof lote !== undefined ?
             <tr
               className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'}`} key={index}
             >
@@ -60,41 +61,43 @@ export default function TableInfoLotes(props: propsType): JSX.Element {
                         onClick={(): void => handleDetails(index, index2)}>
 
                       {showDetailDescarte && (index === Number(indice1) && (index2 === Number(indice2))) ? 
-                      <td>{
-                        lote[item] ? Object.keys(lote[item]).map(descarte => (
-                          <p key={descarte}>{descarte}: {lote[item][descarte]}</p>
-                        )) : <td></td>
-                        }</td> : 
-                      Object.keys(lote[item]).reduce((acu, descarte) => acu += lote[item][descarte], 0).toFixed(2)} Kg
+                     <td>{
+                      typeof lote !== 'undefined' && lote[item] !== undefined ? Object.keys(lote[item as string]).map(descarte => (
+                        <p key={descarte}>{descarte}: {lote[item as string][descarte]}</p>
+                      )) : null
+                    }</td>
+                    : 
+                      Object.keys(lote[item as string]).reduce((acu, descarte) => acu += lote[item as string][descarte], 0).toFixed(2)} Kg
                     </td>
                     )
-                  } else if( item === 'exportacion'){
-                    if(!Object.prototype.hasOwnProperty.call(lote, 'exportacion')){
+                  } else if( item === 'contenedores'){
+                   
                       return <td className={`p-2 text-sm  text-center cursor-pointer`}
                       key={lote + item} >
-                        0
+                       {lote.contenedores?.reduce((acu, cont) => acu += cont + ' ', '')}
                       </td>
-                    } else{
+                    
+                  } else if(item === 'exportacion'){
                     return (
                       <td className={`p-2 text-sm  text-center cursor-pointer`}
-                      key={lote + item} 
-                      onClick={(): void => handleDetails(index, index2)}>
+                        key={lote + item} 
+                        onClick={(): void => handleDetails(index, index2)}>
+
                       {showDetailDescarte && (index === Number(indice1) && (index2 === Number(indice2))) ? 
-                      <td>{
-                        Object.keys(lote[item]).map(contenedor => (
-                          <div key={contenedor}>
-                          <p><span className="font-bold">contenedor: {contenedor}</span>: Calidad1:{lote[item][contenedor].calidad1.toFixed(2)} Kg</p>
-                          <p>            Calidad 1.5: {lote[item][contenedor].calidad1_5.toFixed(2)} Kg</p>
-                          <p>            Calidad 2: {lote[item][contenedor].calidad2.toFixed(2)} Kg</p>
-
-                          </div>
-                        ))
-                        }</td> : 
-                       Object.keys(lote[item]).reduce((acu1, contenedor) => acu1 += Object.keys(lote[item][contenedor]).reduce((acu2, calidades) => acu2 += lote[item][contenedor][calidades], 0), 0).toFixed(2)} Kg
-                      </td>
-
+                     <td>{
+                        <div className="flex flex-col items-center justify-center">
+                          <p> Calidad 1: {lote.calidad1}Kg</p>
+                          <p> Calidad 1.5: {lote.calidad15}Kg</p>
+                          <p> Calidad 2: {lote.calidad2}Kg</p>
+                        </div>
+           
+                    }</td>
+                    : 
+                    lote && lote.calidad1 !== undefined && lote.calidad15 !== undefined && lote.calidad2 !== undefined ? 
+                    lote.calidad1 + lote.calidad15 + lote.calidad2  + ' Kg' : 0 + 'Kg'} 
+                    </td>
                     )
-                  }}
+                  }
                   else {
                   return (
                     <td className={`p-2 text-sm  text-center`} key={lote + item}>
@@ -107,7 +110,7 @@ export default function TableInfoLotes(props: propsType): JSX.Element {
                 }
               })}
             </tr>
-          ))}
+         : <div key={index}></div> ))}
         </tbody>
       </table>
     </div>
