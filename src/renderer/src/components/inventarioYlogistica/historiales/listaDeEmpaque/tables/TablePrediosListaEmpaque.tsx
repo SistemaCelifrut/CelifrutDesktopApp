@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import ObtenerInfoPrediosListaEmpaque from '../functions/ObtenerInfoPrediosListaEmpaque'
-import { FaPrint } from "react-icons/fa6";
 import ModalImprimirRotulocaja from '../modal/ModalImprimirRotuloCaja'
 import { contenedoresType } from '@renderer/types/contenedoresType'
 import useAppContext from '@renderer/hooks/useAppContext'
@@ -31,20 +30,7 @@ export default function TablePrediosListaEmpaque(props: propsType): JSX.Element 
 
   useEffect(() => {
     funcionAuxiliar()
-    // window.api.listaEmpaqueInfo('listaEmpaqueInfo', (response) => {
-    //   setRendimiento(response.data)
-    // })
-    // window.api.descartes('descartes', async () => {
-    //   const predios = ObtenerPrediosContenedor(props.contenedor)
-    //   const request = { action: 'obtenerRendimiento', data:predios }
-    //   const rendimientoReq = await window.api.contenedores(request)
 
-    //   if(isServerResponse(rendimientoReq)){
-    //     setRendimiento(rendimientoReq.data)
-    //   } else{
-    //     alert("error al obtener el rendimiento")
-    //   }
-    // })
   }, [props.contenedor, props.filtro])
 
   const funcionAuxiliar = async (): Promise<void> => {
@@ -72,8 +58,6 @@ export default function TablePrediosListaEmpaque(props: propsType): JSX.Element 
       if (rendimientoReq.status !== 200) {
         throw new Error(rendimientoReq.message);
       }
-      console.log("obtener rendimiento", rendimientoReq)
-      console.log("obtener tabla", response)
       setRendimiento(rendimientoReq.data)
       setTabla(response)
     } catch (e) {
@@ -105,7 +89,7 @@ export default function TablePrediosListaEmpaque(props: propsType): JSX.Element 
                 </p>
 
                 <p>
-                  {rendimiento && rendimiento.find(item => item._id === _id)?.rendimiento + '%'}
+                  {rendimiento && rendimiento.find(item => item._id === _id)?.rendimiento?.toFixed(2) + '%'}
                 </p>
 
                 <p>
@@ -136,10 +120,6 @@ export default function TablePrediosListaEmpaque(props: propsType): JSX.Element 
 
 
               <button onClick={(): void => clickpenModal(tabla[_id])}>
-                <span className="absolute  -end-full transition-all group-hover:end-4">
-                  <FaPrint />
-                </span>
-
                 <span className="text-sm font-medium transition-all group-hover:me-4">
                   Imprimir Rotulo
                 </span>
@@ -150,12 +130,12 @@ export default function TablePrediosListaEmpaque(props: propsType): JSX.Element 
               {Object.keys(tabla[_id]).map((pallet) => (
                 <li key={pallet} className='listaEmpaque-table-pallets-container-dic-item'>
                   <div>
-                    <p>Pallet: {pallet}</p>
+                    <p>Pallet: {Number(pallet) + 1}</p>
                   </div>
-                  <div>
+                  <div style={{display:"flex", flexDirection:"column"}} >
                     {Object.keys(tabla[_id][pallet]).map((item) => {
                       return (
-                        <div key={item + 'div'}>
+                        <div key={item + 'div'} >
                           <p key={item + 'cajas'}>Cajas: {tabla[_id][pallet][item].cajas}</p>
                           <p key={item + 'tipocaja'}>
                             Tipo caja: {tabla[_id][pallet][item].tipoCaja}

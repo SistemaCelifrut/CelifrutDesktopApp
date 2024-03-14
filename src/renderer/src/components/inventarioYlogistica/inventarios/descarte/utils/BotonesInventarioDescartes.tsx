@@ -94,7 +94,7 @@ export default function BotonesInventarioDescartes(props: propsType): JSX.Elemen
                       className={`${theme === 'Dark' ? 'text-white' : 'texy-black'}`}
                       key={item}
                     >
-                      {llavesVisualizar[item]}: {sumatoriaDescarteEspecifico(props.table, 'descarteLavado', item)} Kg
+                      {llavesVisualizar[item]}: {sumatoriaDescarteEspecifico(props.table, 'descarteLavado', item).toFixed(2)} Kg
                     </h4>
                   ))}
               </div>

@@ -42,6 +42,7 @@ import Cuentas from './components/gestionDeCuentas/crearCuentas/Cuentas'
 import Inicio from './components/Inicio'
 import MessagesComponent from './messages/MessagesComponent'
 import VariablesProceso from './components/sistema/variablesDelSistema/VariablesProceso'
+import HabilitarPrediosProceso from './components/sistema/habilitarPrediosProceso/HabilitarPrediosProceso'
 
 type OpenModalFunction = (messageType: string, message: string) => void;
 
@@ -198,6 +199,7 @@ function App(): JSX.Element {
 
                         {/* Sistema */}
                         {section === 'Sistema//Proceso//Variables del Proceso' && <VariablesProceso />}
+                        {section === 'Sistema//Proceso//Habilitar predios proceso' && <HabilitarPrediosProceso />}
 
                       </div>
                     </div> 

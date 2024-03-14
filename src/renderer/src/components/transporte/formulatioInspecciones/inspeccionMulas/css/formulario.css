@@ -46,7 +46,7 @@
 .formulario-inspeccion-mula-titulo-div-action {
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    justify-content: flex-start;
     width: 100%;
     margin-top: 15px;
     padding: 10px;
@@ -76,7 +76,7 @@
 .formulario-inspeccionMula-div-button{
     width: 100%;
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
     margin-top: 20px;
     padding-right: 40px;
 }

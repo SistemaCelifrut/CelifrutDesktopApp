@@ -39,13 +39,13 @@ export default function TableHistorialCalidadInterna(props: propsType): JSX.Elem
               <td className="p-2 text-sm  text-center">{lote.enf}</td>
               <td className="p-2 text-sm  text-center">{lote.predio && lote.predio.PREDIO}</td>
               <td className="p-2 text-sm  text-center">{lote.tipoFruta}</td>
-              <td className="p-2 text-sm  text-center">{lote.calidad && lote.calidad.calidadInterna && lote.calidad.calidadInterna.brix.toFixed(2)}</td>
-              <td className="p-2 text-sm  text-center">{lote.calidad && lote.calidad.calidadInterna && lote.calidad.calidadInterna.ratio.toFixed(2)}</td>
-              <td className="p-2 text-sm  text-center">{lote.calidad && lote.calidad.calidadInterna && lote.calidad.calidadInterna.zumo.toFixed(2)}</td>
-              <td className="p-2 text-sm  text-center">{lote.calidad && lote.calidad.calidadInterna && lote.calidad.calidadInterna.acidez.toFixed(2)}</td>
+              <td className="p-2 text-sm  text-center">{lote.calidad && lote.calidad.calidadInterna !== undefined ? Number(lote.calidad.calidadInterna.acidez).toFixed(2) : 0.0}</td>
+              <td className="p-2 text-sm  text-center">{lote.calidad && lote.calidad.calidadInterna !== undefined ? Number(lote.calidad.calidadInterna.brix).toFixed(2) : 0.0}</td>
+              <td className="p-2 text-sm  text-center">{lote.calidad && lote.calidad.calidadInterna !== undefined ? Number(lote.calidad.calidadInterna.ratio).toFixed(2) : 0.0}</td>
+              <td className="p-2 text-sm  text-center">{lote.calidad && lote.calidad.calidadInterna !== undefined ? Number(lote.calidad.calidadInterna.zumo).toFixed(2) : 0.0}</td>
               <td className="p-2 text-sm  text-center">
-                {lote.calidad && Object.prototype.hasOwnProperty.call(lote.calidad.calidadInterna, 'fecha') ? 
-                format(lote.calidad.calidadInterna ? new Date(lote.calidad.calidadInterna.fecha) : new Date(), 'dd-MM-yyyy') : null}
+                {lote.calidad && Object.prototype.hasOwnProperty.call(lote.calidad.calidadInterna, 'fecha') ?
+                  format(lote.calidad.calidadInterna ? new Date(lote.calidad.calidadInterna.fecha) : new Date(), 'dd-MM-yyyy') : null}
               </td>
 
             </tr>
