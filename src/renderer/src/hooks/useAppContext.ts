@@ -14,6 +14,7 @@ type MyContextDataType = {
 
 type OpenModalFunction = (messageType: string, message: string) => void;
 
+
 type AppContextType = {
   setSection: MyContextType
   dataGlobal: MyContextDataType
@@ -21,6 +22,7 @@ type AppContextType = {
   user: userType
   messageModal:OpenModalFunction
 };
+
 
 export default function useAppContext(): AppContextType {
   const setSection = useContext(sectionContext)

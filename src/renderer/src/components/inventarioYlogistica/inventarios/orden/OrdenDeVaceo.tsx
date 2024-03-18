@@ -1,23 +1,15 @@
-// /* eslint-disable prettier/prettier */
-// import OrdenVaceo from "./components/OrdenVaceo"
-// import NavBarOrden from "./utils/NavBarOrden"
-// import { useState } from 'react'
+/* eslint-disable prettier/prettier */
+
+import OrdenVaceo from "./components/OrdenVaceo";
+import "./css/predioCard.css"
 
 
+export default function OrdenDeVaceo(): JSX.Element {
 
-// export default function InventarioDescarte(): JSX.Element {
-//   const [, setFiltro] = useState<string>('')
-  
-//   const handleFilter = (data:string): void =>{
-//     setFiltro(data)
-//   }
-
-
-//   return (
-//     <div className="w-full">
-//       <NavBarOrden handleFilter={handleFilter} />
-//      <OrdenVaceo />
-   
-//     </div>
-//   )
-// }
+    return (
+        <div className="componentContainer">
+            <div className="navBar"></div>
+            <OrdenVaceo />
+        </div>
+    )
+}

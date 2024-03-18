@@ -16,7 +16,13 @@
     margin: 10px 0;
     justify-items: end;
     width: 100%;
+    border-style:dotted;
+    border-color: rgb(0, 0, 0);
+    border-top-width: 1px;
+    padding-top: 8px; 
 }
+
+
 
 .form-container label {
     color: black;
@@ -26,6 +32,18 @@
 }
 
 .form-container input {
+    color: black;
+    width: 100%;
+    height: auto;
+    border: 1px;
+    padding: 4px 8px;
+    border-style: solid;
+    border-color: #999;
+    border-radius: 8px;
+    margin-right: 8px;
+}
+
+.form-container textarea {
     color: black;
     width: 100%;
     height: auto;

@@ -6,8 +6,12 @@
   "author": "example.com",
   "publish": [
     {
-      "provider": "generic",
-      "url": "http://192.168.0.172:3001"
+      "owner": "edwardo1239",
+      "productName":"AplicacionEscritorioCelifrut",
+      "provider": "github",
+      "url":"https://github.com/edwardo1239/AplicacionEscritorioCelifrutTypeScript",
+      "repo":"AplicacionEscritorioCelifrutTypeScript",
+      "token":"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"
     }
   ],
   "homepage": "https://www.electronjs.org",
@@ -35,13 +39,12 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.7.17",
-    "@mui/material": "^5.15.7",
     "chart.js": "^4.4.1",
     "date-fns": "^2.30.0",
     "electron-edge-js": "^28.0.1",
     "electron-updater": "^5.3.0",
     "heroicons": "^2.0.18",
-    "react-bootstrap": "^2.10.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-feather-icons": "^0.0.1",
     "react-icons": "^4.12.0",
     "socket.io-client": "^4.7.2"

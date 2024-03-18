@@ -3,10 +3,12 @@
   --color-texto: #000000;
   --color-Celifrut: #7d9f3a;
   --color-Celifrut-dark: #6e8b34;
+  --color-Celifrut-brigth: #8cb43d;
 
   --color-ListaEmpaqueTexto: rgb(59 130 246);
   --color-ListaEmpaqueFondo: rgb(233, 240, 251);
   --color-shadow: rgba(186, 186, 186, 1);
+  --color-predioCard-ordenVaciado: rgb(228, 236, 232);
 }
 
 .dark-theme {
@@ -14,7 +16,9 @@
   --color-texto: #fff;
   --color-ListaEmpaqueTexto: #fff;
   --color-ListaEmpaqueFondo: rgb(54, 69, 94);
-  --color-shadow: rgb(68, 66, 73);
+  --color-shadow: rgb(92, 91, 96);
+  --color-predioCard-ordenVaciado: rgb(79, 88, 83);
+
 }
 
 body {
@@ -40,3 +44,27 @@ body {
   border-radius: 8px;
   color: white;
 }
+
+.defaulButtonAgree:hover {
+  background-color: var(--color-Celifrut-dark);
+}
+
+.defaulButtonAgree:active {
+  background-color: var(--color-Celifrut-brigth);
+}
+
+.defaulButtonError {
+  background-color: red;
+  padding: 10px 15px;
+  border-radius: 8px;
+  color: white;
+}
+
+.defaulButtonError:hover {
+  background-color: rgb(195, 3, 3);
+}
+
+.defaulButtonError:active {
+  background-color: rgb(255, 11, 11);
+}
+

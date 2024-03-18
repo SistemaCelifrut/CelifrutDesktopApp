@@ -1,0 +1,52 @@
+.table-main{
+    width: 100%;
+    margin-top: 15px;
+    color: black;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+
+}
+
+.table-main thead{
+    background-color: rgb(194, 248, 214);
+}
+
+.table-main thead tr{
+    height: 45px;
+    font-size: 12px;
+}
+
+.fondo-par{
+    background-color: rgb(251, 251, 251);
+}
+
+.fondo-impar{
+    background-color: rgb(222, 223, 224);
+}
+
+.table-main tbody tr td{
+    font-size: 14px;
+    text-align: center;
+    height: 35px;
+}
+
+.table-main tbody tr td:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.table-main tbody tr td div{
+    display: flex;
+    justify-content: center;
+}
+
+.table-main tbody tr td button{
+    color: var(--color-Celifrut);
+    font-size: 30px;
+}
+
+.table-main-noDocument{
+    color: red;
+    font-size: 20px;
+}

@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 const startOfDay = new Date();
+startOfDay.setDate(startOfDay.getDate() - 1);
 startOfDay.setHours(0,0,0,0);
 
 const nextDay = new Date(startOfDay);
@@ -8,7 +9,7 @@ nextDay.setDate(startOfDay.getDate() + 1);
 export const requestLotesVaciados = {
     data:{
         query:{ 
-          operacionRealizada: "vaciarLote", fecha: {$gte: startOfDay, $lt: nextDay}
+          operacionRealizada: "vaciarLote"
         },
         select : { },
         sort:{fecha: -1},

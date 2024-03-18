@@ -1,12 +1,14 @@
 /* eslint-disable prettier/prettier */
-import { app, shell, BrowserWindow, nativeTheme, ipcMain, utilityProcess } from 'electron'
+import { app, shell, BrowserWindow, nativeTheme, ipcMain, utilityProcess, Notification, dialog  } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { io } from 'socket.io-client'
 import { responseLoginType, clientesServerResponseType } from './types/login'
+import { autoUpdater } from 'electron-updater'
 
 let theme: 'Dark' | 'Ligth' = 'Ligth'
 let cargo = ''
+
 
 function createWindow(): void {
   // Create the browser window.
@@ -102,6 +104,8 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 
+  autoUpdater.checkForUpdates()
+
   if (nativeTheme.shouldUseDarkColors) {
     theme = 'Dark'
   } else {
@@ -123,6 +127,47 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
+})
+
+
+autoUpdater.on('error', (info) => {
+  new Notification({
+    title: 'Error',
+    body: info.message
+  }).show()
+})
+
+autoUpdater.on('update-available', (_event, releaseNotes, releaseName) => {
+  const dialogOpts = {
+    type:"info",
+    buttons:["Ok"],
+    title: "Aplication Update",
+    message: process.platform === "win32" ? releaseNotes : releaseName,
+    detail: "A new version is being download"
+  }
+  dialog.showMessageBox(dialogOpts, (response) => {})
+
+})
+
+autoUpdater.on('update-not-available', (info) => {
+  new Notification({
+    title: 'no avaiable',
+    body: info.version
+  }).show()
+})
+
+/*Download Completion Message*/
+autoUpdater.on('update-downloaded', (_event, releaseNotes, releaseName) => {
+  const dialogOpts = {
+    type:"info",
+    buttons:["Ok"],
+    title: "Aplication Update",
+    message: process.platform === "win32" ? releaseNotes : releaseName,
+    detail: "A new version is being download"
+  }
+  dialog.showMessageBox(dialogOpts).then((returnValue) => {
+    if(returnValue.response === 0) autoUpdater.quitAndInstall()
+  })
 })
 
 // In this file you can include the rest of your app"s specific main process

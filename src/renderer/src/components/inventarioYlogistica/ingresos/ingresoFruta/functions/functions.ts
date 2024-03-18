@@ -6,7 +6,6 @@ export const handleServerResponse = (
   response,
   messageModal
 ): serverResponse<proveedoresType[] | { enf: string }> | never => {
-  console.log(response)
   if (response.status === 200) {
     return response.data
   } else {
