@@ -16,7 +16,8 @@ export const requestLotes = {
       tipoFruta: 1,
       'inventarioActual.inventario': 1,
       enf: 1,
-      promedio: 1
+      promedio: 1,
+      desverdizado:1
     },
     populate: {
       path: 'predio',

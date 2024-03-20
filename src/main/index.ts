@@ -1,14 +1,25 @@
 /* eslint-disable prettier/prettier */
-import { app, shell, BrowserWindow, nativeTheme, ipcMain, utilityProcess, Notification, dialog  } from 'electron'
+import {
+  app,
+  shell,
+  BrowserWindow,
+  nativeTheme,
+  ipcMain,
+  utilityProcess,
+  net,
+  Notification,
+  dialog,
+} from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { io } from 'socket.io-client'
 import { responseLoginType, clientesServerResponseType } from './types/login'
-import { autoUpdater } from 'electron-updater'
+import updater from 'electron-updater'
 
 let theme: 'Dark' | 'Ligth' = 'Ligth'
 let cargo = ''
-
+updater.autoUpdater.setFeedURL({url:'http://192.168.0.172:3000', provider:'generic'})
+updater.autoUpdater.forceDevUpdateConfig = true
 
 function createWindow(): void {
   // Create the browser window.
@@ -45,11 +56,11 @@ function createWindow(): void {
   }
   socket.off('serverToDesktop')
   socket.on('serverToDesktop', (data) => {
-    console.log("serverToDesktop")
+    console.log('serverToDesktop')
     if (data.status === 200) mainWindow.webContents.send('serverEmit', data)
     else console.log('error')
   })
-  
+
   socket.off('listaEmpaqueInfo')
   socket.on('listaEmpaqueInfo', (data) => {
     console.log(data)
@@ -87,7 +98,24 @@ function createWindow(): void {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   // Set app user model id for windows
+
   electronApp.setAppUserModelId('com.electron')
+  const version = app.getVersion()
+  net
+    .fetch(`http://192.168.0.172:3000/newVersion=${version}`, { method: 'GET' })
+    .then((response) => response.text())
+    .then((data) => {
+      if (data) {
+        const url = updater.autoUpdater.checkForUpdates().then(data => {
+          new Notification({
+            title: "Actualizacion disponible",
+            body: data?.updateInfo.version
+          }).show()
+          console.log(url)
+        })
+      }
+    })
+    .catch((e) => console.log(e))
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
@@ -104,7 +132,7 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 
-  autoUpdater.checkForUpdates()
+  // updater.autoUpdater.checkForUpdates();
 
   if (nativeTheme.shouldUseDarkColors) {
     theme = 'Dark'
@@ -129,46 +157,56 @@ app.on('window-all-closed', () => {
   }
 })
 
-
-autoUpdater.on('error', (info) => {
-  new Notification({
-    title: 'Error',
-    body: info.message
-  }).show()
-})
-
-autoUpdater.on('update-available', (_event, releaseNotes, releaseName) => {
-  const dialogOpts = {
-    type:"info",
-    buttons:["Ok"],
-    title: "Aplication Update",
-    message: process.platform === "win32" ? releaseNotes : releaseName,
-    detail: "A new version is being download"
-  }
-  dialog.showMessageBox(dialogOpts, (response) => {})
-
-})
-
-autoUpdater.on('update-not-available', (info) => {
-  new Notification({
-    title: 'no avaiable',
-    body: info.version
-  }).show()
-})
-
-/*Download Completion Message*/
-autoUpdater.on('update-downloaded', (_event, releaseNotes, releaseName) => {
-  const dialogOpts = {
-    type:"info",
-    buttons:["Ok"],
-    title: "Aplication Update",
-    message: process.platform === "win32" ? releaseNotes : releaseName,
-    detail: "A new version is being download"
-  }
-  dialog.showMessageBox(dialogOpts).then((returnValue) => {
-    if(returnValue.response === 0) autoUpdater.quitAndInstall()
+updater.autoUpdater.on('download-progress', (info) => {
+  const win = new BrowserWindow()
+  dialog.showMessageBox(win, {
+    type: 'error',
+    buttons: ['Ok'],
+    title: String(info.percent),
+    message: String(info.total)
+  }).then((returnValue) => {
+    console.log(returnValue.response)
   })
 })
+
+updater.autoUpdater.on('update-available', (info) => {
+  console.log(info)
+  new Notification({
+    title: 'actualizacion disponible',
+    body: info.version
+  }).show()
+  updater.autoUpdater.downloadUpdate().then((data) => {
+    console.log(data)
+    updater.autoUpdater.quitAndInstall()
+  });
+})
+
+// updater.autoUpdater.on('update-downloaded', (info) => {
+//   new Notification({
+//     title: 'no avaiable',
+//     body: info.downloadedFile
+//   }).show()
+// })
+
+// updater.autoUpdater.on('update-not-available', (info) => {
+//   new Notification({
+//     title: 'no avaiable',
+//     body: info.version
+//   }).show()
+// })
+
+// /*Download Completion Message*/
+// updater.autoUpdater.on('update-downloaded', () => {
+//   const win = new BrowserWindow()
+//   dialog.showMessageBox(win, {
+//     type: 'info',
+//     buttons: ['Ok'],
+//     title: 'Application Update',
+//     message: 'A new version is being downloaded'
+//   }).then((returnValue) => {
+//     console.log(returnValue.response)
+//   })
+// })
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
@@ -190,7 +228,7 @@ const socket = io('ws://192.168.0.172:3000/', {
 ipcMain.handle('user', async (event, datos) => {
   try {
     event.defaultPrevented
-    console.log("user", datos)
+    console.log('user', datos)
     const request = { data: datos, id: socket.id }
     const user: responseLoginType = await new Promise((resolve) => {
       socket.emit('user', request, (response) => {
@@ -216,21 +254,20 @@ ipcMain.handle('user', async (event, datos) => {
 
 //comunicacion con el servidor
 ipcMain.handle('server', async (event, data) => {
-  try{
-    event.preventDefault();
-    const request = { data:data }
+  try {
+    event.preventDefault()
+    const request = { data: data }
     const response = await new Promise((resolve) => {
-     socket.emit("Desktop", request, (serverResponse) => {
-      // console.log(serverResponse)
-      resolve(serverResponse);
-     })
+      socket.emit('Desktop', request, (serverResponse) => {
+        // console.log(serverResponse)
+        resolve(serverResponse)
+      })
     })
-     return response;
-  } catch(e){
-    return {status:505, data:e};
+    return response
+  } catch (e) {
+    return { status: 505, data: e }
   }
 })
-
 
 ipcMain.handle('imprimirRotulos', async (event, data) => {
   try {
@@ -293,10 +330,6 @@ ipcMain.handle('imprimirRotulos', async (event, data) => {
     console.error(e)
   }
 })
-
-// const socket = io('ws://localhost:3000/',{
-//   rejectUnauthorized: false,
-// });
 
 // const child = utilityProcess.fork(join(__dirname, 'imprimir.js'))
 // child.postMessage({ message: 'hello' })

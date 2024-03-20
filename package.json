@@ -1,17 +1,15 @@
 {
   "name": "celifrutdesktopapp",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "An Electron application with React and TypeScript",
   "main": "./out/main/index.js",
-  "author": "example.com",
+  "author": "Edwar",
   "publish": [
     {
-      "owner": "edwardo1239",
-      "productName":"AplicacionEscritorioCelifrut",
-      "provider": "github",
-      "url":"https://github.com/edwardo1239/AplicacionEscritorioCelifrutTypeScript",
-      "repo":"AplicacionEscritorioCelifrutTypeScript",
-      "token":"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"
+      "owner": "Edwar",
+      "productName": "AplicacionEscritorioCelifrut",
+      "provider": "generic",
+      "url": "http://192.168.0.172:3000"
     }
   ],
   "homepage": "https://www.electronjs.org",
@@ -59,9 +57,9 @@
     "@typescript-eslint/parser": "^5.62.0",
     "@vitejs/plugin-react": "^4.0.3",
     "autoprefixer": "^10.4.16",
-    "electron": "^27.1.2",
-    "electron-builder": "^23.6.0",
-    "electron-vite": "^1.0.25",
+    "electron": "^29.1.4",
+    "electron-builder": "^24.13.3",
+    "electron-vite": "^2.1.0",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",

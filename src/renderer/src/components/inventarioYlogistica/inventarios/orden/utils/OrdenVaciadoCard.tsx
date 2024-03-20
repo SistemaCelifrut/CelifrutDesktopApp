@@ -11,6 +11,7 @@ type propsType = {
 }
 
 export default function OrdenVaciadoCard(props: propsType): JSX.Element {
+  console.log(props.lote)
   return (
     <div className="orden-vaciado-card-container">
       <div className="orden-vaciado-card-container-div-index">
@@ -29,7 +30,7 @@ export default function OrdenVaciadoCard(props: propsType): JSX.Element {
             <p>Canastillas: {Number(props.lote.inventarioActual?.inventario)}</p>
           }
           {Object.prototype.hasOwnProperty.call(props.lote, "desverdizado") ?
-            <p>Canastillas: {(Number(props.lote.desverdizado?.canastillas) * Number(props.lote.promedio)).toLocaleString('es-CO')} Kg</p> :
+            <p>Canastillas: {(Number(props.lote.desverdizado?.kilos)).toLocaleString('es-CO')} Kg</p> :
             <p> Canastillas: {(Number(props.lote.inventarioActual?.inventario) * Number(props.lote.promedio)).toLocaleString('es-CO')} Kg</p>
           }
           {Object.prototype.hasOwnProperty.call(props.lote, "desverdizado") &&
