@@ -11,7 +11,11 @@ export default function NavClasificacionCalidad(props: propsType): JSX.Element {
   const changeHandle = (e): void => {
     const id = e.target.value
     const lote = props.lotesData.find(item => item._id === id)
-    props.setLote(lote);
+    if(lote === undefined){
+      props.setLote({_id:"", enf:"", predio:{PREDIO:""}, tipoFruta:'Limon'})
+    } else {
+      props.setLote(lote);
+    }
   }
 
   return (
@@ -22,7 +26,7 @@ export default function NavClasificacionCalidad(props: propsType): JSX.Element {
         className={`border focus:outline-none appearance-none w-2/5 mr-5 rounded-md h-10 pl-5 pr-10
                         ${'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '}`}
       >
-        <option>Lotes</option>
+        <option value="">Lotes</option>
         {props.lotesData.map((lote) => (
           <option key={lote._id} value={lote._id}>{lote.predio ? lote.enf + ' ' + ' ' +  lote.predio.PREDIO: ''}</option>
         ))}

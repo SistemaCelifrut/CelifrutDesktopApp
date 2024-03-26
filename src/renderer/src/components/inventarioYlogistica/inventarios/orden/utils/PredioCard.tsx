@@ -1,6 +1,8 @@
 /* eslint-disable prettier/prettier */
+import { userContext } from "@renderer/App";
 import { lotesType } from "@renderer/types/lotesType"
 import { format } from "date-fns"
+import { useContext } from "react";
 import { BsArrowRightSquareFill } from "react-icons/bs";
 
 type propsType = {
@@ -9,6 +11,7 @@ type propsType = {
 }
 
 export default function PredioCard(props: propsType): JSX.Element {
+    const user = useContext(userContext);
     return (
         <div className="orden-vaciado-tarjeta-container">
             <div className="div1">
@@ -34,7 +37,12 @@ export default function PredioCard(props: propsType): JSX.Element {
                 </div>
             </div>
             <div className="div2">
-                <button onClick={(): void => props.handleAddOrdenVaceo(props.lote._id)}><BsArrowRightSquareFill /></button>
+                
+                {user.cargo === "admin" && 
+                    <button onClick={(): void => props.handleAddOrdenVaceo(props.lote._id)}>
+                        <BsArrowRightSquareFill />
+                    </button>
+                }
             </div>
         </div>
     )

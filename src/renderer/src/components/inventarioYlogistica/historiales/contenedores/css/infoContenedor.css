@@ -1,0 +1,29 @@
+.contenedores-infoContenedor-container{
+    width: 100%;
+    border-style: solid;
+    border-width: 2px;
+    border-color: black;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+}
+
+.contenedores-infoContenedor-div-datos{
+    display: flex;
+    flex-direction: row;
+    text-align: start;
+    width: 100%;
+    justify-items: flex-start;
+    padding: 5px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-color: black;
+    
+}
+
+.contenedores-infoContenedor-div-datos-header{
+    font-weight: bold;
+}
+

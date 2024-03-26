@@ -7,6 +7,7 @@ import { serverResponse } from '@renderer/types/login'
 
 export interface Api {
   obtenerTheme: () => Promise<'Dark' | 'Ligth'>
+  version: () => Promise<any>
   user: (datos) => Promise<serverResponse>
   server: (datos) => Promise<serverResponse>
   serverEmit: (data, callback) => any

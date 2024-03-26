@@ -8,9 +8,8 @@ import {
   utilityProcess,
   net,
   Notification,
-  dialog,
 } from 'electron'
-import { join } from 'path'
+import  { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { io } from 'socket.io-client'
 import { responseLoginType, clientesServerResponseType } from './types/login'
@@ -18,8 +17,8 @@ import updater from 'electron-updater'
 
 let theme: 'Dark' | 'Ligth' = 'Ligth'
 let cargo = ''
-updater.autoUpdater.setFeedURL({url:'http://192.168.0.172:3000', provider:'generic'})
-updater.autoUpdater.forceDevUpdateConfig = true
+updater.autoUpdater.setFeedURL({ url: 'http://192.168.0.172:3000', provider: 'generic' })
+
 
 function createWindow(): void {
   // Create the browser window.
@@ -93,6 +92,22 @@ function createWindow(): void {
   })
 }
 
+// function createDownloadWindow(): void {
+//   const downloadWindow = new BrowserWindow({
+//     alwaysOnTop: true,
+//     frame: false,
+//     resizable: false,
+//     show: false,
+//     transparent: true,
+//     webPreferences: {
+//       nodeIntegration: true
+//     }
+
+//   });
+
+//   downloadWindow.loadURL(join(__dirname, '../renderer/downloadWindow.html'))
+  
+// }
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -105,17 +120,38 @@ app.whenReady().then(() => {
     .fetch(`http://192.168.0.172:3000/newVersion=${version}`, { method: 'GET' })
     .then((response) => response.text())
     .then((data) => {
-      if (data) {
-        const url = updater.autoUpdater.checkForUpdates().then(data => {
-          new Notification({
-            title: "Actualizacion disponible",
-            body: data?.updateInfo.version
-          }).show()
-          console.log(url)
+      if (data === "true") {
+        updater.autoUpdater.checkForUpdates().then(() => {
+          updater.autoUpdater.once('update-available', (info) => {
+            new Notification({
+              title: 'version disponible',
+              body: info.version
+            }).show()
+            updater.autoUpdater.downloadUpdate().then(() => {
+              updater.autoUpdater.once("update-downloaded", () => {
+                updater.autoUpdater.quitAndInstall();
+              })
+            })
+          })
         })
       }
     })
     .catch((e) => console.log(e))
+
+    updater.autoUpdater.on("error", (info) => {
+      new Notification({
+        title: info.name,
+        body: info.message
+      }).show()
+    })
+    // updater.autoUpdater.on("download-progress", (info) => {
+    //   if (info.percent === 100) {
+    //     new Notification({
+    //       title: 'descargando',
+    //       body: String(info.total)
+    //     }).show()
+    //   }
+    // })
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
@@ -132,7 +168,6 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 
-  // updater.autoUpdater.checkForUpdates();
 
   if (nativeTheme.shouldUseDarkColors) {
     theme = 'Dark'
@@ -148,6 +183,7 @@ app.whenReady().then(() => {
   })
 })
 
+
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
@@ -157,55 +193,19 @@ app.on('window-all-closed', () => {
   }
 })
 
-updater.autoUpdater.on('download-progress', (info) => {
-  const win = new BrowserWindow()
-  dialog.showMessageBox(win, {
-    type: 'error',
-    buttons: ['Ok'],
-    title: String(info.percent),
-    message: String(info.total)
-  }).then((returnValue) => {
-    console.log(returnValue.response)
-  })
-})
 
-updater.autoUpdater.on('update-available', (info) => {
-  console.log(info)
-  new Notification({
-    title: 'actualizacion disponible',
-    body: info.version
-  }).show()
-  updater.autoUpdater.downloadUpdate().then((data) => {
-    console.log(data)
-    updater.autoUpdater.quitAndInstall()
-  });
-})
 
-// updater.autoUpdater.on('update-downloaded', (info) => {
-//   new Notification({
-//     title: 'no avaiable',
-//     body: info.downloadedFile
-//   }).show()
-// })
 
-// updater.autoUpdater.on('update-not-available', (info) => {
-//   new Notification({
-//     title: 'no avaiable',
-//     body: info.version
-//   }).show()
-// })
 
-// /*Download Completion Message*/
-// updater.autoUpdater.on('update-downloaded', () => {
-//   const win = new BrowserWindow()
-//   dialog.showMessageBox(win, {
-//     type: 'info',
-//     buttons: ['Ok'],
-//     title: 'Application Update',
-//     message: 'A new version is being downloaded'
-//   }).then((returnValue) => {
-//     console.log(returnValue.response)
-//   })
+// updater.autoUpdater.on('download-progress', (info) => {
+//   if(info.percent === 100){
+//     new Notification({
+//       title: 'finalizado',
+//       body: String(info.total)
+//     }).show()
+//     updater.autoUpdater.quitAndInstall();
+
+//   }
 // })
 
 // In this file you can include the rest of your app"s specific main process
@@ -218,6 +218,10 @@ ipcMain.handle('obtenerTheme', async () => {
   } catch (e: unknown) {
     return `${e}`
   }
+})
+
+ipcMain.handle('version', async () => {
+  return app.getVersion();
 })
 
 const socket = io('ws://192.168.0.172:3000/', {
@@ -331,8 +335,3 @@ ipcMain.handle('imprimirRotulos', async (event, data) => {
   }
 })
 
-// const child = utilityProcess.fork(join(__dirname, 'imprimir.js'))
-// child.postMessage({ message: 'hello' })
-// child.stdout?.on('data', (data) => {
-//   console.log(data)
-// })

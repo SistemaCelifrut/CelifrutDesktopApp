@@ -11,6 +11,9 @@ export default function NavCalidadInternaForm(props: propsType): JSX.Element {
   const handleChange = (e): void => {
     const id = e.target.value;
     const lote = props.lotesData.find(item => item._id === id)
+    if(lote === undefined){
+      props.setLote({enf:'', _id:''})
+    }
     props.setLote(lote)
   }
 
@@ -28,7 +31,7 @@ export default function NavCalidadInternaForm(props: propsType): JSX.Element {
         className={`border focus:outline-none appearance-none w-2/5 mr-5 rounded-md h-10 pl-5 pr-10
                         ${'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '}`}
       >
-        <option>Lotes</option>
+        <option value=''>Lotes</option>
         {props.lotesData.map((lote) => (
           <option key={lote._id} value={lote._id}>
             {lote && lote.predio ?  lote.enf + ' ' + ' ' + lote.predio.PREDIO : ' '}

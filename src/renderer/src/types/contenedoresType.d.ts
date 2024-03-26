@@ -41,6 +41,7 @@ export type infoContendorType = {
     calibres?: string
     desverdizado?:boolean
     _id?: string
+    urlInforme?: string
 
 }
 
@@ -88,6 +89,9 @@ type criteriosType = {
       enf?:string
       predio?:string
       _id?:string
+      ICA?: string
+      GGN?: string
+      VENCIMIENTO?: string
     },
     cajas?: number
     tipoCaja?: string

@@ -43,6 +43,7 @@ import MessagesComponent from './messages/MessagesComponent'
 import VariablesProceso from './components/sistema/variablesDelSistema/VariablesProceso'
 import HabilitarPrediosProceso from './components/sistema/habilitarPrediosProceso/HabilitarPrediosProceso'
 import OrdenDeVaceo from './components/inventarioYlogistica/inventarios/orden/OrdenDeVaceo'
+import ActivarFunciones from './components/sistema/activarFunciones/ActivarFunciones'
 
 type OpenModalFunction = (messageType: string, message: string) => void;
 type MyContextType = {
@@ -97,6 +98,8 @@ function App(): JSX.Element {
     const funcionAuxiliar = async (): Promise<void> => {
       try {
         const response = await window.api.obtenerTheme()
+        const version = await window.api.version();
+        document.title = "Celifrut App " + version;
         if (response === "Dark") {
           setTheme('Dark')
           document.body.classList.add('dark-theme');
@@ -207,6 +210,7 @@ function App(): JSX.Element {
                               {/* Sistema */}
                               {section === 'Sistema//Proceso//Variables del Proceso' && <VariablesProceso />}
                               {section === 'Sistema//Proceso//Habilitar predios proceso' && <HabilitarPrediosProceso />}
+                              {section === 'Sistema//Proceso//Funciones' && <ActivarFunciones />}
 
                             </div>
                           </div>

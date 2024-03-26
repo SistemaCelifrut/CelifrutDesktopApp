@@ -16,7 +16,7 @@ type propsType = {
 }
 
 export default function ListaOrdenVaceo(props: propsType): JSX.Element {
-  const {messageModal} = useAppContext();
+  const {messageModal, user} = useAppContext();
   const [activarDropp, setActivarDropp] = useState<string>('');
   const [confirm, setConfirm] = useState<boolean>(false)
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false)
@@ -94,7 +94,7 @@ export default function ListaOrdenVaceo(props: propsType): JSX.Element {
       </DragDropContext>
       <div className="lista-orden-vaceo-div-button">
         <button className="defaulButtonAgree" onClick={handleVaciar}>Vaciar</button>
-        {activarDropp === "" ?
+        { user.cargo === "admin" && (activarDropp === "" ?
           <button
             onClick={(): void => setActivarDropp(new Date().toISOString())}
             className="defaulButtonAgree"
@@ -107,7 +107,7 @@ export default function ListaOrdenVaceo(props: propsType): JSX.Element {
             className="defaulButtonError"
           >
             Desactivar
-          </button>
+          </button>)
         }
 
       </div>

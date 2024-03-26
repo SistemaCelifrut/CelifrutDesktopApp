@@ -23,8 +23,6 @@ export default function (contenedor: contenedoresType, filtro: string): object {
         })
       })
     })
-    console.log(outObj[Object.keys(outObj)[0]][0][0].lote)
-    console.log(filtro)
 
     if (filtro !== '') {
       Object.keys(outObj).map((pallet) => {

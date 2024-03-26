@@ -3,6 +3,8 @@ import { lotesType } from "@renderer/types/lotesType"
 import "../css/ordenVaciadoCard.css"
 import { format } from "date-fns"
 import { ImCancelCircle } from "react-icons/im";
+import { useContext } from "react";
+import { userContext } from "@renderer/App";
 
 type propsType = {
   lote: lotesType
@@ -11,7 +13,7 @@ type propsType = {
 }
 
 export default function OrdenVaciadoCard(props: propsType): JSX.Element {
-  console.log(props.lote)
+  const user = useContext(userContext);
   return (
     <div className="orden-vaciado-card-container">
       <div className="orden-vaciado-card-container-div-index">
@@ -41,7 +43,11 @@ export default function OrdenVaciadoCard(props: propsType): JSX.Element {
 
       </div>
       <div className="orden-vaciado-card-container-div-cancel">
-        <button onClick={(): void => props.handleRemoveOrdenVaceo(props.lote._id)}><ImCancelCircle /></button>
+        {user.cargo === "admin" && 
+          <button onClick={(): void => props.handleRemoveOrdenVaceo(props.lote._id)}>
+            <ImCancelCircle />
+          </button>
+        }
       </div>
     </div>
   )

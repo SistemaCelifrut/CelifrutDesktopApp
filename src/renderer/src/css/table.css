@@ -29,6 +29,7 @@
     font-size: 14px;
     text-align: center;
     height: 35px;
+    
 }
 
 .table-main tbody tr td:hover{
@@ -39,6 +40,8 @@
 .table-main tbody tr td div{
     display: flex;
     justify-content: center;
+    align-items: center;
+    gap: 5px;
 }
 
 .table-main tbody tr td button{

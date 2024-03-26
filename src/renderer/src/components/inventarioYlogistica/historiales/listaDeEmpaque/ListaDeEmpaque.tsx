@@ -45,6 +45,7 @@ export default function ListaDeEmpaque(): JSX.Element {
         query: 'proceso'
       };
       const response = await window.api.server(request)
+      console.log(response.data)
       if(response.status !== 200){
         throw new Error(response.message);
       }
