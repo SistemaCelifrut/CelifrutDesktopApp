@@ -44,6 +44,7 @@ import VariablesProceso from './components/sistema/variablesDelSistema/Variables
 import HabilitarPrediosProceso from './components/sistema/habilitarPrediosProceso/HabilitarPrediosProceso'
 import OrdenDeVaceo from './components/inventarioYlogistica/inventarios/orden/OrdenDeVaceo'
 import ActivarFunciones from './components/sistema/activarFunciones/ActivarFunciones'
+import IngresoSistemaDescartes from './components/sistema/ingresarDescartes/IngresoSistemaDescartes'
 
 type OpenModalFunction = (messageType: string, message: string) => void;
 type MyContextType = {
@@ -66,9 +67,7 @@ export const messageContext = createContext<OpenModalFunction | undefined>(undef
 export const confirmacionContext = createContext<confirmationDataType | undefined>(undefined);
 
 export const userContext = createContext<userType>({
-  _id: '',
   user: '',
-  password: '',
   permisos: [],
   cargo: ''
 })
@@ -77,7 +76,7 @@ export const userContext = createContext<userType>({
 function App(): JSX.Element {
   const [isLogin, setIsLogin] = useState<boolean>(false)
   const [theme, setTheme] = useState<themeType>('Ligth')
-  const [user, setUser] = useState<userType>({ user: '', permisos: [], cargo: '', password: '', _id: '' })
+  const [user, setUser] = useState<userType>({ user: '', permisos: [], cargo: '' })
   const [section, setSection] = useState<string>('main')
   const [showSideBar, setShowSideBar] = useState<boolean>(true);
   const [dataComponentes, setDataComponentes] = useState<string>('')
@@ -211,6 +210,7 @@ function App(): JSX.Element {
                               {section === 'Sistema//Proceso//Variables del Proceso' && <VariablesProceso />}
                               {section === 'Sistema//Proceso//Habilitar predios proceso' && <HabilitarPrediosProceso />}
                               {section === 'Sistema//Proceso//Funciones' && <ActivarFunciones />}
+                              {section === 'Sistema//Proceso//Ingreso descartes' && <IngresoSistemaDescartes />}
 
                             </div>
                           </div>

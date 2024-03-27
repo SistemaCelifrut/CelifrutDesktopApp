@@ -17,9 +17,7 @@ export type responseLoginType = {
 }
 
 interface userType {
-  _id: string
   user: string
-  password:string
   permisos: string[]
   cargo:string
 }

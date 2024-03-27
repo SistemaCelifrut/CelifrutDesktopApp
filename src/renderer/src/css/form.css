@@ -70,3 +70,32 @@
     display: flex;
     justify-content: center;
 }
+
+.form-container .form-checkbox-container{
+    border-width: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.form-container .form-label-container{
+    display: flex;
+    font-size: 18px;
+}
+
+.form-container .desverdizado-on-button-contenedor{
+    background-color: rgb(255, 255, 255);
+}
+
+.form-container .desverdizado-on-button-contenedor:hover{
+    background-color: rgb(241, 212, 173);
+}
+
+.form-container .desverdizado-off-button-contenedor{
+    background-color: rgb(250, 178, 22);
+}
+
+.form-container .desverdizado-off-button-contenedor:hover{
+    background-color: rgb(223, 159, 22);
+}

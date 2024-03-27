@@ -12,7 +12,7 @@ import {
 import  { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { io } from 'socket.io-client'
-import { responseLoginType, clientesServerResponseType } from './types/login'
+import { clientesServerResponseType } from './types/login'
 import updater from 'electron-updater'
 
 let theme: 'Dark' | 'Ligth' = 'Ligth'
@@ -193,21 +193,6 @@ app.on('window-all-closed', () => {
   }
 })
 
-
-
-
-
-// updater.autoUpdater.on('download-progress', (info) => {
-//   if(info.percent === 100){
-//     new Notification({
-//       title: 'finalizado',
-//       body: String(info.total)
-//     }).show()
-//     updater.autoUpdater.quitAndInstall();
-
-//   }
-// })
-
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
@@ -232,27 +217,22 @@ const socket = io('ws://192.168.0.172:3000/', {
 ipcMain.handle('user', async (event, datos) => {
   try {
     event.defaultPrevented
-    console.log('user', datos)
-    const request = { data: datos, id: socket.id }
-    const user: responseLoginType = await new Promise((resolve) => {
-      socket.emit('user', request, (response) => {
-        if (typeof response === 'object') {
-          resolve(response)
-        } else {
-          resolve({
-            status: 400,
-            data: { user: '', password: '', rol: '', cargo: '', permisos: [''] }
-          })
-        }
+    const responseJSON = await net.fetch("http://192.168.0.172:3000/signIn", {
+      method:"POST",
+      body: JSON.stringify({
+        user:datos.user,
+        password: datos.password
       })
     })
-    console.log(user)
-    if (datos.action === 'logIn') {
-      cargo = user.data.cargo
+    const response = await responseJSON.json();
+    if(response.status === 200){
+      cargo = response.data.cargo;
+      return response
     }
-    return user
-  } catch (e: unknown) {
-    return `${e}`
+    return response
+  } catch (e) {
+    if(e instanceof Error)
+      return `${e.message}`
   }
 })
 

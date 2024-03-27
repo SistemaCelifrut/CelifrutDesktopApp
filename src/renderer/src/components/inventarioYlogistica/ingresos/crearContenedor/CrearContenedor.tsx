@@ -5,6 +5,8 @@ import { clienteType } from '@renderer/types/clientesType'
 import { serverResponse } from '@renderer/env'
 import useAppContext from '@renderer/hooks/useAppContext'
 import * as strings from './json/string_ES.json'
+import "@renderer/css/components.css"
+import "@renderer/css/form.css"
 
 export default function CrearContenedor(): JSX.Element {
   const { theme, messageModal } = useAppContext();
@@ -26,7 +28,7 @@ export default function CrearContenedor(): JSX.Element {
     } catch (e: unknown) {
       messageModal("error", `Crear contenedor ${e}`)
     }
-  },[])
+  }, [])
   useEffect(() => {
     obtenerDatos();
   }, [])
@@ -68,7 +70,7 @@ export default function CrearContenedor(): JSX.Element {
     }
   }
   const handleDesverdizado = (): void => {
-    if(formState.desverdizado){
+    if (formState.desverdizado) {
       setFormState({
         ...formState,
         desverdizado: false,
@@ -82,310 +84,234 @@ export default function CrearContenedor(): JSX.Element {
   }
 
   return (
-    <form className="grid grid-cols-12 gap-2 w-full h-max" onSubmit={guardarDatos}>
-      <div className="col-span-12 w-full flex justify-center items-center mt-4">
-        <h2 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-2xl`}>
-          {strings.title}
-        </h2>
-      </div>
-      <div className="col-span-2"></div>
-      <div
-        className={`col-span-8 relative inline-flex first-letter ${theme === 'Dark' ? 'bg-dark-primary' : 'bg-white'
-          } mt-3`}
-      >
-        <select
-          onChange={handleChange}
-          name='cliente'
-          required
-          value={formState.cliente}
-          className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
-            ${theme === 'Dark'
-              ? 'border-white bg-slate-800 text-white'
-              : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-            }`}
-        >
-          <option>{strings.clientes}</option>
-          {clientesDatos.map((item) => (
-            <option key={item._id} value={item._id}>
-              {item.CLIENTE}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="col-span-2"></div>
-      <div className="col-span-2"></div>
-      <div className="col-span-4 mt-3 mr-2">
-        <label htmlFor="" className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          {strings.numero_contenedor}
-        </label>
-        <input
-          value={formState.numeroContenedor}
-          name='numeroContenedor'
-          type="text"
-          onChange={handleChange}
-          required
-          className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
-            ${theme === 'Dark'
-              ? 'border-white bg-slate-800 text-white'
-              : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-            }`}
-        />
-      </div>
-
-      <div className="col-span-4 mt-3">
-        <label htmlFor="" className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          {strings.numero_pallets}
-        </label>
-        <input
-          value={formState.pallets}
-          type="number"
-          onChange={handleChange}
-          name='pallets'
-          min={0}
-          step={1}
-          required
-          className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
-            ${theme === 'Dark'
-              ? 'border-white bg-slate-800 text-white'
-              : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-            }`}
-        />
-      </div>
-      <div className="col-span-2"></div>
-
-
-      <div className="col-span-2"></div>
-      <div className="col-span-4 mt-3">
-        <label htmlFor="" className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          {strings.fecha_inicio_proceso}
-        </label>
-        <input
-          value={formState.fechaInicioProceso ? formState.fechaInicioProceso.toString().split('T')[0] : ''}
-          type="date"
-          onChange={handleChange}
-          name='fechaInicioProceso'
-          required
-          className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
-                      ${theme === 'Dark'
-              ? 'border-white bg-slate-800 text-white'
-              : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-            }`}
-        />
-      </div>
-
-      <div className="col-span-4 mt-3">
-        <label htmlFor="" className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          {strings.fecha_estimada_cargue}
-        </label>
-        <input
-          value={formState.fechaEstimadaCargue ? formState.fechaEstimadaCargue.toString().split('T')[0] : ''}
-          type="date"
-          name='fechaEstimadaCargue'
-          onChange={handleChange}
-          required
-          className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
-                      ${theme === 'Dark'
-              ? 'border-white bg-slate-800 text-white'
-              : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-            }`}
-        />
-      </div>
-
-      <div className="col-span-2"></div>
-
-      <div className="col-span-2"></div>
-      <div className="col-span-4 mt-3">
-        <label htmlFor="" className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          {strings.calibres}
-        </label>
-        <input
-          value={formState.calibres}
-          name='calibres'
-          type="text"
-          onChange={handleChange}
-          className={`border focus:outline-none appearance-none w-full rounded-md h-10 pl-5 pr-10
-                ${theme === 'Dark'
-              ? 'border-white bg-slate-800 text-white'
-              : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-            }`}
-        />
-      </div>
-      <div className="col-span-4 flex justify-center mt-4 items-center">
-        <button
-          type="button"
-          name='desverdizado'
-          onClick={handleDesverdizado}
-          className={`h-10 px-5 ${formState.desverdizado ? 'bg-yellow-500 text-white' : 'bg-gray-200 text-black'
-            } rounded-md`}
-        >
-          {strings.desverdizado}
-        </button>
-      </div>
-      <div className="col-span-2"></div>
-      <div className="col-span-2"></div>
-
-      <div className="col-span-4 mt-3 flex justify-center gap-2 flex-col border-solid border-2 rounded-lg">
-        <h3 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} ml-2`}>{strings.calidad.title}</h3>
-        <div className="flex gap-5 justify-center">
-          <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-            <input
-              type="checkbox"
-              className="form-checkbox text-blue-600"
-              value="1"
-              onChange={handleCalidadChange}
-              checked={calidad.includes('1')}
-            />
-            <span className="ml-2">{strings.calidad[1]}</span>
-          </label>
-          <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-            <input
-              type="checkbox"
-              className="form-checkbox text-blue-600"
-              value="1.5"
-              onChange={handleCalidadChange}
-              checked={calidad.includes('1.5')}
-            />
-            <span className="ml-2">{strings.calidad['1.5']}</span>
-          </label>
-          <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-            <input
-              type="checkbox"
-              className="form-checkbox text-blue-600"
-              value="2"
-              onChange={handleCalidadChange}
-              checked={calidad.includes('2')}
-            />
-            <span className="ml-2">{strings.calidad[2]}</span>
-          </label>
+    <div className='componentContainer'>
+      <div className='navBar'></div>
+      <h2 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-2xl`}>
+        {strings.title}
+      </h2>
+      <form className="form-container" onSubmit={guardarDatos}>
+        <div>
+          <label>Clientes</label>
+          <select
+            onChange={handleChange}
+            name='cliente'
+            required
+            value={formState.cliente}
+            className='defaultSelect'
+          >
+            <option>{strings.clientes}</option>
+            {clientesDatos.map((item) => (
+              <option key={item._id} value={item._id}>
+                {item.CLIENTE}
+              </option>
+            ))}
+          </select>
         </div>
-      </div>
-
-      <div className="col-span-4 mt-3 flex justify-center gap-1 flex-col border-solid border-2 rounded-lg">
-        <h3 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} ml-2`}>{strings.tipoCaja.title}</h3>
-        <div className="flex gap-5 justify-center">
-          <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-            <input
-              type="checkbox"
-              className="form-checkbox text-blue-600"
-              value="Blanca"
-              onChange={handleTipoCajaChange}
-              checked={tipoCaja.includes('Blanca')}
-            />
-            <span className="ml-2">{strings.tipoCaja.blanca}</span>
-          </label>
-          <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-            <input
-              type="checkbox"
-              className="form-checkbox text-blue-600"
-              value="Generica"
-              onChange={handleTipoCajaChange}
-              checked={tipoCaja.includes('Generica')}
-            />
-            <span className="ml-2">{strings.tipoCaja.generica}</span>
-          </label>
+        <div>
+          <label>{strings.numero_contenedor}</label>
+          <input
+            value={formState.numeroContenedor}
+            name='numeroContenedor'
+            type="text"
+            onChange={handleChange}
+            required
+          />
         </div>
-      </div>
 
-      <div className="col-span-2"></div>
-      <div className="col-span-2"></div>
-
-      <div className="col-span-4 mt-3 flex justify-center gap-1 flex-col border-solid border-2 rounded-lg">
-        <h3 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} ml-2`}>{strings.tipoFruta.title}</h3>
-        <div className="flex gap-5 justify-center m-1 text-sm">
-          {' '}
-          <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-            <input
-              type="radio"
-              className="form-radio text-orange-600"
-              name="tipoFruta"
-              value="Naranja"
-              onChange={handleChange}
-            />
-            <span className="ml-2">{strings.tipoFruta.naranja}</span>
-          </label>
-          <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-            <input
-              type="radio"
-              className="form-radio text-green-600"
-              name="tipoFruta"
-              value="Limon"
-              onChange={handleChange}
-            />
-            <span className="ml-2">{strings.tipoFruta.limon}</span>
-          </label>
-          <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-            <input
-              type="radio"
-              className="form-radio text-orange-600"
-              name="tipoFruta"
-              value="Mixto"
-              onChange={handleChange}
-            />
-            <span className="ml-2">{strings.tipoFruta.mixto}</span>
-          </label>
+        <div >
+          <label>{strings.numero_pallets}</label>
+          <input
+            value={formState.pallets}
+            type="number"
+            onChange={handleChange}
+            name='pallets'
+            min={0}
+            step={1}
+            required
+          />
         </div>
-      </div>
-      <div className="col-span-4 mt-3 flex justify-center  gap-1 flex-col border-solid border-2 rounded-lg">
-        <h3 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} ml-2`}>{strings.tipoEmpaque.title}</h3>
-        <div className="flex gap-5 justify-center">
-          {' '}
-          <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-            <input
-              type="radio"
-              className="form-radio text-orange-600"
-              name="tipoEmpaque"
-              value="Caja"
-              onChange={handleChange}
-            />
-            <span className="ml-2">{strings.tipoEmpaque.caja}</span>
-          </label>
-          <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-            <input
-              type="radio"
-              className="form-radio text-green-600"
-              name="tipoEmpaque"
-              value="Saco"
-              onChange={handleChange}
-            />
-            <span className="ml-2">{strings.tipoEmpaque.saco}</span>
-          </label>
+        <div>
+          <label>{strings.fecha_inicio_proceso}</label>
+          <input
+            value={formState.fechaInicioProceso ? formState.fechaInicioProceso.toString().split('T')[0] : ''}
+            type="date"
+            onChange={handleChange}
+            name='fechaInicioProceso'
+            required
+          />
         </div>
-      </div>
+        <div>
+          <label>{strings.fecha_estimada_cargue}</label>
+          <input
+            value={formState.fechaEstimadaCargue ? formState.fechaEstimadaCargue.toString().split('T')[0] : ''}
+            type="date"
+            name='fechaEstimadaCargue'
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label>{strings.calibres}</label>
+          <input
+            value={formState.calibres}
+            name='calibres'
+            type="text"
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label>{strings.desverdizado}</label>
+          <button
+            type="button"
+            name='desverdizado'
+            onClick={handleDesverdizado}
+            className={`${formState.desverdizado ? 'desverdizado-on-button-contenedor' : 'desverdizado-off-button-contenedor'} `}
+          >
+            {strings.desverdizado}
+          </button>
+        </div>
 
-      <div className="col-span-2"></div>
-      <div className="col-span-2"></div>
+        <div>
+          <label>{strings.calidad.title}</label>
+          <div className='form-checkbox-container'>
+            <label className='form-label-container'>
+              <span>{strings.calidad[1]}.</span>
+              <input
+                type="checkbox"
+                className="form-checkbox"
+                value="1"
+                onChange={handleCalidadChange}
+                checked={calidad.includes('1')}
+              />
+            </label>
+            <label className='form-label-container'>
+              <span className="ml-2">{strings.calidad['1.5']}</span>
+              <input
+                type="checkbox"
+                className="form-checkbox text-blue-600"
+                value="1.5"
+                onChange={handleCalidadChange}
+                checked={calidad.includes('1.5')}
+              />
+            </label>
+            <label className='form-label-container'>
+              <span className="ml-2">{strings.calidad[2]}</span>
+              <input
+                type="checkbox"
+                className="form-checkbox text-blue-600"
+                value="2"
+                onChange={handleCalidadChange}
+                checked={calidad.includes('2')}
+              />
+            </label>
+          </div>
+        </div>
 
-      <div className="col-span-8 mt-3">
-        <label htmlFor="" className={`${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          {strings.observaciones}
-        </label>
-        <textarea
-          onChange={handleChange}
-          name='observaciones'
-          required
-          value={formState.observaciones}
-          className={`border focus:outline-none appearance-none w-full rounded-md h-20 pl-5 pr-10 mt-2 pt-2
-            ${theme === 'Dark'
-              ? 'border-white bg-slate-800 text-white'
-              : 'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '
-            }`}
-        />
-      </div>
+        <div >
+          <label>{strings.tipoCaja.title}</label>
+          <div className='form-checkbox-container'>
+            <label className='form-label-container'>
+              <span className="ml-2">{strings.tipoCaja.blanca}</span>
+              <input
+                type="checkbox"
+                className="form-checkbox text-blue-600"
+                value="Blanca"
+                onChange={handleTipoCajaChange}
+                checked={tipoCaja.includes('Blanca')}
+              />
+            </label>
+            <label className='form-label-container'>
+              <span className="ml-2">{strings.tipoCaja.generica}</span>
+              <input
+                type="checkbox"
+                className="form-checkbox text-blue-600"
+                value="Generica"
+                onChange={handleTipoCajaChange}
+                checked={tipoCaja.includes('Generica')}
+              />
+            </label>
+          </div>
+        </div>
+        <div>
+          <label>{strings.tipoFruta.title}</label>
+          <div className='form-checkbox-container'>
+            <label className='form-label-container'>
+              <span className="ml-2">{strings.tipoFruta.naranja}</span>
+              <input
+                type="radio"
+                className="form-radio text-orange-600"
+                name="tipoFruta"
+                value="Naranja"
+                onChange={handleChange}
+              />
+            </label>
+            <label className='form-label-container'>
+              <span className="ml-2">{strings.tipoFruta.limon}</span>
+              <input
+                type="radio"
+                className="form-radio text-green-600"
+                name="tipoFruta"
+                value="Limon"
+                onChange={handleChange}
+              />
+            </label>
+            <label className='form-label-container'>
+              <span className="ml-2">{strings.tipoFruta.mixto}</span>
+              <input
+                type="radio"
+                className="form-radio text-orange-600"
+                name="tipoFruta"
+                value="Mixto"
+                onChange={handleChange}
+              />
+            </label>
+          </div>
+        </div>
+        <div>
+          <label>{strings.tipoEmpaque.title}</label>
+          <div className='form-checkbox-container'>
+            <label className='form-label-container'>
+              <span className="ml-2">{strings.tipoEmpaque.caja}</span>
+              <input
+                type="radio"
+                className="form-radio text-orange-600"
+                name="tipoEmpaque"
+                value="Caja"
+                onChange={handleChange}
+              />
+            </label>
+            <label className='form-label-container'>
+              <span className="ml-2">{strings.tipoEmpaque.saco}</span>
+              <input
+                type="radio"
+                className="form-radio text-green-600"
+                name="tipoEmpaque"
+                value="Saco"
+                onChange={handleChange}
+              />
+            </label>
+          </div>
+        </div>
 
-      <div className="col-span-2"></div>
-      <div className="col-span-2"></div>
-
-      <div className="col-span-2"></div>
-      <div className="col-span-4 mt-3 flex justify-center items-center mb-4">
-        <button
-          type="submit"
-          className={`w-full h-12 bg-green-500 text-white rounded-md focus:outline-none ${theme === 'Dark' ? 'hover:bg-green-400' : 'hover:bg-green-600'
-            }`}
-        >
-          {strings.guardar}
-        </button>
-      </div>
-    </form>
+        <div>
+          <label>
+            {strings.observaciones}
+          </label>
+          <textarea
+            onChange={handleChange}
+            name='observaciones'
+            required
+            value={formState.observaciones}
+          />
+        </div>
+        <div className="col-span-4 mt-3 flex justify-center items-center mb-4">
+          <button
+            type="submit"
+          >
+            {strings.guardar}
+          </button>
+        </div>
+      </form>
+    </div>
   )
 }

@@ -104,7 +104,7 @@ export default function IngresoFruta(): JSX.Element {
             className='defaultSelect'
             onChange={handleChange}
             required
-            name='nombrePredio'>
+            name='tipoFruta'>
             <option value=""></option>
             <option value="Naranja">{strings.tipoFruta.naranja}</option>
             <option value="Limon">{strings.tipoFruta.limon}</option>
