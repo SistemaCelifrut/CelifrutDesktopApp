@@ -45,6 +45,7 @@ import HabilitarPrediosProceso from './components/sistema/habilitarPrediosProces
 import OrdenDeVaceo from './components/inventarioYlogistica/inventarios/orden/OrdenDeVaceo'
 import ActivarFunciones from './components/sistema/activarFunciones/ActivarFunciones'
 import IngresoSistemaDescartes from './components/sistema/ingresarDescartes/IngresoSistemaDescartes'
+import Operario from './components/gestionDeCuentas/operarios/Operario'
 
 type OpenModalFunction = (messageType: string, message: string) => void;
 type MyContextType = {
@@ -197,6 +198,7 @@ function App(): JSX.Element {
                               {section === "Gestión de Cuentas//Clientes//Clientes" && <Clientes />}
                               {section === "Gestión de Cuentas//Proveedores//Proveedores" && <Proveedores />}
                               {section === "Gestión de Cuentas//Sistema//Crear cuenta" && <Cuentas />}
+                              {section === "Gestión de Cuentas//Operarios//Operarios" && <Operario />}
 
                               {/* Transporte */}
                               {/* {section === 'Transporte//Historiales//Inspeccion camiones' && <HistorialVehiculos />} */}

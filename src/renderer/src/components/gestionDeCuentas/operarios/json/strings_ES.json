@@ -1,0 +1,13 @@
+{
+    "title":"Ingresar Operario",
+    "nombre":"Nombre",
+    "apellido":"Apellido",
+    "fechaNacimiento":"Fecha de nacimiento",
+    "genero":{
+        "title":"Genero",
+        "generos":["Masculino", "Femenino", "Indefinido"]
+    },
+    "direccion":"Dirección",
+    "telefono":"Telefono",
+    "email":"Email"
+}
