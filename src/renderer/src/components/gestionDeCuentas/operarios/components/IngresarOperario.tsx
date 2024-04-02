@@ -25,6 +25,7 @@ export default function IngresarOperario(): JSX.Element {
             if(response.status !== 200)
                 throw new Error(response.message)
             messageModal("success","Operario agregado con exito");
+            setFormState(initFormState)
         }catch (e){
             if(e instanceof Error)
                 messageModal("error", e.message);
@@ -54,6 +55,7 @@ export default function IngresarOperario(): JSX.Element {
                         className='defaultSelect'
                         onChange={handleChange}
                         name='genero'>
+                        <option value=""></option>
                         {strings.genero.generos.map((item) => (
                             <option key={item} value={item}>{item}</option>
                         ))}
