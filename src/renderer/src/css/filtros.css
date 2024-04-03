@@ -2,6 +2,14 @@
     margin: 10px;
     display: flex;
     flex-direction: column;
+    padding: 15px;
+
+}
+
+.filtroContainer div {
+    display: flex;
+    gap: 10px;
+    justify-content: space-around;
 }
 
 .filtroContainer h3 {
@@ -28,4 +36,36 @@
     border-color: #999;
     border-radius: 8px;
     margin-right: 8px;
+}
+
+.filtroContainer input {
+    color: black;
+    width: 40%;
+    height: 3rem;
+    border: 1px;
+    border-style: solid;
+    border-color: #999;
+    border-radius: 8px;
+    margin-right: 8px;
+    padding: 8px;
+}
+
+.filtroContainer button {
+    background-color: var(--color-Celifrut);
+    color: white;
+    border-radius: 8px;
+    padding: 0px 8px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.filtroContainer button:hover {
+    background-color: var(--color-Celifrut-dark);
+}
+
+.filtroContainer button:active {
+    background-color: var(--color-Celifrut);
 }

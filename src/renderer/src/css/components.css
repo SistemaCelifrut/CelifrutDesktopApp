@@ -27,6 +27,13 @@
     border-radius: 8px;
 }
 
+.navBar input {
+    width: 350px;
+    height: 35px;
+    color: black;
+    border-radius: 8px;
+}
+
 .navBar-menuButton{
     padding: 8px;
     font-size: 24px;
