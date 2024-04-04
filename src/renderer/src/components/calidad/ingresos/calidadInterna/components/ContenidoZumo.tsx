@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-import useAppContext from '@renderer/hooks/useAppContext'
 import { calidadInternaType } from '../types/calidadInterna'
 
 type propsType = {
@@ -8,7 +7,6 @@ type propsType = {
 }
 
 export default function ContenidoZumo(props: propsType): JSX.Element {
-  const {theme} = useAppContext();
   const calcularPorcentaje = (): string => {
     const pesoInicial = parseFloat(props.formulario.pesoInicial)
     const pesoZumo = parseFloat(props.formulario.zumo)
@@ -20,49 +18,33 @@ export default function ContenidoZumo(props: propsType): JSX.Element {
   }
 
   return (
-    <div
-      className={`${theme === 'Dark' ? 'bg-slate-500' : 'bg-slate-100'} 
-                        flex flex-col gap-4 w-8/12 p-4 rounded-lg shadow-lg m-4 `}
-    >
-      <h2
-        className={`${theme === 'Dark' ? 'text-white' : 'text-black'}
-                        text-xl font-bold mb-4 text-center`}
-      >
-        Contenido Zumo
-      </h2>
+    <div className="calidad-interna-zumo-div">
+      <h2>Contenido Zumo</h2>
       <input
-        className={`rounded-lg h-10 pl-2`}
+        className='defaultSelect'
         type="number"
         placeholder="Peso inicial muestra (gr)"
         onChange={(e): void => props.handleChange(e, 'pesoInicial')}
         value={props.formulario.pesoInicial}
       />
       <input
-        className="rounded-lg h-10 pl-2"
+        className='defaultSelect'
         type="number"
         placeholder="Peso zumo (gr)"
         onChange={(e): void => props.handleChange(e, 'zumo')}
         value={props.formulario.zumo}
       />
       <div className="checkBoxContainer">
-        <label
-          htmlFor="semillas"
-          className={`${theme === 'Dark' ? 'text-white' : 'text-black'}
-                        text-xl font-bold mb-4 text-center mr-2`}
-        >
+        <label>
           Semillas
-        </label>
-        <input
+          <input
           id="semillas"
           type="checkbox"
-          className="w-10 h-4"
           onChange={(e): void => props.handleChange(e, 'semillas')}
         />
+        </label>
       </div>
-      <p
-        className={`${theme === 'Dark' ? 'text-white' : 'text-black'}
-                        text-xl mb-4 text-center`}
-      >
+      <p>
         Porcentaje de Llenado de Contenido Zumo: {calcularPorcentaje()}%
       </p>
     </div>

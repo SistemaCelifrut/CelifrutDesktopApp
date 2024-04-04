@@ -12,7 +12,7 @@ export default function InventarioFrutaSinProcesar(): JSX.Element {
   }
 
   return (
-    <div className='w-full'>
+    <div className='componentContainer'>
       <NavBarInventario handleFilter={handleFilter} />
       <FrutaSinProcesar filtro={filtro}  />
     </div>

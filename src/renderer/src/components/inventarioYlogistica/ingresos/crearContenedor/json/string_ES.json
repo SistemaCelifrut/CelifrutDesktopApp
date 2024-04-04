@@ -11,7 +11,10 @@
         "title":"Calidad",
         "1":"1",
         "1.5":"1.5",
-        "2":"2"
+        "2":"2",
+        "zumo":"Zumo",
+        "combinado":"Combinado"
+
     },
     "tipoCaja":{
         "title":"Tipo de Caja",

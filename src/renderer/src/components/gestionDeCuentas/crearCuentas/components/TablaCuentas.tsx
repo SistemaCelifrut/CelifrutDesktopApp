@@ -6,6 +6,7 @@ import { RiDeleteBin5Fill } from "react-icons/ri";
 import { FaArrowCircleDown } from "react-icons/fa";
 import { FaArrowCircleUp } from "react-icons/fa";
 import TableInfoUsuario from "./TableInfoUsuario";
+import TablaPermisos from "./TablaPermisos";
 
 type propsType = {
     data: userType[] | undefined
@@ -71,6 +72,7 @@ export default function TablaCuentas(props: propsType): JSX.Element {
                             <tr>
                                 <td colSpan={7}>
                                     {opcion === "info-usuario" && <TableInfoUsuario usuario={usuario} />}
+                                    {opcion === "permisos" && <TablaPermisos usuario={usuario} />}
 
                                 </td>
 

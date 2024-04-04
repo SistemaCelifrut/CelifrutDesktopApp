@@ -33,6 +33,7 @@ export type lotesType = {
     calidad15?: number
     calidad2?: number
     __v?: number
+    clasificacionCalidad?: string
 }
 
 export type historialLotesType = {

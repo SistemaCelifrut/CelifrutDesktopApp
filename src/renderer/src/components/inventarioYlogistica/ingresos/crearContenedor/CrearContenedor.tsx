@@ -188,7 +188,6 @@ export default function CrearContenedor(): JSX.Element {
               <span className="ml-2">{strings.calidad['1.5']}</span>
               <input
                 type="checkbox"
-                className="form-checkbox text-blue-600"
                 value="1.5"
                 onChange={handleCalidadChange}
                 checked={calidad.includes('1.5')}
@@ -198,12 +197,32 @@ export default function CrearContenedor(): JSX.Element {
               <span className="ml-2">{strings.calidad[2]}</span>
               <input
                 type="checkbox"
-                className="form-checkbox text-blue-600"
                 value="2"
                 onChange={handleCalidadChange}
                 checked={calidad.includes('2')}
               />
             </label>
+            
+            <label className='form-label-container'>
+              <span className="ml-2">{strings.calidad.zumo}</span>
+              <input
+                type="checkbox"
+                value="Zumo"
+                onChange={handleCalidadChange}
+                checked={calidad.includes('Zumo')}
+              />
+            </label>
+
+            <label className='form-label-container'>
+              <span className="ml-2">{strings.calidad.combinado}</span>
+              <input
+                type="checkbox"
+                value="Combinado"
+                onChange={handleCalidadChange}
+                checked={calidad.includes('Combinado')}
+              />
+            </label>
+       
           </div>
         </div>
 

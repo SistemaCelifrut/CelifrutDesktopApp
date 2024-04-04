@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { format } from 'date-fns'
 import HeaderTableFurtaSinProcesar from '../utils/HeaderTableFurtaSinProcesar'
-import React from 'react'
 import { lotesType } from '@renderer/types/lotesType'
 
 type propsType = {
@@ -13,96 +12,52 @@ type propsType = {
 export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
 
   const handleClick = (e): void => {
-      props.clickLote(e);
+    props.clickLote(e);
   };
   return (
-    <div>
-      <div className="grid grid-cols-9 gap-0 mt-0">
-        <HeaderTableFurtaSinProcesar/>
-      </div>
-      <div className="grid grid-cols-9 gap-0 mt-0">
+    <table className='table-main'>
+      <HeaderTableFurtaSinProcesar />
+      <tbody>
         {props.table.sort().map((lote, index) => (
-          <React.Fragment key={lote.enf}>
-            <div
-
-              className={`h-10 p-0 ol-span-1 text-[12px] flex justify-center items-center  ${
-                index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-              }`}
-            >
-              <input 
-                type="radio" 
-                onChange={handleClick} 
-                id={lote.enf} 
-                value={lote.enf} 
+          <tr className={`${index % 2 === 0 ? 'fondo-par' : 'fondo-impar'}`} key={index} >
+            <td>
+              <input
+                type="radio"
+                onChange={handleClick}
+                id={lote.enf}
+                value={lote.enf}
                 name='lote' ></input>
-            </div>
-            <div
-
-              className={` ol-span-1 text-[12px] flex items-center  ${
-                index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-              }`}
-            >
+            </td>
+            <td>
               {lote.enf}
-            </div>
-            <div
-
-              className={` ol-span-1 text-[12px] flex items-center  ${
-                index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-              }`}
-            >
+            </td>
+            <td>
               {lote.predio && lote.predio.PREDIO}
-            </div>
-            <div
-
-              className={`flex justify-center ol-span-1 text-[12px] items-center  ${
-                index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-              }`}
-            >
+            </td>
+            <td>
               {lote.predio && lote.predio.ICA}
-            </div>
-            <div
-   
-              className={`flex justify-center ol-span-1 text-[12px]  items-center  ${
-                index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-              }`}
-            >
+            </td>
+            <td>
               {lote.fechaIngreso ? format(new Date(lote.fechaIngreso), 'dd-MM-yyyy') : ""}
-            </div>
-            <div
-
-              className={`flex justify-center ol-span-1 text-[12px]  items-center  ${
-                index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-              }`}
-            >
+            </td>
+            <td>
               {(lote.inventarioActual?.inventario && lote.promedio) ? (lote.inventarioActual.inventario * lote.promedio).toFixed(2) : 0}
-            </div>
-            <div
- 
-              className={`flex justify-center ol-span-1 text-[12px]  items-center  ${
-                index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-              }`}
-            >
-              { lote.inventarioActual?.inventario && lote.inventarioActual.inventario}
-            </div>
-            <div
-   
-              className={` ol-span-1 text-[12px] flex items-center  ${
-                index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-              }`}
-            >
+            </td>
+            <td>
+              {lote.inventarioActual?.inventario && lote.inventarioActual.inventario}
+            </td>
+            <td>
               {lote.tipoFruta}
-            </div>
-            <div
-
-              className={` ol-span-1 text-[12px] flex items-center  ${
-                index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-              }`}
-            >
+            </td>
+            <td>
+              {lote.clasificacionCalidad }
+            </td>
+            <td>
               {lote.observaciones}
-            </div>
-          </React.Fragment>
+            </td>
+          </tr>
         ))}
-      </div>
-    </div>
+      </tbody>
+    </table>
   )
 }

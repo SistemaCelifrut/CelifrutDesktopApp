@@ -38,7 +38,7 @@ export default function CalidadInterna(): JSX.Element {
   }, [])
 
   return (
-    <div className='flex flex-col gap-4 p-2 w-full'>
+    <div className='componentContainer'>
       <NavCalidadInternaForm lotesData={lotesData} setLote={setLote} />
       <div>
         <PruebasCalidadInterna lote={lote} setLotesData={setLotesData} />

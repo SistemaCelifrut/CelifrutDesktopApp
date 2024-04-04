@@ -5,6 +5,7 @@ import "../../../css/filtros.css"
 import { userType } from '@renderer/types/cuentas';
 import TablaCuentas from './components/TablaCuentas';
 import useAppContext from '@renderer/hooks/useAppContext';
+import "./css/usuarios-estilos.css"
 
 export default function Cuentas(): JSX.Element {
   const { messageModal } = useAppContext();
@@ -17,7 +18,6 @@ export default function Cuentas(): JSX.Element {
       const response = await window.api.server(request);
       if (response.status !== 200)
         throw new Error(response.message)
-      console.log(response)
       setData(response.data)
     } catch (e) {
       if (e instanceof Error)

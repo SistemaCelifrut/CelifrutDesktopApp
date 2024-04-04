@@ -7,7 +7,7 @@ export const requestLotes = {
       'calidad.calidadInterna': { $exists: false },
       enf: { $regex: '^E', $options: 'i' }
     },
-    select: { enf: 1, calidad: 1 },
+    select: { enf: 1, calidad: 1, tipoFruta: 1 },
     populate: {
       path: 'predio',
       select: 'PREDIO ICA'
@@ -19,9 +19,10 @@ export const requestLotes = {
   query: 'proceso'
 }
 
-export const new_lote = (formulario, lote: lotesType):lotesType => {
+export const new_lote = (formulario, lote: lotesType, clasificacionCalidad: string):lotesType => {
   return {
     ...lote,
+  clasificacionCalidad:clasificacionCalidad,
   calidad:{
     ...lote.calidad,
     calidadInterna:{

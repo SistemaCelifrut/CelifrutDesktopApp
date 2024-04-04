@@ -1,0 +1,51 @@
+.usuarios-tabla-permisos-container{
+    display: flex;
+    flex-direction: column;
+    cursor:default;
+    text-decoration: none;
+
+
+}
+
+
+.usuarios-tabla-permisos-areas{
+    background-color: rgb(194, 248, 214);
+    width: 100%;
+    cursor:default;
+    text-decoration: none;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 8px;
+
+}
+
+.usuarios-tabla-permisos-areas:hover{
+    text-decoration: underline;
+    cursor: pointer;
+
+}
+
+.usuarios-tabla-permisos-secciones{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.usuarios-tabla-permisos-secciones .elemento{
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 8px;
+    width: 100%;
+    font-weight: bold;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+}
+.usuarios-tabla-permisos-secciones .elemento .item{
+    display: flex;
+    font-weight: 400;
+    flex-direction: row;
+}

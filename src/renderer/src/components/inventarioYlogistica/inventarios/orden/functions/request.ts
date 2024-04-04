@@ -47,12 +47,22 @@ export const requestAddItemOrdenVaceo = (data): object => {
 
 export const requestVaciar = (lote): object => {
   const nuevo_lote = JSON.parse(JSON.stringify(lote))
-  nuevo_lote['inventarioActual.inventario'] = 0
-  nuevo_lote.kilosVaciados =
-    Number(nuevo_lote.kilosVaciados) + Number(nuevo_lote.promedio) * Number(nuevo_lote.inventarioActual.inventario)
+  const kilosVaciados = Number(nuevo_lote.promedio) * Number(nuevo_lote.inventarioActual.inventario)
+  console.log(kilosVaciados)
+
   return {
     data: {
-      lote: nuevo_lote,
+      lote: {
+        _id:nuevo_lote._id,
+        enf:nuevo_lote.enf,
+        predio:nuevo_lote.predio,
+        tipoFruta: nuevo_lote.tipoFruta,
+        $inc:{
+          'inventarioActual.inventario': - Number(kilosVaciados),
+            kilosVaciados: kilosVaciados
+        },
+        
+      },
       vaciado: nuevo_lote.inventarioActual.inventario
     },
     collection: 'lotes',

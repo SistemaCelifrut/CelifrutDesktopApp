@@ -18,7 +18,7 @@ const request = {
     query: {
       "inventarioActual.inventario": { $gt: 0 },
     },
-    select: { nombrePredio: 1, fechaIngreso: 1, observaciones: 1, tipoFruta: 1, promedio: 1, "inventarioActual.inventario": 1, enf: 1, kilosVaciados: 1, directoNacional: 1 },
+    select: { clasificacionCalidad:1, nombrePredio: 1, fechaIngreso: 1, observaciones: 1, tipoFruta: 1, promedio: 1, "inventarioActual.inventario": 1, enf: 1, kilosVaciados: 1, directoNacional: 1 },
     populate: {
       path: 'predio',
       select: 'PREDIO ICA'
@@ -31,7 +31,7 @@ const request = {
 };
 
 export default function FrutaSinProcesar(props: propsType): JSX.Element {
-  const { messageModal} = useAppContext();
+  const { messageModal } = useAppContext();
   const [propsModal, setPropsModal] = useState<lotesType>(predios)
   const [titleTable, setTitleTable] = useState('Lotes')
   const [datosOriginales, setDatosOriginales] = useState([])
@@ -46,35 +46,35 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
 
   useEffect(() => {
     obtenerFruta()
-    
+
     const handleServerEmit = async (data): Promise<void> => {
       if (data.fn === "vaciado" || data.fn === "ingresoLote" || data.fn === "procesoLote") {
         await obtenerFruta()
       }
     }
-  
+
     window.api.serverEmit('serverEmit', handleServerEmit)
-  
+
     // Función de limpieza
     return () => {
       window.api.removeServerEmit('serverEmit', handleServerEmit)
     }
   }, [])
-  
+
 
   const obtenerFruta = async (): Promise<void> => {
     try {
       const frutaActual = await window.api.server(request)
-      if (frutaActual.status === 200 && Object.prototype.hasOwnProperty.call(frutaActual,"data")) {
+      if (frutaActual.status === 200 && Object.prototype.hasOwnProperty.call(frutaActual, "data")) {
         setDatosOriginales(frutaActual.data)
         dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
       } else {
-        messageModal("error",`Error ${frutaActual.status}: ${frutaActual.message}`)
+        messageModal("error", `Error ${frutaActual.status}: ${frutaActual.message}`)
       }
     } catch (e: unknown) {
       if (e instanceof Error) {
         messageModal("error", e.message)
-    }
+      }
     }
   }
   const clickLote = (e): void => {
@@ -84,7 +84,7 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
       setPropsModal(lote)
     }
     if (e.target.checked) {
-      setTitleTable(id + ' ' +  (lote?.predio?.PREDIO || ""))
+      setTitleTable(id + ' ' + (lote?.predio?.PREDIO || ""))
       if (lote?.tipoFruta === 'Naranja') {
         setTipoFruta('Naranja')
       } else if (lote?.tipoFruta == 'Limon') {
@@ -102,7 +102,7 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
   const closeDesverdizado = (): void => {
     setShowDesverdizadoModal(!showDesverdizadoModal)
   }
-  const handleInfo = ():void => {
+  const handleInfo = (): void => {
     setPropsModal(predios)
     setTitleTable("Lotes")
   }
@@ -111,50 +111,44 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
     dispatch({ type: 'filter', data: datosOriginales, filtro: props.filtro })
   }, [props.filtro])
   return (
-    <>
-      <div className='flex flex-col p-2'>
-
-        <BotonesAccionFrutaSinProcesar
-          title={titleTable}
-          table={table}
-          tipoFruta={tipoFruta}
-          closeVaciado={closeVaciado}
-          closeDirecto={closeDirecto}
-          closeDesverdizado={closeDesverdizado}
-        />
-
-        <TableFrutaSinProcesar 
-          table={table} 
-          clickLote={clickLote} 
-          propsModal={propsModal}
-        />
-
-        {showVaciarModal &&
-          createPortal(
-            <Vaciado
-              closeVaciado={closeVaciado}
-              propsModal={propsModal} 
-              handleInfo={handleInfo} />,
-            document.body
-          )}
-
-        {showDirectoModal &&
-          createPortal(
-            <Directo
-              handleInfo={handleInfo}
-              closeDirecto={closeDirecto}
-              propsModal={propsModal} />,
-            document.body
-          )}
-        {showDesverdizadoModal &&
-          createPortal(
-            <Desverdizado
-              handleInfo={handleInfo}
-              closeDesverdizado={closeDesverdizado}
-              propsModal={propsModal} />,
-            document.body
-          )}
-      </div>
-    </>
+    <div>
+      <BotonesAccionFrutaSinProcesar
+        title={titleTable}
+        table={table}
+        tipoFruta={tipoFruta}
+        closeVaciado={closeVaciado}
+        closeDirecto={closeDirecto}
+        closeDesverdizado={closeDesverdizado}
+      />
+      <TableFrutaSinProcesar
+        table={table}
+        clickLote={clickLote}
+        propsModal={propsModal}
+      />
+      {showVaciarModal &&
+        createPortal(
+          <Vaciado
+            closeVaciado={closeVaciado}
+            propsModal={propsModal}
+            handleInfo={handleInfo} />,
+          document.body
+        )}
+      {showDirectoModal &&
+        createPortal(
+          <Directo
+            handleInfo={handleInfo}
+            closeDirecto={closeDirecto}
+            propsModal={propsModal} />,
+          document.body
+        )}
+      {showDesverdizadoModal &&
+        createPortal(
+          <Desverdizado
+            handleInfo={handleInfo}
+            closeDesverdizado={closeDesverdizado}
+            propsModal={propsModal} />,
+          document.body
+        )}
+    </div>
   )
 }

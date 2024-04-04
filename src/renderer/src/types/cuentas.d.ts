@@ -6,7 +6,7 @@ export type userType = {
     contrasenna: string
     cargo: string
     email?: string
-    permisos: string[]
+    nombres_permisos: string[]
     nombre?: string
     apellido?: string
     genero?: string

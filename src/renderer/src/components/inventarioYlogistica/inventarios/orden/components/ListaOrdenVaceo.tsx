@@ -44,6 +44,7 @@ export default function ListaOrdenVaceo(props: propsType): JSX.Element {
       if(response.status !== 200){
         throw new Error(response.message);
       }
+      props.handleRemoveOrdenVaceo(props.lotesOrdenVaceo[0]._id)
       messageModal("success", "Lote vaciado con exito!")
     }catch(e){
       if(e instanceof Error){
