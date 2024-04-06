@@ -7,6 +7,8 @@
   -webkit-box-shadow: 0px 9px 10px 1px rgba(186, 186, 186, 1);
   -moz-box-shadow: 0px 9px 10px 1px rgba(186, 186, 186, 1);
   box-shadow: 0px 9px 10px 1px var(--color-shadow);
+
+  position: relative;
 }
 
 .form-container div {
@@ -99,3 +101,4 @@
 .form-container .desverdizado-off-button-contenedor:hover{
     background-color: rgb(223, 159, 22);
 }
+

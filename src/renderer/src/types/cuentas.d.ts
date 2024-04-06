@@ -17,3 +17,13 @@ export type userType = {
     direccion?:string
     telefono?:string
 }
+
+export type cargosUsuariosType = {
+    cargo_id:number
+    nombre:string
+}
+
+export type permisosUsusariosType = {
+    permiso_id: number
+    nombre: string
+}
