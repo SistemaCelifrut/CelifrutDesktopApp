@@ -62,7 +62,7 @@ export default function GraficaCircular(props:propsType): JSX.Element {
     graficar()
   }, [props.data])
   return (
-    <div className='bg-white p-1 rounded-lg'>
+    <div className='lotes-graficas-div'>
        <canvas id="myChart" width="400" height="350"></canvas>
     </div>
   )

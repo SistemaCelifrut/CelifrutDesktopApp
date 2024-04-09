@@ -1,8 +1,5 @@
 /* eslint-disable prettier/prettier */
 
-import { themeContext } from "@renderer/App"
-import { useContext  } from "react"
-
 type propsType = {
   handleFiltro: (tipoFiltro, elemento) => void
   prediosData: string[]
@@ -12,7 +9,6 @@ type propsType = {
 }
 
 export default function FiltrosFilas(props: propsType): JSX.Element {
-  const theme = useContext(themeContext)
 
   const handleTipoFruta = (e): void => {
     props.handleFiltro("tipoFruta", e.target.value)
@@ -31,46 +27,52 @@ export default function FiltrosFilas(props: propsType): JSX.Element {
   }
 
   return (
-    <div>
-      <div className={`flex flex-row flex-wrap gap-2 p-3 rounded-xl`}>
-        <select className="rounded-lg p-2" onChange={handleTipoFruta}>
+    <div className="filtroContainer">
+      <label>
+        <p>Tipo de fruta</p>
+        <select onChange={handleTipoFruta}>
           <option value="">Tipo de fruta</option>
           <option value="Naranja">Naranja</option>
           <option value="Limon">Limon</option>
         </select>
-        <select className="w-52 rounded-lg p-2" onChange={(e): void => props.setFiltroPredio(e.target.value)}>
+      </label>
+      <label>
+        <p>Nombre predio</p>
+        <select onChange={(e): void => props.setFiltroPredio(e.target.value)}>
           <option value="">Nombre predios</option>
           {props.prediosData.map((item, index) => (
             <option key={item + index} value={item}>{item}</option>
           ))}
         </select>
-        <input type="text" placeholder="EF1-"  className="rounded-lg p-1" onChange={(e): void => props.setEf1(e.target.value)}/>
-        <label className={`flex flex-col
-                              ${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          Fecha Incio
-          <input className="text-black rounded-lg p-1" type="date" onChange={handleFechaInicio} />
-        </label>
-        <label className={`flex flex-col
-                              ${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          Fecha Fin
-          <input className="text-black rounded-lg p-1" type="date" onChange={handleFechaFin} />
-        </label>
-        <label className={`flex flex-col
-                              ${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          Rendimiento
-          <div>
-            <input onChange={handleMinRendimiento} type="number" className="w-16 rounded-lg p-1 text-black" placeholder="min"/> - <input onChange={handleMaxRendimiento} type="number" className="w-16 text-black rounded-lg p-1" placeholder="max"/>
-          </div>
-        </label>
-        <label className={`flex flex-col
-                              ${theme === 'Dark' ? 'text-white' : 'text-black'}`}>
-          Cantidad-lotes
-          <div>
-            <input onChange={(e): void => props.setCantidad(Number(e.target.value))} type="number" className="w-28 rounded-lg p-1 text-black" min={0} />
-          </div>
-        </label>
-      </div>
-    
+      </label>
+      <label>
+        <p>Codigo de lote</p>
+        <input type="text" placeholder="EF1-" onChange={(e): void => props.setEf1(e.target.value)} />
+      </label>
+      <label>
+        <p>Fecha Incio</p>
+        <input type="date" onChange={handleFechaInicio} />
+      </label>
+
+      <label>
+        <p>Feca fin</p>
+        <input type="date" onChange={handleFechaFin} />
+      </label>
+
+
+      <label>
+        <p>Rendimiento</p>
+        <div>
+          <input onChange={handleMinRendimiento} type="number" placeholder="min" /> - <input onChange={handleMaxRendimiento} type="number" placeholder="max" />
+        </div>
+      </label>
+
+      <label>
+        <p>Cantidad de datos</p>
+        <input onChange={(e): void => props.setCantidad(Number(e.target.value))} type="number" min={0} />
+      </label>
+
+
     </div>
   )
 }

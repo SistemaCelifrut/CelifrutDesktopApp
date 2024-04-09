@@ -34,7 +34,7 @@ import HistorialDescarte from './components/inventarioYlogistica/historiales/his
 import ListaDeEmpaque from './components/inventarioYlogistica/historiales/listaDeEmpaque/ListaDeEmpaque'
 import Lotes from './components/inventarioYlogistica/historiales/lotes/Lotes'
 import Proveedores from './components/gestionDeCuentas/proveedores/Proveedores'
-// import VolanteCalidad from './components/calidad/formularios/volanteCalidad/VolanteCalidad'
+import VolanteCalidad from './components/calidad/formularios/volanteCalidad/VolanteCalidad'
 import FormularioProgramacionMula from './components/transporte/formulatioInspecciones/programacionMulas/FormularioProgramacionMula'
 // import HistorialProgramacionMula from './components/transporte/historialInspecciones/historialProgramacionMula/HistorialProgramacionMula'
 import Cuentas from './components/gestionDeCuentas/crearCuentas/Cuentas'
@@ -190,7 +190,7 @@ function App(): JSX.Element {
                               {/* {section === "Calidad//Formularios//Higiene personal" && <HigienePersonal />}  */}
                               {/* {section === "Calidad//Formularios//Limpieza mensual" && <LimpiezaMensual />}  */}
                               {/* {section === "Calidad//Formularios//Limpieza post cosecha" && <LimpiezaPostCosecha />}  */}
-                              {/* {section === "Calidad//Formularios//Volante calidad" && <VolanteCalidad />}  */}
+                              {section === "Calidad//Formularios//Volante calidad" && <VolanteCalidad />} 
                               {section === "Calidad//Informes//Informe proveedor" && <Informes />}
 
 

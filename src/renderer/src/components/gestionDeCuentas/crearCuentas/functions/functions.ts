@@ -12,6 +12,7 @@ export const initFormState = {
     email:'',
     estado:'',
     permisos:[],
+    permisos_id:[],
 
 }
 

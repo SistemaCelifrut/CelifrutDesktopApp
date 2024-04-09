@@ -2,13 +2,15 @@
 export type serverResponse<T> = { status: number; data: T }
 
 export type registrosType = {
-  _id: string
-  __v: number
-  defecto: string
-  fruta: string
-  fecha: string
+  id: number
+  tipo_fruta: string
+  unidades_revisadas: number
+  numero_defectos: number
+  fecha_ingreso: string
   operario: string
-  unidades: string
+  nombre: string
+  apellido: string
+  id_operario: number
 }
 
 export type promedioOperarioType = {

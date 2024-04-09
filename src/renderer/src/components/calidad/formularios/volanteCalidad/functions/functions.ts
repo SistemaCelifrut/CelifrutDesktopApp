@@ -26,20 +26,21 @@ export const obtenerDiasSemana = (data: string): number[] => {
   return weekDays;
 }
 export const obtenerOperarios = (data:registrosType[]): promedioOperarioType[]=> {
-  const operariosFromData = data.map(item => item.operario)
+  const operariosFromData = data.map(item => item.id_operario)
   const operariosSet = new Set(operariosFromData);
   const operarios = [...operariosSet];
   const out: promedioOperarioType[] = []
   for(const operario of operarios){
     const totalPorcentaje = data.filter(item => {
-      if(item.operario === operario){
+      if(item.id_operario === operario){
         return item
       } else {
         return null
       }
     })
-    const promedio = totalPorcentaje.reduce((acu, item) => acu += ((Number(item.defecto) / Number(item.unidades) * 100)), 0) / totalPorcentaje.length
-    out.push({operario:operario, porcentaje:promedio})
+    const nombre = totalPorcentaje[0].nombre + " " + totalPorcentaje[0].apellido;
+    const promedio = totalPorcentaje.reduce((acu, item) => acu += ((Number(item.numero_defectos) / Number(item.unidades_revisadas) * 100)), 0) / totalPorcentaje.length
+    out.push({operario:nombre, porcentaje:promedio})
 
   }
   return out

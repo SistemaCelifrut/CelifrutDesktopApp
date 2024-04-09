@@ -14,9 +14,6 @@ export default function GraficasBarrasCalidad(props:propsType): JSX.Element {
   const chartRef = useRef<Chart<'bar', unknown> | null>(null);
   const theme = useContext(themeContext)
   
-
-
-
   useEffect(() => {
     const graficar = async (): Promise<void> => {
       const dataGrafica = datosGraficasCalidad(props.data)
@@ -106,7 +103,7 @@ export default function GraficasBarrasCalidad(props:propsType): JSX.Element {
     graficar()
   }, [props.data])
   return (
-    <div className='bg-white p-1 rounded-lg'>
+    <div className='lotes-graficas-div'>
        <canvas id="myChart" width="700" height="350"></canvas>
     </div>
   )

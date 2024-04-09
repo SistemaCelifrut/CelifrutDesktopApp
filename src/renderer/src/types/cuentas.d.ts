@@ -5,8 +5,10 @@ export type userType = {
     usuario: string
     contrasenna: string
     cargo: string
+    cargo_id: number
     email?: string
     nombres_permisos: string[]
+    permisos_id: number[]
     nombre?: string
     apellido?: string
     genero?: string

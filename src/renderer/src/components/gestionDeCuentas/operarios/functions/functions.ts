@@ -2,6 +2,7 @@
 export const initFormState = {
     nombre:'',
     apellido:'',
+    cargo:'',
     fechaNacimiento:'',
     genero:'',
     direccion:'',
@@ -17,6 +18,7 @@ export const createRequest = (formState): object => {
         data:{
             nombre:formState.nombre,
             apellido:formState.apellido,
+            cargo: formState.cargo,
             fechaNacimiento:formState.fechaNacimiento,
             genero:formState.genero,
             direccion:formState.direccion,

@@ -46,6 +46,18 @@ export default function IngresarOperario(): JSX.Element {
                     <input type="text" onChange={handleChange} name="apellido" value={formState.apellido} required />
                 </div>
                 <div>
+                    <label>{strings.cargo.title}</label>
+                    <select
+                        className='defaultSelect'
+                        onChange={handleChange}
+                        name='cargo'>
+                        <option value=""></option>
+                        {strings.cargo.cargos.map((item) => (
+                            <option key={item} value={item}>{item}</option>
+                        ))}
+                    </select>
+                </div>
+                <div>
                     <label>{strings.fechaNacimiento}</label>
                     <input type="date" onChange={handleChange} name="fechaNacimiento" value={formState.fechaNacimiento} />
                 </div>

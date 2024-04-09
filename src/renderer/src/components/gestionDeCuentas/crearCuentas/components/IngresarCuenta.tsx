@@ -11,7 +11,7 @@ type propsType = {
     modificar: boolean
 }
 
-export default function IngresarCuentas(props:propsType): JSX.Element {
+export default function IngresarCuentas(props: propsType): JSX.Element {
     const { messageModal } = useAppContext();
     const [formState, setFormState] = useState<formStateType>(initFormState);
     const [cargos, setCargos] = useState<cargosUsuariosType[]>([])
@@ -20,23 +20,30 @@ export default function IngresarCuentas(props:propsType): JSX.Element {
     useEffect(() => {
         obtener_cargos()
         obtener_permisos()
-        datos_usuario()
     }, [])
+    useEffect(() => {
+        datos_usuario()
+    }, [props.modificar])
     const datos_usuario = (): void => {
-        if(props.modificar && props.usuario !== undefined){
-            formState.usuario = props.usuario.usuario
-            formState.contrasenna = props.usuario.contrasenna
-            formState.nombre = props.usuario.nombre !== undefined ? props.usuario.nombre : ''
-            formState.apellido = props.usuario.apellido !== undefined ? props.usuario.apellido : ''
-            formState.genero = props.usuario.genero !== undefined ? props.usuario.genero : ''
-            formState.direccion = props.usuario.direccion !== undefined ? props.usuario.direccion : ''
-            formState.telefono = props.usuario.telefono !== undefined ? props.usuario.telefono : ''
-            formState.email = props.usuario.email !== undefined ? props.usuario.email : ''
-            formState.estado = props.usuario.estado !== undefined ? props.usuario.estado : ''
+        if (props.modificar && props.usuario !== undefined) {
+            const formData = { ...formState };
+            formData.usuario = props.usuario.usuario
+            formData.contrasenna = props.usuario.contrasenna
+            formData.nombre = props.usuario.nombre !== undefined ? props.usuario.nombre : ''
+            formData.apellido = props.usuario.apellido !== undefined ? props.usuario.apellido : ''
+            formData.genero = props.usuario.genero !== undefined ? props.usuario.genero : ''
+            formData.direccion = props.usuario.direccion !== undefined ? props.usuario.direccion : ''
+            formData.telefono = props.usuario.telefono !== undefined ? props.usuario.telefono : ''
+            formData.email = props.usuario.email !== undefined ? props.usuario.email : ''
+            formData.estado = props.usuario.estado !== undefined ? props.usuario.estado : ''
 
-            formState.cumpleannos = props.usuario.cumpleannos !== undefined ? new Date(props.usuario.cumpleannos).toISOString().substr(0, 10) : ''
-            formState.cargo = Number(props.usuario.cargo)
+            formData.permisos = props.usuario.permisos_id
+            formData.cumpleannos = props.usuario.cumpleannos !== undefined ? new Date(props.usuario.cumpleannos).toISOString().substr(0, 10) : ''
+            formData.cargo = Number(props.usuario.cargo_id)
+            setFormState(formData);
 
+        } else if (!props.modificar) {
+            setFormState({ ...initFormState });
         }
     }
     const obtener_cargos = async (): Promise<void> => {
@@ -46,7 +53,6 @@ export default function IngresarCuentas(props:propsType): JSX.Element {
             if (response.status !== 200)
                 throw new Error(response.message)
             setCargos(response.data)
-            console.log(response)
         } catch (e) {
             if (e instanceof Error)
                 messageModal("error", e.message);
@@ -83,40 +89,61 @@ export default function IngresarCuentas(props:propsType): JSX.Element {
             [name]: value,
         });
     };
-    const handleCheck = (e):void => {
-        if(e.target.checked){
+    const handleCheck = (e): void => {
+        if (e.target.checked) {
             setFormState((prevState) => ({
                 ...prevState,
                 permisos: [...prevState.permisos, Number(e.target.value)],
             }));
-        }else {
+        } else {
             const p = formState.permisos
             const index = p.findIndex(item => item === Number(e.target.value))
-            p.splice(index,1)
-            setFormState({...formState,permisos:p})
+            p.splice(index, 1)
+            setFormState({ ...formState, permisos: p })
 
         }
     }
-    const handleGuardar = async ():Promise<void> => {
-        try{
-            if(formState.usuario === "" || formState.contrasenna === '' ||  formState.cargo === 0 || formState.permisos.length === 0){
+    const handleGuardar = async (): Promise<void> => {
+        try {
+            if (formState.usuario === "" || formState.contrasenna === '' || formState.cargo === 0 || formState.permisos.length === 0) {
                 throw new Error("Necesita llenar los datos requeridos")
             }
             const request = {
                 collection: 'users',
                 action: 'addUser',
                 query: 'postgreDB',
-                data:formState
+                data: formState
             }
             const response = await window.api.server(request)
-            console.log(response)
-            if(response.status !== 200)
+            if (response.status !== 200)
                 throw new Error(response.message)
-            messageModal("success","Usuario guardado con exito")
+            messageModal("success", "Usuario guardado con exito")
             props.handleChange()
-        } catch(e){
-            if(e instanceof Error)
+        } catch (e) {
+            if (e instanceof Error)
                 messageModal("error", e.message)
+        }
+    }
+    const handleModificar = async (): Promise<void> => {
+        try{
+            if (formState.usuario === "" || formState.contrasenna === '' || formState.cargo === 0 || formState.permisos.length === 0) {
+                throw new Error("Necesita llenar los datos requeridos")
+            }
+            const request = {
+                collection: 'users',
+                action: 'putUser',
+                query: 'postgreDB',
+                data: formState,
+                user_id: props.usuario?.usuario_id
+            }
+            const response = await window.api.server(request)
+            if (response.status !== 200)
+                throw new Error(response.message)
+            messageModal("success", "Usuario modificado con exito")
+            props.handleChange()
+        }catch(e){
+            if( e instanceof Error)
+                messageModal("error",e.message)
         }
     }
     return (
@@ -135,7 +162,7 @@ export default function IngresarCuentas(props:propsType): JSX.Element {
             </div>
             {change ?
                 <form className="form-container" style={{ zIndex: 20 }}>
-                    <h2>Ingresar cuenta</h2>
+                    <h2>{props.modificar ? "Modificar cuenta" : "Ingresar cuenta"}</h2>
                     <div>
                         <label>Usuario</label>
                         <input type="text" onChange={handleChange} name="usuario" value={formState.usuario} required />
@@ -147,7 +174,7 @@ export default function IngresarCuentas(props:propsType): JSX.Element {
                     <div>
                         <label> Cargos</label>
                         <select
-                            className='defaultSelect'
+                            className='defaultSelect usuario-ingresar-cuenta-cargo-select'
                             onChange={handleChange}
                             value={formState.cargo}
                             required
@@ -198,10 +225,18 @@ export default function IngresarCuentas(props:propsType): JSX.Element {
                         </select>
                     </div>
                 </form> :
-                <ArbolPermisos permisos={permisos} handleCheck={handleCheck} />
+                <ArbolPermisos
+                    permisos={permisos}
+                    handleCheck={handleCheck}
+                    modificar={props.modificar}
+                    usuario={props.usuario} />
             }
             <div className="agregar-usuario-guardar-boton-div">
-                <button onClick={handleGuardar} className="defaulButtonAgree">Guardar</button>
+                {props.modificar ?
+                    <button onClick={handleModificar} className="defaulButtonAgree">Modificar</button>
+                    :
+                    <button onClick={handleGuardar} className="defaulButtonAgree">Guardar</button>
+                }
             </div>
         </div>
     )

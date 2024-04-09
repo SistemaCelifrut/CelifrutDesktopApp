@@ -7,30 +7,42 @@ type propsType = {
     data: registrosType[]
 }
 export default function TablaVolantecalidad(props: propsType): JSX.Element {
-    return ( 
-        <div className="pr-2 ">
-            <table className={`mr-2 ml-2 w-full mt-2 border-2 m-2 rounded-t-lg overflow-hidden border-solid border-t-4 border-white`}>
-                <thead className={`bg-Celifrut-green `} >
-                    <tr className="h-14 broder-2 ">
-                        <th className="text-white">Fecha</th>
-                        <th className="text-white">Tipo de fruta</th>
-                        <th className="text-white">Operario</th>
-                        <th className="text-white">Unidades Revisadas</th>
-                        <th className="text-white">Número de defecto</th>
-                    </tr>
-                </thead>
-                <tbody className="border-2">
-                    {props.data.map((item, index) => (
-                        <tr key={item._id}   className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'}`}>
-                             <td className="p-2 text-sm text-center">{format(new Date(item.fecha), 'dd-MM-yyyy')}</td>
-                             <td className="p-2 text-sm text-center">{item.fruta}</td>
-                             <td className="p-2 text-sm text-center">{item.operario}</td>
-                             <td className="p-2 text-sm text-center">{item.unidades}</td>
-                             <td className="p-2 text-sm text-center">{item.defecto}</td>
-                        </tr>
+    const headers = ["Nombre", "Apellido", "Tipo fruta", "Unidades revisadas", "Numero de defectos", "Fecha"]
+    return (
+
+        <table className="table-main">
+            <thead>
+                <tr>
+                    {headers.map(item => (
+                        <th key={item}>{item}</th>
                     ))}
-                </tbody>
-            </table>
-        </div>
+                </tr>
+            </thead>
+            <tbody>
+                {props.data.map((item, index) => (
+                    <tr key={item.id} className={`${index % 2 === 0 ? 'fondo-par' : 'fondo-impar'}`}>
+                        <td>
+                            {item.nombre}
+                        </td>
+                        <td>
+                            {item.apellido}
+                        </td>
+                        <td>
+                            {item.tipo_fruta}
+                        </td>
+                        <td>
+                            {item.unidades_revisadas}
+                        </td>
+                        <td>
+                            {item.numero_defectos}
+                        </td>
+                        <td>
+                            {format(item.fecha_ingreso ? new Date(item.fecha_ingreso) : new Date(), 'dd-MM-yy')}
+                        </td>
+                    </tr>
+                    ))}
+            </tbody>
+        </table>
+
     )
 }

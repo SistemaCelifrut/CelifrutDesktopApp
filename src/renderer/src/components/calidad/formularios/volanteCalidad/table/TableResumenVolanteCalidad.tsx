@@ -1,35 +1,41 @@
 /* eslint-disable prettier/prettier */
-import { promedioOperarioType } from "../type/type"
+import { useEffect, useState } from "react"
+import { promedioOperarioType, registrosType } from "../type/type"
+import { obtenerOperarios } from "../functions/functions"
 
 type propsType = {
-  data: promedioOperarioType[]
+  data: registrosType[]
+
 }
 export default function TableResumenVolanteCalidad(props: propsType): JSX.Element {
+  const [operario, setOperarios] = useState<promedioOperarioType[]>([])
+  useEffect(()=>{
+    const operarios = obtenerOperarios(props.data)
+    setOperarios(operarios)
+  },[])
   return (
-    <div className="pr-2 ">
-      <table className={`mr-2 ml-2 w-full mt-2 border-2 m-2 rounded-lg overflow-hidden border-solid border-t-4 border-white`}>
-        <thead className={`bg-Celifrut-green-dark `} >
-          <tr className="h-14 broder-2 ">
-            <th className="text-white">Operario</th>
-            <th className="text-white">Porcentaje total</th>
+      <table className="table-main">
+        <thead>
+          <tr>
+            <th>Operario</th>
+            <th>Porcentaje total</th>
           </tr>
         </thead>
-        <tbody className="border-2">
-          {props.data.map((item, index) => (
-            <tr key={item.operario} className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'}`}>
-              <td className="p-2 text-sm text-center">{item.operario}</td>
-              <td className="p-2 text-sm text-center">{item.porcentaje.toFixed(2) + '%'}</td>
+        <tbody>
+          {operario.map((item, index) => (
+            <tr key={item.operario} className={`${index % 2 === 0 ? 'fondo-par' : 'fondo-impar'}`}>
+              <td>{item.operario}</td>
+              <td >{item.porcentaje.toFixed(2) + '%'}</td>
             </tr>
           ))}
-          <tr className="bg-Celifrut-green-dark">
-            <td className="p-2 text-sm text-center text-white">Promedio Total</td>
-            <td className="p-2 text-sm text-center text-white">
-              {(props.data.reduce((acu, item) => acu += item.porcentaje, 0) / props.data.length).toFixed(2) + '%'}
+          <tr style={{backgroundColor:"rgb(194, 248, 214)"}}>
+            <td>Promedio Total</td>
+            <td>
+              {(operario.reduce((acu, item) => acu += item.porcentaje, 0) / props.data.length).toFixed(2) + '%'}
             </td>
           </tr>
         </tbody>
       </table>
-    </div>
   )
 
 }

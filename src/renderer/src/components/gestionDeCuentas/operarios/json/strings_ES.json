@@ -2,6 +2,10 @@
     "title":"Ingresar Operario",
     "nombre":"Nombre",
     "apellido":"Apellido",
+    "cargo":{
+        "title":"Cargo",
+        "cargos":["Operario", "Seleccionadora"]
+    },
     "fechaNacimiento":"Fecha de nacimiento",
     "genero":{
         "title":"Genero",

@@ -4,23 +4,17 @@ import { useContext, useEffect, useRef } from 'react';
 import { themeContext } from '@renderer/App';
 import { datosGraficas } from '../functions/functions';
 import { lotesType } from '@renderer/types/lotesType';
-
 type propsType = {
   data: lotesType[]
 
 }
-
 export default function GraficasBarras(props:propsType): JSX.Element {
   const chartRef = useRef<Chart<'bar', unknown> | null>(null);
   const theme = useContext(themeContext)
   
-
-
-
   useEffect(() => {
     const graficar = async (): Promise<void> => {
       const dataGrafica = datosGraficas(props.data)
-    console.log(dataGrafica)
       const colorFondo = theme === 'Dark' ? 'rgba(62, 79, 206, 0.6)' : 'rgba(75, 192, 192, 0.2)'
       if (chartRef.current) {
           chartRef.current.data.labels = dataGrafica.map(item => item.nombrePredio);
@@ -102,7 +96,7 @@ export default function GraficasBarras(props:propsType): JSX.Element {
     graficar()
   }, [props.data])
   return (
-    <div className='bg-white p-1 rounded-lg'>
+    <div className='lotes-graficas-div'>
        <canvas id="myChart" width="700" height="350"></canvas>
     </div>
   )

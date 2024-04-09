@@ -30,7 +30,6 @@ export default function Cuentas(): JSX.Element {
     }
   }
   const handleServerEmit = async (data): Promise<void> => {
-    console.log("sdasda")
     if (data.fn === "cambio-usuario") {
       await obtenerData()
     }
@@ -45,8 +44,10 @@ export default function Cuentas(): JSX.Element {
     }
   }, [])
   const handleChange = (): void => {
-    if(opciones === "inicio")
+    if(opciones === "inicio"){
       setOpciones("agregar")
+      setModificar(false)
+    }
     else if(opciones === "agregar")
       setOpciones("inicio")
   }

@@ -184,8 +184,7 @@ export const promedioDescartes = (datos: lotesType[], llave): number => {
 }
 export const promedioExportacion = (datos: lotesType[]): number => {
   const sumatoria = datos.reduce(
-    (acu, lote) => acu += (lote.calidad1 && lote.calidad15 && lote.calidad2) ? 
-      lote.calidad1 + lote.calidad15 + lote.calidad2 : 0 ,0)
+    (acu, lote) => acu += (lote.calidad1 ?? 0) + (lote.calidad15 ?? 0) + (lote.calidad2 ?? 0), 0)
   const promedio = sumatoria / datos.length
   return promedio
 }
@@ -199,4 +198,24 @@ export const promedioCalidad = (datos: lotesType[], llave): number => {
   }, 0);
   const promedio = sumatoria /  datos.length
   return promedio
+}
+export const totalData = (datos: lotesType[], llave): number => {
+  const sumatoria = datos.reduce((acu, item) => acu += Number(item[llave]), 0);
+  return sumatoria
+}
+export const totalDescartes = (datos: lotesType[], llave): number => {
+  const sumatoria = datos.reduce(
+    (acu, kilos) =>
+      (acu += Object.keys(kilos[llave]).reduce(
+        (acu2, itemdescarte) => (acu2 += kilos[llave][itemdescarte]),
+        0
+      )),
+    0
+  )
+  return sumatoria
+}
+export const totalExportacion = (datos: lotesType[]): number => {
+  const sumatoria = datos.reduce(
+    (acu, lote) => acu += (lote.calidad1 ?? 0) + (lote.calidad15 ?? 0) + (lote.calidad2 ?? 0), 0)
+  return sumatoria
 }
