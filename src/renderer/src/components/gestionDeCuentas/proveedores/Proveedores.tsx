@@ -1,35 +1,86 @@
 /* eslint-disable prettier/prettier */
 
-import { useContext, useState } from "react";
-import NavBarProveedores from "./utils/NavBarProveedores";
-// import ProveedoresLista from "./components/ProveedoresLista";
-import { themeContext } from "@renderer/App";
-import ErrorModal from "@renderer/errors/modal/ErrorModal";
-import SuccessModal from "@renderer/errors/modal/SuccessModal";
+import useAppContext from "@renderer/hooks/useAppContext";
+import { useEffect, useState } from "react";
+import TableProveedores from "./components/TablaProveedores";
+import { proveedoresType } from "@renderer/types/proveedoresType";
+import AgregarProveedor from "./components/AgregarProveedor";
 
 export default function Proveedores(): JSX.Element {
-    const theme = useContext(themeContext)
-    const [showError, setShowError] = useState<boolean>(false)
-    const [showSuccess, ] = useState<boolean>(false)
-    const [message, ] = useState<string>('')
+    const { messageModal } = useAppContext()
+    const [data, setData] = useState<proveedoresType[]>([])
+    const [filtro, setFiltro] = useState<string>('')
+    const [dataOriginal, setDataOriginal] = useState<proveedoresType[]>([])
+    const [opciones, setOpciones] = useState<string>('inicio')
+    const [modificar, setModificar] = useState<boolean>(false)
+    useEffect(() => {
+        obtenerProveedores()
+        window.api.serverEmit('serverEmit', handleServerEmit)
 
+        // Función de limpieza
+        return () => {
+          window.api.removeServerEmit('serverEmit', handleServerEmit)
+        }
+    }, [])
 
-    const closeModal = (): void => {
-        setShowError(false)
+    const obtenerProveedores = async (): Promise<void> => {
+        try {
+            const request = {
+                data: {
+                    query: {},
+                },
+                collection: 'proveedors',
+                action: 'obtenerProveedores',
+                query: 'proceso'
+            };
+            const response = await window.api.server(request);
+            if (response.status !== 200)
+                throw new Error(response.message)
+            setData(response.data)
+            setDataOriginal(response.data)
+        } catch (e) {
+            if (e instanceof Error)
+                messageModal("error", e.message)
+        }
+    }
+    const handleServerEmit = async (data): Promise<void> => {
+        if (data.fn === "cambio-proveedor") {
+          await obtenerProveedores()
+        }
+      }
+    const handleChange = (): void => {
+        if (opciones === "inicio") {
+            setOpciones("agregar")
+            setModificar(false)
+        }
+        else if (opciones === "agregar")
+            setOpciones("inicio")
     }
     return (
-        <div className="p-1 w-full">
-            <div className="z-50">
-                <NavBarProveedores  />
+        <div className="componentContainer">
+            <div className="navBar"></div>
+            <h2>Cuentas</h2>
+            <hr />
+            <div className='filtroContainer'>
+                <div className='div-filter-actions'>
+                    <button onClick={handleChange}>
+                        Agregar Proveedor
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9z" /><path d="M15 12h-6" /><path d="M12 9v6" /></svg>
+                    </button>
+                    <input type="text" placeholder='Buscar...' onChange={(e): void => setFiltro(e.target.value)} />
+                </div>
             </div>
-            <div className="z-0">
-               {/* <ProveedoresLista /> */}
 
-            </div>
-            <div className='fixed bottom-0 right-0 flex items-center justify-center'>
-                {showError && <ErrorModal message={message} closeModal={closeModal} theme={theme} />}
-                {showSuccess && <SuccessModal message={message} closeModal={closeModal} theme={theme} />}
-            </div>
+            {opciones === "inicio" && 
+                <TableProveedores data={data} /> }
+
+            {opciones === "agregar" &&
+                <AgregarProveedor 
+                    handleChange={handleChange}
+                    modificar={modificar}    
+                />
+            }
+
         </div>
     )
 }

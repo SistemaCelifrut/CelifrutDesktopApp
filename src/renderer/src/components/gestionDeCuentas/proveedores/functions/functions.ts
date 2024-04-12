@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
-export const predioInicial = {
-  _id: '',
+export const initFormState = {
   'CODIGO INTERNO': '',
   PREDIO: '',
   ICA: '',
@@ -11,4 +10,17 @@ export const predioInicial = {
   PROVEEDORES: '',
   GGN: '',
   'FECHA VENCIMIENTO GGN': ''
+}
+
+export type formStateType = {
+  'CODIGO INTERNO': string,
+  PREDIO: string,
+  ICA: string,
+  L: string,
+  N: string,
+  M: string,
+  DEPARTAMENTO: string,
+  PROVEEDORES: string,
+  GGN: string,
+  'FECHA VENCIMIENTO GGN': string
 }

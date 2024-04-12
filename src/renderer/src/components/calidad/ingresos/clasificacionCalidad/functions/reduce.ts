@@ -19,7 +19,8 @@ export const INITIAL_STATE_LIMON: formularioType[] = [
   { id: 'Wood Pocket', lavado: '', proceso: '', key: 'wood' },
   { id: 'Sombra', lavado: '', proceso: '', key: 'sombra' },
   { id: 'Mancha Fantasma', lavado: '', proceso: '', key: 'mancha' },
-  { id: 'Deshidratada', lavado: '', proceso: '', key: 'deshidratada' }
+  { id: 'Deshidratada', lavado: '', proceso: '', key: 'deshidratada' },
+  { id: 'Otras plagas', lavado: '', proceso: '', key: 'otrasPlagas' }
 ]
 
 export const INITIAL_STATE_NARANJA: formularioType[] = [
@@ -41,7 +42,9 @@ export const INITIAL_STATE_NARANJA: formularioType[] = [
   { id: 'Fruta Rajada', lavado: '', proceso: '', key: 'frutaRajada' },
   { id: 'Ombligona', lavado: '', proceso: '', key: 'ombligona' },
   { id: 'Nutrientes', lavado: '', proceso: '', key: 'nutrientes' },
-  { id: 'Despezonada', lavado: '', proceso: '', key: 'despezonada' }
+  { id: 'Despezonada', lavado: '', proceso: '', key: 'despezonada' },
+  { id: 'Variegación', lavado: '', proceso: '', key: 'variegacion' },
+  { id: 'Otras plagas', lavado: '', proceso: '', key: 'otrasPlagas' }
 ]
 
 

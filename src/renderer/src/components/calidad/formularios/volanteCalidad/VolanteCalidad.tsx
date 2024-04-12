@@ -105,8 +105,6 @@ export default function VolanteCalidad(): JSX.Element {
                         className="volante-calidad-button-page">
                         {<IoIosArrowForward />}
                     </button>
-
-
                 </div>
             }
         </div>

@@ -74,3 +74,36 @@
 .navBar-menu-div button:hover{
     background-color: var(--color-ListaEmpaqueFondo)
 }
+
+.button-page-div{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 22px;
+    gap: 20px;
+}
+
+.button-page{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 8px;
+    background-color: var(--color-Celifrut);
+    border-radius: 12px;
+    width: 35px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    transition: transform 0.3s ease;
+}
+
+.button-page:hover{
+    background-color: var(--color-Celifrut-dark);
+}
+
+.button-page:active{
+    background-color: var(--color-Celifrut);
+    transform: scale(0.95);
+}

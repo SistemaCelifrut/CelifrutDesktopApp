@@ -107,6 +107,8 @@ type calidadType = {
         frutaRajada:number
         ombligona:number
         despezonada:number
+        variegacion:number
+        otrasPlagas:number
         fecha: string
     }
     fotosCalidad?: {[key: string]: string}

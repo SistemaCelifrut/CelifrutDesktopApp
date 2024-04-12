@@ -20,25 +20,32 @@ export default function TarjetaHistorialClasificacionCalidad(props: propsType): 
                     <p>{props.lote.predio && props.lote.predio.PREDIO}</p>
                     <p>{props.lote.tipoFruta}</p>
                     <p>{props.lote.calidad && Object.prototype.hasOwnProperty.call(props.lote.calidad.clasificacionCalidad, 'fecha') &&
-                        format(props.lote.calidad.clasificacionCalidad ? 
+                        format(props.lote.calidad.clasificacionCalidad ?
                             new Date(props.lote.calidad.clasificacionCalidad.fecha) : new Date(), 'dd-MM-yyyy')}
                     </p>
                 </div>
-                <div className={`${theme === 'Dark' ? 'bg-slate-900':'bg-slate-300'} flex flex-row flex-wrap gap-4 m-4 p-2 rounded-lg`}>
-                    {props.lote.calidad && props.lote.calidad.clasificacionCalidad && 
-                    Object.keys(props.lote.calidad.clasificacionCalidad).map((item, index) => {
-                        if(item !== 'fecha'){
-                            return(
-                                <div key={index + item} > 
-                                {props.lote.tipoFruta === 'Naranja' ? 
-                                INITIAL_STATE_NARANJA.find(key => key.key === item)?.id : INITIAL_STATE_LIMON.find(key => key.key === item)?.id} 
-                                : {props.lote.calidad && props.lote.calidad.clasificacionCalidad && props.lote.calidad.clasificacionCalidad[item] }
-                            </div>
-                            )
-                        }else{
-                            return <div key={index + item}></div>
-                        }
-                    })}
+                <div className={`${theme === 'Dark' ? 'bg-slate-900' : 'bg-slate-300'} flex flex-row flex-wrap gap-4 m-4 p-2 rounded-lg`}>
+                    {props.lote.calidad && props.lote.calidad.clasificacionCalidad &&
+                        Object.keys(props.lote.calidad.clasificacionCalidad).map((item, index) => {
+                            if (item !== 'fecha') {
+                                if (props.lote.calidad &&
+                                    props.lote.calidad.clasificacionCalidad &&
+                                    props.lote.calidad.clasificacionCalidad[item] !== 0) {
+                                    return (
+                                        <div key={index + item} >
+
+                                            {props.lote.tipoFruta === 'Naranja' ?
+                                                INITIAL_STATE_NARANJA.find(key => key.key === item)?.id : INITIAL_STATE_LIMON.find(key => key.key === item)?.id}
+                                            : {props.lote.calidad.clasificacionCalidad[item]}%
+                                        </div>
+                                    )
+                                } else {
+                                    return null
+                                }
+                            } else {
+                                return <div key={index + item}></div>
+                            }
+                        })}
                 </div>
             </div>
         </div>

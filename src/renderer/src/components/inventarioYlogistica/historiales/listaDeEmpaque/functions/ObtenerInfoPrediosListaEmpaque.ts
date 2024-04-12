@@ -27,11 +27,12 @@ export default function (contenedor: contenedoresType, filtro: string): object {
     if (filtro !== '') {
       Object.keys(outObj).map((pallet) => {
 
-        if (outObj[pallet][0][0].lote.enf !== filtro) {
+        if (pallet!== filtro) {
           delete outObj[pallet]
         }
       })
     }
+    // console.log("salida funcion", outObj)
     return outObj
   } catch (e) {
     return {}

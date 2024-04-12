@@ -1,27 +1,21 @@
+/* eslint-disable prettier/prettier */
 export type higienePersonalType = {
-    _id: string
-    responsable: 'string'
-    elementosHigiene: elementosHigieneType
-    colaborador: string
-    fecha: string
-    __v: number
+    id:number
+    responsable:string,
+    operario_id:number,
+    nombre:string,
+    apellido:string
+    botas:boolean,
+    pantalon:boolean,
+    camisa:boolean
+    tapaoidos:boolean
+    cofia:boolean
+    tapabocas:boolean
+    unnas_cortas:boolean
+    accesorios:boolean
+    barba:boolean
+    maquillaje:boolean
+    estado_salud:boolean
+    fecha_ingreso:string
 }
 
-type elementosHigieneType = {
-    pantalon:boolean
-    unasCortas: boolean
-    tapaoidos: boolean
-    estadoSalud: boolean
-    barba: boolean
-    accesorio: boolean
-    camisa: boolean
-    maquillaje: boolean
-    tapabocas: boolean
-    cofia: boolean
-    botas: boolean
-}
-
-export type serverResponseHigienePersonalType = {
-    status: number
-    data:higienePersonalType[]
-}

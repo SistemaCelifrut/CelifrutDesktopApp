@@ -60,9 +60,9 @@ export default function Cuentas(): JSX.Element {
   return (
     <div className='componentContainer'>
       <div className='navBar'></div>
-      <div className='filtroContainer'>
-        <h3>Cuentas</h3>
+      <h2>Cuentas</h2>
         <hr />
+      <div className='filtroContainer'>
         <div className='div-filter-actions'>
           <button onClick={handleChange}>
             Agregar cuenta

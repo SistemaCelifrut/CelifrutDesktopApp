@@ -1,6 +1,15 @@
-import { higienePersonalType } from "../types/higienePersonal"
+/* eslint-disable prettier/prettier */
 
-export const filtroColaborador = (data:higienePersonalType[], colaborador:string) => {
-    const filtro = data.filter(item => item.colaborador.toLowerCase().indexOf(colaborador.toLowerCase()) !== -1)
-    return filtro
-} 
+export const KEYS_ELEMENTOS = {
+    botas:"Botas",
+    pantalon:"Pantalon",
+    camisa:"Camisa",
+    tapaoidos:"Tapa oidos",
+    cofia:"Cofia",
+    tapabocas:"Tapa bocas",
+    unnas_cortas:"Uñas cortas",
+    accesorios:"Accesorios",
+    barba:"Barba",
+    maquillaje:"Maquillaje",
+    estado_salud:"Estado de salud"
+}
