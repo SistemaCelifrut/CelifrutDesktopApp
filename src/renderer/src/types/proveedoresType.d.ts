@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/ban-types */
 export type proveedoresType = {
-  _id?: string
+  _id: string
   PREDIO?: string
   ICA?: string
   'CODIGO INTERNO'?: string
@@ -13,4 +13,5 @@ export type proveedoresType = {
   PROVEEDORES?: string
   DEPARTAMENTO?: string
   urlArchivos?: ArrayBuffer[]
+  activo?:boolean
 }

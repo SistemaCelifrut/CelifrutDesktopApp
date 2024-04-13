@@ -9,7 +9,8 @@ export const initFormState = {
   DEPARTAMENTO: '',
   PROVEEDORES: '',
   GGN: '',
-  'FECHA VENCIMIENTO GGN': ''
+  'FECHA VENCIMIENTO GGN': '',
+  activo:true
 }
 
 export type formStateType = {
@@ -22,5 +23,6 @@ export type formStateType = {
   DEPARTAMENTO: string,
   PROVEEDORES: string,
   GGN: string,
-  'FECHA VENCIMIENTO GGN': string
+  'FECHA VENCIMIENTO GGN': string,
+  activo:boolean
 }

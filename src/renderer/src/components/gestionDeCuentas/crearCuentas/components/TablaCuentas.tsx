@@ -47,7 +47,7 @@ export default function TablaCuentas(props: propsType): JSX.Element {
     }
     const handleEliminar = (usuario): void => {
         setShowConfirmacion(true)
-        setMessage("¿Desea eliminar el usuario seleccionado?")
+        setMessage("¿Desea eliminar el proveedor seleccionado?")
         setUsuarioDataSeleccionado(usuario)
     }
     const eliminar = async (): Promise<void> => {
