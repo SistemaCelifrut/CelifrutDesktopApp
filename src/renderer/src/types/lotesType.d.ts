@@ -108,6 +108,7 @@ type calidadType = {
         ombligona:number
         despezonada:number
         variegacion:number
+        verdeManzna:number
         otrasPlagas:number
         fecha: string
     }

@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import HeaderTableDesverdizado from '../utils/HeaderTableInventarioDesverdizado'
 import { format } from 'date-fns'
 import { lotesType } from '@renderer/types/lotesType'
@@ -22,79 +22,35 @@ export default function TableInventarioDesverdizado(props: propsType):JSX.Elemen
       radios[i].checked = false
     }
   }, [props.render])
-
-
   const handleClick = (e): void => {
       props.clickLote(e);
     
   };
-  
   return (
-    <div>
-      <div className="grid grid-cols-7 gap-0 mt-0">
-        <HeaderTableDesverdizado />
-      </div>
-      <div className="grid grid-cols-7 gap-0 mt-0">
+    <table className='table-main'>
+      <HeaderTableDesverdizado />
+      <tbody>
         {props.table.map((lote, index) => (
-          <React.Fragment key={lote.enf}>
-            <div
-              className={`h-10 p-0 ol-span-1 text-[12px] flex justify-center items-center myRadioButtons ${
-                index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-              }`}
-            >
+          <tr key={lote.enf} className={`${index % 2 === 0 ? 'fondo-par' : 'fondo-impar'}`} >
+            <td>
               <input
-                type="radio"
-                onClick={handleClick}
-                id={lote.enf}
-                value={lote.enf}
-                name="lote"
-              ></input>
-            </div>
-            <div
-              className={` ol-span-1 text-[12px] flex items-center  ${
-                index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-              }`}
-            >
-              {lote.enf}
-            </div>
-            <div
-              className={` ol-span-1 text-[12px] flex items-center  ${
-                index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-              }`}
-            >
-              {lote.predio && lote.predio.PREDIO}
-            </div>
-            <div
-              className={`flex justify-center ol-span-1 text-[12px] items-center  ${
-                index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-              }`}
-            >
-              {lote.desverdizado?.canastillas}
-            </div>
-            <div
-              className={`flex justify-center ol-span-1 text-[12px]  items-center  ${
-                index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-              }`}
-            >
-              {lote.desverdizado?.kilos}
-            </div>
-            <div
-              className={`flex justify-center ol-span-1 text-[12px]  items-center  ${
-                index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-              }`}
-            >
-              {lote.desverdizado?.cuartoDesverdizado}
-            </div>
-            <div
-              className={`flex justify-center ol-span-1 text-[12px]  items-center  ${
-                index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'
-              }`}
-            >
+                  type="radio"
+                  onChange={handleClick}
+                  id={lote.enf}
+                  value={lote.enf}
+                  name='lote' />
+            </td>
+            <td>{lote.enf}</td>
+            <td>{lote.predio && lote.predio.PREDIO}</td>
+            <td>{lote.desverdizado?.canastillas}</td>
+            <td>{lote.desverdizado?.kilos}</td>
+            <td>{lote.desverdizado?.cuartoDesverdizado}</td>
+            <td>
               {lote.desverdizado?.fechaIngreso && format(new Date(lote.desverdizado?.fechaIngreso), 'dd-MM-yyyy')}
-            </div>
-          </React.Fragment>
+            </td>
+          </tr>
         ))}
-      </div>
-    </div>
+      </tbody>
+    </table>
   )
 }

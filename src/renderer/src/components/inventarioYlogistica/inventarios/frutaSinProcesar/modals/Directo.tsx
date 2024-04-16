@@ -2,6 +2,8 @@
 import useAppContext from '@renderer/hooks/useAppContext'
 import { lotesType } from '@renderer/types/lotesType'
 import { useState } from 'react'
+import "../../../../../css/modal-style.css"
+
 
 type vaciadoType = {
   closeDirecto: () => void
@@ -74,88 +76,58 @@ export default function Directo(props: vaciadoType): JSX.Element {
     }
   }
   return (
-    <div className={` fixed inset-0 flex items-center justify-center bg-black bg-opacity-50`}>
-      <div className={`${theme === 'Dark' ? 'bg-slate-800' : 'bg-white'} rounded-xl w-96 h-90 overflow-hidden pb-5`}>
-        <div className={`bg-red-600  flex justify-between items-center border-b-2 border-gray-200 p-3 mb-4 rounded-sm`}>
+    <div className="fondo-modal">
+      <div className="modal-container">
+        <div className='modal-header-danger'>
           <h2 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-lg font-semibold`}>{props.propsModal.predio && props.propsModal.predio.PREDIO}</h2>
         </div>
-        <div className="flex justify-center pb-5">
-          <p className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>Numero de canastillas en inventario: {props.propsModal.inventarioActual && props.propsModal.inventarioActual.inventario}</p>
-        </div>
-        <div className="flex flex-col mx-5 justify-center pb-10">
-          <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} flex flex-col`}>
-            Canastillas
+        <div className='modal-container-body'>
+            <p>Numero de canastillas en inventario: {props.propsModal.inventarioActual && props.propsModal.inventarioActual.inventario}</p>
+            <p>Canastillas</p>
             <input
               type="number"
               min="0"
               step="1"
-              className="border-2 border-gray-200 rounded-md p-2 text-black"
               onChange={(e): void => setCanastillas(Number(e.target.value))}
             />
-          </label>
-          <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} flex flex-col`}>
-            Placa
+            <p>Placa</p>
             <input
               type="text"
               value={placa}
               maxLength={6}
               pattern="[A-Z]{3}[0-9]{3}"
-              className="border-2 border-gray-200 rounded-md p-2 text-black"
               onChange={(e): void => setPlaca(e.target.value)}
             />
-          </label>
-          <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} flex flex-col`}>
-            Nombre conductor
+            <p>Nombre conductor</p>
             <input
               type="text"
               value={nombreConductor}
-              className="border-2 border-gray-200 rounded-md p-2 text-black"
               onChange={(e): void => setNombreConductor(e.target.value)}
             />
-          </label>
-          <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} flex flex-col`}>
-            Telefono
+            <p>Telefono</p>
             <input
               type="text"
               value={telefono}
-              className="border-2 border-gray-200 rounded-md p-2 text-black"
               onChange={(e): void => setTelefono(e.target.value)}
             />
-          </label>
-          <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} flex flex-col`}>
-            Cedula
+            <p>Cedula</p>
             <input
               type="text"
               value={cedula}
-              className="border-2 border-gray-200 rounded-md p-2 text-black"
               onChange={(e): void => setCedula(e.target.value)}
             />
-          </label>
-          <label className={`${theme === 'Dark' ? 'text-white' : 'text-black'} flex flex-col`}>
-            Remision
+            <p>Remision</p>
             <input
               type="text"
               value={remision}
-              className="border-2 border-gray-200 rounded-md p-2 text-black"
               onChange={(e): void => setRemision(e.target.value)}
             />
-          </label>
-        </div>
-        <div className="flex justify-center gap-4">
-          <button
-            className={`flex items-center justify-center ${loading ? 'bg-blue-500' : 'bg-blue-600'} text-white rounded-md px-4 py-2`}
-            onClick={vaciar}
-          >
-            {loading && <span className="loader"></span>}
-            Vaciar
-          </button>
-          <button
-            className={`border-2 border-gray-200 rounded-md px-4 py-2 ${theme === 'Dark' ? 'bg-slate-800 text-white' : 'bg-white text-black'} `}
-            onClick={props.closeDirecto}
-          >
-            Cancelar
-          </button>
-        </div>
+       </div>
+
+       <div className="modal-container-buttons">
+        <button onClick={vaciar} className='danger'>Enviar</button>
+        <button onClick={props.closeDirecto} className='cancel'>Cancelar</button>
+      </div>
       </div>
     </div>
   );

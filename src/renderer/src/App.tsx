@@ -20,7 +20,7 @@ import IngresoClasificacionCalidad from './components/calidad/ingresos/clasifica
 import HistorialClasificacionCalidad from './components/calidad/historiales/historialClasificacionCalidad/HistorialClasificacionCalidad'
 import Clientes from './components/gestionDeCuentas/clientes/Clientes'
 import Contenedores from './components/inventarioYlogistica/historiales/contenedores/Contenedores'
-// import ControlPlagas from './components/calidad/formularios/controlPlagas/ControlPlagas'
+import ControlPlagas from './components/calidad/formularios/controlPlagas/ControlPlagas'
 // import LimpiezaMensual from './components/calidad/formularios/limpiezaMensual/LimpiezaMensual'
 // import LimpiezaPostCosecha from './components/calidad/formularios/limpiezaPostCosecha/LimpiezaPostCosecha'
 import HigienePersonal from './components/calidad/formularios/higienePersonal/HigienePersonal'
@@ -186,7 +186,7 @@ function App(): JSX.Element {
                               {section === "Calidad//Historiales//Calidad interna" && <HistorialCalidadInterna />}
                               {section === "Calidad//Ingresos//Clasificacion calidad" && <IngresoClasificacionCalidad />}
                               {section === "Calidad//Historiales//Clasificacion calidad" && <HistorialClasificacionCalidad />}
-                              {/* {section === "Calidad//Formularios//Control plagas" && <ControlPlagas />}  */}
+                              {section === "Calidad//Formularios//Control plagas" && <ControlPlagas />} 
                               {section === "Calidad//Formularios//Higiene personal" && <HigienePersonal />} 
                               {/* {section === "Calidad//Formularios//Limpieza mensual" && <LimpiezaMensual />}  */}
                               {/* {section === "Calidad//Formularios//Limpieza post cosecha" && <LimpiezaPostCosecha />}  */}

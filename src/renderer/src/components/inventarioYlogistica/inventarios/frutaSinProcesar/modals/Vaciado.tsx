@@ -2,6 +2,7 @@
 import useAppContext from '@renderer/hooks/useAppContext'
 import { lotesType } from '@renderer/types/lotesType'
 import { useState } from 'react'
+import "../../../../../css/modal-style.css"
 
 type vaciadoType = {
     closeVaciado: () => void
@@ -10,13 +11,12 @@ type vaciadoType = {
   }
 
 export default function Vaciado(props: vaciadoType): JSX.Element {
-  const {theme, messageModal} = useAppContext();
+  const {messageModal} = useAppContext();
   const [canastillas, setCanastillas] = useState<number>(0)
-  const [loading, setLoading] = useState<boolean>(false)
 
   const vaciar = async (): Promise<void> => {
     try {
-        setLoading(true)
+
       const canastillasInt = canastillas
       const propsCanastillasInt =  props.propsModal.inventarioActual ?  props.propsModal.inventarioActual.inventario : 0
 
@@ -26,15 +26,12 @@ export default function Vaciado(props: vaciadoType): JSX.Element {
         const nuevo_lote = JSON.parse(JSON.stringify(props.propsModal));
         nuevo_lote["inventarioActual.inventario"] = nuevo_lote.inventarioActual.inventario - canastillasInt;
         nuevo_lote.kilosVaciados = Number(nuevo_lote.kilosVaciados)  + (Number(nuevo_lote.promedio) * Number(canastillasInt));
-       
         if ('inventario' in nuevo_lote.inventarioActual) {
           delete nuevo_lote.inventarioActual.inventario;
         }
-        
         if ('inventarioActual' in nuevo_lote) {
           delete nuevo_lote.inventarioActual;
         }
-        
         const request = {
           data:{
             lote: nuevo_lote,
@@ -59,45 +56,31 @@ export default function Vaciado(props: vaciadoType): JSX.Element {
         messageModal("error", e.message)
     }
     } finally{
-        setLoading(false)
         props.closeVaciado();
         props.handleInfo();
     }
   }
   return (
-    <div className={` fixed inset-0 flex items-center justify-center bg-black bg-opacity-50`}>
-    <div className={`${theme === 'Dark' ? 'bg-slate-800' : 'bg-white'} rounded-xl w-96 h-90 overflow-hidden pb-5`}>
-      <div className={`bg-Celifrut-green flex justify-between items-center border-b-2 border-gray-200 p-3 mb-4 rounded-sm`}>
-        <h2 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-lg font-semibold`}>{props.propsModal.predio && props.propsModal.predio.PREDIO}</h2>
+    <div className="fondo-modal">
+    <div className="modal-container">
+      <div className='modal-header-agree'>
+        <h2>{props.propsModal.predio && props.propsModal.predio.PREDIO}</h2>
       </div>
-      <div className="flex justify-center pb-5">
-        <p className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-md`}>
-          Numero de canastillas en inventario: {props.propsModal.inventarioActual && props.propsModal.inventarioActual.inventario}
-        </p>
+      <div className='modal-container-body'>
+          <p>
+            Numero de canastillas en inventario: {props.propsModal.inventarioActual && props.propsModal.inventarioActual.inventario}
+          </p>
+          <input
+            type="number"
+            min="0"
+            step="1"
+            onChange={(e): void => setCanastillas(Number(e.target.value))}
+          />
+       
       </div>
-      <div className="flex justify-center pb-10">
-        <input
-          type="number"
-          min="0"
-          step="1"
-          className="border-2 border-gray-200 rounded-md p-2"
-          onChange={(e): void => setCanastillas(Number(e.target.value))}
-        />
-      </div>
-      <div className="flex justify-center gap-4">
-        <button
-          className={`flex items-center justify-center ${loading ? 'bg-blue-500' : 'bg-blue-600'} text-white rounded-md px-4 py-2`}
-          onClick={vaciar}
-        >
-          {loading && <span className="loader"></span>}
-          Vaciar
-        </button>
-        <button
-          className={`border-2 border-gray-200 rounded-md px-4 py-2 ${theme === 'Dark' ? 'bg-slate-800 text-white' : 'bg-white text-black'} `}
-          onClick={props.closeVaciado}
-        >
-          Cancelar
-        </button>
+      <div className="modal-container-buttons">
+        <button onClick={vaciar} className='agree'>Vaciar</button>
+        <button onClick={props.closeVaciado} className='cancel'>Cancelar</button>
       </div>
     </div>
   </div>

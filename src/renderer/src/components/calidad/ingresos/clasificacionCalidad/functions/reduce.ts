@@ -20,6 +20,7 @@ export const INITIAL_STATE_LIMON: formularioType[] = [
   { id: 'Sombra', lavado: '', proceso: '', key: 'sombra' },
   { id: 'Mancha Fantasma', lavado: '', proceso: '', key: 'mancha' },
   { id: 'Deshidratada', lavado: '', proceso: '', key: 'deshidratada' },
+  { id: 'Verde Manzana', lavado: '', proceso: '', key: 'verdeManzana' },
   { id: 'Otras plagas', lavado: '', proceso: '', key: 'otrasPlagas' }
 ]
 

@@ -1,0 +1,31 @@
+.control-plagas-menu-div{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap:30px;
+    padding-top: 40px;
+    justify-content: center;
+    align-items: center;
+}
+
+.control-plagas-menu-div button{
+    background-color: var(--color-Celifrut);
+    width: 360px;
+    color: white;
+    font-weight: bold;
+    padding: 8px 15px;
+    border-radius: 12px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+    transition: transform 0.3s ease;
+
+}
+
+.control-plagas-menu-div button:hover{
+    background-color: var(--color-Celifrut-dark);
+}
+
+.control-plagas-menu-div button:active{
+    background-color: var(--color-Celifrut);
+    transform: scale(0.95);
+
+}

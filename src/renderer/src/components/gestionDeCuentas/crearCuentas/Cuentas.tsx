@@ -12,6 +12,7 @@ export default function Cuentas(): JSX.Element {
   const { messageModal } = useAppContext();
   const [filtro, setFiltro] = useState<string>('')
   const [data, setData] = useState<userType[]>();
+  const [dataOriginal, setDataOriginal] = useState<userType[]>([])
   const [opciones, setOpciones] = useState<string>('inicio')
   const [modificar, setModificar] = useState<boolean>(false)
   const [usuario, setUsuario] = useState<userType>()
@@ -24,6 +25,7 @@ export default function Cuentas(): JSX.Element {
       if (response.status !== 200)
         throw new Error(response.message)
       setData(response.data)
+      setDataOriginal(response.data)
     } catch (e) {
       if (e instanceof Error)
         messageModal("error", e.message);
@@ -43,6 +45,16 @@ export default function Cuentas(): JSX.Element {
       window.api.removeServerEmit('serverEmit', handleServerEmit)
     }
   }, [])
+  useEffect(() => {
+    if(filtro !== ''){
+      const dataFilter = dataOriginal.filter(
+          item => item.usuario?.toLowerCase().startsWith(filtro.toLowerCase())
+                  || item.nombre?.toLocaleLowerCase().startsWith(filtro.toLowerCase()))
+      setData(dataFilter)
+  }else{
+      setData(dataOriginal)
+  }
+  },[filtro])
   const handleChange = (): void => {
     if(opciones === "inicio"){
       setOpciones("agregar")

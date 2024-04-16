@@ -112,7 +112,7 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
   }, [props.filtro])
 
   return (
-    <div className='p-2'>
+    <div>
       <BotonesInventarioDesverdizado
         title={titleTable}
         table={table}
