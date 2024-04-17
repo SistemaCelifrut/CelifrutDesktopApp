@@ -22,7 +22,7 @@ import Clientes from './components/gestionDeCuentas/clientes/Clientes'
 import Contenedores from './components/inventarioYlogistica/historiales/contenedores/Contenedores'
 import ControlPlagas from './components/calidad/formularios/controlPlagas/ControlPlagas'
 // import LimpiezaMensual from './components/calidad/formularios/limpiezaMensual/LimpiezaMensual'
-// import LimpiezaPostCosecha from './components/calidad/formularios/limpiezaPostCosecha/LimpiezaPostCosecha'
+import LimpiezaPostCosecha from './components/calidad/formularios/limpiezaPostCosecha/LimpiezaPostCosecha'
 import HigienePersonal from './components/calidad/formularios/higienePersonal/HigienePersonal'
 // import HistorialVehiculos from './components/transporte/historialInspecciones/historialFormularioInspeccionVehiculos/HistorialVehiculos'
 import Informes from './components/calidad/informes/informesCalidad/Informes'
@@ -189,7 +189,7 @@ function App(): JSX.Element {
                               {section === "Calidad//Formularios//Control plagas" && <ControlPlagas />} 
                               {section === "Calidad//Formularios//Higiene personal" && <HigienePersonal />} 
                               {/* {section === "Calidad//Formularios//Limpieza mensual" && <LimpiezaMensual />}  */}
-                              {/* {section === "Calidad//Formularios//Limpieza post cosecha" && <LimpiezaPostCosecha />}  */}
+                              {section === "Calidad//Formularios//Limpieza post cosecha" && <LimpiezaPostCosecha />} 
                               {section === "Calidad//Formularios//Volante calidad" && <VolanteCalidad />} 
                               {section === "Calidad//Informes//Informe proveedor" && <Informes />}
 

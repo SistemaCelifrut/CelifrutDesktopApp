@@ -30,9 +30,7 @@ export default function HistorialDirectoNacional(): JSX.Element {
   const [propsModal, setPropsModal] = useState<historialLotesType>(documentoInit)
   const [showModificar, setShowModificar] = useState<boolean>(false)
   const [filtro, setFiltro] = useState<string>('')
-
   const [table, dispatch] = useReducer(reducerHistorial, INITIAL_STATE_HISTORIAL_PROCESO)
-
   const obtenerHistorialProceso = async ():Promise<void> => {
     try {
       const frutaActual = await window.api.server(request)
@@ -61,11 +59,9 @@ export default function HistorialDirectoNacional(): JSX.Element {
       window.api.removeServerEmit('serverEmit', handleServerEmit)
     }
   }, [showModal])
-
   const closeModal = (): void => {
     setShowModal(!showModal)
   }
-
   const clickLote = (e): void => {
     const id = e.target.value
     const lote: historialLotesType | undefined = table.find((item) => item._id === id)
@@ -81,17 +77,14 @@ export default function HistorialDirectoNacional(): JSX.Element {
       }
     }
   }
-
-
   useEffect(() => {
     dispatch({ type: 'filter', data: datosOriginales, filtro: filtro })
   }, [filtro])
-
   const handleFilter = (data: string): void => {
     setFiltro(data)
   }
   return (
-    <div className='w-full'>
+    <div className='componentContainer'>
       <NavBarInventario handleFilter={handleFilter} />
 
       <BotonesAccionHistorialFrutaProcesada

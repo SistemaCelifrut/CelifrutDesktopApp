@@ -19,11 +19,9 @@ export default function Directo(props: vaciadoType): JSX.Element {
   const [telefono, setTelefono] = useState<string>('')
   const [cedula, setCedula] = useState<string>('')
   const [remision, setRemision] = useState<string>('')
-  const [loading, setLoading] = useState<boolean>(false)
 
   const vaciar = async (): Promise<void> => {
     try {
-      setLoading(true)
       const canastillasInt = canastillas
       const propsCanastillasInt = props.propsModal.inventarioActual ? props.propsModal.inventarioActual.inventario : 0
 
@@ -70,7 +68,6 @@ export default function Directo(props: vaciadoType): JSX.Element {
         messageModal("error", e.message)
     }
     } finally {
-      setLoading(false)
       props.closeDirecto();
       props.handleInfo();
     }
