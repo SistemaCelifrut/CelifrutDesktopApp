@@ -72,7 +72,7 @@ export default function TablaOperarios (props:propsType):JSX.Element {
                             <td>{item.genero ? item.genero : "N/A"}</td>
                             <td>{item.fecha_nacimiento ? format(new Date(item.fecha_nacimiento), 'dd-MM-yyyy'): "N/A"}</td>
                             <td>
-                                <button style={{ color: "blue" }}><PiNotePencilDuotone /></button>
+                                <button style={{ color: "blue" }} onClick={():void => props.handleModificar(item)}><PiNotePencilDuotone /></button>
                                 <button style={{ color: "red" }} onClick={(): void => handleEliminar(item)} ><RiDeleteBin5Fill /></button>
                             </td>
                         </tr>

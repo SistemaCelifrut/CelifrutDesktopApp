@@ -12,7 +12,7 @@ type propsType = {
 }
 
 export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Element {
-  const { messageModal} = useAppContext();
+  const { messageModal } = useAppContext();
   const [cliente, setCliente] = useState<string>('')
   const [placa, setPlaca] = useState<string>('')
   const [nombreConductor, setNombreConductor] = useState<string>('')
@@ -23,7 +23,7 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
   const finalizar = async (): Promise<void> => {
     try {
       if (props.propsModal.action === 'Enviar descarte') {
-        
+
         const historial = {
           fecha: new Date(),
           accion: "Salida de fruta",
@@ -79,7 +79,7 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
         };
         await window.api.server(requestHistorial)
 
- 
+
       } else if (props.propsModal.action === 'Reprocesar como Celifrut') {
 
         // se crea el elemnto historial descarte
@@ -209,9 +209,9 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
         }
       }
 
-      messageModal("success","Fruta vaciada!")
+      messageModal("success", "Fruta vaciada!")
     } catch (e) {
-      if(e  instanceof Error){
+      if (e instanceof Error) {
         messageModal("error", `Error: ${e.message}`)
       }
     } finally {
@@ -226,74 +226,57 @@ export default function ModalConfirmarProcesoDescarte(props: propsType): JSX.Ele
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div
-        className={`bg-white rounded-xl  w-96 h-auto pb-4 ${props.propsModal.action === 'Enviar descarte' && 'h-60'
-          }`}
-      >
-        <div className="flex justify-between items-center bg-Celifrut-green p-2 rounded-t-xl">
-          <h1 className="text-white">
+    <div className="fondo-modal">
+      <div className={`modal-container`}>
+        <div className='modal-header-agree'>
+          <h2>
             {props.propsModal.action.charAt(0).toUpperCase() + props.propsModal.action.slice(1)}{' '}
-            descarte
-          </h1>
+          </h2>
         </div>
-        <div className="flex justify-center p-2">
+        <div className='modal-container-body'>
           <h2 className="text-center">¿Desea {props.propsModal.action} seleccionado?</h2>
+          {props.propsModal.action === 'Enviar descarte' && (
+            <>
+              <label>Nombre del cliente</label>
+              <input
+                type="text"
+                onChange={(e): void => setCliente(e.target.value)}
+              />
+              <label >Placa</label>
+              <input
+                type="text"
+                value={placa}
+                maxLength={6}
+                onChange={(e): void => setPlaca(e.target.value)}
+              />
+              <label >Nombre conductor</label>
+              <input
+                type="text"
+                onChange={(e): void => setNombreConductor(e.target.value)}
+              />
+              <label >Telefono</label>
+              <input
+                type="text"
+                onChange={(e): void => setTelefono(e.target.value)}
+              />
+              <label >Cedula</label>
+              <input
+                type="number"
+                onChange={(e): void => setCedula(e.target.value)}
+              />
+              <label >Remision</label>
+              <input
+                type="number"
+                onChange={(e): void => setRemision(e.target.value)}
+              />
+            </>
+          )}
         </div>
-        {props.propsModal.action === 'Enviar descarte' && (
-          <div className="flex justify-center flex-col p-2">
-            <label>Nombre del cliente</label>
-            <input
-              type="text"
-              className="border-2 border-gray-200 rounded-md p-2"
-              onChange={(e): void => setCliente(e.target.value)}
-            />
-            <label >Placa</label>
-            <input
-              type="text"
-              value={placa}
-              maxLength={6}
-              className="border-2 border-gray-200 rounded-md p-2"
-              onChange={(e): void => setPlaca(e.target.value)}
-            />
-            <label >Nombre conductor</label>
-            <input
-              type="text"
-              className="border-2 border-gray-200 rounded-md p-2"
-              onChange={(e): void => setNombreConductor(e.target.value)}
-            />
-            <label >Telefono</label>
-            <input
-              type="text"
-              className="border-2 border-gray-200 rounded-md p-2"
-              onChange={(e): void => setTelefono(e.target.value)}
-            />
-            <label >Cedula</label>
-            <input
-              type="number"
-              className="border-2 border-gray-200 rounded-md p-2"
-              onChange={(e): void => setCedula(e.target.value)}
-            />
-            <label >Remision</label>
-            <input
-              type="number"
-              className="border-2 border-gray-200 rounded-md p-2"
-              onChange={(e): void => setRemision(e.target.value)}
-            />
+        <div className="modal-container-buttons">
+          <button onClick={finalizar}  className='agree'>Vaciar</button>
+          <button  onClick={(): void => props.procesar('')} className='cancel'>Cancelar</button>
+        </div>
 
-          </div>
-        )}
-        <div className="flex justify-center gap-4 mt-4">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded-md" onClick={finalizar}>
-            Aceptar
-          </button>
-          <button
-            className="border border-gray-300 px-4 py-2 rounded-md"
-            onClick={(): void => props.procesar('')}
-          >
-            Cancelar
-          </button>
-        </div>
       </div>
     </div>
   )

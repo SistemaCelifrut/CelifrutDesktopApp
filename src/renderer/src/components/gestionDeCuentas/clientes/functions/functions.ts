@@ -1,8 +1,7 @@
 /* eslint-disable prettier/prettier */
 
-import { clienteType } from "@renderer/types/clientesType";
 
-export const clienteDefault: clienteType = {
+export const clienteDefault = {
     CODIGO: 0,
     CLIENTE: '',
     CORREO: '',
@@ -10,5 +9,5 @@ export const clienteDefault: clienteType = {
     PAIS_DESTINO: '',
     TELEFONO:'',
     ID:'',
-    _id: ''
+
 }

@@ -1,7 +1,14 @@
 {
-    "title":"Ingresar Operario",
+    "title":{
+        "ingresar":"Ingresar Operario",
+        "modificar":"Modificar Operario"
+    },
     "nombre":"Nombre",
     "apellido":"Apellido",
+    "estado":{
+        "title":"Estado",
+        "estados":["activo", "inactivo"]
+    },
     "cargo":{
         "title":"Cargo",
         "cargos":["Operario", "Seleccionadora"]

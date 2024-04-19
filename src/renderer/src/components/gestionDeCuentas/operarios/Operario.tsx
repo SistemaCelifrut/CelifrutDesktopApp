@@ -14,8 +14,6 @@ export default function Operario(): JSX.Element {
     const [modificar, setModificar] = useState<boolean>(false)
     const [operario, setOperario] = useState<operariosType>()
     const [filtro, setFiltro] = useState<string>('')
-
-    useEffect(() => { obtenerData() }, [])
     const obtenerData = async (): Promise<void> => {
         try {
             const request = { collection: 'users', action: 'getOperarios' }
@@ -29,6 +27,31 @@ export default function Operario(): JSX.Element {
                 messageModal("error", e.message);
         }
     }
+    const handleServerEmit = async (data): Promise<void> => {
+        if (data.fn === "cambio-operario") {
+          await obtenerData()
+        }
+    }
+    useEffect(() => { 
+        obtenerData() 
+        window.api.serverEmit('serverEmit', handleServerEmit)
+
+        // Función de limpieza
+        return () => {
+          window.api.removeServerEmit('serverEmit', handleServerEmit)
+        }
+    }, [])
+    useEffect(() => {
+        if(filtro !== ''){
+          const dataFilter = dataOriginal.filter(
+              item => item.nombre.toLowerCase().startsWith(filtro.toLowerCase()) || 
+              item.apellido.toLocaleLowerCase().startsWith(filtro.toLowerCase()) ||
+              item.cargo.toLocaleLowerCase().startsWith(filtro.toLowerCase()) )
+          setData(dataFilter)
+      }else{
+          setData(dataOriginal)
+      }
+      },[filtro])
     const handleChange = (): void => {
         if (opciones === "inicio") {
             setOpciones("agregar")
@@ -51,7 +74,7 @@ export default function Operario(): JSX.Element {
                 <div className='div-filter-actions'>
                     <button onClick={handleChange}>
                         Agregar operario
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9z" /><path d="M15 12h-6" /><path d="M12 9v6" /></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9z" /><path d="M15 12h-6" /><path d="M12 9v6" /></svg>
                     </button>
                     <input type="text" value={filtro} placeholder='Buscar...' onChange={(e): void => setFiltro(e.target.value)} />
                 </div>
@@ -64,7 +87,11 @@ export default function Operario(): JSX.Element {
                     />}
 
                 {opciones === "agregar" &&
-                    <IngresarOperario />
+                    <IngresarOperario 
+                        operario={operario}
+                        modificar={modificar}
+                        handleChange={handleChange}
+                    />
                 }
             </div>
 

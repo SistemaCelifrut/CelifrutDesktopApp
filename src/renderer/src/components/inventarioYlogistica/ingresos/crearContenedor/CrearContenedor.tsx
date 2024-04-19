@@ -36,6 +36,8 @@ export default function CrearContenedor(): JSX.Element {
   const guardarDatos: React.FormEventHandler<HTMLFormElement> = async (event) => {
     try {
       event.preventDefault()
+      if(formState.tipoFruta === '') throw new Error("No ha seleccionado tipo de fruta")
+      if(formState.tipoEmpaque === '') throw new Error("No ha seleccionado tipo de empaque")
       const request = crearObjetoContenedor(formState, calidad, tipoCaja)
       const response = await window.api.server(request)
       if (response.status === 200) {
@@ -45,7 +47,7 @@ export default function CrearContenedor(): JSX.Element {
       }
       reiniciarCampos()
     } catch (e: unknown) {
-      messageModal("error", `Error ${e}`);
+      messageModal("error", ` ${e}`);
     }
   }
   const reiniciarCampos = (): void => {
@@ -258,6 +260,7 @@ export default function CrearContenedor(): JSX.Element {
               <span className="ml-2">{strings.tipoFruta.naranja}</span>
               <input
                 type="radio"
+                checked={formState.tipoFruta === 'Naranja'}
                 className="form-radio text-orange-600"
                 name="tipoFruta"
                 value="Naranja"
@@ -271,6 +274,7 @@ export default function CrearContenedor(): JSX.Element {
                 className="form-radio text-green-600"
                 name="tipoFruta"
                 value="Limon"
+                checked={formState.tipoFruta === 'Limon'}
                 onChange={handleChange}
               />
             </label>
@@ -295,6 +299,7 @@ export default function CrearContenedor(): JSX.Element {
                 type="radio"
                 className="form-radio text-orange-600"
                 name="tipoEmpaque"
+                checked={formState.tipoEmpaque === 'Caja'}
                 value="Caja"
                 onChange={handleChange}
               />
@@ -305,6 +310,7 @@ export default function CrearContenedor(): JSX.Element {
                 type="radio"
                 className="form-radio text-green-600"
                 name="tipoEmpaque"
+                checked={formState.tipoEmpaque === 'Saco'}
                 value="Saco"
                 onChange={handleChange}
               />

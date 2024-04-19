@@ -1,33 +1,103 @@
 /* eslint-disable prettier/prettier */
+import { useEffect, useState } from "react";
+import TableListaClientes from "./tables/TableListaClientes";
+import { clienteType } from "@renderer/types/clientesType";
+import useAppContext from "@renderer/hooks/useAppContext";
+import FormatoAgregarCliente from "./components/FormatoAgregarCliente";
 
-import { useContext, useState } from "react";
-import NavBarClientes from "./utils/NavBarClientes";
-import ListaClientes from "./components/ListaClientes";
-import { themeContext } from "@renderer/App";
-import ErrorModal from "@renderer/errors/modal/ErrorModal";
-import SuccessModal from "@renderer/errors/modal/SuccessModal";
 
 export default function Clientes(): JSX.Element {
-    const theme = useContext(themeContext)
-    const [seccion, setSeccion] = useState<string>('Clientes')
-    const [showError, setShowError] = useState<boolean>(false)
-    const [showSuccess, setShowSuccess] = useState<boolean>(false)
-    const [message, setMessage] = useState<string>('')
+    const { messageModal } = useAppContext()
+    const [data, setData] = useState<clienteType[]>([])
+    const [filtro, setFiltro] = useState<string>('')
+    const [dataOriginal, setDataOriginal] = useState<clienteType[]>([])
+    const [opciones, setOpciones] = useState<string>('inicio')
+    const [modificar, setModificar] = useState<boolean>(false)
+    const [cliente, setCliente] = useState<clienteType>()
+    useEffect(() => {
+        obtenerClientes()
+        window.api.serverEmit('serverEmit', handleServerEmit)
 
-
-    const handleSectionSelect = (data: string): void => {
-        setSeccion(data)
+        // Función de limpieza
+        return () => {
+            window.api.removeServerEmit('serverEmit', handleServerEmit)
+        }
+    }, [])
+    useEffect(() => {
+        if(filtro !== ''){
+            const dataFilter = dataOriginal.filter(
+                item => item.CLIENTE?.toLowerCase().startsWith(filtro.toLowerCase()))
+            setData(dataFilter)
+        }else{
+            setData(dataOriginal)
+        }
+    }, [filtro])
+    const obtenerClientes = async (): Promise<void> => {
+        try {
+            const request = {
+                data: {
+                    query: {},
+                },
+                collection: 'clientes',
+                action: 'getClientes',
+                query: 'proceso'
+            };
+            const response = await window.api.server(request);
+            if (response.status !== 200)
+                throw new Error(response.message)
+            setData(response.data)
+            setDataOriginal(response.data)
+        } catch (e) {
+            if (e instanceof Error)
+                messageModal("error", e.message)
+        }
     }
-    const closeModal = (): void => {
-        setShowError(false)
+    const handleServerEmit = async (data): Promise<void> => {
+        if (data.fn === "cambio-cliente") {
+            await obtenerClientes()
+        }
+    }
+    const handleChange = (): void => {
+        if (opciones === "inicio") {
+            setOpciones("agregar")
+            setModificar(false)
+        }
+        else if (opciones === "agregar")
+            setOpciones("inicio")
+    }
+    const handleModificar = (clienteInfo): void => {
+        setOpciones("agregar")
+        setModificar(true)
+        setCliente(clienteInfo)
     }
     return (
-        <div className="w-full">
-            <NavBarClientes handleSectionSelect={handleSectionSelect} />
-            {seccion === 'Clientes' && <ListaClientes setMessage={setMessage} setShowError={(setShowError)} setShowSuccess={setShowSuccess}/>}
-            <div className='fixed bottom-0 right-0 flex items-center justify-center'>
-                {showError && <ErrorModal message={message} closeModal={closeModal} theme={theme} />}
-                {showSuccess && <SuccessModal message={message} closeModal={closeModal} theme={theme} />}
+
+        <div className="componentContainer">
+            <div className="navBar"></div>
+            <h2>Clientes</h2>
+            <hr />
+            <div className='filtroContainer'>
+            <div className='div-filter-actions'>
+                        <button onClick={handleChange}>
+                            Agregar Cliente
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9z" /><path d="M15 12h-6" /><path d="M12 9v6" /></svg>
+                        </button>
+                        <input type="text" value={filtro} placeholder='Buscar...' onChange={(e): void => setFiltro(e.target.value)} />
+                    </div>
+            </div>
+            <div>
+            {opciones === "inicio" &&
+                        <TableListaClientes 
+                            handleModificar={handleModificar}
+                            clientes={data}
+                        />}
+            {opciones === "agregar" &&
+                        <FormatoAgregarCliente
+                            cliente={cliente}
+                            handleChange={handleChange}
+                            modificar={modificar}
+                        />
+                    }
             </div>
         </div>
     )

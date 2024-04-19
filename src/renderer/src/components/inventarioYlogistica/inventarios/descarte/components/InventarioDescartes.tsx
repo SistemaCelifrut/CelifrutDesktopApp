@@ -134,7 +134,7 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
   }, [props.filtro])
 
   return (
-    <div>
+    <div className='componentContainer'>
       <BotonesInventarioDescartes
         table={table}
         enfObj={enfObj}

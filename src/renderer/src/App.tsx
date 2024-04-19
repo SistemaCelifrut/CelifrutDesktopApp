@@ -21,21 +21,20 @@ import HistorialClasificacionCalidad from './components/calidad/historiales/hist
 import Clientes from './components/gestionDeCuentas/clientes/Clientes'
 import Contenedores from './components/inventarioYlogistica/historiales/contenedores/Contenedores'
 import ControlPlagas from './components/calidad/formularios/controlPlagas/ControlPlagas'
-// import LimpiezaMensual from './components/calidad/formularios/limpiezaMensual/LimpiezaMensual'
+import LimpiezaMensual from './components/calidad/formularios/limpiezaMensual/LimpiezaMensual'
 import LimpiezaPostCosecha from './components/calidad/formularios/limpiezaPostCosecha/LimpiezaPostCosecha'
 import HigienePersonal from './components/calidad/formularios/higienePersonal/HigienePersonal'
 // import HistorialVehiculos from './components/transporte/historialInspecciones/historialFormularioInspeccionVehiculos/HistorialVehiculos'
 import Informes from './components/calidad/informes/informesCalidad/Informes'
 import HistorialIngresoFruta from './components/inventarioYlogistica/historiales/historialIngresoFruta/HistorialIngreso'
 import FormularioMulas from './components/transporte/formulatioInspecciones/inspeccionMulas/FormularioMulas'
-import HistorialFormulario from './components/transporte/historialInspecciones/historialFormularioInspeccionMulas/HistorialFormulario'
+// import HistorialFormulario from './components/transporte/historialInspecciones/historialFormularioInspeccionMulas/HistorialFormulario'
 import InventarioDescarte from './components/inventarioYlogistica/inventarios/descarte/InventarioDescarte'
 import HistorialDescarte from './components/inventarioYlogistica/historiales/historialDescartes/HistorialDescarte'
 import ListaDeEmpaque from './components/inventarioYlogistica/historiales/listaDeEmpaque/ListaDeEmpaque'
 import Lotes from './components/inventarioYlogistica/historiales/lotes/Lotes'
 import Proveedores from './components/gestionDeCuentas/proveedores/Proveedores'
 import VolanteCalidad from './components/calidad/formularios/volanteCalidad/VolanteCalidad'
-import FormularioProgramacionMula from './components/transporte/formulatioInspecciones/programacionMulas/FormularioProgramacionMula'
 // import HistorialProgramacionMula from './components/transporte/historialInspecciones/historialProgramacionMula/HistorialProgramacionMula'
 import Cuentas from './components/gestionDeCuentas/crearCuentas/Cuentas'
 import Inicio from './components/Inicio'
@@ -46,6 +45,7 @@ import OrdenDeVaceo from './components/inventarioYlogistica/inventarios/orden/Or
 import ActivarFunciones from './components/sistema/activarFunciones/ActivarFunciones'
 import IngresoSistemaDescartes from './components/sistema/ingresarDescartes/IngresoSistemaDescartes'
 import Operario from './components/gestionDeCuentas/operarios/Operario'
+import ProgramacionMula from './components/transporte/formulatioInspecciones/programacionMulas/ProgramacionMula'
 
 type OpenModalFunction = (messageType: string, message: string) => void;
 type MyContextType = {
@@ -188,7 +188,7 @@ function App(): JSX.Element {
                               {section === "Calidad//Historiales//Clasificacion calidad" && <HistorialClasificacionCalidad />}
                               {section === "Calidad//Formularios//Control plagas" && <ControlPlagas />} 
                               {section === "Calidad//Formularios//Higiene personal" && <HigienePersonal />} 
-                              {/* {section === "Calidad//Formularios//Limpieza mensual" && <LimpiezaMensual />}  */}
+                              {section === "Calidad//Formularios//Limpieza mensual" && <LimpiezaMensual />} 
                               {section === "Calidad//Formularios//Limpieza post cosecha" && <LimpiezaPostCosecha />} 
                               {section === "Calidad//Formularios//Volante calidad" && <VolanteCalidad />} 
                               {section === "Calidad//Informes//Informe proveedor" && <Informes />}
@@ -202,9 +202,9 @@ function App(): JSX.Element {
 
                               {/* Transporte */}
                               {/* {section === 'Transporte//Historiales//Inspeccion camiones' && <HistorialVehiculos />} */}
-                              {section === "Transporte//Historiales//Inspeccion tractomulas" && <HistorialFormulario />}
+                              {/* {section === "Transporte//Historiales//Inspeccion tractomulas" && <HistorialFormulario />} */}
                               {section === "Transporte//Formularios//Tractomulas" && <FormularioMulas />}
-                              {section === "Transporte//Formularios//Programación tractomulas" && <FormularioProgramacionMula />}
+                              {section === "Transporte//Formularios//Programación tractomulas" && <ProgramacionMula />}
                               {/* {section === "Transporte//Historiales//Historial programación tractomula" && <HistorialProgramacionMula/>} */}
 
 

@@ -1,137 +1,90 @@
 /* eslint-disable prettier/prettier */
 
-import { useContext, useState } from "react"
-import { themeContext } from "@renderer/App"
 import { PiNotePencilDuotone } from "react-icons/pi";
 import { RiDeleteBin5Fill } from "react-icons/ri";
-import ModalConfirmarEliminarClientes from "../modals/ModalConfirmarEliminarClientes";
 import { clienteType } from "@renderer/types/clientesType";
+import ConfirmacionModal from "@renderer/messages/ConfirmacionModal";
+import { useEffect, useState } from "react";
+import useAppContext from "@renderer/hooks/useAppContext";
 
 type propsType = {
-    data: clienteType[]
-    setData: (e) => void
-    setDataOriginal: (e) => void
-    clienteSeleccionado: clienteType
-    setClienteSeleccionado: (e) => void
-    modificarCliente: (e) => void
-    setShowSuccess: (e) => void
-    setShowError: (e) => void
-    setMessage: (e) => void
+    clientes: clienteType[]
+    handleModificar: (cliente) => void
 }
 
 export default function TableListaClientes(props: propsType): JSX.Element {
-    const theme = useContext(themeContext)
-    const [showConfirm, setShowConfirm] = useState<boolean>(false)
+    const {messageModal} = useAppContext()
+    const headers = ["Codigo", "Cliente", "Correo", "DIrección", "Pais destino", "Telefono", "ID", "Acciones"]
+    const [showConfirmacion, setShowConfirmacion] = useState<boolean>(false)
+    const [confirm, setConfirm] = useState<boolean>(false)
+    const [message, setMessage] = useState<string>('')
+    const [clienteDataSeleccionado, setClienteDataSeleccionado] = useState<clienteType>()
 
-    const handleEliminar = async (e): Promise<void> => {
+    if (!props.clientes) {
+        return <div>Cargando...</div>; // O cualquier otro indicador de carga que prefieras
+    }
+    useEffect(() => {
+        if (confirm) {
+            eliminar()
+            setConfirm(false)
+        }
+    }, [confirm]);
+    const handleEliminar = (cliente): void => {
+        setShowConfirmacion(true)
+        setMessage("¿Desea eliminar el cliente seleccionado?")
+        setClienteDataSeleccionado(cliente)
+    }
+    const eliminar = async (): Promise<void> => {
         try {
-            props.modificarCliente
-         if(e){
             const request = {
-                collection:'clientes',
+                collection: 'clientes',
                 action: 'deleteCliente',
                 query: 'proceso',
-                data:{
-                    _id:props.clienteSeleccionado._id
-                }
+                data: clienteDataSeleccionado?._id
             }
-
             const response = await window.api.server(request);
-            if (response.status === 200) {
-                const request = {
-                    data: {
-                      query: {}
-                    },
-                    collection: 'clientes',
-                    action: 'getClientes',
-                    query: 'proceso'
-                  }
-                const response = await window.api.server(request)
-                if (response.status === 200) {
-                    props.setData(response.data)
-                    props.setDataOriginal(response.data)
-                } else {
-                    props.setShowError(true)
-                    props.setMessage("Error obteniendo los datos del servidor")
-                    setInterval(() => {
-                        props.setShowError(false)
-                    }, 5000)
-                }
-                props.setShowSuccess(true)
-                props.setMessage("Cliente eliminado con exito!")
-                setInterval(() => {
-                    props.setShowSuccess(false)
-                }, 5000)
-                setShowConfirm(false)
-            } else {
-                props.setShowError(true)
-                props.setMessage("Error eliminando el cliente")
-                setInterval(() => {
-                    props.setShowError(false)
-                }, 5000)
-                props.setShowSuccess(false)
-                setShowConfirm(false)
-            }
-         }
-         else{
-            setShowConfirm(false)
-         }
+            if(response.status !== 200)
+                throw new Error(response.message)
+            messageModal("success","Usuario eliminado con exito")
         } catch (e) {
-            props.setShowError(true)
-            props.setMessage("Error enviando los datos al servidor" + e)
-            setInterval(() => {
-                props.setShowError(false)
-            }, 5000)
-            setShowConfirm(false)
-
+            if (e instanceof Error)
+                messageModal("error", e.message)
         }
     }
-    const clickEliminarCliente = (cliente): void => {
-        props.setClienteSeleccionado(cliente)
-        setShowConfirm(true)
-    } 
-
-
     return (
-        <div>
-            <table className={`mr-2 ml-2 w-full mt-4 border-2 table-fixed`}>
-                <thead className={`${theme === 'Dark' ? 'bg-slate-700' : 'bg-slate-200'}`}>
-                    <tr className="h-14 broder-2">
-                        <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} w-10 text-xs`}>Codigo</th>
-                        <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-xs`}>Cliente</th>
-                        <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-xs`}>Correo</th>
-                        <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-xs`}>Dirección</th>
-                        <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-xs`}>Pais destino</th>
-                        <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-xs`}>Telefono</th>
-                        <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-xs`}>ID</th>
-                        <th className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-xs`}>Acciones</th>
+        <>
+            <table className="table-main">
+                <thead>
+                    <tr>
+                        {headers.map(item => (
+                            <th key={item}>{item}</th>
+                        ))}
                     </tr>
                 </thead>
                 <tbody>
-                    {Array.isArray(props.data) && props.data.map((cliente, index) => (
-                        <tr className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-gray-200'}`} key={index}>
-                            <td className="p-2 text-xs  text-center">{cliente.CODIGO}</td>
-                            <td className="p-2 text-xs  text-center">{cliente.CLIENTE}</td>
-                            <td className="p-2 text-xs  text-center overflow-hidden">{cliente.CORREO}</td>
-                            <td className="p-2 text-xs  text-center overflow-hidden">{cliente.DIRECCIÓN}</td>
-                            <td className="p-2 text-xs  text-center overflow-hidden">{cliente.PAIS_DESTINO}</td>
-                            <td className="p-2 text-xs  text-center overflow-hidden">{cliente.TELEFONO}</td>
-                            <td className="p-2 text-xs  text-center overflow-hidden">{cliente.ID}</td>
-                            <td className="p-2 text-ms ">
-                                <div className="flex flex-row gap-4 justify-center items-center">
-                                    <div className="text-blue-700 cursor-pointer hover:font-bold" onClick={(): void => props.modificarCliente(cliente)}><PiNotePencilDuotone /></div>
-                                    <div className="text-red-600 cursor-pointer hover:font-bold" onClick={(): void => clickEliminarCliente(cliente)}><RiDeleteBin5Fill /></div>
-                                </div>
+                    {props.clientes.map((cliente, index) => (
+                        <tr className={`${index % 2 === 0 ? 'fondo-par' : 'fondo-impar'}`} key={cliente.ID}>
+                            <td>{cliente.CODIGO}</td>
+                            <td>{cliente.CLIENTE}</td>
+                            <td>{cliente.CORREO}</td>
+                            <td>{cliente.DIRECCIÓN}</td>
+                            <td>{cliente.PAIS_DESTINO}</td>
+                            <td>{cliente.TELEFONO}</td>
+                            <td>{cliente.ID}</td>
+                            <td>
+                                <button style={{ color: "blue" }} onClick={():void => props.handleModificar(cliente)}><PiNotePencilDuotone /></button>
+                                <button style={{ color: "red" }} onClick={():void => handleEliminar(cliente)}><RiDeleteBin5Fill /></button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-            <div className='fixed bottom-0 right-0 flex items-center justify-center'>
+            {showConfirmacion &&
+                <ConfirmacionModal
+                    message={message}
+                    setConfirmation={setConfirm}
+                    setShowConfirmationModal={setShowConfirmacion} />}
 
-                {showConfirm && <ModalConfirmarEliminarClientes handleEliminar={handleEliminar} />}
-            </div>
-
-        </div>
+        </>
     )
 }

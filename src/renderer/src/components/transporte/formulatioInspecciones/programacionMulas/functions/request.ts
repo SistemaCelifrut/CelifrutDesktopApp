@@ -1,9 +1,8 @@
 /* eslint-disable prettier/prettier */
-import { contenedoresType } from '@renderer/types/contenedoresType'
 
 export const request = {
   data: {
-    query: { formularioInspeccionMula: { $exists: false } },
+    query: { "formularioInspeccionMula.criterios": { $exists: false }, },
     select: {},
     sort: { 'infoContenedor.fechaCreacion': -1 },
     limit: 50,
@@ -27,7 +26,6 @@ export const initialData = {
   modelo: '',
   marca: '',
   prof: '',
-  cliente: '',
   puerto: '',
   naviera: '',
   agenciaAduanas: ''
@@ -43,7 +41,6 @@ export const labels = [
   'Modelo',
   'Marca',
   'Prof',
-  'Cliente',
   'Puerto',
   'Naviera',
   'Agencia de aduanas'
@@ -52,12 +49,7 @@ export const labels = [
 export const crear_request = (
   state,
   contenedorSelect
-): {
-  query: string
-  collection: string
-  action: string
-  data: { contenedor: contenedoresType }
-} => {
+):object => {
   return {
     query: 'proceso',
     collection: 'contenedores',
@@ -65,20 +57,19 @@ export const crear_request = (
     data: {
       contenedor: {
         _id: contenedorSelect,
-        formularioInspeccionMula: {
-          placa: state.placa,
-          trailer: state.trailer,
-          conductor: state.conductor,
-          cedula: state.cedula,
-          celular: state.celular,
-          color: state.color,
-          modelo: state.modelo,
-          marca: state.marca,
-          prof: state.prof,
-          puerto: state.puerto,
-          naviera: state.naviera,
-          agenciaAduanas: state.agenciaAduanas
-        }
+        "formularioInspeccionMula.placa": state.placa,
+        "formularioInspeccionMula.trailer": state.trailer,
+        "formularioInspeccionMula.conductor": state.conductor,
+        "formularioInspeccionMula.cedula": state.cedula,
+        "formularioInspeccionMula.celular": state.celular,
+        "formularioInspeccionMula.color": state.color,
+        "formularioInspeccionMula.modelo": state.modelo,
+        "formularioInspeccionMula.marca": state.marca,
+        "formularioInspeccionMula.prof": state.prof,
+        "formularioInspeccionMula.puerto": state.puerto,
+        "formularioInspeccionMula.naviera": state.naviera,
+        "formularioInspeccionMula.agenciaAduanas": state.agenciaAduanas
+
       }
     }
   }

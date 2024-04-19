@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import { historialLotesType } from '@renderer/types/lotesType'
-import { HiRefresh } from 'react-icons/hi'
 
 type propsType = {
   title: string

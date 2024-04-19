@@ -3,5 +3,6 @@ export const llavesVisualizar = {
     descarteGeneral: "Descarte general",
     pareja: "Pareja",
     balin: "Balin",
-    extra: "Extra"
+    extra: "Extra",
+    suelo: "Suelo"
 }

@@ -7,7 +7,8 @@ export const initFormState = {
     genero:'',
     direccion:'',
     telefono:'',
-    email:''
+    email:'',
+    estado:''
 }
 
 export const createRequest = (formState): object => {
@@ -23,7 +24,8 @@ export const createRequest = (formState): object => {
             genero:formState.genero,
             direccion:formState.direccion,
             telefono:formState.telefono,
-            email:formState.email
+            email:formState.email,
+            estado:formState.estado
         }
     }
 }
