@@ -19,16 +19,13 @@ export default function NavClasificacionCalidad(props: propsType): JSX.Element {
   }
 
   return (
-    <div className='flex flex-row gap-10 items-center p-2 justify-start bg-Celifrut-green rounded-t-sm m-0 border-1 border-Celifrut-green-dark pl-5'>
- 
-      <select
-        onChange={changeHandle}
-        className={`border focus:outline-none appearance-none w-2/5 mr-5 rounded-md h-10 pl-5 pr-10
-                        ${'border-gray-300  text-gray-600  bg-white hover:border-gray-400 '}`}
-      >
-        <option value="">Lotes</option>
+    <div className='navBar'>
+      <select onChange={changeHandle}>
+        <option value=''>Lotes</option>
         {props.lotesData.map((lote) => (
-          <option key={lote._id} value={lote._id}>{lote.predio ? lote.enf + ' ' + ' ' +  lote.predio.PREDIO: ''}</option>
+          <option key={lote._id} value={lote._id}>
+            {lote && lote.predio ? lote.enf + ' ' + ' ' + lote.predio.PREDIO : ' '}
+          </option>
         ))}
       </select>
     </div>

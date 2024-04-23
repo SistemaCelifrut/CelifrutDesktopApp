@@ -2,6 +2,7 @@
 import ComponentHistorialDescarte from "./components/ComponentHistorialDescarte"
 import NavBarDescartes from "./utils/NavBarDescartes"
 import { useState } from 'react'
+import "./css/styles.css"
 
 
 export default function HistorialDescarte(): JSX.Element {
@@ -12,7 +13,7 @@ export default function HistorialDescarte(): JSX.Element {
   }
 
   return (
-    <div className="w-full p-2">
+    <div className="componentContainer">
       <NavBarDescartes handleFilter={handleFilter} />
       <ComponentHistorialDescarte filtro={filtro} />
     </div>

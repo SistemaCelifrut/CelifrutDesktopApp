@@ -19,46 +19,34 @@ function TarjetaItemCLasificacionCalidad(props: propsType): JSX.Element {
   
   
   return (
-    <div
-      key="key"
-      className={`${props.theme === 'Dark' ? 'bg-slate-500' : 'bg-slate-100'} 
-    flex flex-col gap-4 w-52 p-4 rounded-lg shadow-lg m-4 justify-center items-center`}
-    >
-      <h3
-        className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}
-                        text-sm font-bold text-center mb-1`}
-      >
+    <div key="key" className='ingresar-clasificacion-calidad-tarjeta-div'>
+      <h3>
         {props.cardInfo.id}
       </h3>
       <div>
         <div>
-          <div
-            className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}
-                        text-sm font-bold text-center`}
-          >
+          <h3>
             Lavado:
-          </div>
+          </h3>
           <input
             value={formulario[props.index].lavado}
             onChange={(e): void => props.handleChange(e.target.value, 'lavado', props.cardInfo.id)}
-            className={`h-8  rounded-md pl-2 my-2 border-2 border-Celifrut-green`}
             type="number"
             placeholder="Lavado"
+            className='defaultSelect'
+
           />
         </div>
         <div className="column-container">
-          <div
-            className={`${props.theme === 'Dark' ? 'text-white' : 'text-black'}
-                        text-sm font-bold text-center mb-1`}
-          >
+          <h3>
             Proceso:{' '}
-          </div>
+          </h3>
           <input
             value={formulario[props.index].proceso}
             onChange={(e): void => props.handleChange(e.target.value, 'proceso', props.cardInfo.id)}
-            className={`h-8  rounded-md pl-2 my-2 border-2 border-Celifrut-green`}
             type="number"
             placeholder="Proceso"
+            className='defaultSelect'
           />
         </div>
       </div>

@@ -104,12 +104,11 @@ export default function TablaClasificacionCalidad(props: propsType): JSX.Element
   }, [formularioLimon, formularioNaranja])
 
   return (
-    <div className="flex flex-col justify-center items-center">
-      <div
-        className={`w-52 h-20  p-4 rounded-xl fixed right-10 top-28 ${theme === 'Dark' ? 'bg-slate-400' : 'bg-white'} shadow-2xl`}>
-        <div className={`${theme === 'Dark' ? 'text-white' : 'text-black'} font-bold flex flex-col justify-center items-center`}>
-          <h2>Total Porcentaje: </h2>
-          <h2>{totalPorcentaje.toFixed(2)}%</h2>
+    <div className='ingresar-clasificacion-calidad-container'>
+      <div className='ingresar-clasificacion-calidad-total-container'>
+        <div>
+          <h3>Total Porcentaje: </h3>
+          <h4>{totalPorcentaje.toFixed(2)}%</h4>
         </div>
       </div>
       {props.lote.tipoFruta === 'Limon' ? (
@@ -123,7 +122,7 @@ export default function TablaClasificacionCalidad(props: propsType): JSX.Element
       )}
       <button
         onClick={handleGuardar}
-        className="bg-orange-600 text-white border-none px-4 py-2 rounded-md mb-5 active:bg-orange-900 m-5">
+        className="defaulButtonAgree">
         Guardar
       </button>
     </div>

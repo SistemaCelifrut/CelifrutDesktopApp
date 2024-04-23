@@ -37,7 +37,7 @@ export const reducerHistorial = (
     case 'filter':
       state = action.data.filter(
         (item) =>
-          (item.tipoFruta.toLowerCase().indexOf(action.filtro.toLowerCase()) !== -1 ||
+          (
             item.accion.toLowerCase().indexOf(action.filtro.toLowerCase()) !== -1 ||
             format(new Date(item.fecha), 'dd-MM-yyyy').indexOf(action.filtro)) !== -1
       )

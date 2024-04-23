@@ -52,14 +52,12 @@ export default function ComponentHistorialDescarte(props: propsType): JSX.Elemen
 
 
   return (
-    <div>
-      <div className=' w-3/3 flex flex-row flex-wrap mt-2 p-0 gap-2 '>
+    <div className='historial-descartes-lista-container'>
         {table && 
           table.map((lote, index) => (
             <TarjetaHistorialDescartes theme={theme} user={user.cargo} lote={lote} key={index}/>
           ))
         }
-      </div>
     </div>
   )
 }

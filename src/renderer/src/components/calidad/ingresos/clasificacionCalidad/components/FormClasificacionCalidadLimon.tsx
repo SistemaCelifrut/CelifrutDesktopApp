@@ -13,10 +13,7 @@ export default function FormClasificacionCalidadLimon(props: propsType): JSX.Ele
   const theme = useContext(themeContext)
   const formulario = useContext(formLimonContext)
   return (
-    <div
-      className={`flex flex-wrap m-4 rounded-lg p-4 justify-center items-center
-    ${theme === 'Dark' ? 'bg-gray-600' : 'bg-gray-200'}`}
-    >
+    <div className='ingresar-clasificacion-calidad-tarjetas-container'>
       {formulario.map((item, index) => (
         <TarjetaItemCLasificacionCalidad
         key={index}

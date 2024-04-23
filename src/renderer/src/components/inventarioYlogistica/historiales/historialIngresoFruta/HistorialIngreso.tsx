@@ -1,102 +1,91 @@
 /* eslint-disable prettier/prettier */
-import React, { useState, useEffect, useContext } from 'react';
-import { format } from 'date-fns';
-import { themeContext } from '@renderer/App';
-import { lotesType } from '@renderer/types/lotesType';
+
+import { useEffect, useState } from "react";
+import TablaHistorialIngresoFruta from "./components/TablaHistorialIngresoFruta";
+import { lotesType } from "@renderer/types/lotesType";
+import useAppContext from "@renderer/hooks/useAppContext";
+import { requestLotes } from "./services/request";
+import FiltrosHistorialIngresoFruta from "./components/FiltrosHistorialIngresoFruta";
+import { IoIosArrowForward } from "react-icons/io";
+import { IoIosArrowBack } from "react-icons/io";
+import ModalModificarLote from "./components/ModalModificarLote";
 
 
 const HistorialIngresoFruta = (): JSX.Element => {
-  const [datos, setDatos] = useState<lotesType[]>([]);
-  const [busqueda, setBusqueda] = useState<string>('');
-  const theme = useContext(themeContext);
+  const { messageModal } = useAppContext();
+  const [ef1, setEf1] = useState<string>('')
+  const [data, setData] = useState<lotesType[]>()
+  const [dataOriginal, setDataOriginal] = useState<lotesType[]>()
+  const [page, setPage] = useState<number>(1);
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [loteSeleccionado, setLoteSeleccionado] = useState<lotesType>()
+  const [changeServer, setChangeServer] = useState<boolean>(false)
 
+  useEffect(() => { 
+    obtenerData() 
+    window.api.serverEmit('serverEmit', handleServerEmit)
+    // Función de limpieza
+    return () => {
+      window.api.removeServerEmit('serverEmit', handleServerEmit)
+    }
+  }, [page,changeServer])
   useEffect(() => {
-    const obtenerDatosIngresoFruta = async (): Promise<void> => {
-      try {
-        const request = {
-          data:{
-            query:{enf: { $regex: '^E', $options: 'i' }},
-            select : {},
-            populate:{
-              path: 'predio',
-              select: 'PREDIO ICA'
-            },
-            sort:{fechaIngreso: -1},
-            limit: 50,
-          },
-          collection:'lotes',
-          action: 'getLotes',
-          query: 'proceso'
-        };
-
-        const response = await window.api.server(request);
-
-        if (response.status === 200 && response.data) {
-          console.log('Datos de ingreso de fruta:', response.data);
-          setDatos(response.data); // Guardamos los datos en el estado
-        } else {
-          console.error('Error al obtener el ingreso de fruta:', response);
-        }
-      } catch (error) {
-        console.error('Error al realizar la petición:', error);
-      }
-    };
-
-    obtenerDatosIngresoFruta();
-  }, []);
-
-  const handleBuscar = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setBusqueda(e.target.value);
-  };
-
-  const datosFiltrados = datos.filter(item =>
-    Object.values(item).some(value =>
-      typeof value === 'string' && value.toLowerCase().includes(busqueda.toLowerCase())
-    )
-  );
-
+    if (ef1 === '') {
+      setData(dataOriginal)
+    } else {
+      const dataFilter = dataOriginal?.filter(item => item.enf?.startsWith(ef1.toUpperCase()))
+      setData(dataFilter)
+    }
+  }, [ef1])
+  const handleServerEmit = async (data): Promise<void> => {
+    if ( data.fn === "ingresoLote" ) {
+      setChangeServer(!changeServer)
+    }
+  }
+  const obtenerData = async (): Promise<void> => {
+    try {
+      const request = requestLotes(page)
+      const response = await window.api.server(request)
+      console.log("No entiendo de donde sale el otro log", response)
+      if (response.status !== 200)
+        throw new Error(response.message)
+      setData([...response.data])
+      setDataOriginal([...response.data])
+    } catch (e) {
+      if (e instanceof Error)
+        messageModal("error", e.message)
+    }
+  }
+  const handleModificar = ():void => {
+    setShowModal(!showModal)
+  }
   return (
-    <div className="w-full ">
-      <h2 className={`text-3xl font-semibold mb-4 ${theme === 'Dark' ? 'text-white' : 'text-black'}  text-lg font-semibold mb-4 text-center`}>HISTORIAL INGRESO DE FRUTA</h2>
-      <div className="mb-4 flex justify-center">
-        <input
-          type="text"
-          placeholder="Buscar..."
-          className="px-3 py-2 border border-gray-300 rounded-md w-64"
-          value={busqueda}
-          onChange={handleBuscar}
-        />
+    <div className="componentContainer">
+      <div className="navBar"></div>
+      <FiltrosHistorialIngresoFruta setEf1={setEf1} />
+      <TablaHistorialIngresoFruta 
+        setLoteSeleccionado={setLoteSeleccionado}
+        data={data} 
+        handleModificar={handleModificar}/>
+      <div className="volante-calidad-button-page-div">
+        <button
+          onClick={(): void => setPage(page - 1)}
+          disabled={page === 1}
+          className="volante-calidad-button-page">
+          {<IoIosArrowBack />}
+        </button>
+        {page}
+        <button
+          onClick={(): void => setPage(page + 1)}
+          className="volante-calidad-button-page">
+          {<IoIosArrowForward />}
+        </button>
       </div>
-      <div className="w-full text-[12px]">
-        <table className="table-auto w-full border-collapse border border-gray-300">
-          <thead className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'}`}>
-            <tr>
-              <th className="px-4 py-2 ">ID</th>
-              <th className="px-4 py-2 ">Nombre del Predio</th>
-              <th className="px-4 py-2 ">Fecha de Ingreso</th>
-              <th className="px-4 py-2 ">Canastillas</th>
-              <th className="px-4 py-2 ">Tipo de Fruta</th>
-              <th className="px-4 py-2 ">Observaciones</th>
-              <th className="px-4 py-2 ">Kilos</th>
-              <th className="px-4 py-2 ">Placa</th>
-            </tr>
-          </thead>
-          <tbody>
-            {datosFiltrados.map((item, index) => (
-              <tr key={index} className={`${index % 2 === 0 ? 'bg-gray-100' : 'bg-white'} ${theme === 'Dark' ? 'border-b border-white' : 'border-b border-gray-300'}`}>
-                <td className="border px-4 py-2">{item.enf}</td>
-                <td className="border px-4 py-2">{item.predio && item.predio.PREDIO}</td>
-                <td className="border px-4 py-2">{format(item.fechaIngreso ? new Date(item.fechaIngreso) : new Date(), 'dd/MM/yyyy')}</td>
-                <td className="border px-4 py-2">{item.canastillas}</td>
-                <td className="border px-4 py-2">{item.tipoFruta}</td>
-                <td className="border px-4 py-2">{item.observaciones}</td>
-                <td className="border px-4 py-2">{item.kilos}</td>
-                <td className="border px-4 py-2">{item.placa}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {showModal && 
+        <ModalModificarLote 
+          showModal={showModal}
+          loteSeleccionado={loteSeleccionado} 
+          handleModificar={handleModificar} />}
     </div>
   );
 };

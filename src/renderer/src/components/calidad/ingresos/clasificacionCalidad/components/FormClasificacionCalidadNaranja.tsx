@@ -13,10 +13,7 @@ export default function FormClasificacionCalidadNaranja(props: propsType): JSX.E
   const theme = useContext(themeContext)
   const formulario = useContext(formNaranjaContext)
   return (
-    <div
-      className={`flex flex-wrap m-4 rounded-lg p-4 justify-center items-center
-    ${theme === 'Dark' ? 'bg-gray-600' : 'bg-gray-200'}`}
-    >
+    <div className='ingresar-clasificacion-calidad-tarjetas-container'>
       {formulario.map((item, index) => (
         <TarjetaItemCLasificacionCalidad
           key={index}

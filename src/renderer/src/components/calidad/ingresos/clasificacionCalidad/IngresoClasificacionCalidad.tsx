@@ -5,6 +5,7 @@ import NavClasificacionCalidad from './utils/NavClasificacionCalidad'
 import { lotesType } from '@renderer/types/lotesType';
 import { requestlotes } from './functions/request';
 import useAppContext from '@renderer/hooks/useAppContext';
+import "./css/styles.css"
 
 export default function IngresoClasificacionCalidad(): JSX.Element {
   const {messageModal} = useAppContext();
@@ -41,7 +42,7 @@ export default function IngresoClasificacionCalidad(): JSX.Element {
   }
 
   return (
-    <div>
+    <div className='componentContainer'>
       <NavClasificacionCalidad lotesData={lotesData} setLote={setLote} />
       <TablaClasificacionCalidad lote={lote} /> 
     </div>

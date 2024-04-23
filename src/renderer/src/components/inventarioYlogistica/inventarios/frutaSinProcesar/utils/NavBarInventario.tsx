@@ -18,6 +18,7 @@ export default function NavBarInventario(props: propsType): JSX.Element {
         <input
           type="text"
           value={search}
+          placeholder='Buscar...'
           onChange={(e): void => handleText(e.target.value)}/>
     </div>
   )
