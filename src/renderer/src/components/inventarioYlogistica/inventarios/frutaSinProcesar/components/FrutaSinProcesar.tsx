@@ -9,6 +9,7 @@ import Directo from '../modals/Directo'
 import Desverdizado from '../modals/Desverdizado'
 import useAppContext from '@renderer/hooks/useAppContext'
 import { lotesType } from '@renderer/types/lotesType'
+import ModalModificarFrutaSinProcesar from './ModalModificarFrutaSinProcesar'
 
 type propsType = {
   filtro: string
@@ -41,6 +42,11 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
   const [showVaciarModal, setShowVaciarModal] = useState<boolean>(false)
   const [showDirectoModal, setShowDirectoModal] = useState<boolean>(false)
   const [showDesverdizadoModal, setShowDesverdizadoModal] = useState(false)
+  //para modificar un dato
+  const [loteSeleccionado, setLoteSeleccionado] = useState<lotesType>()
+  const [showModal, setShowModal] = useState<boolean>(false)
+
+
 
   const [table, dispatch] = useReducer(reducer, INITIAL_STATE)
 
@@ -52,7 +58,6 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
         await obtenerFruta()
       }
     }
-
     window.api.serverEmit('serverEmit', handleServerEmit)
 
     // Función de limpieza
@@ -60,8 +65,6 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
       window.api.removeServerEmit('serverEmit', handleServerEmit)
     }
   }, [])
-
-
   const obtenerFruta = async (): Promise<void> => {
     try {
       const frutaActual = await window.api.server(request)
@@ -106,6 +109,10 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
     setPropsModal(predios)
     setTitleTable("Lotes")
   }
+  //para modificar el dato
+  const handleModificar = (): void => {
+    setShowModal(!showModal)
+  }
   //
   useEffect(() => {
     dispatch({ type: 'filter', data: datosOriginales, filtro: props.filtro })
@@ -121,6 +128,8 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
         closeDesverdizado={closeDesverdizado}
       />
       <TableFrutaSinProcesar
+        handleModificar={handleModificar}
+        setLoteSeleccionado={setLoteSeleccionado}
         table={table}
         clickLote={clickLote}
         propsModal={propsModal}
@@ -149,6 +158,12 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
             propsModal={propsModal} />,
           document.body
         )}
+              {showModal && 
+        <ModalModificarFrutaSinProcesar 
+          showModal={showModal}  
+          loteSeleccionado={loteSeleccionado}
+          handleModificar={handleModificar}
+        />}
     </div>
   )
 }

@@ -1,49 +1,87 @@
 /* eslint-disable prettier/prettier */
 
+export const objetoLimon = {
+  oleocelosis: 'Oleocelosis',
+  frutaVerde: 'Fruta Verde',
+  herbicida: 'Daños Herbicida',
+  frutaMadura: 'Fruta Sobre Madura',
+  dannosMecanicos: 'Daños Mecanicos',
+  escama: 'Escama y Piojo Blanco',
+  acaro: 'Daños Acaro',
+  grillo: 'Mgrillo',
+  alsinoe: 'Elsinoe-Roña',
+  melanosis: 'Melanosis',
+  trips: 'Trips',
+  division: 'Division Celular',
+  piel: 'Piel Nodular',
+  fumagina: 'Fumagina',
+  wood: 'Wood Pocket',
+  sombra: 'Sombra',
+  mancha: 'Mancha Fantasma',
+  deshidratada: 'Deshidratada',
+  verdeManzana: 'Verde Manzana',
+  otrasPlagas: 'Otras plagas'
+};
 
-export const INITIAL_STATE_LIMON = [
-  { id: 'Oleocelosis', lavado: '', proceso: '', key: 'oleocelosis' },
-  { id: 'Fruta Verde', lavado: '', proceso: '', key: 'frutaVerde' },
-  { id: 'Daños Herbicida', lavado: '', proceso: '', key: 'herbicida' },
-  { id: 'Fruta Sobre Madura', lavado: '', proceso: '', key: 'frutaMadura' },
-  { id: 'Daños Mecanicos', lavado: '', proceso: '', key: 'dannosMecanicos' },
-  { id: 'Escama y Piojo Blanco', lavado: '', proceso: '', key: 'escama' },
-  { id: 'Daños Acaro', lavado: '', proceso: '', key: 'acaro' },
-  { id: 'Mgrillo', lavado: '', proceso: '', key: 'grillo' },
-  { id: 'Elsinoe-Roña', lavado: '', proceso: '', key: 'alsinoe' },
-  { id: 'Melanosis', lavado: '', proceso: '', key: 'melanosis' },
-  { id: 'Trips', lavado: '', proceso: '', key: 'trips' },
-  { id: 'Division Celular', lavado: '', proceso: '', key: 'division' },
-  { id: 'Piel Nodular', lavado: '', proceso: '', key: 'piel' },
-  { id: 'Fumagina', lavado: '', proceso: '', key: 'fumagina' },
-  { id: 'Wood Pocket', lavado: '', proceso: '', key: 'wood' },
-  { id: 'Sombra', lavado: '', proceso: '', key: 'sombra' },
-  { id: 'Mancha Fantasma', lavado: '', proceso: '', key: 'mancha' },
-  { id: 'Deshidratada', lavado: '', proceso: '', key: 'deshidratada' },
-  { id: 'Otras plagas', lavado: '', proceso: '', key: 'otrasPlagas' }
+export const objetoNaranja = {
+  oleocelosis: 'Oleocelosis',
+  frutaVerde: 'Fruta Verde',
+  herbicida: 'Daños Herbicida',
+  frutaMadura: 'Fruta Sobre Madura',
+  dannosMecanicos: 'Daños Mecanicos',
+  escama: 'Escama y Piojo Blanco',
+  acaro: 'Daños Acaro',
+  grillo: 'Mgrillo',
+  alsinoe: 'Elsinoe-Roña',
+  melanosis: 'Melanosis',
+  trips: 'Trips',
+  division: 'Division Celular',
+  piel: 'Piel Nodular',
+  fumagina: 'Fumagina',
+  antracnosis: 'Antracnosis',
+  frutaRajada: 'Fruta Rajada',
+  ombligona: 'Ombligona',
+  nutrientes: 'Nutrientes',
+  despezonada: 'Despezonada',
+  variegacion: 'Variegación',
+  otrasPlagas: 'Otras plagas'
+};
 
-]
 
-export const INITIAL_STATE_NARANJA= [
-  { id: 'Oleocelosis', lavado: '', proceso: '', key: 'oleocelosis' },
-  { id: 'Fruta Verde', lavado: '', proceso: '', key: 'frutaVerde' },
-  { id: 'Daños Herbicida', lavado: '', proceso: '', key: 'herbicida' },
-  { id: 'Fruta Sobre Madura', lavado: '', proceso: '', key: 'frutaMadura' },
-  { id: 'Daños Mecanicos', lavado: '', proceso: '', key: 'dannosMecanicos' },
-  { id: 'Escama y Piojo Blanco', lavado: '', proceso: '', key: 'escama' },
-  { id: 'Daños Acaro', lavado: '', proceso: '', key: 'acaro' },
-  { id: 'Mgrillo', lavado: '', proceso: '', key: 'grillo' },
-  { id: 'Elsinoe-Roña', lavado: '', proceso: '', key: 'alsinoe' },
-  { id: 'Melanosis', lavado: '', proceso: '', key: 'melanosis' },
-  { id: 'Trips', lavado: '', proceso: '', key: 'trips' },
-  { id: 'Division Celular', lavado: '', proceso: '', key: 'division' },
-  { id: 'Piel Nodular', lavado: '', proceso: '', key: 'piel' },
-  { id: 'Fumagina', lavado: '', proceso: '', key: 'fumagina' },
-  { id: 'Antracnosis', lavado: '', proceso: '', key: 'antracnosis' },
-  { id: 'Fruta Rajada', lavado: '', proceso: '', key: 'frutaRajada' },
-  { id: 'Ombligona', lavado: '', proceso: '', key: 'ombligona' },
-  { id: 'Nutrientes', lavado: '', proceso: '', key: 'nutrientes' },
-  { id: 'Despezonada', lavado: '', proceso: '', key: 'despezonada' },
-  { id: 'Variegación', lavado: '', proceso: '', key: 'variegacion' },
-  { id: 'Otras plagas', lavado: '', proceso: '', key: 'otrasPlagas' }
-]
+export const objetoLimonNaranja = {
+  oleocelosis: 0,
+  frutaVerde: 0,
+  herbicida: 0,
+  frutaMadura: 0,
+  dannosMecanicos: 0,
+  escama: 0,
+  acaro: 0,
+  grillo: 0,
+  alsinoe: 0,
+  melanosis: 0,
+  trips: 0,
+  division: 0,
+  piel: 0,
+  fumagina: 0,
+  wood: 0,
+  sombra: 0,
+  mancha: 0,
+  deshidratada: 0,
+  verdeManzana: 0,
+  otrasPlagas: 0,
+  antracnosis: 0,
+  frutaRajada: 0,
+  ombligona: 0,
+  nutrientes: 0,
+  despezonada: 0,
+  variegacion: 0
+};
+
+
+export const check_data_100 = (formState: {[key: string]: number}): boolean => {
+  console.log(formState)
+  const sum = Object.values(formState).reduce((acu: number, item: number) => acu += item, 0)
+  console.log(sum)
+  if(sum === 100) return true
+  else return false
+}

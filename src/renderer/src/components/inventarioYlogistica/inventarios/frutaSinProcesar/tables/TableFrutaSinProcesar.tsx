@@ -2,15 +2,22 @@
 import { format } from 'date-fns'
 import HeaderTableFurtaSinProcesar from '../utils/HeaderTableFurtaSinProcesar'
 import { lotesType } from '@renderer/types/lotesType'
+import { PiNotePencilDuotone } from "react-icons/pi";
+
 
 type propsType = {
   table: lotesType[]
   propsModal: lotesType
   clickLote: (e) => void
+  handleModificar: () => void
+  setLoteSeleccionado: (lote) => void
 }
 
 export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
-
+  const handleButton = (lote): void => {
+    props.handleModificar()
+    props.setLoteSeleccionado(lote)
+}
   const handleClick = (e): void => {
     props.clickLote(e);
   };
@@ -50,10 +57,13 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
               {lote.tipoFruta}
             </td>
             <td>
-              {lote.clasificacionCalidad }
+              {lote.clasificacionCalidad}
             </td>
             <td>
               {lote.observaciones}
+            </td>
+            <td>
+              <button style={{ color: "blue" }} onClick={(): void => handleButton(lote)} ><PiNotePencilDuotone /></button>
             </td>
           </tr>
         ))}

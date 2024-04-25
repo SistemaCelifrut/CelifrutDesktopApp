@@ -5,6 +5,8 @@ import TarjetaInvetarioDescartes from '../utils/TarjetaInvetarioDescartes'
 import BotonesInventarioDescartes from '../utils/BotonesInventarioDescartes'
 import { createPortal } from 'react-dom'
 import ModalConfirmarProcesoDescarte from '../modals/ModalConfirmarProcesoDescarte'
+import { lotesType } from '@renderer/types/lotesType'
+import ModalModificarInventarioDescarte from './ModalModificarInventarioDescarte'
 
 type propsType = {
   filtro: string
@@ -13,8 +15,8 @@ type propsType = {
 let enfObj = {}
 
 const request = {
-  data:{
-    query:{ 
+  data: {
+    query: {
       $or: [
         { "inventarioActual.descarteLavado.descarteGeneral": { $gt: 0 } },
         { "inventarioActual.descarteLavado.pareja": { $gt: 0 } },
@@ -25,14 +27,14 @@ const request = {
         { "inventarioActual.descarteEncerado.extra": { $gt: 0 } },
       ],
     },
-    select : {nombrePredio: 1,  tipoFruta: 1, inventarioActual:1, enf:1},
-    populate:{
+    select: { nombrePredio: 1, tipoFruta: 1, inventarioActual: 1, enf: 1 },
+    populate: {
       path: 'predio',
       select: 'PREDIO'
     },
-    sort:{fechaIngreso: -1}
+    sort: { fechaIngreso: -1 }
   },
-  collection:'lotes',
+  collection: 'lotes',
   action: 'getLotes',
   query: 'proceso',
 };
@@ -45,6 +47,10 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
   const [modal, setModal] = useState<boolean>(false)
   const [propsModal, setPropsModal] = useState({ action: '', data: {} })
   const [respawn, setRespawn] = useState<boolean>(false)
+  //modal modificar descarte
+  const [loteSeleccionado, setLoteSeleccionado] = useState<lotesType>()
+  const [showModal, setShowModal] = useState<boolean>(false)
+
 
   const [table, dispatch] = useReducer(reducer, INITIAL_STATE)
 
@@ -86,7 +92,7 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
   const seleccionarItems = (e): void => {
     const id = e.target.value
     const [enf, descarte, tipoDescarte] = e.target.value.split('/')
-      const lote = table.find((lote) => enf === lote._id)
+    const lote = table.find((lote) => enf === lote._id)
     if (e.target.checked && lote) {
       enfObj[id] = lote.inventarioActual && lote.inventarioActual[descarte][tipoDescarte]
     } else if (!e.target.checked && lote) {
@@ -121,17 +127,21 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
     }
   }
 
-  const unCheck = (data:boolean): void => {
+  const unCheck = (data: boolean): void => {
     setRespawn(data)
   }
 
-  const reset = (): void =>{
+  const reset = (): void => {
     enfObj = {}
   }
 
   useEffect(() => {
     dispatch({ type: 'filter', data: datosOriginales, filtro: props.filtro })
   }, [props.filtro])
+
+  const handleModificar = (): void => {
+    setShowModal(!showModal)
+  }
 
   return (
     <div className='componentContainer'>
@@ -146,6 +156,8 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
           <div key={lote._id}>
             <TarjetaInvetarioDescartes
               lote={lote}
+              setLoteSeleccionado={setLoteSeleccionado}
+              handleModificar={handleModificar}
               seleccionarItems={seleccionarItems}
               seleccionarVariosItems={seleccionarVariosItems}
               respawn={respawn}
@@ -163,6 +175,12 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
           />,
           document.body
         )}
+      {showModal &&
+        <ModalModificarInventarioDescarte
+          showModal={showModal}
+          loteSeleccionado={loteSeleccionado}
+          handleModificar={handleModificar}
+        />}
     </div>
   )
 }

@@ -41,6 +41,7 @@ export const request_predios = {
 }
 
 export const request_guardar_cambios = (lote, formData, user): object => {
+    const promedio = Number(formData.kilos) / Number(formData.canastillas);
     return {
         query: 'proceso',
         collection: 'lotes',
@@ -57,7 +58,8 @@ export const request_guardar_cambios = (lote, formData, user): object => {
                 fechaIngreso: formData.fechaIngreso,
                 tipoFruta: formData.tipoFruta,
                 observaciones: formData.observaciones,
-                placa: formData.placa
+                placa: formData.placa,
+                promedio:promedio
             }
         }
     }

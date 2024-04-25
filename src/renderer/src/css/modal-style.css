@@ -16,7 +16,8 @@
     width: auto;
     height: auto;
     border-radius: 18px;
-    overflow: hidden;
+    overflow: auto;
+    max-height: 80%;
 
 }
 
@@ -26,6 +27,7 @@
     color: white;
     font-weight: bold;
     font-size: 18px;
+
 }
 
 .modal-header-danger{
@@ -52,6 +54,8 @@
     align-items: center;
     padding: 12px;
     gap: 10px;
+
+
 }
 
 .modal-container-body p{

@@ -69,6 +69,7 @@ type inventarioActualType = {
         pareja: number
         balin: number
         extra: number
+        suelo: number
     }
     descarteLavado?: {
         descarteGeneral: number

@@ -2,12 +2,15 @@
 import { lotesType } from '@renderer/types/lotesType'
 import { llavesVisualizar } from '../function/llaves'
 import { useEffect } from 'react'
+import { PiNotePencilDuotone } from "react-icons/pi";
 
 type propsType = {
   lote: lotesType
   seleccionarItems: (e: unknown) => void
   seleccionarVariosItems: (items: unknown) => void
   respawn: boolean
+  handleModificar: () => void
+  setLoteSeleccionado: (lote) => void
 }
 
 export default function TarjetaInvetarioDescartes(props: propsType): JSX.Element {
@@ -32,6 +35,11 @@ export default function TarjetaInvetarioDescartes(props: propsType): JSX.Element
         ;(i as HTMLInputElement).checked = false
       }
     }, [props.respawn])
+
+    const handleButton= (lote): void => {
+      props.handleModificar()
+      props.setLoteSeleccionado(lote)
+  }
 
     return (
       <div className="inventario-descartes-tarjeta-container">
@@ -73,7 +81,7 @@ export default function TarjetaInvetarioDescartes(props: propsType): JSX.Element
                     <div  key={item}>
                       <p>
                         <span> {llavesVisualizar[item]}:</span>{' '}
-                        {props.lote.inventarioActual && props.lote.inventarioActual.descarteEncerado && props.lote.inventarioActual.descarteEncerado[item].toLocaleString('es-ES')} Kg
+                        {props.lote && props.lote.inventarioActual && props.lote.inventarioActual.descarteEncerado ? props.lote.inventarioActual.descarteEncerado[item].toLocaleString('es-ES') : 0} Kg
                       </p>
                       <input
                         type="checkbox"
@@ -87,7 +95,11 @@ export default function TarjetaInvetarioDescartes(props: propsType): JSX.Element
               </div>
             </div>
           </div>
+          <td>
+            <button style={{ color: "blue" }} onClick={(): void => handleButton(props.lote)} ><PiNotePencilDuotone /></button>
+          </td>
         </div>
+
       </div>
     )
   } else {
