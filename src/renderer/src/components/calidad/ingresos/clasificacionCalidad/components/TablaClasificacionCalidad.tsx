@@ -20,7 +20,7 @@ export const formLimonContext = createContext(INITIAL_STATE_LIMON)
 export const formNaranjaContext = createContext(INITIAL_STATE_NARANJA)
 
 export default function TablaClasificacionCalidad(props: propsType): JSX.Element {
-  const {theme, messageModal} = useAppContext();
+  const {messageModal} = useAppContext();
   const [totalPorcentaje, setTotalPorcentaje] = useState(0)
   const [formularioLimon, dispatchLimon] = useReducer(reducerLimon, INITIAL_STATE_LIMON)
   const [formularioNaranja, dispatchNaranja] = useReducer(reducerNaranja, INITIAL_STATE_NARANJA)

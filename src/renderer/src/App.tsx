@@ -46,6 +46,9 @@ import ActivarFunciones from './components/sistema/activarFunciones/ActivarFunci
 import IngresoSistemaDescartes from './components/sistema/ingresarDescartes/IngresoSistemaDescartes'
 import Operario from './components/gestionDeCuentas/operarios/Operario'
 import ProgramacionMula from './components/transporte/formulatioInspecciones/programacionMulas/ProgramacionMula'
+import DescarteLavadoSistema from './components/sistema/descarteLavado/DescarteLavadoSistema'
+import DescarteEnceradoSistema from './components/sistema/descarteEncerado/DescarteEnceradoSistema'
+import SistemaExportacionLotes from './components/sistema/exportacionLotesData/SistemaExportacionLotes'
 
 type OpenModalFunction = (messageType: string, message: string) => void;
 type MyContextType = {
@@ -213,6 +216,9 @@ function App(): JSX.Element {
                               {section === 'Sistema//Proceso//Habilitar predios proceso' && <HabilitarPrediosProceso />}
                               {section === 'Sistema//Proceso//Funciones' && <ActivarFunciones />}
                               {section === 'Sistema//Proceso//Ingreso descartes' && <IngresoSistemaDescartes />}
+                              {section === 'Sistema//Proceso//Descarte lavado' && <DescarteLavadoSistema />}
+                              {section === 'Sistema//Proceso//Descarte encerado' && <DescarteEnceradoSistema />}
+                              {section === 'Sistema//Proceso//Exportación lotes' && <SistemaExportacionLotes />}
 
                             </div>
                           </div>
