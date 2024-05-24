@@ -4,9 +4,12 @@ import { filtroColumnasType } from "../type/types"
 import { format } from "date-fns"
 import { KEYS_FILTROS_COL } from "../functions/constantes"
 import { lotesType } from "@renderer/types/lotesType"
+import { es } from 'date-fns/locale';
+import { numeroContenedorType } from "../functions/request"
 
 type propsType = {
   data: lotesType[]
+  numeroContenedor: numeroContenedorType | undefined
   columnVisibility: filtroColumnasType
 }
 export default function TableInfoLotes(props: propsType): JSX.Element {
@@ -46,7 +49,8 @@ export default function TableInfoLotes(props: propsType): JSX.Element {
             <tr className={`${index % 2 === 0 ? 'fondo-par' : 'fondo-impar'}`} key={index}>
               <td>{lote.predio?.PREDIO ? lote.predio.PREDIO : lote.predio?.PREDIO}</td>
               <td>{lote.enf}</td>
-              <td>{format(lote.fechaIngreso ? new Date(lote.fechaIngreso) : new Date(), 'dd-MM-yyyy')}</td>
+              <td>{format(lote.fechaIngreso ? new Date(lote.fechaIngreso) : new Date(), 'dd/MM/yyyy HH:mm', { locale: es })}</td>
+
               <td>{lote.tipoFruta}</td>
               {Object.keys(props.columnVisibility).map((item, index2) => {
                 if (props.columnVisibility[item]) {
@@ -68,10 +72,14 @@ export default function TableInfoLotes(props: propsType): JSX.Element {
                     )
                   } else if( item === 'contenedores'){
                    
-                      return <td 
-                      key={lote + item} >
-                       {lote.contenedores?.reduce((acu, cont) => acu += cont + ' ', '')}
-                      </td>
+                      return <td key={lote + item} >
+                      {lote.contenedores?.reduce((acu, cont) => {
+                          if (props.numeroContenedor) {
+                              acu +=  props.numeroContenedor[cont] + ' - ';
+                          }
+                          return acu;
+                      }, '')}
+                  </td>
                     
                   } else if(item === 'exportacion'){
                     return (

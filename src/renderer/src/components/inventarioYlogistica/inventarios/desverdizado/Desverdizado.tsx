@@ -15,6 +15,7 @@ export default function Desverdizado(): JSX.Element {
   return (
     <div className='componentContainer'>
       <MemoizedNavBar handleFilter={handleFilter} />
+      <h2>Fruta desverdizando</h2>
         <InventarioDesverdizado filtro={filtro} />
     </div>
   )

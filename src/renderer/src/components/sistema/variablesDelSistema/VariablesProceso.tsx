@@ -46,6 +46,7 @@ export default function VariablesProceso(): JSX.Element {
 
     return (
         <div className="p-5 flex flex-col justify-start w-full">
+            <h2>Variables del sistema</h2>
             <div className={`border rounded-lg overflow-hidden shadow-lg ${theme === 'Dark' ? 'border-gray-600 bg-gray-300' : 'border-gray-300 bg-white'}`}>
                 <table className="w-full border-collapse">
                     <tbody className={`${theme === 'Dark' ? 'bg-slate-700 text-white' : 'bg-white'}`}>

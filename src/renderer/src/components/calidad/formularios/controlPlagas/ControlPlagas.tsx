@@ -19,6 +19,7 @@ export default function ControlPlagas(): JSX.Element {
                     </button>
                 }
             </div>
+            <h2>Historial control de plagas</h2>
             {seccion === "" &&
                 <div className="control-plagas-menu-div">
                     <button onClick={(): void => setSeccion("control")}>Control</button>

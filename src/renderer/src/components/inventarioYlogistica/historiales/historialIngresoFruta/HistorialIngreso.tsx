@@ -62,6 +62,7 @@ const HistorialIngresoFruta = (): JSX.Element => {
   return (
     <div className="componentContainer">
       <div className="navBar"></div>
+      <h2>Historial ingreso fruta</h2>
       <FiltrosHistorialIngresoFruta setEf1={setEf1} />
       <TablaHistorialIngresoFruta 
         setLoteSeleccionado={setLoteSeleccionado}

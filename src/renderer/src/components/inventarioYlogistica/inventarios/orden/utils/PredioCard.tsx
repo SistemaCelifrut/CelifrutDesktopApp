@@ -4,6 +4,7 @@ import { lotesType } from "@renderer/types/lotesType"
 import { format } from "date-fns"
 import { useContext } from "react";
 import { BsArrowRightSquareFill } from "react-icons/bs";
+import { es } from 'date-fns/locale';
 
 type propsType = {
     lote: lotesType
@@ -18,7 +19,7 @@ export default function PredioCard(props: propsType): JSX.Element {
                 <div className="orden-vaciado-tarjeta-nombre-predio-div">
                     <p>{props.lote.enf}</p>
                     <p>{props.lote.predio?.PREDIO}</p>
-                    <p>{format(props.lote.fechaIngreso ? new Date(props.lote.fechaIngreso) : new Date(), 'dd/MM/yyyy')}</p>
+                    <p>{format(props.lote.fechaIngreso ? new Date(props.lote.fechaIngreso) : new Date(), 'dd/MM/yyyy HH:mm', { locale: es })}</p>
                 </div>
                 <div className="orden-vaciado-tarjeta-nombre-predio-div">
                     <p>{props.lote.tipoFruta}</p>

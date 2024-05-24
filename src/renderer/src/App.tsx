@@ -49,6 +49,7 @@ import ProgramacionMula from './components/transporte/formulatioInspecciones/pro
 import DescarteLavadoSistema from './components/sistema/descarteLavado/DescarteLavadoSistema'
 import DescarteEnceradoSistema from './components/sistema/descarteEncerado/DescarteEnceradoSistema'
 import SistemaExportacionLotes from './components/sistema/exportacionLotesData/SistemaExportacionLotes'
+import ModificarSeriales from './components/sistema/modificarSeriales/ModificarSeriales'
 
 type OpenModalFunction = (messageType: string, message: string) => void;
 type MyContextType = {
@@ -219,6 +220,7 @@ function App(): JSX.Element {
                               {section === 'Sistema//Proceso//Descarte lavado' && <DescarteLavadoSistema />}
                               {section === 'Sistema//Proceso//Descarte encerado' && <DescarteEnceradoSistema />}
                               {section === 'Sistema//Proceso//Exportación lotes' && <SistemaExportacionLotes />}
+                              {section === 'Sistema//Proceso//Modificar serial lotes' && <ModificarSeriales />}
 
                             </div>
                           </div>

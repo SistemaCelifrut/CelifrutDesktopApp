@@ -14,7 +14,7 @@ import PromediosProceso from "../utils/PromediosProceso"
 import { crear_filtro } from "../functions/filtroProceso"
 import { lotesType } from "@renderer/types/lotesType"
 import useAppContext from "@renderer/hooks/useAppContext"
-import { requestLotes, requestProveedor } from "../functions/request"
+import { numeroContenedorType, requestContenedores, requestLotes, requestProveedor } from "../functions/request"
 import TotalesProceso from "../utils/TotalesProceso"
 
 export default function ProcesoData(): JSX.Element {
@@ -32,6 +32,7 @@ export default function ProcesoData(): JSX.Element {
     const [dataOriginal, setDataOriginal] = useState<lotesType[]>([])
     const [filtroPredio, setFiltroPredio] = useState<string>('');
     const [cantidad, setCantidad] = useState<number>(50);
+    const [numeroContenedor, setNumeroContenedor] = useState<numeroContenedorType>()
 
     useEffect(() => {
         obtenerData()
@@ -66,6 +67,24 @@ export default function ProcesoData(): JSX.Element {
             const filtro_request = crear_filtro(filtro);
             const request = requestLotes(filtro_request, cantidad)
             const datosLotes = await window.api.server(request);
+            if (datosLotes.status !== 200)
+                throw new Error(datosLotes.message)
+            //se vana obtener los datos para traer los contenedores
+            const contenedores: string[] = []
+            datosLotes.data.forEach(element => {
+                element.contenedores.forEach(contenedor => contenedores.push(contenedor))
+            })
+            const contenedoresSet = new Set(contenedores)
+            const cont = [...contenedoresSet]
+            const requestC = requestContenedores(cont)
+            const responseContenedores = await window.api.server(requestC)
+            const objCont = {}
+            cont.forEach(element => {
+                const contenedorEncontrado = responseContenedores.data.find(item => item._id === element)
+                if(contenedorEncontrado)
+                    objCont[element] = contenedorEncontrado.numeroContenedor
+            });
+            setNumeroContenedor(objCont)
             setDataOriginal(datosLotes.data)
             if (ef1 === '') {
                 setData(datosLotes.data)
@@ -160,7 +179,7 @@ export default function ProcesoData(): JSX.Element {
             </div>
 
             <div>
-                <TableInfoLotes data={data} columnVisibility={columnVisibility} />
+                <TableInfoLotes data={data} numeroContenedor={numeroContenedor} columnVisibility={columnVisibility} />
             </div>
         </div>
     )

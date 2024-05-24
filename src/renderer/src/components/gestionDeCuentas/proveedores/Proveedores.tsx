@@ -74,7 +74,7 @@ export default function Proveedores(): JSX.Element {
     return (
             <div className="componentContainer">
                 <div className="navBar"></div>
-                <h2>Cuentas</h2>
+                <h2>Proveedores</h2>
                 <hr />
                 <div className='filtroContainer'>
                     <div className='div-filter-actions'>

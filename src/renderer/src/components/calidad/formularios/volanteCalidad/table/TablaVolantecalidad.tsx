@@ -2,6 +2,7 @@
 
 import { format } from "date-fns"
 import { registrosType } from "../type/type"
+import { es } from 'date-fns/locale';
 
 type propsType = {
     data: registrosType[]
@@ -37,7 +38,7 @@ export default function TablaVolantecalidad(props: propsType): JSX.Element {
                             {item.numero_defectos}
                         </td>
                         <td>
-                            {format(item.fecha_ingreso ? new Date(item.fecha_ingreso) : new Date(), 'dd-MM-yy')}
+                            {format(item.fecha_ingreso ? new Date(item.fecha_ingreso) : new Date(), 'dd/MM/yyyy HH:mm', { locale: es })}
                         </td>
                     </tr>
                     ))}

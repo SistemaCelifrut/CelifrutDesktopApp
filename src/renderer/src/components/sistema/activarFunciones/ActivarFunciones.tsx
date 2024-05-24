@@ -45,6 +45,7 @@ export default function ActivarFunciones(): JSX.Element {
     return (
         <div className="componentContainer">
             <div className='navBar'></div>
+            <h2>Funciones</h2>
             <div className='funciones-div-tipoProceso'>
                 <h3>Cerrar contenedor</h3>
                 <select

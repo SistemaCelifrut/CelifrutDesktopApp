@@ -11,6 +11,8 @@ import { KEYS_ELEMENTOS } from "./functions/filtroHigienePersonal";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
 import FiltrosHigienePersonal from "./components/FiltrosHigienePersonal";
+import { es } from 'date-fns/locale';
+
 
 export default function HigienePersonal(): JSX.Element {
     const { messageModal } = useAppContext();
@@ -54,6 +56,7 @@ export default function HigienePersonal(): JSX.Element {
     return (
         <div className='componentContainer'>
             <div className="navBar"></div>
+            <h2>Higiene personal</h2>
             <FiltrosHigienePersonal
                 setFechaInicio={setFechaInicio}
                 setFechaFin={setFechaFin} 
@@ -91,7 +94,7 @@ export default function HigienePersonal(): JSX.Element {
                                 })}
                             </td>
                             <td>
-                                {format(new Date(item.fecha_ingreso),'dd-MM-yy')}
+                                {format(new Date(item.fecha_ingreso),'dd/MM/yyyy HH:mm', { locale: es })}
                             </td>
                         </tr>
                     ))}

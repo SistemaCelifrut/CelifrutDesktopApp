@@ -16,6 +16,7 @@ export default function LimpiezaPostCosecha(): JSX.Element {
                     </button>
                 }
             </div>
+            <h2>Limpieza mensual</h2>
             {seccion === "" &&
                 <div className="control-plagas-menu-div">
                     <button onClick={(): void => setSeccion("recepcion")}>Área recepcion</button>

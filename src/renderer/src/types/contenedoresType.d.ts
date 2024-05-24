@@ -32,6 +32,7 @@ export type infoContendorType = {
     fechaCreacion?: string
     fechaInicio?: string
     fechaEstimadaCargue?: string
+    ultimaModificacion?: string
     tipoFruta?: string
     tipoEmpaque?: string
     tipoCaja?: string[]

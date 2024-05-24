@@ -9,7 +9,7 @@
 }
 
 .table-main thead{
-    background-color: rgb(194, 248, 214);
+    background-color: var(--color-Celifrut);
 }
 
 .table-main thead tr{

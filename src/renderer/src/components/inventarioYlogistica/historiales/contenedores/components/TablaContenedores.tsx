@@ -11,6 +11,7 @@ import TablaInspeccionMula from "./TablaInspeccionMula";
 import { GrDocumentMissing } from "react-icons/gr";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { es } from 'date-fns/locale';
 
 type propsType = {
     data: contenedoresType[]
@@ -49,7 +50,7 @@ export default function TablaContenedores(props: propsType): JSX.Element {
                             <td>
                                 {format(contenedor.infoContenedor?.fechaCreacion ?
                                     new Date(contenedor.infoContenedor?.fechaCreacion) :
-                                    new Date(), 'dd-MM-yy')}
+                                    new Date(), 'dd/MM/yyyy HH:mm', { locale: es })}
                             </td>
                             <td onClick={(): void => handleClick("listaEmpaque", contenedor._id)}>
                                 <div>

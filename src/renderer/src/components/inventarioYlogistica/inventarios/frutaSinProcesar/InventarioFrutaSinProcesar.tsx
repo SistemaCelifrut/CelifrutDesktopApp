@@ -14,6 +14,7 @@ export default function InventarioFrutaSinProcesar(): JSX.Element {
   return (
     <div className='componentContainer'>
       <NavBarInventario handleFilter={handleFilter} />
+      <h2>Fruta sin procesar</h2>
       <FrutaSinProcesar filtro={filtro}  />
     </div>
   )

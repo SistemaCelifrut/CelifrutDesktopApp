@@ -2,6 +2,7 @@
 import { lotesType } from "@renderer/types/lotesType"
 import { format } from "date-fns"
 import { PiNotePencilDuotone } from "react-icons/pi";
+import { es } from 'date-fns/locale';
 
 type propsType = {
     data: lotesType[] | undefined
@@ -31,7 +32,7 @@ export default function TablaHistorialIngresoFruta(props:propsType): JSX.Element
                         <td>{lote.predio?.PREDIO}</td>
                         <td>{lote.canastillas}</td>
                         <td>{lote.kilos?.toLocaleString('es-ES')}</td>
-                        <td>{format(lote.fechaIngreso ? new Date(lote.fechaIngreso) : new Date(), 'dd-MM-yy')}</td>
+                        <td>{format(lote.fechaIngreso ? new Date(lote.fechaIngreso) : new Date(), 'dd/MM/yyyy HH:mm', { locale: es })}</td>
                         <td>{lote.tipoFruta}</td>
                         <td>{lote.observaciones}</td>
                         <td>{lote.placa}</td>

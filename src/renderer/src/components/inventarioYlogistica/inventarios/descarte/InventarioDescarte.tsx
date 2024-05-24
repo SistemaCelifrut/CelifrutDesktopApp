@@ -14,6 +14,7 @@ export default function InventarioDescarte(): JSX.Element {
   return (
     <div className='componentContainer'>
       <NavBarDescartes handleFilter={handleFilter} />
+      <h2>Descarte inventario</h2>
       <InventarioDescartes filtro={filtro} />
     </div>
   )

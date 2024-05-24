@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import PrincipalGeneral from '../functions/PrincipalGeneral'
 import { contenedoresType } from '@renderer/types/contenedoresType'
 import "../css/table.css"
+import { es } from 'date-fns/locale';
+import { format } from 'date-fns';
 
 type propsType = {
   contenedor: contenedoresType | undefined
@@ -40,6 +42,12 @@ export default function TablePrincipalGeneral(props: propsType): JSX.Element {
   return (
     <div className='listaEmpaque-table-container'>
       <h3>Resumen</h3>
+      {props.contenedor?.infoContenedor?.ultimaModificacion && 
+        <p>Última vez modificado. {
+          format( props.contenedor?.infoContenedor?.ultimaModificacion ? 
+            new Date(props.contenedor?.infoContenedor?.ultimaModificacion) : new Date(), 'dd/MM/yyyy HH:mm', { locale: es })  
+        }</p>
+      }
       <hr />
       <h3>Total</h3>
       <div className='listaEmpaque-table-containter-tipo'>

@@ -9,6 +9,7 @@ import { FcCancel } from 'react-icons/fc'
 import { format } from "date-fns";
 import { limpiezaMensualType } from "../types/limpiezaMensual";
 import { keys_limpieza_mensual_carton, keys_limpieza_mensual_cuartosFrios, keys_limpieza_mensual_lavado, keys_limpieza_mensual_pasillo, keys_limpieza_mensual_produccion, keys_limpieza_mensual_recepcion, keys_limpieza_mensual_social } from "../functions/LimpiezaMensual";
+import { es } from 'date-fns/locale';
 
 type propsType = {
     area: string
@@ -113,7 +114,7 @@ export default function TablaLimpiezaMensual(props: propsType): JSX.Element {
                             <td>{objetoElementos[item.elemento]}</td>
                             <td><div>{item.cumple ? <FcOk /> : <FcCancel />}</div></td>
                             <td>{item.observaciones}</td>
-                            <td>{format(new Date(item.fecha_ingreso), 'dd-MM-yyyy')}</td>
+                            <td>{format(new Date(item.fecha_ingreso), 'dd/MM/yyyy HH:mm', { locale: es })}</td>
                         </tr>
                     ))}
                 </tbody>

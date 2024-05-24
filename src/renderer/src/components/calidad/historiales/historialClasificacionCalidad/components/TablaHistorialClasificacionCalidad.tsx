@@ -5,6 +5,7 @@ import { format } from "date-fns"
 import "../css/styles.css"
 import { PiNotePencilDuotone } from "react-icons/pi";
 import { objetoLimon, objetoNaranja } from "../functions/reduce";
+import { es } from 'date-fns/locale';
 
 
 type propsType = {
@@ -50,13 +51,13 @@ export default function TablaHistorialClasificacionCalidad(props: propsType): JS
                                     return (
                                         <div key={lote._id + item} className="historial-clasificacion-calidad-elementos-div">
                                             <h3>{objeto[item]}</h3>
-                                            <h4>{lote.calidad?.clasificacionCalidad[item]}</h4>
+                                            <h4>{lote.calidad?.clasificacionCalidad[item]}%</h4>
                                         </div>
                                     )
                                 } else { return null }
                             })}</td>
                         <td>{format(lote.calidad?.clasificacionCalidad?.fecha ?
-                            new Date(lote.calidad?.clasificacionCalidad?.fecha) : new Date(), 'dd-MM-yy')}</td>
+                            new Date(lote.calidad?.clasificacionCalidad?.fecha) : new Date(), 'dd/MM/yyyy HH:mm', { locale: es })}</td>
                         <td>
                             <button style={{ color: "blue" }} onClick={(): void => handleButton(lote)} ><PiNotePencilDuotone /></button>
                         </td>

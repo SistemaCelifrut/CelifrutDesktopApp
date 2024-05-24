@@ -9,6 +9,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { elemento_control_plagas_control } from "../functions/llavesControlDePlagas";
 import { FcOk } from 'react-icons/fc'
 import { FcCancel } from 'react-icons/fc'
+import { es } from 'date-fns/locale';
 
 export default function TableControlPlagasControl(): JSX.Element {
     const { messageModal } = useAppContext();
@@ -45,6 +46,8 @@ export default function TableControlPlagasControl(): JSX.Element {
     }
     return (
         <div className="componentContainer">
+                        <hr />
+        <h3>Control</h3>
             <div className="filtroContainer">
                 <label>
                     <p>Responsable</p>
@@ -84,7 +87,7 @@ export default function TableControlPlagasControl(): JSX.Element {
                             <td><div>{item.cumple ? <FcOk /> : <FcCancel />}</div></td>
                             <td>{item.observaciones}</td>
                             <td>{item.acciones}</td>
-                            <td>{format(new Date(item.fecha_creacion), 'dd-MM-yyyy')}</td>
+                            <td>{format(new Date(item.fecha_creacion), 'dd/MM/yyyy HH:mm', { locale: es })}</td>
                         </tr>
                     ))}
                 </tbody>

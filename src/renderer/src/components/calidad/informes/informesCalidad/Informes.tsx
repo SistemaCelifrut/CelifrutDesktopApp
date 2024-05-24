@@ -10,13 +10,14 @@ import { GrLinkNext } from "react-icons/gr";
 import { GrLinkPrevious } from "react-icons/gr";
 import { lotesType } from "@renderer/types/lotesType";
 import useAppContext from "@renderer/hooks/useAppContext";
-import { request } from "./functions/request";
 import "@renderer/css/components.css"
 import "@renderer/css/main.css"
 import "@renderer/css/table.css"
 import "./css/informesCalidad.css"
 import { headers } from "./functions/constants";
 import { format } from "date-fns";
+import { es } from 'date-fns/locale';
+import { requestObject } from "./functions/request";
 
 export default function Informes(): JSX.Element {
   const { messageModal } = useAppContext();
@@ -25,10 +26,12 @@ export default function Informes(): JSX.Element {
   const [datos, setDatos] = useState<lotesType[]>([]);
   const [datosFiltrados, setDatosFiltrados] = useState<lotesType[]>([]);
   const [filtro, setFiltro] = useState('');
-  const [countPage, setCountPage] = useState<number>(0);
+  const [countPage, setCountPage] = useState<number>(1);
 
   const obtenerDatosDelServidor = async (): Promise<void> => {
     try {
+      const request = requestObject(countPage)
+      console.log(request)
       const response = await window.api.server(request);
       if (response.status !== 200) {
         throw new Error(response.message);
@@ -99,6 +102,7 @@ export default function Informes(): JSX.Element {
           />
         </div>
       </div>
+      <h2>Informe proveedor</h2>
       <table className="table-main">
         <thead>
           <tr>
@@ -115,15 +119,17 @@ export default function Informes(): JSX.Element {
               </td>
               <td>{item.predio && item.predio.PREDIO}</td>
               <td>{item.tipoFruta}</td>
-              <td>{format(item.fechaIngreso ? new Date(item.fechaIngreso) : new Date(), 'dd-MM-yy')}</td>
+              <td>{format(item.fechaIngreso ? new Date(item.fechaIngreso) : new Date(), 'dd/MM/yyyy HH:mm', { locale: es })}</td>
               <td>
                 <div>
-                  {item.calidad && Object.prototype.hasOwnProperty.call(item.calidad, 'calidadInterna') ? <FcOk /> : <FcCancel />}
+                  {item.calidad && Object.prototype.hasOwnProperty.call(item.calidad, 'calidadInterna') ? 
+                  format(item.calidad.calidadInterna?.fecha ? new Date(item.calidad.calidadInterna?.fecha) : new Date(), 'dd/MM/yyyy HH:mm', { locale: es }): <FcCancel />}
                 </div>
               </td>
               <td>
                 <div>
-                  {item.calidad && Object.prototype.hasOwnProperty.call(item.calidad, 'clasificacionCalidad') ? <FcOk /> : <FcCancel />}
+                  {item.calidad && Object.prototype.hasOwnProperty.call(item.calidad, 'clasificacionCalidad') ? 
+                  format(item.calidad.clasificacionCalidad?.fecha ? new Date(item.calidad.clasificacionCalidad?.fecha) : new Date(), 'dd/MM/yyyy HH:mm', { locale: es }) : <FcCancel />}
                 </div>
               </td>
               <td >
@@ -158,7 +164,7 @@ export default function Informes(): JSX.Element {
           <button onClick={(): void => setCountPage(countPage - 1)}>
             <GrLinkPrevious />
           </button>}
-        {countPage === 0 ? null : countPage + 1}
+        {countPage === 0 ? null : countPage}
         <button onClick={(): void => setCountPage(countPage + 1)}>
             <GrLinkNext />
         </button>

@@ -8,6 +8,7 @@ import { useState } from 'react'
 import { llavesVisualizar } from '../function/llaves'
 import { RiArrowDropDownFill } from "react-icons/ri";
 import { RiArrowDropUpFill } from "react-icons/ri";
+import { es } from 'date-fns/locale';
 
 type propsType = {
   theme: string
@@ -36,7 +37,7 @@ export default function TarjetaHistorialDescartes(props: propsType): JSX.Element
                 Fecha:
               </h3>
               <h4>
-                {format(new Date(props.lote.fecha), 'dd-MM-yyyy')}
+                {format(new Date(props.lote.fecha), 'dd/MM/yyyy HH:mm', { locale: es })}
               </h4>
             </div>
             <div>

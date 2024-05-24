@@ -15,6 +15,7 @@ export default function HistorialDescarte(): JSX.Element {
   return (
     <div className="componentContainer">
       <NavBarDescartes handleFilter={handleFilter} />
+      <h2>Historial salida descarte</h2>
       <ComponentHistorialDescarte filtro={filtro} />
     </div>
   )

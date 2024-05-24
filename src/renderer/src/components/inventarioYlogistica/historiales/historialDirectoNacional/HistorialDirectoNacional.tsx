@@ -25,7 +25,7 @@ const request = {
 
 export default function HistorialDirectoNacional(): JSX.Element {
   const [datosOriginales, setDatosOriginales] = useState([])
-  const [titleTable, setTitleTable] = useState('Lotes Procesados')
+  const [titleTable, setTitleTable] = useState('Historial directo nacional')
   const [showModal, setShowModal] = useState<boolean>(false)
   const [propsModal, setPropsModal] = useState<historialLotesType>(documentoInit)
   const [showModificar, setShowModificar] = useState<boolean>(false)

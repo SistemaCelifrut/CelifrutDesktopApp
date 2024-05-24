@@ -8,6 +8,8 @@ import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
 import { FcOk } from 'react-icons/fc'
 import { FcCancel } from 'react-icons/fc'
+import { es } from 'date-fns/locale';
+
 
 export default function TablaControlPlagasHallazgos ():JSX.Element {
     const { messageModal } = useAppContext();
@@ -45,6 +47,8 @@ export default function TablaControlPlagasHallazgos ():JSX.Element {
     }
     return(
         <div className="componentContainer">
+                        <hr />
+        <h3>Hallazgos</h3>
         <div className="filtroContainer">
             <label>
                 <p>Responsable</p>
@@ -84,7 +88,7 @@ export default function TablaControlPlagasHallazgos ():JSX.Element {
                         <td><div>{item.cumple ? <FcOk /> : <FcCancel />}</div></td>
                         <td>{item.observaciones}</td>
                         <td>{item.acciones}</td>
-                        <td>{format(new Date(item.fecha_creacion), 'dd-MM-yyyy')}</td>
+                        <td>{format(new Date(item.fecha_creacion), 'dd/MM/yyyy HH:mm', { locale: es })}</td>
                     </tr>
                 ))}
             </tbody>

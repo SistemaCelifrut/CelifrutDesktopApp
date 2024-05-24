@@ -40,6 +40,7 @@ export default function CalidadInterna(): JSX.Element {
   return (
     <div className='componentContainer'>
       <NavCalidadInternaForm lotesData={lotesData} setLote={setLote} />
+      <h2>Ingreso calidad interna</h2>
       <div>
         <PruebasCalidadInterna lote={lote} setLotesData={setLotesData} />
       </div>

@@ -2,6 +2,7 @@
 import { format } from "date-fns"
 import { lotesType } from "@renderer/types/lotesType"
 import { PiNotePencilDuotone } from "react-icons/pi";
+import { es } from 'date-fns/locale';
 
 type propsType = {
   data: lotesType[] | undefined
@@ -43,7 +44,7 @@ export default function TableHistorialCalidadInterna(props: propsType): JSX.Elem
             <td>{lote.calidad?.calidadInterna?.zumo ?
               (lote.calidad?.calidadInterna?.zumo / 100).toLocaleString('es-ES') + "%" : "0%"}</td>
             <td>{format(lote.calidad?.calidadInterna?.fecha ?
-              new Date(lote.calidad?.calidadInterna?.fecha) : new Date(), 'dd-MM-yy')}</td>
+              new Date(lote.calidad?.calidadInterna?.fecha) : new Date(),  'dd/MM/yyyy HH:mm', { locale: es })}</td>
             <td>
               <button style={{ color: "blue" }} onClick={(): void => handleButton(lote)} ><PiNotePencilDuotone /></button>
             </td>

@@ -9,6 +9,7 @@ export default function OrdenDeVaceo(): JSX.Element {
     return (
         <div className="componentContainer">
             <div className="navBar"></div>
+            <h2>Orden de vaceo</h2>
             <OrdenVaceo />
         </div>
     )

@@ -44,6 +44,7 @@ export default function IngresoClasificacionCalidad(): JSX.Element {
   return (
     <div className='componentContainer'>
       <NavClasificacionCalidad lotesData={lotesData} setLote={setLote} />
+      <h2>Ingreso clasificación calidad</h2>
       <TablaClasificacionCalidad lote={lote} /> 
     </div>
   )

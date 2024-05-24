@@ -4,6 +4,7 @@ import { filtroColumnasCalidadType } from "../type/types"
 import { KEY_FILTRO_COL_CALIDAD } from "../functions/constantes"
 import { format } from "date-fns"
 import { lotesType } from "@renderer/types/lotesType"
+import { es } from 'date-fns/locale';
 
 type propsType = {
     data: lotesType[]
@@ -40,14 +41,13 @@ export default function TableInfolotesCalidad(props: propsType): JSX.Element {
                                 <tr className={`${index % 2 === 0 ? 'fondo-par' : 'fondo-impar'}`} key={index}>
                                     <td>{lote.enf}</td>
                                     <td>{lote.predio?.PREDIO}</td>
-                                    <td>
-                                        {format(lote.fechaIngreso ? new Date(lote.fechaIngreso) : new Date(), 'dd-MM-yyyy')}
-                                    </td>
+                                    <td>{format(lote.fechaIngreso ? new Date(lote.fechaIngreso) : new Date(), 'dd/MM/yyyy HH:mm', { locale: es })}</td>
+
                                     <td>
                                         {lote.calidad && 
                                         Object.prototype.hasOwnProperty.call(lote.calidad.calidadInterna, 'fecha') && 
                                         format(lote.calidad.calidadInterna ? new Date(lote.calidad.calidadInterna.fecha) : 
-                                        new Date(), 'dd-MM-yyyy')}
+                                        new Date(),  'dd/MM/yyyy HH:mm', { locale: es })}
                                     </td>
                                     <td>{lote.tipoFruta}</td>
                                     {Object.keys(props.columnVisibility).map((item, index) => {

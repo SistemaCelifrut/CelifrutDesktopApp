@@ -4,6 +4,7 @@ import "../css/infoContenedor.css"
 import { FcOk } from 'react-icons/fc'
 import { FcCancel } from 'react-icons/fc'
 import { format } from "date-fns"
+import { es } from 'date-fns/locale';
 
 type propsType = {
     contenedor: contenedoresType
@@ -28,7 +29,7 @@ export default function TablaInfoContenedor(props: propsType): JSX.Element {
                             <div className="contenedores-infoContenedor-div-datos-info">
                             {format(props.contenedor.infoContenedor?
                                     new Date(props.contenedor.infoContenedor[keys[index]]) :
-                                    new Date(), 'dd-MM-yy')}
+                                    new Date(), 'dd/MM/yyyy HH:mm', { locale: es })}
                             </div>
                         </div>
                     )

@@ -3,7 +3,7 @@ import { format } from 'date-fns'
 import HeaderTableFurtaSinProcesar from '../utils/HeaderTableFurtaSinProcesar'
 import { lotesType } from '@renderer/types/lotesType'
 import { PiNotePencilDuotone } from "react-icons/pi";
-
+import { es } from 'date-fns/locale';
 
 type propsType = {
   table: lotesType[]
@@ -45,7 +45,7 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
               {lote.predio && lote.predio.ICA}
             </td>
             <td>
-              {lote.fechaIngreso ? format(new Date(lote.fechaIngreso), 'dd-MM-yyyy') : ""}
+              {lote.fechaIngreso ? format(new Date(lote.fechaIngreso), 'dd/MM/yyyy HH:mm', { locale: es }) : ""}
             </td>
             <td>
               {(lote.inventarioActual?.inventario && lote.promedio) ? (lote.inventarioActual.inventario * lote.promedio).toFixed(2) : 0}

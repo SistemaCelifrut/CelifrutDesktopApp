@@ -59,3 +59,25 @@ export const requestLotes = (filtro_request: consultaType, cantidad: number): re
     query: 'proceso'
   };
 }
+
+export type numeroContenedorType = {
+  [key: string]: string
+}
+
+export const requestContenedores = (ids):object => {
+  return {
+   data: {
+       query: {_id:{$in:ids} },
+       select: {numeroContenedor:1},
+       sort: { 'infoContenedor.fechaCreacion': -1 },
+       limit: 5000,
+       populate: {
+         path: 'infoContenedor.clienteInfo',
+         select: 'CLIENTE'
+       }
+     },
+     collection: 'contenedores',
+     action: 'getContenedores',
+     query: 'proceso'
+  }
+ }

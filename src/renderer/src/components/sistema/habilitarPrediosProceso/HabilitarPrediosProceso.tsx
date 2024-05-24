@@ -63,6 +63,7 @@ export default function HabilitarPrediosProceso(): JSX.Element {
     return (
         <div className='componentContainer'>
             <div className='navBar'></div>
+            <h2>Habilitar predios</h2>
             <div className='habilitar-predios-proceso-div-tipoProceso'>
                 <h3>Proceso Descarte</h3>
                 <select 

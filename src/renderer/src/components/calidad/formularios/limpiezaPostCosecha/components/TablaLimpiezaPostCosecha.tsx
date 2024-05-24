@@ -9,6 +9,7 @@ import { FcOk } from 'react-icons/fc'
 import { FcCancel } from 'react-icons/fc'
 import { format } from "date-fns";
 import { keys_limpieza_postcosecha_almacenamiento, keys_limpieza_postcosecha_comunes, keys_limpieza_postcosecha_insumos, keys_limpieza_postcosecha_laboratorio, keys_limpieza_postcosecha_lavado, keys_limpieza_postcosecha_proceso, keys_limpieza_postcosecha_recepcion, keys_limpieza_postcosecha_servicios, keys_limpieza_postcosecha_social } from "../functions/functions";
+import { es } from 'date-fns/locale';
 
 type propsType = {
     area: string
@@ -119,7 +120,7 @@ export default function TablaLimpiezaPostCosecha(props: propsType): JSX.Element 
                             <td>{objetoElementos[item.elemento]}</td>
                             <td><div>{item.cumple ? <FcOk /> : <FcCancel />}</div></td>
                             <td>{item.observaciones}</td>
-                            <td>{format(new Date(item.fecha_ingreso), 'dd-MM-yyyy')}</td>
+                            <td>{format(new Date(item.fecha_ingreso), 'dd/MM/yyyy HH:mm', { locale: es })}</td>
                         </tr>
                     ))}
                 </tbody>

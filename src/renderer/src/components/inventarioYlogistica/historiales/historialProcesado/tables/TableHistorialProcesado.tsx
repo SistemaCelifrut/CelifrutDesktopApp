@@ -2,6 +2,7 @@
 import { format } from 'date-fns'
 import HeaderTableHistorialProcesado from '../utils/HeaderTableHistorialProcesado'
 import { historialLotesType } from '@renderer/types/lotesType'
+import { es } from 'date-fns/locale';
 
 type propsType = {
   table: historialLotesType[]
@@ -26,7 +27,7 @@ export default function TableHistorialProcesado(props: propsType): JSX.Element {
               </td>
               <td>{item.documento.kilosVaciados && item.documento.kilosVaciados.toLocaleString('es-ES')}</td>
               <td>{item.documento.tipoFruta}</td>
-              <td>{format(new Date(item.fecha), 'dd/MM/yyyy')}</td>
+              <td>{format(new Date(item.fecha), 'dd/MM/yyyy HH:mm', { locale: es })}</td>
             </tr>
           ))}
         </tbody>

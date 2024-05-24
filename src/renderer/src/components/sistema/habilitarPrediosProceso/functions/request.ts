@@ -13,7 +13,7 @@ export const requestLotesVaciados = {
         },
         select : { },
         sort:{fecha: -1},
-        limit:50
+        limit:180
       },
       collection:'historialLotes',
       action: 'obtenerHistorialLotes',

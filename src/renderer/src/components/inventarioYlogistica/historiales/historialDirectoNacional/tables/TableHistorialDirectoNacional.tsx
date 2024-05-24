@@ -2,6 +2,7 @@
 import { format } from 'date-fns'
 import HeaderTableHistorialDirecto from '../utils/HeaderTableHistorialDirecto'
 import { historialLotesType } from '@renderer/types/lotesType'
+import { es } from 'date-fns/locale';
 
 type propsType = {
   table: historialLotesType[]
@@ -27,7 +28,7 @@ export default function TableHistorialDirectoNacional(props: propsType): JSX.Ele
               </td>
               <td>{item.documento.directoNacional && item.documento.directoNacional.toFixed(2)}</td>
               <td>{item.documento.tipoFruta}</td>
-              <td>{format(new Date(item.fecha), 'dd/MM/yyyy')}</td>
+              <td>{format(new Date(item.fecha), 'dd/MM/yyyy HH:mm', { locale: es })}</td>
             </tr>
           ))}
       </tbody>

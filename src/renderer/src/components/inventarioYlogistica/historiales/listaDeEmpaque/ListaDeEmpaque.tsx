@@ -81,6 +81,7 @@ export default function ListaDeEmpaque(): JSX.Element {
   return (
     <div className='componentContainer'>
       <NavBarListaEmpaque contenedores={contenedores} handleChange={handleChange} />
+      <h2>Lista de empaque</h2>
       <FiltrosListaEmpaque
         contenedor={contenedor}
         setFiltro={setFiltro}
@@ -91,22 +92,22 @@ export default function ListaDeEmpaque(): JSX.Element {
           <TablePrincipalGeneral contenedor={contenedor} />
         ) : null}
       </div>
-      <div>
+    
         {filtro === 'pallet' ? (
           <TablePallets
             contenedor={contenedor}
             filtro={filtro2}
           />
         ) : null}
-        <div>
+      
           {filtro === 'predio' ? (
             <TablePrediosListaEmpaque
               contenedor={contenedor}
               filtro={filtro2}
             />
           ) : null}
-        </div>
-      </div>
+        
+      
     </div>
   )
 }

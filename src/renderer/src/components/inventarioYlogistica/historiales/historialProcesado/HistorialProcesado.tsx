@@ -28,7 +28,7 @@ const request = {
 export default function HistorialProcesado(): JSX.Element {
   const { messageModal} = useAppContext();
   const [datosOriginales, setDatosOriginales] = useState([])
-  const [titleTable, setTitleTable] = useState('Lotes Procesados')
+  const [titleTable, setTitleTable] = useState('Historial Lotes Procesados')
   const [showModal, setShowModal] = useState<boolean>(false)
   const [propsModal, setPropsModal] = useState<historialLotesType>(documentoInit)
   const [showModificar, setShowModificar] = useState<boolean>(false)
@@ -97,7 +97,6 @@ export default function HistorialProcesado(): JSX.Element {
   return (
     <div className='componentContainer'>
       <NavBarInventario handleFilter={handleFilter} />
-
       <BotonesAccionHistorialFrutaProcesada
         title={titleTable}
         table={table}
