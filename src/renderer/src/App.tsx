@@ -5,7 +5,7 @@ import NavBar from './components/UI/NavBar'
 import './index.css'
 import { themeType } from './env'
 import SideBar from './components/UI/SideBar'
-import Login from './components/Login/Login'
+// import Login from './components/Login/Login'
 import { userType } from './types/login'
 
 import IngresoFruta from './components/inventarioYlogistica/ingresos/ingresoFruta/IngresoFruta'
@@ -79,7 +79,7 @@ export const userContext = createContext<userType>({
 
 
 function App(): JSX.Element {
-  const [isLogin, setIsLogin] = useState<boolean>(false)
+  // const [isLogin, setIsLogin] = useState<boolean>(false)
   const [theme, setTheme] = useState<themeType>('Ligth')
   const [user, setUser] = useState<userType>({ user: '', permisos: [], cargo: '' })
   const [section, setSection] = useState<string>('main')
@@ -103,6 +103,9 @@ function App(): JSX.Element {
       try {
         const response = await window.api.obtenerTheme()
         const version = await window.api.version();
+        const cuenta = await window.api.obtenerCuenta();
+        console.log(cuenta)
+        setUser(cuenta)
         document.title = "Celifrut App " + version;
         if (response === "Dark") {
           setTheme('Dark')
@@ -130,12 +133,12 @@ function App(): JSX.Element {
 
     }
   }
-  const loggin = (data: boolean): void => {
-    setIsLogin(data)
-  }
-  const getUser = (data: userType): void => {
-    setUser(data)
-  }
+  // const loggin = (data: boolean): void => {
+  //   setIsLogin(data)
+  // }
+  // const getUser = (data: userType): void => {
+  //   setUser(data)
+  // }
   const seleccionWindow = (data: string): void => {
     setSection(data)
   }
@@ -154,11 +157,11 @@ function App(): JSX.Element {
                   <main className={`h-screen max-h-screen w-full ${theme === 'Dark' ? 'bg-gray-800 shadow-white' : 'bg-white shadow-lg'} pb-20 overflow-hidden`}>
 
                     <div className='flex flex-col h-full'>
-                      {isLogin === false ? (
+                      {/* {isLogin === false ? (
                         <div className="flex justify-center items-center h-screen">
                           <Login loggin={loggin} getUser={getUser} />
                         </div>
-                      ) : (
+                      ) : ( */}
                         <div className='flex flex-col h-full'>
 
                           <div className={`border-solid border-2 ${theme === 'Dark' ? 'border-slate-600' : 'border-gray-200 '}`}>
@@ -225,7 +228,7 @@ function App(): JSX.Element {
                             </div>
                           </div>
                         </div>
-                      )}
+                      {/* )} */}
                     </div>
                     {message !== '' && <MessagesComponent messageType={messageType} message={message} />}
                   </main>

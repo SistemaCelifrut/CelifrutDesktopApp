@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   main: {
+    envPrefix:'SERVER_KEY',
     plugins: [externalizeDepsPlugin()],
     build: {
       rollupOptions: {
@@ -17,9 +18,26 @@ export default defineConfig({
     }
   },
   preload: {
+    build:{
+      rollupOptions:{
+        input:{
+          index: resolve(__dirname, "src/preload/index.ts"),
+          login: resolve(__dirname, "src/preload/login.js"),
+        }
+      }
+    },
     plugins: [externalizeDepsPlugin()]
   },
   renderer: {
+    
+    build:{
+      rollupOptions:{
+        input:{
+          login: resolve(__dirname, "src/renderer/login.html"),
+          Main: resolve(__dirname, "src/renderer/index.html"),
+        }
+      }
+    },
     resolve: {
       alias: {
         '@renderer': resolve('src/renderer/src')

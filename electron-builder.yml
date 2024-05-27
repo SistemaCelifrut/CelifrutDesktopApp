@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: celifrutdesktopapp
+productName: Celifrut
 directories:
   buildResources: build
 files:
@@ -14,7 +14,8 @@ asarUnpack:
   - tsclibnet.dll
 afterSign: build/notarize.js
 win:
-  executableName: celifrutdesktopapp
+  executableName: Celifrut
+  icon: build/Celifrut.ico
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

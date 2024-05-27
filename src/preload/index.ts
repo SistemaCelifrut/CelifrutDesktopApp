@@ -10,6 +10,10 @@ const api = {
     const response = await ipcRenderer.invoke('obtenerTheme')
     return response
   },
+  obtenerCuenta: async (): Promise<unknown> => {
+    const response = await ipcRenderer.invoke('obtenerCuenta')
+    return response
+  },
   version: async (): Promise<'Dark' | 'Light'> => {
     const response = await ipcRenderer.invoke('version')
     return response

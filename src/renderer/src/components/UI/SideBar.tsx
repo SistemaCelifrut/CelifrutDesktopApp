@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
-import { themeContext, userContext } from '@renderer/App'
-import { useContext, useEffect, useRef, useState, Fragment } from 'react'
+import useAppContext from '@renderer/hooks/useAppContext';
+import { useEffect, useRef, useState, Fragment } from 'react'
 import { FcFolder } from "react-icons/fc";
 import { FcOpenedFolder } from "react-icons/fc";
 import { FcDepartment } from "react-icons/fc";
@@ -14,17 +14,16 @@ type propsType = {
 }
 
 export default function SideBar(props: propsType): JSX.Element {
-  const theme = useContext(themeContext)
-  const user = useContext(userContext)
+  const {theme, user} = useAppContext();
   const isResizingRef = useRef(false)
   const [width, setWidth] = useState<number>(100)
-  //const [items, setItems] = useState<string[][]>([]);
+  // const [items, setItems] = useState<string[][]>([]);
   const [areaState, setAreaState] = useState<string[]>([])
   const [elementoState, setElementoState] = useState<string[][]>([])
   const [areaSelect, setAreaSelect] = useState<number[]>([])
   const [elementSelect, setElementSelect] = useState<number[]>([])
   const [permisos, setPermisos] = useState<string[][]>([])
-
+  
   useEffect((): void => {
     const areas: string[] = [];
     const elementos: string[] = [];
@@ -46,7 +45,7 @@ export default function SideBar(props: propsType): JSX.Element {
     setAreaState(areaArr);
     setElementoState(elementoArr2)
     setPermisos(permisosArr)
-  }, [])
+  }, [user])
 
   useEffect(() => {
     if (props.showSideBar) {

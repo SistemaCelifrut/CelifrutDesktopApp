@@ -9,17 +9,25 @@ import {
   net,
   Notification,
 } from 'electron'
-import  { join } from 'path'
+import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { io } from 'socket.io-client'
 import { clientesServerResponseType } from './types/login'
+const crypto  = require('crypto') 
 import updater from 'electron-updater'
+import appIcon from "../../build/Celifrut.ico?asset"
 
 let theme: 'Dark' | 'Ligth' = 'Ligth'
 let cargo = ''
+let user = ''
+let permisos = []
+let socket
+let loginWindow 
+
+
 updater.autoUpdater.setFeedURL({ url: 'http://192.168.0.172:3000', provider: 'generic' })
 
-
+//#region  create Windows
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -27,6 +35,7 @@ function createWindow(): void {
     height: 670,
     show: false,
     autoHideMenuBar: false,
+    icon: appIcon,
 
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -92,75 +101,43 @@ function createWindow(): void {
   })
 }
 
-// function createDownloadWindow(): void {
-//   const downloadWindow = new BrowserWindow({
-//     alwaysOnTop: true,
-//     frame: false,
-//     resizable: false,
-//     show: false,
-//     transparent: true,
-//     webPreferences: {
-//       nodeIntegration: true
-//     }
+function createLoginWindow() :void {
+    // Create the browser window.
+    loginWindow = new BrowserWindow({
+      width: 900,
+      height: 670,
+      show: false,
+      autoHideMenuBar: false,
+    
+      webPreferences: {
+        preload: join(__dirname, '../preload/index.js'),
+        sandbox: false,
+        nodeIntegrationInWorker: true,
+        nodeIntegration: true,
+        contextIsolation: false
+      }
+    })
 
-//   });
+    loginWindow.on('ready-to-show', () => {
+      loginWindow.show()
+    })
 
-//   downloadWindow.loadURL(join(__dirname, '../renderer/downloadWindow.html'))
-  
-// }
+    loginWindow.loadFile(join(__dirname, '../renderer/login.html'))
+
+}
+
+//#region  cuando esta lista la app
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   // Set app user model id for windows
 
-  electronApp.setAppUserModelId('com.electron')
-  const version = app.getVersion()
-  net
-    .fetch(`http://192.168.0.172:3000/newVersion=${version}`, { method: 'GET' })
-    .then((response) => response.text())
-    .then((data) => {
-      if (data === "true") {
-        updater.autoUpdater.checkForUpdates().then(() => {
-          updater.autoUpdater.once('update-available', (info) => {
-            new Notification({
-              title: 'version disponible',
-              body: info.version
-            }).show()
-            updater.autoUpdater.downloadUpdate().then(() => {
-              updater.autoUpdater.once("update-downloaded", () => {
-                updater.autoUpdater.quitAndInstall();
-              })
-            })
-          })
-        })
-      }
-    })
-    .catch((e) => console.log(e))
-
-    updater.autoUpdater.on("error", (info) => {
-      new Notification({
-        title: info.name,
-        body: info.message
-      }).show()
-    })
-    // updater.autoUpdater.on("download-progress", (info) => {
-    //   if (info.percent === 100) {
-    //     new Notification({
-    //       title: 'descargando',
-    //       body: String(info.total)
-    //     }).show()
-    //   }
-    // })
-
-  // Default open or close DevTools by F12 in development
-  // and ignore CommandOrControl + R in production.
-  // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  createWindow()
+  // createWindow()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
@@ -168,6 +145,9 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 
+  // const tray = new Tray(nativeImage.createFromPath(appIcon))
+  
+  
 
   if (nativeTheme.shouldUseDarkColors) {
     theme = 'Dark'
@@ -181,6 +161,10 @@ app.whenReady().then(() => {
       theme = 'Ligth'
     }
   })
+
+
+  createLoginWindow()
+
 })
 
 
@@ -193,9 +177,11 @@ app.on('window-all-closed', () => {
   }
 })
 
+
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
+//#region funciones del sistema
 //se obtiene el theme del equipo
 ipcMain.handle('obtenerTheme', async () => {
   try {
@@ -209,30 +195,102 @@ ipcMain.handle('version', async () => {
   return app.getVersion();
 })
 
-const socket = io('ws://192.168.0.172:3000/', {
-  rejectUnauthorized: false
+ipcMain.handle('obtenerCuenta', async () => {
+  try {
+    return {user:user, permisos:permisos, cargo:cargo}
+  } catch (e: unknown) {
+    return `${e}`
+  }
 })
+
+// const socket = io('ws://192.168.0.172:3000/', {
+//   rejectUnauthorized: false
+// })
+
+//#region llamadas al servidor
 
 //la funcion que loguea la cuenta
 ipcMain.handle('user', async (event, datos) => {
   try {
     event.defaultPrevented
     const responseJSON = await net.fetch("http://192.168.0.172:3000/signIn", {
-      method:"POST",
+      method: "POST",
       body: JSON.stringify({
-        user:datos.user,
+        user: datos.user,
         password: datos.password
       })
     })
     const response = await responseJSON.json();
-    if(response.status === 200){
+    if (response.status === 200) {
+      console.log(crypto.getCiphers());
+      const token = response.data.token; 
+      const decipher = crypto.createDecipheriv("aes-256-ocb", Buffer.from(import.meta.env.SERVER_KEY, "hex"), Buffer.from(token.iv, "hex"), { authTagLength: 16 });
+      decipher.setAuthTag(Buffer.from(token.authTag, "hex"));
+      let decrypted = decipher.update(token.encryptedData, "hex", "utf8");
+      decrypted += decipher.final("utf8");
+
+      console.log(decrypted)
+      socket = io('ws://192.168.0.172:3000/', {
+        auth: {
+          // token: token
+        },
+        rejectUnauthorized: false
+      });
+
+      socket.on('connect', () => {
+        electronApp.setAppUserModelId('com.electron')
+        const version = app.getVersion()
+        net
+          .fetch(`http://192.168.0.172:3000/newVersion=${version}`, { method: 'GET' })
+          .then((response) => response.text())
+          .then((data) => {
+            if (data === "true") {
+              updater.autoUpdater.checkForUpdates().then(() => {
+                updater.autoUpdater.once('update-available', (info) => {
+                  new Notification({
+                    title: 'version disponible',
+                    body: info.version
+                  }).show()
+                  updater.autoUpdater.downloadUpdate().then(() => {
+                    updater.autoUpdater.once("update-downloaded", () => {
+                      updater.autoUpdater.quitAndInstall();
+                    })
+                  })
+                })
+              })
+            }
+          })
+          .catch((e) => console.log(e))
+
+        updater.autoUpdater.on("error", (info) => {
+          new Notification({
+            title: info.name,
+            body: info.message
+          }).show()
+        })
+      });
+
+      socket.on('connect_error', (error) => {
+        console.error('Socket connection error:', error);
+      });
+      
+      loginWindow.close()
+
       cargo = response.data.cargo;
+      user = response.data.user;
+      permisos = response.data.permisos;
+
+      createWindow()
+
       return response
     }
     return response
   } catch (e) {
-    if(e instanceof Error)
+    if (e instanceof Error){
+      console.log(e)
       return `${e.message}`
+
+    }
   }
 })
 
