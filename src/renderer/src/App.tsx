@@ -50,6 +50,7 @@ import DescarteLavadoSistema from './components/sistema/descarteLavado/DescarteL
 import DescarteEnceradoSistema from './components/sistema/descarteEncerado/DescarteEnceradoSistema'
 import SistemaExportacionLotes from './components/sistema/exportacionLotesData/SistemaExportacionLotes'
 import ModificarSeriales from './components/sistema/modificarSeriales/ModificarSeriales'
+import EficienciaFruta from './components/indicadores/operaciones/EficienciaFruta/EficienciaFruta'
 
 type OpenModalFunction = (messageType: string, message: string) => void;
 type MyContextType = {
@@ -225,6 +226,8 @@ function App(): JSX.Element {
                               {section === 'Sistema//Proceso//Exportación lotes' && <SistemaExportacionLotes />}
                               {section === 'Sistema//Proceso//Modificar serial lotes' && <ModificarSeriales />}
 
+                              {/* indicadores */}
+                              {section === 'Indicadores//Operaciones//Eficiencía de la fruta' && <EficienciaFruta />}
                             </div>
                           </div>
                         </div>

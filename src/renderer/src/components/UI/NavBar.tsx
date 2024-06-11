@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState } from 'react';
 import { themeType } from '@renderer/env';
 import { RiSideBarFill } from 'react-icons/ri';
@@ -18,7 +19,7 @@ export default function NavBar(props: propsType): JSX.Element {
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const [showInicio, setShowInicio] = useState<boolean>(false); // Nuevo estado para controlar si se muestra el componente Inicio.tsx
 
-  const handleClick = () => {
+  const handleClick = ():void => {
     setShowInicio(!showInicio); // Cambia el estado para mostrar u ocultar el componente Inicio.tsx
   };
 

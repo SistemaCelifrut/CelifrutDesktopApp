@@ -11,7 +11,10 @@ export interface Api {
   version: () => Promise<any>
   user: (datos) => Promise<serverResponse>
   server: (datos) => Promise<serverResponse>
+  server2: (datos) => Promise<serverResponse>
   serverEmit: (data, callback) => any
+  reload: (callback) => any
+  removeReload: () => any
   removeServerEmit: (channel, callback) => void
 }
 

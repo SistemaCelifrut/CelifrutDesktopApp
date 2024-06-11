@@ -31,8 +31,7 @@ export default function Informes(): JSX.Element {
   const obtenerDatosDelServidor = async (): Promise<void> => {
     try {
       const request = requestObject(countPage)
-      console.log(request)
-      const response = await window.api.server(request);
+      const response = await window.api.server2(request);
       if (response.status !== 200) {
         throw new Error(response.message);
       }
@@ -139,7 +138,7 @@ export default function Informes(): JSX.Element {
               </td>
               <td >
                 <div>
-                  {item.deshidratacion !== undefined && item.deshidratacion <= 2 && item.deshidratacion >= 0 ? <FcOk /> : <FcCancel />}
+                  {typeof item.deshidratacion === "number" && item.deshidratacion.toFixed(2)}%
                 </div>
               </td>
               <td >

@@ -34,6 +34,9 @@ export type lotesType = {
     calidad2?: number
     __v?: number
     clasificacionCalidad?: string
+    numeroRemision?: string
+    numeroPrecintos?: number
+    urlBascula?:string
 }
 
 export type historialLotesType = {

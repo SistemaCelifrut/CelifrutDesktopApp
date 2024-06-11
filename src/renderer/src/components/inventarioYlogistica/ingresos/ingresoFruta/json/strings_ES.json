@@ -6,6 +6,8 @@
     "kilos":"Kilos",
     "placa":"Placa",
     "canastillasVacias":"Canastillas vacías",
+    "numeroRemision":"Numero de remision",
+    "numeroPrecintos":"Numero de precintos",
     "tipoFruta":{
         "title": "Tipo de fruta",
         "limon":"Limon",

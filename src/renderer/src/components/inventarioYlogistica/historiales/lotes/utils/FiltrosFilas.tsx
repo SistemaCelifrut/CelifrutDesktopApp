@@ -72,6 +72,12 @@ export default function FiltrosFilas(props: propsType): JSX.Element {
         <input onChange={(e): void => props.setCantidad(Number(e.target.value))} type="number" min={0} />
       </label>
 
+      <label className="lotes-filtros-columnas-label">
+        <input type="checkbox" onChange={(): void => props.setCantidad(Number(999999999999999))}/>
+        Todos los datos
+
+      </label>
+
 
     </div>
   )

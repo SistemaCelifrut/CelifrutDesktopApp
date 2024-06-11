@@ -1,4 +1,9 @@
 {
-  "files": [],
-  "references": [{ "path": "./tsconfig.node.json" }, { "path": "./tsconfig.web.json" }]
+  "files": ["src/main/env.d.ts"],
+  "references": [
+      { "path": "./tsconfig.node.json" }, 
+      { "path": "./tsconfig.web.json" }      
+    ],
+    "include": ["src/main/env.d.ts", "src"],
+    "exclude": ["node_modules", "dist"]
 }

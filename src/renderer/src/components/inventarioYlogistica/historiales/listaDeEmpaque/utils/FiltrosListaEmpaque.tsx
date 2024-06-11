@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import ObtenerPrediosContenedor from '../functions/ObtenerPrediosContenedor'
 import { contenedoresType } from '@renderer/types/contenedoresType'
 import "@renderer/css/filtros.css"
+import useAppContext from '@renderer/hooks/useAppContext'
+import { request_add_pallet_to_contenedor } from '../functions/modificarListaDeEmpaque'
 
 type propsType = {
   contenedor: contenedoresType | undefined
@@ -11,6 +13,7 @@ type propsType = {
 }
 
 export default function FiltrosListaEmpaque(props: propsType): JSX.Element {
+  const { messageModal, user } = useAppContext();
   const [value1, setValue1] = useState<string>('')
   const [predios, setPredios] = useState<string[]>([])
   const [ids, setIds] = useState<string[]>([])
@@ -24,7 +27,18 @@ export default function FiltrosListaEmpaque(props: propsType): JSX.Element {
   const handleFiltro2 = (e): void => {
     props.setFiltro2(e.target.value)
   }
-
+  const handleAddPallet = async (): Promise<void> => {
+    try{
+      const request = request_add_pallet_to_contenedor(props.contenedor?._id)
+      const response = await window.api.server(request);
+      if (response.status !== 200)
+          messageModal("error", response.message)
+      messageModal("success", "Contenedor cerrado con exito")
+    } catch (e) {
+      if(e instanceof Error)
+        messageModal("error", e.message)
+    }
+  }
   useEffect(() => {
     if (props.contenedor) {
       const [response, response_id] = ObtenerPrediosContenedor(props.contenedor)
@@ -76,6 +90,11 @@ export default function FiltrosListaEmpaque(props: propsType): JSX.Element {
               : null}
           </select>
         </label>
+        {value1 === "pallet" && user.cargo === "admin" &&
+          <button onClick={handleAddPallet}>
+            Agregar pallet
+          </button>
+        }
       </div>
     </div>
   )

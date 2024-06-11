@@ -7,18 +7,21 @@ import useAppContext from '@renderer/hooks/useAppContext';
 import "@renderer/css/components.css"
 import "@renderer/css/form.css"
 
+
+//recordar despues cambiar para que inventario quede en un item aparte, pues canastilla en inventario va a caqmbiar a un solo json
 export default function IngresoFruta(): JSX.Element {
   const { messageModal } = useAppContext();
   const [prediosDatos, setPrediosData] = useState<proveedoresType[]>([])
   const [formState, setFormState] = useState(formInit);
   const [enf, setEnf] = useState(0)
+  const [reload, setReload] = useState<boolean>(false);
 
   const obtenerEF1 = async (): Promise<void> => {
-    const enf = await window.api.server(request_EF1);
-    setEnf(enf.enf);
+    const enf = await window.api.server2(request_EF1);
+    setEnf(enf.response);
   }
   const obtenerPredios = async (): Promise<void> => {
-    const response = await window.api.server(request_predios)
+    const response = await window.api.server2(request_predios)
     const data1 = handleServerResponse(response, messageModal)
 
     if (Array.isArray(data1) && data1.length > 0 && '_id' in data1[0]) {
@@ -28,7 +31,14 @@ export default function IngresoFruta(): JSX.Element {
   useEffect(() => {
     obtenerPredios()
     obtenerEF1()
-  }, [])
+    window.api.reload(() => {
+      setReload(!reload)
+    });
+    return() => {
+      window.api.removeReload()
+    }
+
+  }, [reload])
   const handleChange = (event): void => {
     const { name, value } = event.target;
 
@@ -51,14 +61,13 @@ export default function IngresoFruta(): JSX.Element {
         messageModal("error", 'Seleccione el tipo de fruta del lote')
         return
       }
+      const data = {...datos, enf:crearEF1()}
       const request = {
-        data: datos,
-        collection: 'lotes',
+        data: data,
         action: 'guardarLote',
-        query: 'proceso',
         record: 'crearLote'
       };
-      const response = await window.api.server(request)
+      const response = await window.api.server2(request)
       if (response.status === 200) {
         messageModal("success", "¡lote guardado con exito!")
         await obtenerEF1();
@@ -73,6 +82,10 @@ export default function IngresoFruta(): JSX.Element {
   const reiniciarCampos = (): void => {
     setFormState(formInit);
   }
+  const crearEF1 = (): string => {
+    return strings.EF1 + new Date().getFullYear().toString().slice(-2) +
+    (new Date().getMonth() + 1).toString().padStart(2, '0') +  enf;
+  }
   return (
     <div className='componentContainer'>
       <div className='navBar'></div>
@@ -81,7 +94,7 @@ export default function IngresoFruta(): JSX.Element {
           {strings.title}
         </h2>
         <h2>
-          {strings.EF1}{new Date().getFullYear().toString().slice(-2)}{(new Date().getMonth() + 1).toString().padStart(2, '0')}{enf}
+          {crearEF1()}
         </h2>
       </div>
       <form className="form-container" onSubmit={guardarLote}>
@@ -109,6 +122,14 @@ export default function IngresoFruta(): JSX.Element {
             <option value="Naranja">{strings.tipoFruta.naranja}</option>
             <option value="Limon">{strings.tipoFruta.limon}</option>
           </select>
+        </div>
+        <div >
+          <label>{strings.numeroRemision}</label>
+          <input type="text" onChange={handleChange} name="numeroRemision" value={formState.numeroRemision} required />
+        </div>
+        <div >
+          <label>{strings.numeroPrecintos}</label>
+          <input type="text" onChange={handleChange} name="numeroPrecintos" value={formState.numeroPrecintos} required />
         </div>
         <div >
           <label>{strings.numeroCanastillas}</label>

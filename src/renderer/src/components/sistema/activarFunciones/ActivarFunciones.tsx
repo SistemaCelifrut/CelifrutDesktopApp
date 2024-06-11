@@ -5,6 +5,7 @@ import "./css/funcionesSistema.css"
 import { contenedoresType } from "@renderer/types/contenedoresType"
 import { requestContenedores, request_cerrar_contenedor } from "./functions/request"
 import useAppContext from "@renderer/hooks/useAppContext"
+import IngresarPallet from "./components/IngresarPallet"
 export default function ActivarFunciones(): JSX.Element {
     const { messageModal } = useAppContext();
     const [contenedores, setContenedores] = useState<contenedoresType[]>([])
@@ -70,6 +71,7 @@ export default function ActivarFunciones(): JSX.Element {
                     </button>
                 </div>
             </div>
+            <IngresarPallet constenedores={contenedores} />
         </div>
     )
 }

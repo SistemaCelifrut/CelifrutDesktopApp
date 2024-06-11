@@ -25,7 +25,7 @@ interface Descarte {
 }
 
 interface InventarioActual {
-  inventario: number
+  inventario?: number
   descarteEncerado: Descarte
   descarteLavado: Descarte
 }
@@ -42,6 +42,8 @@ interface FormState {
   inventarioActual: InventarioActual
   descarteLavado: Descarte
   descarteEncerado: Descarte
+  numeroRemision: string
+  numeroPrecintos: number
 }
 
 export const crear_request_guardar = (formState): FormState => {
@@ -52,6 +54,8 @@ export const crear_request_guardar = (formState): FormState => {
     kilos: formState.kilos,
     placa: formState.placa,
     tipoFruta: formState.tipoFruta,
+    numeroPrecintos: formState.numeroPrecintos,
+    numeroRemision:formState.numeroRemision,
     observaciones: formState.observaciones,
     promedio: parseFloat(formState.kilos) / parseFloat(formState.canastillas),
     canastillasVacias: formState.canastillasVacias,
@@ -76,15 +80,11 @@ export const request_predios = {
   data: {
     query: {}
   },
-  collection: 'proveedors',
-  action: 'obtenerProveedores',
-  query: 'proceso'
+  action: 'obtenerPredios',
 }
 
 export const request_EF1 = {
-  collection: 'variablesDesktop',
   action: 'obtenerEF1',
-  query: 'variablesDelProceso'
 }
 
 export const formInit = {
@@ -94,5 +94,7 @@ export const formInit = {
   canastillasVacias: '',
   kilos: '',
   placa: '',
-  observaciones: ''
+  observaciones: '',
+  numeroRemision:'',
+  numeroPrecintos:0
 }

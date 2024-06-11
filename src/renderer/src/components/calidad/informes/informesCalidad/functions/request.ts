@@ -13,8 +13,6 @@ export const requestObject = (page): object => {
       limit: resultsPerPage,
       skip: (page - 1) * resultsPerPage
     },
-    collection: 'lotes',
-    action: 'getLotes',
-    query: 'proceso'
+    action: 'getLotes'
   }
 }

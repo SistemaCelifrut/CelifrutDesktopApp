@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   main: {
-    envPrefix:'SERVER_KEY',
+    envPrefix:'MAIN_VITE_',
     plugins: [externalizeDepsPlugin()],
     build: {
       rollupOptions: {

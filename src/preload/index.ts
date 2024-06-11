@@ -26,11 +26,21 @@ const api = {
     const response = await ipcRenderer.invoke('server', datos)
     return response
   },
+  server2: async (datos) => {
+    const response = await ipcRenderer.invoke('server2', datos)
+    return response
+  },
   serverEmit: (channel, callback) => {
     ipcRenderer.on(channel, (event, ...args) => {
       event.preventDefault
       return callback(...args)
     })
+  },
+  reload: (callback) => {
+    ipcRenderer.on("reload", (_event, value) => {callback(value)})
+  },
+  removeReload: () => {
+    ipcRenderer.removeAllListeners('reload')
   },
   removeServerEmit: (channel, callback) => {
     ipcRenderer.removeListener(channel, callback)

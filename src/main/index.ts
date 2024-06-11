@@ -8,12 +8,13 @@ import {
   utilityProcess,
   net,
   Notification,
+  Menu,
+  MenuItem,
 } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { io } from 'socket.io-client'
 import { clientesServerResponseType } from './types/login'
-const crypto  = require('crypto') 
 import updater from 'electron-updater'
 import appIcon from "../../build/Celifrut.ico?asset"
 
@@ -22,8 +23,9 @@ let cargo = ''
 let user = ''
 let permisos = []
 let socket
+let socket2
 let loginWindow 
-
+let accessToken ='';
 
 updater.autoUpdater.setFeedURL({ url: 'http://192.168.0.172:3000', provider: 'generic' })
 
@@ -55,6 +57,19 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
+  const ctxMenu = new Menu()
+  
+  ctxMenu.append(new MenuItem({
+    label: "Actualizar",
+    click: function():void{
+      mainWindow.webContents.send('reload', "message")
+      return;
+    }
+  }));
+
+  mainWindow.webContents.on("context-menu", function(e, params){
+    ctxMenu.popup(params)
+  })
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
@@ -146,7 +161,7 @@ app.whenReady().then(() => {
   })
 
   // const tray = new Tray(nativeImage.createFromPath(appIcon))
-  
+
   
 
   if (nativeTheme.shouldUseDarkColors) {
@@ -213,28 +228,38 @@ ipcMain.handle('obtenerCuenta', async () => {
 ipcMain.handle('user', async (event, datos) => {
   try {
     event.defaultPrevented
-    const responseJSON = await net.fetch("http://192.168.0.172:3000/signIn", {
+    const responseJSON = await net.fetch("http://192.168.0.172:3010/login", {
       method: "POST",
+      headers: {
+        'Content-Type': 'application/json' // Añade este encabezado
+      },
       body: JSON.stringify({
         user: datos.user,
         password: datos.password
       })
     })
     const response = await responseJSON.json();
-    if (response.status === 200) {
-      console.log(crypto.getCiphers());
-      const token = response.data.token; 
-      const decipher = crypto.createDecipheriv("aes-256-ocb", Buffer.from(import.meta.env.SERVER_KEY, "hex"), Buffer.from(token.iv, "hex"), { authTagLength: 16 });
-      decipher.setAuthTag(Buffer.from(token.authTag, "hex"));
-      let decrypted = decipher.update(token.encryptedData, "hex", "utf8");
-      decrypted += decipher.final("utf8");
 
-      console.log(decrypted)
-      socket = io('ws://192.168.0.172:3000/', {
+    if (response.status === 200) {
+    
+      accessToken = response.accesToken;
+
+      socket2 = io('ws://192.168.0.172:3011/', {
         auth: {
-          // token: token
+          token: response.accesToken
         },
         rejectUnauthorized: false
+      });
+
+      socket = io('ws://192.168.0.172:3000/', {
+        auth: {
+          token: response.accesToken
+        },
+        rejectUnauthorized: false
+      });
+
+      socket2.on('connect', () => {
+        console.log("Conectado a ws://192.168.0.172:3011/")
       });
 
       socket.on('connect', () => {
@@ -273,12 +298,16 @@ ipcMain.handle('user', async (event, datos) => {
       socket.on('connect_error', (error) => {
         console.error('Socket connection error:', error);
       });
+
+      socket2.on('connect_error', (error) => {
+        console.error('Socket connection error:', error);
+      });
       
       loginWindow.close()
-
-      cargo = response.data.cargo;
-      user = response.data.user;
-      permisos = response.data.permisos;
+      console.log(response)
+      cargo = response.cargo;
+      user = response.user;
+      permisos = response.permisos;
 
       createWindow()
 
@@ -298,13 +327,32 @@ ipcMain.handle('user', async (event, datos) => {
 ipcMain.handle('server', async (event, data) => {
   try {
     event.preventDefault()
-    const request = { data: data }
+    const request = { data: data}
     const response = await new Promise((resolve) => {
       socket.emit('Desktop', request, (serverResponse) => {
         // console.log(serverResponse)
         resolve(serverResponse)
       })
     })
+    return response
+  } catch (e) {
+    return { status: 505, data: e }
+  }
+})
+
+//comunicacion con el servidor
+ipcMain.handle('server2', async (event, data) => {
+  try {
+    event.preventDefault()
+    const request = { data: data, token:accessToken }
+    console.log(request)
+    const response:{status:number, data:object, token:string} = await new Promise((resolve) => {
+      socket2.emit('Desktop2', request, (serverResponse) => {
+        console.log(serverResponse.token)
+        resolve(serverResponse)
+      })
+    })
+    accessToken = response.token;
     return response
   } catch (e) {
     return { status: 505, data: e }
@@ -372,4 +420,6 @@ ipcMain.handle('imprimirRotulos', async (event, data) => {
     console.error(e)
   }
 })
+
+
 
