@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 
 import useAppContext from "@renderer/hooks/useAppContext"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { request_data } from "./services/request";
 import { procesarData } from "./services/function";
 import { datosExportacion } from "./types/type";
@@ -18,8 +18,15 @@ export default function EficienciaFruta(): JSX.Element {
     const [fechaInicio, SetFechaInicio] = useState("")
     const [fechaFin, SetFechaFin] = useState("")
     const [data, setData] = useState<datosExportacion>({})
-    const [activarDropp, setActivarDropp] = useState<string>('');
-
+    const [items, setItems] = useState([
+        { id: "draggable-TablaInfo", component: TableInfo },
+        { id: "draggable-GaugeChart", component: GaugeChart },
+        { id: "draggable-LinearChart", component: LinearChart },
+    ]);
+    const isResizingRef = useRef(false)
+    const currentElementRef = useRef<HTMLElement | null>(null);
+    const [drag, setDrag] = useState(false)
+    useEffect(()=>{},[drag])
 
     const handleTipoFruta = (e): void => {
         setTipoFruta(e.target.value)
@@ -36,6 +43,37 @@ export default function EficienciaFruta(): JSX.Element {
             if (e instanceof Error)
                 messageModal("error", e.message)
         }
+    }
+    const handleMouseDown = (e): void => {
+        if (e.target === e.currentTarget && drag) {
+            e.stopPropagation();
+            console.log("mouse down")
+            isResizingRef.current = true;
+            currentElementRef.current = e.currentTarget;
+            document.addEventListener('mouseup', handleMouseUp);
+            document.addEventListener('mousemove', handleMouseMove);
+        }
+    };
+    const handleMouseUp = (): void => {
+        isResizingRef.current = false;
+        // console.log(isResizingRef.current)
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+    };
+    const handleMouseMove = (e): void => {
+        if (isResizingRef) {
+            const currentElement = currentElementRef.current;
+            if (currentElement) {
+                const newWidth = e.clientX - currentElement.getBoundingClientRect().left;
+                currentElement.style.width = `${newWidth}px`;
+            }
+        }
+    };
+    const hijoClick = (): void => {
+        console.log("click hijo")
+    }
+    const editarHandle = ():void => {
+        setDrag(!drag)
     }
     return (
         <div className="componentContainer">
@@ -62,62 +100,75 @@ export default function EficienciaFruta(): JSX.Element {
                     <div>{" "}</div>
                     <button onClick={handleBuscar} >Buscar</button>
                 </label>
+                <label>
+                    <div>{" "}</div>
+                    <button onClick={editarHandle}>{drag ? 'Editando tamaño' : 'Editar '}</button>
+                </label>
+                <label>
+                    <p>Componentes</p>
+                    <select onChange={handleTipoFruta}>
+                        <option value="">Graficas</option>
+                        <option value="Naranja">
+                            <input type="checkbox" />
+                        </option>
+                        <option value="Limon">Limon</option>
+                    </select>
+                </label>
             </div>
             <hr />
             <DragDropContext onDragEnd={(result): void => {
                 const { source, destination } = result;
                 if (!destination) {
                     return;
-                  }
-                  if (source.index === destination.index && destination.droppableId === source.droppableId) {
+                }
+                if (source.index === destination.index && destination.droppableId === source.droppableId) {
                     return;
-                  }
+                }
+                const reorderedItems = Array.from(items);
+                const [removed] = reorderedItems.splice(source.index, 1);
+                reorderedItems.splice(destination.index, 0, removed);
+
+                setItems(reorderedItems);
             }}>
-                <Droppable droppableId={new Date().toISOString()} >
+                <Droppable 
+                // isDragDisabled={drag}
+                droppableId={new Date().toISOString()} >
                     {(droppableProvider): JSX.Element =>
 
                         <div className="indicadores-container-cards"
                             ref={droppableProvider.innerRef}
                             {...droppableProvider.droppableProps}>
 
-                            <Draggable draggableId="draggable-TablaInfo" index={0}>
-                                {(draggableProvider): JSX.Element =>
-                                    <div className="indicadores-tarjetas"
-                                        ref={draggableProvider.innerRef}
-                                        {...draggableProvider.draggableProps}
-                                        {...draggableProvider.dragHandleProps}>
-                                        <TableInfo data={data} />
-                                    </div>
-                                }
-                            </Draggable>
-                            <Draggable draggableId="draggable-GaugeChart" index={1}>
-                                {(draggableProvider): JSX.Element =>
-                                    <div className="indicadores-tarjetas"
-                                        ref={draggableProvider.innerRef}
-                                        {...draggableProvider.draggableProps}
-                                        {...draggableProvider.dragHandleProps}>
+                            {items.map((item, index) => {
+                                const Component = item.component;
+                                return (
+                                    <Draggable
+                                        key={item.id}
+                                        draggableId={item.id}
+                                        isDragDisabled={drag}
+                                        index={index}>
 
-                                        <GaugeChart data={data} />
-                                    </div>
-                                }
-                            </Draggable>
-                            <Draggable draggableId={"draggable-LinearChart"} index={2}>
-                                {(draggableProvider): JSX.Element =>
-                                    <div className="indicadores-tarjetas"
-                                        ref={draggableProvider.innerRef}
-                                        {...draggableProvider.draggableProps}
-                                        {...draggableProvider.dragHandleProps}>
+                                        {(draggableProvider): JSX.Element => (
+                                            <div className="indicadores-tarjetas"
+                                                onMouseDown={handleMouseDown}
+                                                ref={draggableProvider.innerRef}
+                                                {...draggableProvider.draggableProps}
+                                                {...draggableProvider.dragHandleProps}>
+                                                <div className="indicadores-tarjeta-div" onClick={hijoClick}>
+                                                    <Component data={data} />
 
-                                        <LinearChart data={data} />
-                                    </div>
-                                }
-                            </Draggable>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </Draggable>
+                                );
+                            })}
                             {droppableProvider.placeholder}
                         </div>
                     }
                 </Droppable>
             </DragDropContext>
-            
+
         </div>
     )
 }
