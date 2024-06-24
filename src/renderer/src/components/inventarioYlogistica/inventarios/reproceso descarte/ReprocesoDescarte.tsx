@@ -4,7 +4,7 @@ import NavBarDescartes from "./utils/NavBarDescartes"
 import { useState } from 'react'
 import "./css/styles.css"
 
-export default function InventarioDescarte(): JSX.Element {
+export default function ReprocesoDescarte(): JSX.Element {
   const [filtro, setFiltro] = useState<string>('')
 
   const handleFilter = (data: string): void => {

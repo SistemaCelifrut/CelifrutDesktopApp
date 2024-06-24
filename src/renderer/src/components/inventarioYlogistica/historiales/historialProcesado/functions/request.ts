@@ -1,58 +1,67 @@
 /* eslint-disable prettier/prettier */
-import { historialLotesType, lotesType } from "@renderer/types/lotesType";
+import { historialLotesType } from "@renderer/types/lotesType";
 
-type requestModificarHistorialType = {
-    data:{
-        lote: lotesType
-      },
-      collection: string
-      action: string
-      query: string
-      record?: string
-}
+export const requestModificarHistorial = (canastillas: number, propsModal: historialLotesType): object => {
+  const promedio = propsModal.documento.promedio !== undefined ? propsModal.documento.promedio : 0;
+  const request = {
+    data: {
+      inventario: canastillas,
 
-export const requestModificarHistorial = (canastillas:number , propsModal: historialLotesType): requestModificarHistorialType[] => {
-    const new_lote = propsModal.documento;
-    let new_historial 
-    if(new_lote.kilosVaciados && Object.prototype.hasOwnProperty.call(new_lote, 'inventarioActual.inventario')&& new_lote.promedio){
-        new_lote.kilosVaciados = -(canastillas * new_lote.promedio);
-        new_historial = -(canastillas * new_lote.promedio);
-      }
-
-      const requestLotes = {
-        data:{
-          lote: {
-            _id:new_lote._id,
-            $inc:{
-                kilosVaciados: new_lote.kilosVaciados,
-                "inventarioActual.inventario": canastillas
-                
-            }
-          }
-        },
-        collection:'lotes',
-        action: 'putLotes',
-        query: 'proceso',
-        record: 'modificarHistorialVaciado'
-      }
-
-      const requestHistorial = {
-        data:{
-            lote: {
-                _id:propsModal._id,
-                $inc:{"documento.kilosVaciados":new_historial}
-            }
-          },
-          collection:'historialLotes',
-          action: 'putHistorialLote',
-          query: 'proceso'
+      query: {
+        _id: propsModal.documento._id,
+        $inc: {
+          kilosVaciados: -(canastillas * promedio)
         }
+      },
+      historialLote: {
+        _id: propsModal._id,
+        $inc: {
+          "documento.$inc.kilosVaciados": -(canastillas * promedio)
+        }
+      }
+    },
+    action: 'modificarHistorialFrutaProcesada',
 
-      return [requestLotes, requestHistorial];
-    
+  }
+
+  return request;
+
 }
 export const compararCanastillas = (canastillas: number, propsModal: historialLotesType): boolean => {
-    const propsCanastillasInt = propsModal.documento.kilosVaciados && propsModal.documento.promedio? 
+  const propsCanastillasInt = propsModal.documento.kilosVaciados && propsModal.documento.promedio ?
     propsModal.documento.kilosVaciados / propsModal.documento.promedio : 0
-    return canastillas > propsCanastillasInt
+  return canastillas > propsCanastillasInt
 }
+export const requestData = (fechaInicio, fechaFin): object => {
+  const fechaMinima = new Date(0); // Fecha mínima (1 de enero de 1970)
+  const fechaActual = new Date(); // Fecha actual
+  // Si fechaInicio es "" o null, usar fecha mínima
+  if (!fechaInicio) {
+    fechaInicio = fechaMinima;
+  } else {
+    fechaInicio = new Date(fechaInicio);
+  }
+
+  // Si fechaFin es "" o null, usar fecha actual
+  if (!fechaFin) {
+    fechaFin = fechaActual;
+  } else {
+    fechaFin = new Date(fechaFin);
+  }
+
+  // Si fechaFin es menor que fechaInicio, usar fecha actual
+  if (fechaFin < fechaInicio) {
+    fechaFin = fechaActual;
+  }
+
+  return {
+    data: {
+      query: {
+        operacionRealizada: "vaciarLote"
+      },
+      fecha:{fechaInicio:fechaInicio, fechaFin:fechaFin},
+      limit: 50
+    },
+    action: 'obtenerHistorialLotes',
+  }
+};

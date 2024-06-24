@@ -18,31 +18,25 @@ export default function Vaciado(props: vaciadoType): JSX.Element {
     try {
 
       const canastillasInt = canastillas
-      const propsCanastillasInt =  props.propsModal.inventarioActual ?  props.propsModal.inventarioActual.inventario : 0
+      const propsCanastillasInt =  props.propsModal.inventario ?  props.propsModal.inventario : 0
 
       if (propsCanastillasInt !== undefined && canastillasInt > propsCanastillasInt) {
         messageModal("error","Error en el numero de canastillas!")
       } else {
-        const nuevo_lote = JSON.parse(JSON.stringify(props.propsModal));
-        nuevo_lote["inventarioActual.inventario"] = nuevo_lote.inventarioActual.inventario - canastillasInt;
-        nuevo_lote.kilosVaciados = Number(nuevo_lote.kilosVaciados)  + (Number(nuevo_lote.promedio) * Number(canastillasInt));
-        if ('inventario' in nuevo_lote.inventarioActual) {
-          delete nuevo_lote.inventarioActual.inventario;
-        }
-        if ('inventarioActual' in nuevo_lote) {
-          delete nuevo_lote.inventarioActual;
-        }
+        
         const request = {
           data:{
-            lote: nuevo_lote,
-            vaciado: canastillasInt
+            inventario:props.propsModal.inventario,
+            query:{
+              $inc:{
+                kilosVaciados: props.propsModal.inventario
+              }
+            }
           },
-          collection:'lotes',
           action: 'vaciarLote',
-          query: 'proceso',
-          record: 'vaciarLote'
+          
         }
-        const response = await window.api.server(request)
+        const response = await window.api.server2(request)
         // console.log(request)
         // const response = {status:401};
         if (response.status === 200) {
@@ -68,7 +62,7 @@ export default function Vaciado(props: vaciadoType): JSX.Element {
       </div>
       <div className='modal-container-body'>
           <p>
-            Numero de canastillas en inventario: {props.propsModal.inventarioActual && props.propsModal.inventarioActual.inventario}
+            Numero de canastillas en inventario: {props.propsModal.inventario && props.propsModal.inventario}
           </p>
           <input
             type="number"

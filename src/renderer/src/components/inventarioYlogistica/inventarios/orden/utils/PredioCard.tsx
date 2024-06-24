@@ -1,8 +1,6 @@
 /* eslint-disable prettier/prettier */
-import { userContext } from "@renderer/App";
 import { lotesType } from "@renderer/types/lotesType"
 import { format } from "date-fns"
-import { useContext } from "react";
 import { BsArrowRightSquareFill } from "react-icons/bs";
 import { es } from 'date-fns/locale';
 
@@ -12,7 +10,6 @@ type propsType = {
 }
 
 export default function PredioCard(props: propsType): JSX.Element {
-    const user = useContext(userContext);
     return (
         <div className="orden-vaciado-tarjeta-container">
             <div className="div1">
@@ -24,12 +21,12 @@ export default function PredioCard(props: propsType): JSX.Element {
                 <div className="orden-vaciado-tarjeta-nombre-predio-div">
                     <p>{props.lote.tipoFruta}</p>
                     {Object.prototype.hasOwnProperty.call(props.lote, "desverdizado") ? 
-                        <p> Canastillas: {Number(props.lote.desverdizado?.canastillas)}</p> :
-                        <p>Canastillas: {Number(props.lote.inventarioActual?.inventario)}</p> 
+                        <p> Canastillas: {Number(props.lote?.canastillas)}</p> :
+                        <p>Canastillas: {Number(props.lote?.inventario)}</p> 
                     }
                       {Object.prototype.hasOwnProperty.call(props.lote, "desverdizado") ? 
-                        <p>Canastillas: {(Number(props.lote.desverdizado?.canastillas) * Number(props.lote.promedio)).toLocaleString('es-CO')} Kg</p> :
-                        <p> Canastillas: {(Number(props.lote.inventarioActual?.inventario) * Number(props.lote.promedio)).toLocaleString('es-CO')} Kg</p>
+                        <p>Canastillas: {(Number(props.lote?.inventario) * Number(props.lote.promedio)).toLocaleString('es-CO')} Kg</p> :
+                        <p> Canastillas: {(Number(props.lote?.inventario) * Number(props.lote.promedio)).toLocaleString('es-CO')} Kg</p>
                     }
                     {Object.prototype.hasOwnProperty.call(props.lote, "desverdizado") && 
                         <p>Desverdizado</p>
@@ -39,11 +36,11 @@ export default function PredioCard(props: propsType): JSX.Element {
             </div>
             <div className="div2">
                 
-                {user.cargo === "admin" && 
+
                     <button onClick={(): void => props.handleAddOrdenVaceo(props.lote._id)}>
                         <BsArrowRightSquareFill />
                     </button>
-                }
+                
             </div>
         </div>
     )

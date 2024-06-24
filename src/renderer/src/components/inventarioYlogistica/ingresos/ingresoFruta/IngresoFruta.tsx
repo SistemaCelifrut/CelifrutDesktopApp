@@ -13,7 +13,7 @@ export default function IngresoFruta(): JSX.Element {
   const { messageModal } = useAppContext();
   const [prediosDatos, setPrediosData] = useState<proveedoresType[]>([])
   const [formState, setFormState] = useState(formInit);
-  const [enf, setEnf] = useState(0)
+  const [enf, setEnf] = useState('')
   const [reload, setReload] = useState<boolean>(false);
 
   const obtenerEF1 = async (): Promise<void> => {
@@ -61,7 +61,7 @@ export default function IngresoFruta(): JSX.Element {
         messageModal("error", 'Seleccione el tipo de fruta del lote')
         return
       }
-      const data = {...datos, enf:crearEF1()}
+      const data = {...datos, enf:enf}
       const request = {
         data: data,
         action: 'guardarLote',
@@ -82,10 +82,7 @@ export default function IngresoFruta(): JSX.Element {
   const reiniciarCampos = (): void => {
     setFormState(formInit);
   }
-  const crearEF1 = (): string => {
-    return strings.EF1 + new Date().getFullYear().toString().slice(-2) +
-    (new Date().getMonth() + 1).toString().padStart(2, '0') +  enf;
-  }
+
   return (
     <div className='componentContainer'>
       <div className='navBar'></div>
@@ -94,7 +91,7 @@ export default function IngresoFruta(): JSX.Element {
           {strings.title}
         </h2>
         <h2>
-          {crearEF1()}
+          {enf}
         </h2>
       </div>
       <form className="form-container" onSubmit={guardarLote}>

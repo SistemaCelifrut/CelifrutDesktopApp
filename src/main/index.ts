@@ -25,6 +25,7 @@ let permisos = []
 let socket
 let socket2
 let loginWindow 
+let mainWindow
 let accessToken ='';
 
 updater.autoUpdater.setFeedURL({ url: 'http://192.168.0.172:3000', provider: 'generic' })
@@ -32,7 +33,7 @@ updater.autoUpdater.setFeedURL({ url: 'http://192.168.0.172:3000', provider: 'ge
 //#region  create Windows
 function createWindow(): void {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     show: false,
@@ -295,12 +296,15 @@ ipcMain.handle('user', async (event, datos) => {
         })
       });
 
+
       socket.on('connect_error', (error) => {
         console.error('Socket connection error:', error);
       });
 
       socket2.on('connect_error', (error) => {
-        console.error('Socket connection error:', error);
+        console.error('Socket connection error:', error.message);
+        mainWindow.close()
+        createLoginWindow()
       });
       
       loginWindow.close()
@@ -345,10 +349,13 @@ ipcMain.handle('server2', async (event, data) => {
   try {
     event.preventDefault()
     const request = { data: data, token:accessToken }
-    console.log(request)
     const response:{status:number, data:object, token:string} = await new Promise((resolve) => {
       socket2.emit('Desktop2', request, (serverResponse) => {
-        console.log(serverResponse.token)
+        console.log(serverResponse.status)
+        if(serverResponse.status === 404){
+          mainWindow.close()
+          createLoginWindow()
+        }
         resolve(serverResponse)
       })
     })

@@ -16,14 +16,14 @@ export default function BotonesAccionFrutaSinProcesar(props: propsType): JSX.Ele
       <h3>{props.title}</h3>
       <h3>
         {props.table && props.table.reduce((acu, lote) => 
-          (acu += (lote.inventarioActual?.inventario && lote.promedio) ? 
-            lote.inventarioActual.inventario * lote.promedio : 0), 0).toLocaleString('es-ES')} Kg</h3>
+          (acu += (lote?.inventario && lote.promedio) ? 
+            lote.inventario * lote.promedio : 0), 0).toLocaleString('es-ES')} Kg</h3>
       <button onClick={props.closeDesverdizado} className={props.tipoFruta === "Naranja" ? 'desverdizar' : 'no-desverdizar'} >
         <span >Desverdizar</span>
       </button>
-      <button onClick={props.closeVaciado} className='vaciar'>
+      {/* <button onClick={props.closeVaciado} className='vaciar'>
         <span >Vaciar</span>
-      </button>
+      </button> */}
       <button onClick={props.closeDirecto} className='directo-nacional'>
         <span>Directo Nacional</span>
       </button>

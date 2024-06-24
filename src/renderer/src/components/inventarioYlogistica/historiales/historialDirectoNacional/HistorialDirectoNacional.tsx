@@ -8,22 +8,13 @@ import BotonesAccionHistorialFrutaProcesada from './utils/BotonesAccionHistorial
 import ModificarHistorialDirecto from './modals/ModificarHistorialDirecto'
 import NavBarInventario from './utils/NavBarInventario'
 import { historialLotesType } from '@renderer/types/lotesType'
+import useAppContext from '@renderer/hooks/useAppContext'
+import { requestData } from './functions/request'
 
-const request = {
-  data:{
-    query:{ 
-      operacionRealizada: "directoNacional", "documento.predio": { $exists: true } 
-    },
-    select : { },
-    sort:{fecha: -1},
-    limit:50
-  },
-  collection:'historialLotes',
-  action: 'obtenerHistorialLotes',
-  query: 'proceso'
-};
+
 
 export default function HistorialDirectoNacional(): JSX.Element {
+  const {messageModal} = useAppContext();
   const [datosOriginales, setDatosOriginales] = useState([])
   const [titleTable, setTitleTable] = useState('Historial directo nacional')
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -31,33 +22,25 @@ export default function HistorialDirectoNacional(): JSX.Element {
   const [showModificar, setShowModificar] = useState<boolean>(false)
   const [filtro, setFiltro] = useState<string>('')
   const [table, dispatch] = useReducer(reducerHistorial, INITIAL_STATE_HISTORIAL_PROCESO)
+  const [fechaInicio, SetFechaInicio] = useState("")
+  const [fechaFin, SetFechaFin] = useState("")
   const obtenerHistorialProceso = async ():Promise<void> => {
     try {
-      const frutaActual = await window.api.server(request)
+      const request = requestData(fechaInicio, fechaFin)
+      const frutaActual = await window.api.server2(request)
       if (frutaActual.status === 200) {
         setDatosOriginales(frutaActual.data)
         dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
       } else {
-        alert('error obteniendo datos del servidor')
+        messageModal('error' , 'Error obteniendo datos del servidor')
       }
     } catch (e: unknown) {
-      alert(`Fruta actual ${e}`)
+      messageModal('error',`Fruta actual ${e}`)
     }
   }
-  const handleServerEmit = async (data): Promise<void> => {
-    if (data.fn === "vaciado" || data.fn === "ingresoLote" || data.fn === "procesoLote") {
-      await obtenerHistorialProceso()
-    }
-  }
+
   useEffect(() => {
     obtenerHistorialProceso()
-
-    window.api.serverEmit('serverEmit', handleServerEmit)
-  
-    // Función de limpieza
-    return () => {
-      window.api.removeServerEmit('serverEmit', handleServerEmit)
-    }
   }, [showModal])
   const closeModal = (): void => {
     setShowModal(!showModal)
@@ -83,6 +66,9 @@ export default function HistorialDirectoNacional(): JSX.Element {
   const handleFilter = (data: string): void => {
     setFiltro(data)
   }
+  useEffect(() => {
+    obtenerHistorialProceso()
+  }, [fechaInicio,fechaFin ])
   return (
     <div className='componentContainer'>
       <NavBarInventario handleFilter={handleFilter} />
@@ -92,6 +78,8 @@ export default function HistorialDirectoNacional(): JSX.Element {
         table={table}
         closeModal={closeModal}
         modificar={showModificar}
+        SetFechaInicio={SetFechaInicio}
+        SetFechaFin={SetFechaFin}
       />
       <TableHistorialDirectoNacional table={table} clickLote={clickLote} />
 

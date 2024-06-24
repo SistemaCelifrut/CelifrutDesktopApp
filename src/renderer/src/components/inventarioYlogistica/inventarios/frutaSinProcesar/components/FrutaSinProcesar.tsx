@@ -15,20 +15,7 @@ type propsType = {
   filtro: string
 }
 const request = {
-  data: {
-    query: {
-      "inventarioActual.inventario": { $gt: 0 },
-    },
-    select: { clasificacionCalidad:1, nombrePredio: 1, fechaIngreso: 1, observaciones: 1, tipoFruta: 1, promedio: 1, "inventarioActual.inventario": 1, enf: 1, kilosVaciados: 1, directoNacional: 1 },
-    populate: {
-      path: 'predio',
-      select: 'PREDIO ICA'
-    },
-    sort: { fechaIngreso: -1 }
-  },
-  collection: 'lotes',
-  action: 'getLotes',
-  query: 'proceso',
+  action: 'getInventario'
 };
 
 export default function FrutaSinProcesar(props: propsType): JSX.Element {
@@ -45,36 +32,28 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
   //para modificar un dato
   const [loteSeleccionado, setLoteSeleccionado] = useState<lotesType>()
   const [showModal, setShowModal] = useState<boolean>(false)
-
-
-
+  const [reload, setReload] = useState<boolean>(false);
   const [table, dispatch] = useReducer(reducer, INITIAL_STATE)
 
   useEffect(() => {
     obtenerFruta()
-
-    const handleServerEmit = async (data): Promise<void> => {
-      if (data.fn === "vaciado" || data.fn === "ingresoLote" || data.fn === "procesoLote") {
-        await obtenerFruta()
-      }
+    window.api.reload(() => {
+      setReload(!reload)
+    });
+    return() => {
+      window.api.removeReload()
     }
-    window.api.serverEmit('serverEmit', handleServerEmit)
-
-    // Función de limpieza
-    return () => {
-      window.api.removeServerEmit('serverEmit', handleServerEmit)
-    }
-  }, [])
+  }, [reload])
   const obtenerFruta = async (): Promise<void> => {
     try {
-      const frutaActual = await window.api.server(request)
+      const frutaActual = await window.api.server2(request)
       if (frutaActual.status === 200 && Object.prototype.hasOwnProperty.call(frutaActual, "data")) {
         setDatosOriginales(frutaActual.data)
         dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
       } else {
-        messageModal("error", `Error ${frutaActual.status}: ${frutaActual.message}`)
+        messageModal("error", `${frutaActual.status}: ${frutaActual.message}`)
       }
-    } catch (e: unknown) {
+    } catch (e) {
       if (e instanceof Error) {
         messageModal("error", e.message)
       }
@@ -145,6 +124,7 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
       {showDirectoModal &&
         createPortal(
           <Directo
+            obtenerFruta={obtenerFruta}
             handleInfo={handleInfo}
             closeDirecto={closeDirecto}
             propsModal={propsModal} />,

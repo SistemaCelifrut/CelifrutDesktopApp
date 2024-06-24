@@ -9,10 +9,11 @@ type vaciadoType = {
   closeDirecto: () => void
   propsModal: lotesType
   handleInfo: () => void
+  obtenerFruta: () => void
 }
 
 export default function Directo(props: vaciadoType): JSX.Element {
-  const {theme, messageModal} = useAppContext();
+  const { theme, messageModal } = useAppContext();
   const [canastillas, setCanastillas] = useState<number>(0)
   const [placa, setPlaca] = useState<string>('')
   const [nombreConductor, setNombreConductor] = useState<string>('')
@@ -20,53 +21,46 @@ export default function Directo(props: vaciadoType): JSX.Element {
   const [cedula, setCedula] = useState<string>('')
   const [remision, setRemision] = useState<string>('')
 
-  const vaciar = async (): Promise<void> => {
+  const directoNacional = async (): Promise<void> => {
     try {
       const canastillasInt = canastillas
-      const propsCanastillasInt = props.propsModal.inventarioActual ? props.propsModal.inventarioActual.inventario : 0
-
+      const propsCanastillasInt = props.propsModal.inventario ? props.propsModal.inventario : 0
+      if(props.propsModal.promedio)
       if (propsCanastillasInt !== undefined && canastillasInt > propsCanastillasInt) {
-        messageModal("error","Error en el numero de canastillas!");
-      } else {
-        const nuevo_lote = JSON.parse(JSON.stringify(props.propsModal));
-        nuevo_lote["inventarioActual.inventario"] = nuevo_lote.inventarioActual.inventario - canastillasInt;
-        nuevo_lote.directoNacional = Number(nuevo_lote.directoNacional) + (Number(nuevo_lote.promedio) * Number(canastillasInt));
-        nuevo_lote.infoSalidaDirectoNacional = {
-          placa: placa,
-          nombreConductor: nombreConductor,
-          telefono: telefono,
-          cedula: cedula,
-          remision: remision
-        }
-        if ('inventario' in nuevo_lote.inventarioActual) {
-          delete nuevo_lote.inventarioActual.inventario;
-        }
-        if ('inventarioActual' in nuevo_lote) {
-          delete nuevo_lote.inventarioActual;
-        }
-        
+        messageModal("error", "Error en el numero de canastillas!");
+      } else{
         const request = {
-          data:{
-            lote: nuevo_lote,
-            vaciado: canastillasInt
+          data: {
+            inventario: Number(canastillas),
+            query: {
+              _id:props.propsModal._id,
+              $inc: {
+                directoNacional: Number(canastillas) *  props.propsModal.promedio,
+              },
+              infoSalidaDirectoNacional: {
+                placa: placa,
+                nombreConductor: nombreConductor,
+                telefono: telefono,
+                cedula: cedula,
+                remision: remision
+              }
+            }
           },
-          collection:'lotes',
-          action: 'putLotes',
-          query: 'proceso',
-          record: "directoNacional"
+          action: 'directoNacional',
         }
-
-        const response = await window.api.server(request)
+        const response = await window.api.server2(request)
         if (response.status === 200) {
-          messageModal("success","Fruta enviada a directo nacional!");
+          messageModal("success", "Fruta enviada a directo nacional!");
+          props.obtenerFruta()
+
         } else {
-          messageModal("error",`Error ${response.status}: ${response.message}`)
+          messageModal("error", `Error ${response.status}: ${response.message}`)
         }
       }
     } catch (e: unknown) {
       if (e instanceof Error) {
         messageModal("error", e.message)
-    }
+      }
     } finally {
       props.closeDirecto();
       props.handleInfo();
@@ -79,52 +73,52 @@ export default function Directo(props: vaciadoType): JSX.Element {
           <h2 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-lg font-semibold`}>{props.propsModal.predio && props.propsModal.predio.PREDIO}</h2>
         </div>
         <div className='modal-container-body'>
-            <p>Numero de canastillas en inventario: {props.propsModal.inventarioActual && props.propsModal.inventarioActual.inventario}</p>
-            <p>Canastillas</p>
-            <input
-              type="number"
-              min="0"
-              step="1"
-              onChange={(e): void => setCanastillas(Number(e.target.value))}
-            />
-            <p>Placa</p>
-            <input
-              type="text"
-              value={placa}
-              maxLength={6}
-              pattern="[A-Z]{3}[0-9]{3}"
-              onChange={(e): void => setPlaca(e.target.value)}
-            />
-            <p>Nombre conductor</p>
-            <input
-              type="text"
-              value={nombreConductor}
-              onChange={(e): void => setNombreConductor(e.target.value)}
-            />
-            <p>Telefono</p>
-            <input
-              type="text"
-              value={telefono}
-              onChange={(e): void => setTelefono(e.target.value)}
-            />
-            <p>Cedula</p>
-            <input
-              type="text"
-              value={cedula}
-              onChange={(e): void => setCedula(e.target.value)}
-            />
-            <p>Remision</p>
-            <input
-              type="text"
-              value={remision}
-              onChange={(e): void => setRemision(e.target.value)}
-            />
-       </div>
+          <p>Numero de canastillas en inventario: {props.propsModal.inventario && props.propsModal.inventario}</p>
+          <p>Canastillas</p>
+          <input
+            type="number"
+            min="0"
+            step="1"
+            onChange={(e): void => setCanastillas(Number(e.target.value))}
+          />
+          <p>Placa</p>
+          <input
+            type="text"
+            value={placa}
+            maxLength={6}
+            pattern="[A-Z]{3}[0-9]{3}"
+            onChange={(e): void => setPlaca(e.target.value)}
+          />
+          <p>Nombre conductor</p>
+          <input
+            type="text"
+            value={nombreConductor}
+            onChange={(e): void => setNombreConductor(e.target.value)}
+          />
+          <p>Telefono</p>
+          <input
+            type="text"
+            value={telefono}
+            onChange={(e): void => setTelefono(e.target.value)}
+          />
+          <p>Cedula</p>
+          <input
+            type="text"
+            value={cedula}
+            onChange={(e): void => setCedula(e.target.value)}
+          />
+          <p>Remision</p>
+          <input
+            type="text"
+            value={remision}
+            onChange={(e): void => setRemision(e.target.value)}
+          />
+        </div>
 
-       <div className="modal-container-buttons">
-        <button onClick={vaciar} className='danger'>Enviar</button>
-        <button onClick={props.closeDirecto} className='cancel'>Cancelar</button>
-      </div>
+        <div className="modal-container-buttons">
+          <button onClick={directoNacional} className='danger'>Enviar</button>
+          <button onClick={props.closeDirecto} className='cancel'>Cancelar</button>
+        </div>
       </div>
     </div>
   );

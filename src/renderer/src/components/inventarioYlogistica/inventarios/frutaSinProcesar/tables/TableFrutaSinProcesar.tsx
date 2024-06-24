@@ -48,10 +48,10 @@ export default function TableFrutaSinProcesar(props: propsType): JSX.Element {
               {lote.fechaIngreso ? format(new Date(lote.fechaIngreso), 'dd/MM/yyyy HH:mm', { locale: es }) : ""}
             </td>
             <td>
-              {(lote.inventarioActual?.inventario && lote.promedio) ? (lote.inventarioActual.inventario * lote.promedio).toFixed(2) : 0}
+              {(lote?.inventario && lote.promedio) ? (lote.inventario * lote.promedio).toFixed(2) : 0}
             </td>
             <td>
-              {lote.inventarioActual?.inventario && lote.inventarioActual.inventario}
+              {lote?.inventario && lote.inventario}
             </td>
             <td>
               {lote.tipoFruta}

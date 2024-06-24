@@ -19,32 +19,26 @@ export default function Desverdizado(props: vaciadoType): JSX.Element {
   const vaciar = async (): Promise<void> => {
     try {
       const canastillasInt = canastillas
-      const propsCanastillasInt = props.propsModal.inventarioActual ? props.propsModal.inventarioActual.inventario : 0
-
+      const propsCanastillasInt = props.propsModal.inventario ? props.propsModal.inventario : 0
+      if(props.propsModal.promedio)
       if (propsCanastillasInt !== undefined && canastillasInt > propsCanastillasInt) {
         messageModal("error","Error en el numero de canastillas!")
       } else {
-        const nuevo_lote = JSON.parse(JSON.stringify(props.propsModal));
-        nuevo_lote["inventarioActual.inventario"] = nuevo_lote.inventarioActual.inventario - canastillasInt;
-        delete nuevo_lote.inventarioActual;
-        nuevo_lote.desverdizado = {}
-        nuevo_lote.desverdizado.canastillas = canastillasInt;
-        nuevo_lote.desverdizado.canastillasIngreso = canastillasInt;
-        const suma_canastillas = Number(nuevo_lote.promedio) * Number(canastillasInt);
-        nuevo_lote.desverdizado.kilos = suma_canastillas;
-        nuevo_lote.desverdizado.kilosIngreso = suma_canastillas;
-        nuevo_lote.desverdizado.cuartoDesverdizado = cuartoDesverdizado;
-        
         const request = {
-          data:{
-            lote: nuevo_lote,
+          data: {
+            inventario: Number(canastillas),
+            query: {
+              _id:props.propsModal._id,
+              desverdizado: {
+                canastillasIngreso: canastillasInt,
+                kilosIngreso: Number(canastillas) *  props.propsModal.promedio,
+                cuartoDesverdizado: cuartoDesverdizado
+              }
+            }
           },
-          collection:'lotes',
-          action: 'putLotes',
-          query: 'proceso',
-          record: "desverdizado"
+          action: 'desverdizado',
         }
-        const response = await window.api.server(request)
+        const response = await window.api.server2(request)
         console.log(response)
         if (response.status === 200) {
           messageModal("success","Fruta puesta a desverdizar!")
@@ -69,7 +63,7 @@ export default function Desverdizado(props: vaciadoType): JSX.Element {
       </div>
      <div className='modal-container-body'>
         <p>
-          Numero de canastillas en inventario: {props.propsModal.inventarioActual && props.propsModal.inventarioActual.inventario}
+          Numero de canastillas en inventario: {props.propsModal.inventario && props.propsModal.inventario}
         </p>
         <input
           type="number"

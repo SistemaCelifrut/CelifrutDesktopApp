@@ -28,12 +28,12 @@ export default function OrdenVaciadoCard(props: propsType): JSX.Element {
         <div className="orden-vaciado-card-container-div-info">
           <p>{props.lote.tipoFruta}</p>
           {Object.prototype.hasOwnProperty.call(props.lote, "desverdizado") ?
-            <p> Canastillas: {Number(props.lote.desverdizado?.canastillas)}</p> :
-            <p>Canastillas: {Number(props.lote.inventarioActual?.inventario)}</p>
+            <p> Canastillas: {Number(props.lote?.canastillas)}</p> :
+            <p>Canastillas: {Number(props.lote?.inventario)}</p>
           }
           {Object.prototype.hasOwnProperty.call(props.lote, "desverdizado") ?
-            <p>Canastillas: {(Number(props.lote.desverdizado?.kilos)).toLocaleString('es-CO')} Kg</p> :
-            <p> Canastillas: {(Number(props.lote.inventarioActual?.inventario) * Number(props.lote.promedio)).toLocaleString('es-CO')} Kg</p>
+            <p>Canastillas: {(Number(props.lote?.kilos)).toLocaleString('es-CO')} Kg</p> :
+            <p> Canastillas: {(Number(props.lote?.inventario) * Number(props.lote.promedio)).toLocaleString('es-CO')} Kg</p>
           }
           {Object.prototype.hasOwnProperty.call(props.lote, "desverdizado") &&
             <p>Desverdizado</p>
@@ -43,11 +43,11 @@ export default function OrdenVaciadoCard(props: propsType): JSX.Element {
 
       </div>
       <div className="orden-vaciado-card-container-div-cancel">
-        {user.cargo === "admin" && 
+
           <button onClick={(): void => props.handleRemoveOrdenVaceo(props.lote._id)}>
             <ImCancelCircle />
           </button>
-        }
+        
       </div>
     </div>
   )

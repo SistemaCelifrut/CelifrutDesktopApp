@@ -13,22 +13,13 @@ import { lotesType } from '@renderer/types/lotesType'
 type propsType = {
   filtro: string
 }
+
 const request = {
   data:{
-    query:{ 
-      "desverdizado": { $exists: true },
-      "desverdizado.canastillas": {$gt: 0}
-    },
-    select : { promedio:1, enf:1, desverdizado:1, kilosVaciados:1},
-    populate:{
-      path: 'predio',
-      select: 'PREDIO ICA'
-    },
+    select: { promedio:1, enf:1, desverdizado:1, kilosVaciados:1},
     sort:{"desverdizado.fechaIngreso": -1}
   },
-  collection:'lotes',
-  action: 'getLotes',
-  query: 'proceso'
+  action: 'getInventarioDesverdizado'
 };
 
 export default function InventarioDesverdizado(props: propsType): JSX.Element {
@@ -48,7 +39,7 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
   const obtenerFruta = async (): Promise<void> => {
     try {
       setRender(!render)
-      const frutaActual = await window.api.server(request)
+      const frutaActual = await window.api.server2(request)
 
       if (frutaActual.status === 200) {
         setDatosOriginales(frutaActual.data)

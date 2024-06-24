@@ -42,8 +42,8 @@ export default function TableInventarioDesverdizado(props: propsType):JSX.Elemen
             </td>
             <td>{lote.enf}</td>
             <td>{lote.predio && lote.predio.PREDIO}</td>
-            <td>{lote.desverdizado?.canastillas}</td>
-            <td>{lote.desverdizado?.kilos}</td>
+            <td>{lote.inventarioDesverdizado ? lote.inventarioDesverdizado : 0}</td>
+            <td>{(lote.inventarioDesverdizado ? lote.inventarioDesverdizado : 0) * (lote.promedio ? lote.promedio : 1)}</td>
             <td>{lote.desverdizado?.cuartoDesverdizado}</td>
             <td>
               {lote.desverdizado?.fechaIngreso && format(new Date(lote.desverdizado?.fechaIngreso), 'dd-MM-yyyy')}

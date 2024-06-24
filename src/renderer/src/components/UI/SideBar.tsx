@@ -11,6 +11,7 @@ type propsType = {
   seleccionWindow: (data: string) => void
   handleSideBarWidth: () => void
   showSideBar: boolean
+  setWidthBar: (e:number) => void
 }
 
 export default function SideBar(props: propsType): JSX.Element {
@@ -50,8 +51,11 @@ export default function SideBar(props: propsType): JSX.Element {
   useEffect(() => {
     if (props.showSideBar) {
       setWidth(250)
+      props.setWidthBar(250)
     } else {
       setWidth(0)
+      props.setWidthBar(0)
+
     }
   }, [props.showSideBar])
 
@@ -59,6 +63,8 @@ export default function SideBar(props: propsType): JSX.Element {
   const handleMouseMove = (e): void => {
     if (isResizingRef) {
       setWidth(e.clientX);
+      props.setWidthBar(e.clientX)
+
     }
   };
 

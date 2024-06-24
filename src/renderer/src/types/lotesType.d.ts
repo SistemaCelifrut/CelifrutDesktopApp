@@ -37,6 +37,8 @@ export type lotesType = {
     numeroRemision?: string
     numeroPrecintos?: number
     urlBascula?:string
+    inventario?:number
+    inventarioDesverdizado?:number
 }
 
 export type historialLotesType = {
@@ -66,7 +68,6 @@ type descarteEnceradoType = {
 }
 
 type inventarioActualType = {
-    inventario?: number
     descarteEncerado?: {
         descarteGeneral: number
         pareja: number
@@ -121,8 +122,6 @@ type calidadType = {
 
 type desverdizadoType = {
     canastillasIngreso?: number
-    canastillas?: number
-    kilos?: number
     kilosIngreso?: number
     cuartoDesverdizado?: string
     fechaIngreso?: string

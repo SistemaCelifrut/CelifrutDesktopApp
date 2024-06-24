@@ -2,7 +2,7 @@
 
 export default function HeaderTableDesverdizado(): JSX.Element {
 
-  const headers = ["EF1", "Nombre del predio", "Canastillas", "Kilos", "Cuarto Desverdizado", "Fecha Ingreso" ]
+  const headers = ["","EF1", "Nombre del predio", "Canastillas", "Kilos", "Cuarto Desverdizado", "Fecha Ingreso" ]
   return (
     <thead>
       <tr >

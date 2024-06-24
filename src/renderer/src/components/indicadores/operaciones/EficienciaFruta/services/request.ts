@@ -38,6 +38,6 @@ export const request_data = (fechaInicio, fechaFin, tipoFruta): object => {
           sort:{fechaIngreso: -1},
           limit: 10000000,
         },
-        action: 'getLotes',
+        action: 'getInfoIndicadoresProceso',
       };
 }

@@ -21,16 +21,16 @@ export default function ModificarHistorialProceso(props: vaciadoType): JSX.Eleme
         if(checkCanastillas){
           throw new Error("Error en el numero de canastillas")
         }
-        const [requestLotes, requestHistorial] = requestModificarHistorial(Number(canastillas), props.propsModal)
+        const request = requestModificarHistorial(Number(canastillas), props.propsModal)
         
-        const responsehistorial = await window.api.server(requestHistorial)
-        const responseLotes = await window.api.server(requestLotes)
+        const response = await window.api.server2(request)
 
-        if (responseLotes.status === 200 && responsehistorial.status === 200) {
+
+        if (response.status === 200 ) {
           messageModal("success","Historial modificado!");
           await props.obtenerHistorialProceso()
         }  else {
-          throw new Error(`Error ${responseLotes.status}: ${responseLotes.message} y Error ${responsehistorial.status}: ${responsehistorial.message}`)
+          throw new Error(`Error ${response.status}: ${response.message} `)
         }
     } catch (e: unknown) {
       if(e instanceof Error){

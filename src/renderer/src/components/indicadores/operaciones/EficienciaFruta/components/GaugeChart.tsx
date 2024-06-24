@@ -108,6 +108,6 @@ export default function GaugeChart(props: propsType): JSX.Element {
         }
     }, [props.data])
     return (
-        <div ref={chartRef} style={{ width: '100%', height: '350px', margin:0, padding:0 }}></div>
+        <div ref={chartRef} style={{ width: '100%', height: '100%', margin:0, padding:0 }}></div>
     )
 }

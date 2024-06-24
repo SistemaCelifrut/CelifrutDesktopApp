@@ -8,9 +8,7 @@ export const predios: lotesType = {
   predio: { ICA: '', PREDIO: '' },
   fechaIngreso: '',
   kilosVaciados: 0,
-  inventarioActual: {
-    inventario: 0
-  },
+  inventario: 0,
   desverdizado: {
     canastillas: 0,
     canastillasIngreso: 0,
@@ -28,7 +26,7 @@ export const predios: lotesType = {
 
 export const INITIAL_STATE: lotesType[] = []
 
-export const reducer = (state: lotesType[], action: {data:lotesType[], type: string, filtro:string}): lotesType[] => {
+export const reducer = (state: lotesType[], action: { data: lotesType[], type: string, filtro: string }): lotesType[] => {
   switch (action.type) {
     case 'initialData':
       state = action.data

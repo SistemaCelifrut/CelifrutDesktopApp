@@ -29,7 +29,6 @@ import Informes from './components/calidad/informes/informesCalidad/Informes'
 import HistorialIngresoFruta from './components/inventarioYlogistica/historiales/historialIngresoFruta/HistorialIngreso'
 import FormularioMulas from './components/transporte/formulatioInspecciones/inspeccionMulas/FormularioMulas'
 // import HistorialFormulario from './components/transporte/historialInspecciones/historialFormularioInspeccionMulas/HistorialFormulario'
-import InventarioDescarte from './components/inventarioYlogistica/inventarios/descarte/InventarioDescarte'
 import HistorialDescarte from './components/inventarioYlogistica/historiales/historialDescartes/HistorialDescarte'
 import ListaDeEmpaque from './components/inventarioYlogistica/historiales/listaDeEmpaque/ListaDeEmpaque'
 import Lotes from './components/inventarioYlogistica/historiales/lotes/Lotes'
@@ -51,6 +50,8 @@ import DescarteEnceradoSistema from './components/sistema/descarteEncerado/Desca
 import SistemaExportacionLotes from './components/sistema/exportacionLotesData/SistemaExportacionLotes'
 import ModificarSeriales from './components/sistema/modificarSeriales/ModificarSeriales'
 import EficienciaFruta from './components/indicadores/operaciones/EficienciaFruta/EficienciaFruta'
+import ReprocesoDescarte from './components/inventarioYlogistica/inventarios/reproceso descarte/ReprocesoDescarte'
+import InventarioDescarte from './components/inventarioYlogistica/inventarios/InventarioDescarte/InventarioDescarte'
 
 type OpenModalFunction = (messageType: string, message: string) => void;
 type MyContextType = {
@@ -88,6 +89,7 @@ function App(): JSX.Element {
   const [dataComponentes, setDataComponentes] = useState<string>('')
   const [messageType, setMessageType] = useState<string>('')
   const [message, setMessage] = useState<string>('')
+  const [widthBar, setWidthBar] = useState<number>(100)
 
   const openMessage = (messageType: string, message: string): void => {
     setMessageType(messageType);
@@ -170,7 +172,11 @@ function App(): JSX.Element {
                           </div>
 
                           <div className='flex flex-row  h-full'>
-                            <SideBar seleccionWindow={seleccionWindow} handleSideBarWidth={handleSideBarWidth} showSideBar={showSideBar} />
+                            <SideBar 
+                              setWidthBar={setWidthBar}
+                              seleccionWindow={seleccionWindow} 
+                              handleSideBarWidth={handleSideBarWidth} 
+                              showSideBar={showSideBar} />
                             <div className={` flex justify-center w-full h-full overflow-auto `}>
                               {section === "main" && <Inicio />}
                               {/* Inventario y logistica */}
@@ -181,6 +187,7 @@ function App(): JSX.Element {
                               {section === "Inventario y Logística//Historiales//Fruta procesada" && <HistorialProcesado />}
                               {section === "Inventario y Logística//Historiales//Directo nacional" && <HistorialDirectoNacional />}
                               {section === "Inventario y Logística//Inventarios//Desverdizado" && <Desverdizado />}
+                              {section === "Inventario y Logística//Inventarios//Reproceso Descarte" && <ReprocesoDescarte />}
                               {section === "Inventario y Logística//Inventarios//Descarte" && <InventarioDescarte />}
                               {section === "Inventario y Logística//Historiales//Contenedores" && <Contenedores />}
                               {section === "Inventario y Logística//Historiales//Ingreso fruta" && <HistorialIngresoFruta />}
@@ -227,7 +234,7 @@ function App(): JSX.Element {
                               {section === 'Sistema//Proceso//Modificar serial lotes' && <ModificarSeriales />}
 
                               {/* indicadores */}
-                              {section === 'Indicadores//Operaciones//Eficiencía de la fruta' && <EficienciaFruta />}
+                              {section === 'Indicadores//Operaciones//Eficiencía de la fruta' && <EficienciaFruta widthBar={widthBar} />}
                             </div>
                           </div>
                         </div>

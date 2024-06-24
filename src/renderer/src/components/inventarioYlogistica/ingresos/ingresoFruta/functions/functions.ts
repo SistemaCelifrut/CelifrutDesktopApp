@@ -80,7 +80,7 @@ export const request_predios = {
   data: {
     query: {}
   },
-  action: 'obtenerPredios',
+  action: 'getProveedores',
 }
 
 export const request_EF1 = {

@@ -21,11 +21,11 @@ export default function OrdenVaceo(): JSX.Element {
 
   const obtenerData = async (): Promise<void> => {
     try {
-      const responseLotes: serverResponse<lotesType[]> = await window.api.server(requestLotes)
+      const responseLotes: serverResponse<lotesType[]> = await window.api.server2(requestLotes)
       if (responseLotes.status !== 200) {
         throw new Error(responseLotes.message);
       }
-      const responseOrden = await window.api.server(requestOrdenVaceo)
+      const responseOrden = await window.api.server2(requestOrdenVaceo)
       if (responseOrden.status !== 200) {
         throw new Error(responseOrden.message)
       }
@@ -44,30 +44,20 @@ export default function OrdenVaceo(): JSX.Element {
     }
   }
 
-  const handleServerEmit = async (data): Promise<void> => {
-    if (data.fn === "OrdenVaciado" || data.fn === "ingresoLote") {
-      await obtenerData()
-    }
-  }
   useEffect(() => {
     obtenerData()
-    window.api.serverEmit('serverEmit', handleServerEmit)
-  
-    // Función de limpieza
-    return () => {
-      window.api.removeServerEmit('serverEmit', handleServerEmit)
-    }
   }, [])
 
   const handleAddOrdenVaceo = async (_id): Promise<void> => {
     try {
       setOrdenVaceo(item => [...item, String(_id)]);
       const req = requestAddItemOrdenVaceo([...ordenVaceo, String(_id)]);
-      const response = await window.api.server(req);
+      const response = await window.api.server2(req);
       if (response.status !== 200) {
         throw new Error(response.message);
       }
       messageModal("success", "Guardado con exito");
+      await obtenerData()
     } catch (e) {
       if (e instanceof Error) {
         messageModal("error", e.message);
@@ -80,11 +70,12 @@ export default function OrdenVaceo(): JSX.Element {
       setOrdenVaceo(nuevaOrdenVaceo);
 
       const req = requestAddItemOrdenVaceo([...nuevaOrdenVaceo]);
-      const response = await window.api.server(req);
+      const response = await window.api.server2(req);
       if (response.status !== 200) {
         throw new Error(response.message);
       }
       messageModal("success", "Guardado con exito");
+      await obtenerData()
     } catch (e) {
       if (e instanceof Error) {
         messageModal("error", e.message);
@@ -96,11 +87,12 @@ export default function OrdenVaceo(): JSX.Element {
 
       const newOrdenVaceo = reoreder(ordenVaceo, source, destination);
       const req = requestAddItemOrdenVaceo(newOrdenVaceo);
-      const response = await window.api.server(req);
+      const response = await window.api.server2(req);
       if (response.status !== 200) {
         throw new Error(response.message);
       }
       messageModal("success", "Guardado con exito");
+      await obtenerData()
       
     } catch(e){
       if(e instanceof Error){
