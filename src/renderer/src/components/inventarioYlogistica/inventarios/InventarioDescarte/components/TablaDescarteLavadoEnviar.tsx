@@ -1,10 +1,12 @@
 /* eslint-disable prettier/prettier */
 import { labelsInventarioDescarte } from "../func/functions";
-import { inventarioDescarteLavadoType } from "../types/type";
+import { inventarioDescarteLavadoType, inventarioDescarteType } from "../types/type";
 
 type propsType = {
     data: inventarioDescarteLavadoType
     handleChange: (name:string, value:number, type:string) => void
+    formState: inventarioDescarteType
+
 };
 export default function TablaDescarteLavadoEnviar (props:propsType): JSX.Element {
     return(
@@ -26,6 +28,7 @@ export default function TablaDescarteLavadoEnviar (props:propsType): JSX.Element
                                 Number(e.target.value),
                                 key
                             )}
+                            value={props.formState.descarteLavado[key]}
                             className="defaultSelect" 
                             type="number" />
                         </td>

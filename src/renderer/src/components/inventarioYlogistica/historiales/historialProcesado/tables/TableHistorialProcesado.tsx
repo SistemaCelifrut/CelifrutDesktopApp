@@ -28,6 +28,8 @@ export default function TableHistorialProcesado(props: propsType): JSX.Element {
               <td>{item.documento.kilosVaciados && item.documento.kilosVaciados.toLocaleString('es-ES')}</td>
               <td>{item.documento.tipoFruta}</td>
               <td>{format(new Date(item.fecha), 'dd/MM/yyyy HH:mm', { locale: es })}</td>
+              <td>{item.user && item.user}</td>
+
             </tr>
           ))}
         </tbody>

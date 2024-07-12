@@ -16,10 +16,17 @@ export default function InventarioDescarte(): JSX.Element {
     const [data, setData] = useState<inventarioDescarteType>(inventarioInit)
     const [formState, setFormState] = useState<inventarioDescarteType>(inventarioInit);
     const [modal, setModal] = useState(false)
+    const [reload, setReload] = useState<boolean>(false);
 
     useEffect(() => {
         obtenerInentario();
-    }, [])
+        window.api.reload(() => {
+            setReload(!reload)
+          });
+          return() => {
+            window.api.removeReload()
+          }
+    }, [reload])
     const obtenerInentario = async (): Promise<void> => {
         try {
             const request = {
@@ -35,18 +42,21 @@ export default function InventarioDescarte(): JSX.Element {
     }
     const handleChange = (name, value, type): void => {
         setFormState((prevState) => ({
-          ...prevState,
-          [name]: {
-            ...prevState[name],
-            [type]: value,
-          },
+            ...prevState,
+            [name]: {
+                ...prevState[name],
+                [type]: -value,
+            },
         }));
     };
-    const handleEnviar = ():void => {
+    const handleEnviar = (): void => {
         setModal(true)
     }
     const closeModal = (): void => {
         setModal(!modal)
+    }
+    const resetFields = (): void => {
+        setFormState(inventarioInit)
     }
     return (
         <div className="componentContainer">
@@ -59,19 +69,21 @@ export default function InventarioDescarte(): JSX.Element {
             <h2>Enviar Descarte</h2>
             <hr />
             <div className="inventario-descartes-tables-container">
-                <TablaDescarteLavadoEnviar data={data.descarteLavado} handleChange={handleChange}/>
-                <TablaDescarteEnceradoEnviar data={data.descarteEncerado} handleChange={handleChange} />
+                <TablaDescarteLavadoEnviar formState={formState} data={data.descarteLavado} handleChange={handleChange} />
+                <TablaDescarteEnceradoEnviar formState={formState} data={data.descarteEncerado} handleChange={handleChange} />
             </div>
             <div className="inventario-descartes-container-button-enviar">
                 <button className="defaulButtonAgree" onClick={handleEnviar}>Enviar</button>
             </div>
             {modal &&
-        createPortal(
-          <ModalEnviar
-            formState={formState}
-            closeModal={closeModal} />,
-          document.body
-        )}
+                createPortal(
+                    <ModalEnviar
+                        resetFields={resetFields}
+                        obtenerInentario={obtenerInentario}
+                        formState={formState}
+                        closeModal={closeModal} />,
+                    document.body
+                )}
         </div>
     )
 }

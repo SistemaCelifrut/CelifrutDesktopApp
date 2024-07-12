@@ -7,6 +7,7 @@ import { createPortal } from 'react-dom'
 import ModalConfirmarProcesoDescarte from '../modals/ModalConfirmarProcesoDescarte'
 import { lotesType } from '@renderer/types/lotesType'
 import ModalModificarInventarioDescarte from './ModalModificarInventarioDescarte'
+import useAppContext from '@renderer/hooks/useAppContext'
 
 type propsType = {
   filtro: string
@@ -15,32 +16,12 @@ type propsType = {
 let enfObj = {}
 
 const request = {
-  data: {
-    query: {
-      $or: [
-        { "inventarioActual.descarteLavado.descarteGeneral": { $gt: 0 } },
-        { "inventarioActual.descarteLavado.pareja": { $gt: 0 } },
-        { "inventarioActual.descarteLavado.balin": { $gt: 0 } },
-        { "inventarioActual.descarteEncerado.descarteGeneral": { $gt: 0 } },
-        { "inventarioActual.descarteEncerado.pareja": { $gt: 0 } },
-        { "inventarioActual.descarteEncerado.balin": { $gt: 0 } },
-        { "inventarioActual.descarteEncerado.extra": { $gt: 0 } },
-      ],
-    },
-    select: { nombrePredio: 1, tipoFruta: 1, inventarioActual: 1, enf: 1 },
-    populate: {
-      path: 'predio',
-      select: 'PREDIO'
-    },
-    sort: { fechaIngreso: -1 }
-  },
-  collection: 'lotes',
-  action: 'getLotes',
-  query: 'proceso',
+  action: 'get_descarte_reproceso',
 };
 
 
 export default function InventarioDescartes(props: propsType): JSX.Element {
+  const { messageModal } = useAppContext();
   const [datosOriginales, setDatosOriginales] = useState([])
   const [render, setRender] = useState<boolean>(false)
   const [reprocesar, setReprocesar] = useState<boolean>(true)
@@ -57,24 +38,17 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
   useEffect(() => {
     const asyncFunction = async (): Promise<void> => {
       try {
-        const frutaActual = await window.api.server(request)
-        console.log(frutaActual)
-
-        if (frutaActual.status === 200) {
-          setDatosOriginales(frutaActual.data)
-          dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
-        } else {
-          alert('error obteniendo datos del servidor')
+        const frutaActual = await window.api.server2(request)
+        if (frutaActual.status !== 200) throw new Error(`Code ${frutaActual.status}: ${frutaActual.message}`)
+        setDatosOriginales(frutaActual.data)
+        dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
+      } catch (e) {
+        if(e instanceof Error){
+          messageModal("error", `${e.message}`)
         }
-      } catch (e: unknown) {
-        alert(`Fruta actual ${e}`)
       }
     }
     asyncFunction()
-
-    window.api.serverEmit('serverEmit', async () => {
-      await asyncFunction()
-    })
   }, [modal])
 
   const isProcesar = (data): void => {
@@ -94,7 +68,7 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
     const [enf, descarte, tipoDescarte] = e.target.value.split('/')
     const lote = table.find((lote) => enf === lote._id)
     if (e.target.checked && lote) {
-      enfObj[id] = lote.inventarioActual && lote.inventarioActual[descarte][tipoDescarte]
+      enfObj[id] = lote && lote[descarte][tipoDescarte]
     } else if (!e.target.checked && lote) {
       delete enfObj[id]
     }
@@ -109,7 +83,7 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
       const [enf, descarte, tipoDescarte] = i.value.split('/')
       const lote = table.find((lote) => enf === lote._id)
       if (i.checked && lote) {
-        enfObj[id] = lote.inventarioActual && lote.inventarioActual[descarte][tipoDescarte]
+        enfObj[id] = lote && lote[descarte][tipoDescarte]
       } else if (!i.checked && lote) {
         delete enfObj[id]
       }

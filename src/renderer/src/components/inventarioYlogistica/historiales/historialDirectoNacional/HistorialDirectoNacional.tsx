@@ -24,6 +24,8 @@ export default function HistorialDirectoNacional(): JSX.Element {
   const [table, dispatch] = useReducer(reducerHistorial, INITIAL_STATE_HISTORIAL_PROCESO)
   const [fechaInicio, SetFechaInicio] = useState("")
   const [fechaFin, SetFechaFin] = useState("")
+  const [reload, setReload] = useState<boolean>(false);
+
   const obtenerHistorialProceso = async ():Promise<void> => {
     try {
       const request = requestData(fechaInicio, fechaFin)
@@ -68,7 +70,14 @@ export default function HistorialDirectoNacional(): JSX.Element {
   }
   useEffect(() => {
     obtenerHistorialProceso()
-  }, [fechaInicio,fechaFin ])
+    window.api.reload(() => {
+      setReload(!reload)
+    });
+    return() => {
+      window.api.removeReload()
+    }
+
+  }, [fechaInicio,fechaFin, reload ])
   return (
     <div className='componentContainer'>
       <NavBarInventario handleFilter={handleFilter} />

@@ -13,6 +13,7 @@ import "../css/calidad-interna.css"
 type propsType = {
   lote: lotesType
   setLotesData: (e) => void
+  interval: () => void
 }
 
 export default function PruebasCalidadInterna(props: propsType): JSX.Element {
@@ -32,18 +33,13 @@ export default function PruebasCalidadInterna(props: propsType): JSX.Element {
 };
   const guardar = async (): Promise<void> => {
     try {
-      const lote = new_lote(formulario, props.lote, calidad);
+      const lote = new_lote(formulario);
       const requestLotes = {
-        query: 'proceso',
-        collection: 'lotes',
-        action: 'putLotes',
-        record: 'ingresoCalidadInterna',
-        data: {
-          lote: lote
-        }
+        action: 'ingresoCalidadInterna',
+        data: {...lote, clasificacionCalidad: calidad},
+        _id:props.lote._id
       }
-      const response = await window.api.server(requestLotes)
-      console.log(response)
+      const response = await window.api.server2(requestLotes)
       if (response.status !== 200) {
         throw new Error(`${response.message}`)
       }
@@ -54,6 +50,7 @@ export default function PruebasCalidadInterna(props: propsType): JSX.Element {
       }
     } finally {
       dispatch({ type: 'restablecer', data: '' })
+      props.interval()
     }
   }
 

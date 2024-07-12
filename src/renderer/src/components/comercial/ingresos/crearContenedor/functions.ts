@@ -1,15 +1,15 @@
 /* eslint-disable prettier/prettier */
 import { EF1Type, contenedoresType, palletType } from "@renderer/types/contenedoresType";
 
-type requestGuardarType = {
-  data: contenedoresType
-  collection:string
-  action: string
-  query: string
-  record :string
-}
+// type requestGuardarType = {
+//   data: contenedoresType
+//   collection:string
+//   action: string
+//   query: string
+//   record :string
+// }
 
-export const crearObjetoContenedor = (formState, calidad, tipoCaja): requestGuardarType => {
+export const crearObjetoContenedor = (formState: FormStateType):object => {
     const subDocumentos = [] as palletType[]
     const data = {
       cliente: formState.cliente,
@@ -18,12 +18,17 @@ export const crearObjetoContenedor = (formState, calidad, tipoCaja): requestGuar
       tipoFruta: formState.tipoFruta,
       desverdizado: formState.desverdizado,
       observaciones: formState.observaciones,
-      tipoEmpaque: formState.tipoEmpaque,
       fechaInicioProceso: formState.fechaInicioProceso,
       fechaEstimadaCargue: formState.fechaEstimadaCargue,
-      calidad: calidad,
-      tipoCaja: tipoCaja,
-      calibres: formState.calibres
+      calidad: formState.calidad,
+      tipoCaja: formState.tipoCaja,
+      calibres: formState.calibres,
+      sombra: formState.sombra,
+      defecto: formState.defecto,
+      mamcha: formState.mancha,
+      verdeManzana: formState.verdeMzn,
+      cajasTotal: formState.cajas,
+      rtoEstimado: formState.rtoEsrimado
     }
 
     for (let i = 1; i<=data.pallets; i++){
@@ -51,8 +56,7 @@ export const crearObjetoContenedor = (formState, calidad, tipoCaja): requestGuar
 
         numeroContenedor: data.numeroContenedor,
         infoContenedor:{
-            clienteInfo: data.cliente,
-            tipoEmpaque: data.tipoEmpaque,
+            clienteInfo: data.cliente as string,
             tipoFruta: data.tipoFruta,
             fechaCreacion: new Date().toUTCString(),
             fechaEstimadaCargue: data.fechaEstimadaCargue,
@@ -62,41 +66,69 @@ export const crearObjetoContenedor = (formState, calidad, tipoCaja): requestGuar
             cerrado: false,
             tipoCaja: data.tipoCaja,
             calidad: data.calidad,
-            calibres: data.calibres
-     
+            calibres: data.calibres,
+            sombra:data.sombra,
+            defecto:data.defecto,
+            mancha:data.mamcha,
+            verdeManzana:data.verdeManzana,
+            cajasTotal:data.cajasTotal,
+            rtoEstimado:data.rtoEstimado,
+            ultimaModificacion: new Date().toString(),
         },
         pallets: subDocumentos,
     }
 
     const request = {
       data: new_contenedor,
-      collection: 'contenedores',
       action: 'crearContenedor',
-      query: 'proceso',
-      record: 'crearContenedor'
     }
     return request;
 }
 
 
-export const formInit = {
-  numeroContenedor: '',
+export const formInit:FormStateType  = {
   cliente: '',
+  numeroContenedor: '',
   tipoFruta: '',
-  tipoEmpaque: '',
-  pallets: '',
   desverdizado: false,
-  observaciones: '',
   fechaInicioProceso: '',
   fechaEstimadaCargue: '',
-  calibres: ''
+  calidad:[],
+  tipoCaja:[],
+  sombra:'',
+  defecto:'',
+  mancha:'',
+  verdeMzn:'',
+  calibres: [],
+  pallets: '',
+  cajas:'',
+  totalFruta:'',
+  rtoEsrimado:'',
+  observaciones: '',
 }
 
 export const requestClientes = {
-  data: {
-    query: {}
-  },
-  collection: 'clientes',
   action: 'getClientes',
-  query: 'proceso'
+}
+
+
+export interface FormStateType {
+  cliente: string;
+  numeroContenedor: string;
+  tipoFruta: string;
+  desverdizado: boolean;
+  fechaInicioProceso: string;
+  fechaEstimadaCargue: string;
+  calidad: string[];  // Ajusta el tipo según tu necesidad
+  tipoCaja: string[];  // Ajusta el tipo según tu necesidad
+  sombra: string;
+  defecto: string;
+  mancha: string;
+  verdeMzn: string;
+  calibres: string[];
+  pallets: string;
+  cajas: string;
+  totalFruta: string;
+  rtoEsrimado: string;
+  observaciones: string;
 }

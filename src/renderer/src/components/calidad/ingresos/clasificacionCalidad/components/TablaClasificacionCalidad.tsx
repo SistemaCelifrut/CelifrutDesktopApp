@@ -41,23 +41,19 @@ export default function TablaClasificacionCalidad(props: propsType): JSX.Element
           objRes[item.key] = (Number(item.lavado) + Number(item.proceso)) / 2
         })
       }
-      const new_lote = {
-        ...props.lote,
-        calidad:{
-          ...props.lote.calidad,
-          clasificacionCalidad:objRes
-        }
-      }
+      const new_lote = {}
+
+      Object.keys(objRes).forEach(key => 
+        new_lote[`calidad.clasificacionCalidad.${key}`] = objRes[key]
+      )
+      
       const request = {
-        query: 'proceso',
-        collection:'lotes',
-        action: 'putLotes',
-        record: 'ingresoClasificacionCalidad',
-        data: {
-          lote:new_lote
-        }
+        action: 'ingresoClasificacionCalidad',
+        data: new_lote,
+        _id:props.lote._id
+        
     }
-      const response = await window.api.server(request)
+      const response = await window.api.server2(request)
       console.log(response)
       if (response.status !== 200) {
         throw new Error(`${response.message}`);

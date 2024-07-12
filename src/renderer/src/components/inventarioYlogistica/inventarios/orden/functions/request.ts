@@ -16,15 +16,10 @@ export const requestAddItemOrdenVaceo = (data): object => {
 
 export const requestVaciar = (lote): object => {
   return {
-    data: {
-      inventario: Number(lote.inventario),
-      query: {
-        _id:lote._id,
-        $inc: {
-          kilosVaciados: lote.inventario * lote.promedio
-        },
-      }
-    },
+    inventario: Number(lote.inventario),
+    kilosVaciados: lote.inventario * lote.promedio,
+    _id: lote._id,
     action: 'vaciarLote',
+    __v:lote.__v,
   }
 }

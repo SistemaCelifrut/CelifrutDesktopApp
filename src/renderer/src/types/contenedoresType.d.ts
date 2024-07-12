@@ -28,19 +28,24 @@ export type palletType = {
 }
 
 export type infoContendorType = {
-    clienteInfo?: clienteType
-    fechaCreacion?: string
-    fechaInicio?: string
-    fechaEstimadaCargue?: string
-    ultimaModificacion?: string
-    tipoFruta?: string
-    tipoEmpaque?: string
-    tipoCaja?: string[]
-    calidad?: string[]
-    cerrado?: boolean
-    observaciones?: string
-    calibres?: string
-    desverdizado?:boolean
+    clienteInfo: clienteType | string
+    fechaCreacion: string
+    fechaInicio: string
+    fechaEstimadaCargue: string
+    ultimaModificacion: string
+    tipoFruta: string
+    tipoCaja: string[]
+    calidad: string[]
+    cerrado: boolean
+    observaciones: string
+    sombra:string
+    defecto:string
+    mancha:string
+    verdeManzana:string
+    cajasTotal:string
+    rtoEstimado:string
+    calibres: string[]
+    desverdizado:boolean
     _id?: string
     urlInforme?: string
 

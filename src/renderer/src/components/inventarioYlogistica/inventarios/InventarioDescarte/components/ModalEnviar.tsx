@@ -8,7 +8,8 @@ import useAppContext from "@renderer/hooks/useAppContext"
 type propsType = {
     closeModal: () => void
     formState: inventarioDescarteType
-
+    obtenerInentario: () => void
+    resetFields: () => void
 }
 
 export default function ModalEnviar(props: propsType): JSX.Element {
@@ -24,13 +25,25 @@ export default function ModalEnviar(props: propsType): JSX.Element {
             [name]: uppercaseValue,
         });
     };
-    const handleEnviar = (): void => {
+    const handleEnviar = async (): Promise<void> => {
         try {
-            console.log(props.formState)
-            console.log(formState)
+            const request = {
+                action:'guardarDescarteHistorial',
+                inventario: props.formState,
+                datos:formState
+            }
+            const response = await window.api.server2(request);
+            if (response.status !== 200) throw new Error(`Code ${response.status}: ${response.message}`)
+            console.log(response)
+            messageModal("success","Enviado con exito")
         } catch (err) {
             if (err instanceof Error)
                 messageModal("error", `${err.name}: ${err.message}`)
+        }finally{
+            props.closeModal()
+            setFormState(formInitEnviar)
+            props.obtenerInentario()
+            props.resetFields()
         }
     }
     return (
@@ -68,7 +81,7 @@ export default function ModalEnviar(props: propsType): JSX.Element {
                     </div>
                 </div>
                 <div className="modal-container-buttons">
-                    <button onClick={handleEnviar} className='agree'>Vaciar</button>
+                    <button onClick={handleEnviar} className='agree'>Enviar</button>
                     <button onClick={props.closeModal} className='cancel'>Cancelar</button>
                 </div>
 

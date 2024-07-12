@@ -14,4 +14,26 @@ export type proveedoresType = {
   DEPARTAMENTO?: string
   urlArchivos?: ArrayBuffer[]
   activo?:boolean
+  precio?:precioType
+}
+
+type precioType = {
+  Limon:limonPrecioType
+  Naranja:naranjaPrecioType
+}
+
+type limonPrecioType = {
+  "1": number;
+  "15": number;
+  "2": number;
+  combinado: number;
+  descarte: number;
+}
+
+type naranjaPrecioType = {
+  "1": number;
+  "15": number;
+  "2": number;
+  zumex: number;
+  descarte: number;
 }

@@ -1,42 +1,45 @@
 /* eslint-disable prettier/prettier */
-import { lotesType } from "@renderer/types/lotesType"
 
 export const requestLotes = {
-  data: {
-    query: {
-      'calidad.calidadInterna': { $exists: false },
-      enf: { $regex: '^E', $options: 'i' }
-    },
-    select: { enf: 1, calidad: 1, tipoFruta: 1 },
-    populate: {
-      path: 'predio',
-      select: 'PREDIO ICA'
-    },
-    sort: { fechaIngreso: -1 }
-  },
-  collection: 'lotes',
-  action: 'getLotes',
-  query: 'proceso'
+
+  action: 'getLotesCalidadInterna'
+
 }
 
-export const new_lote = (formulario, lote: lotesType, clasificacionCalidad: string):lotesType => {
+// export const new_lote = (formulario, lote: lotesType, clasificacionCalidad: string):lotesType => {
+//   return {
+//     ...lote,
+//   clasificacionCalidad:clasificacionCalidad,
+//   calidad:{
+//     ...lote.calidad,
+//     calidadInterna:{
+//       zumo: Number(formulario.zumo),
+//       peso: Number(formulario.pesoInicial),
+//       brix:(Number(formulario.brix1) + Number(formulario.brix2) + Number(formulario.brix3)) / 3,
+//       acidez:(Number(formulario.acidez1) + Number(formulario.acidez2) + Number(formulario.acidez3)) / 3,
+//       semillas: Boolean(formulario.semillas),
+//       ratio:
+//       (Number(formulario.brix1) / Number(formulario.acidez1) +
+//           Number(formulario.brix2) / Number(formulario.acidez2) +
+//           Number(formulario.brix3) / Number(formulario.acidez3)) / 3,
+//       fecha: new Date().toUTCString()
+//     }
+//   }
+//   }
+// }
+
+export const new_lote = (formulario): object => {
   return {
-    ...lote,
-  clasificacionCalidad:clasificacionCalidad,
-  calidad:{
-    ...lote.calidad,
-    calidadInterna:{
-      zumo: Number(formulario.zumo),
-      peso: Number(formulario.pesoInicial),
-      brix:(Number(formulario.brix1) + Number(formulario.brix2) + Number(formulario.brix3)) / 3,
-      acidez:(Number(formulario.acidez1) + Number(formulario.acidez2) + Number(formulario.acidez3)) / 3,
-      semillas: Boolean(formulario.semillas),
-      ratio:
+    "calidad.calidadInterna.zumo": Number(formulario.zumo),
+    "calidad.calidadInterna.peso": Number(formulario.pesoInicial),
+    "calidad.calidadInterna.brix": (Number(formulario.brix1) + Number(formulario.brix2) + Number(formulario.brix3)) / 3,
+    "calidad.calidadInterna.acidez": (Number(formulario.acidez1) + Number(formulario.acidez2) + Number(formulario.acidez3)) / 3,
+    "calidad.calidadInterna.semillas": Boolean(formulario.semillas),
+    "calidad.calidadInterna.ratio":
       (Number(formulario.brix1) / Number(formulario.acidez1) +
-          Number(formulario.brix2) / Number(formulario.acidez2) +
-          Number(formulario.brix3) / Number(formulario.acidez3)) / 3,
-      fecha: new Date().toUTCString()
-    }
-  }
+        Number(formulario.brix2) / Number(formulario.acidez2) +
+        Number(formulario.brix3) / Number(formulario.acidez3)) / 3,
+    "calidad.calidadInterna.fecha": new Date().toUTCString()
+
   }
 }

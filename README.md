@@ -1,6 +1,8 @@
-# celifrutdesktopapp
+# Celifrut desktop app
 
-An Electron application with React and TypeScript
+An Electron application with React and TypeScript.
+
+it displays and manages the data generated in the process of sorting, shipping and packing of fruit for export.
 
 ## Recommended IDE Setup
 

@@ -30,6 +30,10 @@ const api = {
     const response = await ipcRenderer.invoke('server2', datos)
     return response
   },
+  crearDocumento: async (datos) => {
+    const response = await ipcRenderer.invoke('crearDocumento', datos)
+    return response
+  },
   serverEmit: (channel, callback) => {
     ipcRenderer.on(channel, (event, ...args) => {
       event.preventDefault
@@ -39,9 +43,14 @@ const api = {
   reload: (callback) => {
     ipcRenderer.on("reload", (_event, value) => {callback(value)})
   },
+  Descargar: (callback) => {
+    ipcRenderer.on("Descargar", (_event, value) => {callback(value)})
+  },
   removeReload: () => {
     ipcRenderer.removeAllListeners('reload')
+    ipcRenderer.removeAllListeners('Descargar')
   },
+
   removeServerEmit: (channel, callback) => {
     ipcRenderer.removeListener(channel, callback)
   },

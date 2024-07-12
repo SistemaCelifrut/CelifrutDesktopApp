@@ -14,22 +14,11 @@ export default function IngresoClasificacionCalidad(): JSX.Element {
 
   useEffect(() => {
     interval()
-    window.api.serverEmit('serverEmit', handleServerEmit)
-    // Función de limpieza
-    return () => {
-      window.api.removeServerEmit('serverEmit', handleServerEmit)
-    }
   }, [])
-
-  const handleServerEmit = async (data): Promise<void> => {
-    if (data.fn === "procesoLote" || data.fn === 'ingresoLote') {
-      await interval()
-    }
-  }
 
   const interval = async (): Promise<void> => {
     try {
-      const lotes = await window.api.server(requestlotes)
+      const lotes = await window.api.server2(requestlotes)
       if(lotes.status !== 200){
         throw new Error(`${lotes.message}`);
       }

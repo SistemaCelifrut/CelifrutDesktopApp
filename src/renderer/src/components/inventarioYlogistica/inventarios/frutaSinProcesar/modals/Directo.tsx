@@ -25,38 +25,34 @@ export default function Directo(props: vaciadoType): JSX.Element {
     try {
       const canastillasInt = canastillas
       const propsCanastillasInt = props.propsModal.inventario ? props.propsModal.inventario : 0
-      if(props.propsModal.promedio)
-      if (propsCanastillasInt !== undefined && canastillasInt > propsCanastillasInt) {
-        messageModal("error", "Error en el numero de canastillas!");
-      } else{
-        const request = {
-          data: {
-            inventario: Number(canastillas),
-            query: {
-              _id:props.propsModal._id,
-              $inc: {
-                directoNacional: Number(canastillas) *  props.propsModal.promedio,
-              },
-              infoSalidaDirectoNacional: {
-                placa: placa,
-                nombreConductor: nombreConductor,
-                telefono: telefono,
-                cedula: cedula,
-                remision: remision
-              }
-            }
-          },
-          action: 'directoNacional',
-        }
-        const response = await window.api.server2(request)
-        if (response.status === 200) {
-          messageModal("success", "Fruta enviada a directo nacional!");
-          props.obtenerFruta()
-
+      if (props.propsModal.promedio)
+        if (propsCanastillasInt !== undefined && canastillasInt > propsCanastillasInt) {
+          messageModal("error", "Error en el numero de canastillas!");
         } else {
-          messageModal("error", `Error ${response.status}: ${response.message}`)
+          console.log(props.propsModal)
+          const request = {
+            _id: props.propsModal._id,
+            infoSalidaDirectoNacional: {
+              placa: placa,
+              nombreConductor: nombreConductor,
+              telefono: telefono,
+              cedula: cedula,
+              remision: remision
+            },
+            directoNacional: Number(canastillas) * props.propsModal.promedio,
+            inventario: Number(canastillas),
+            __v: props.propsModal.__v,
+            action: 'directoNacional',
+          }
+          const response = await window.api.server2(request)
+          if (response.status === 200) {
+            messageModal("success", "Fruta enviada a directo nacional!");
+            props.obtenerFruta()
+
+          } else {
+            messageModal("error", `Error ${response.status}: ${response.message}`)
+          }
         }
-      }
     } catch (e: unknown) {
       if (e instanceof Error) {
         messageModal("error", e.message)

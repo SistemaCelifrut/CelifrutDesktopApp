@@ -10,6 +10,7 @@ import {
   Notification,
   Menu,
   MenuItem,
+  dialog,
 } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -68,7 +69,17 @@ function createWindow(): void {
     }
   }));
 
-  mainWindow.webContents.on("context-menu", function(e, params){
+  ctxMenu.append(new MenuItem({
+    label: "Descargar",
+    click: function():void{
+      mainWindow.webContents.send('Descargar', "Descargar")
+      return;
+    }
+  }));
+
+
+  mainWindow.webContents.on("context-menu", function(_, params){
+    
     ctxMenu.popup(params)
   })
   // HMR for renderer base on electron-vite cli.
@@ -386,7 +397,6 @@ ipcMain.handle('imprimirRotulos', async (event, data) => {
           }
         })
       })
-      console.log(response)
 
       if (cargo === 'auxiliar_lista_de_empaque') {
         const child = utilityProcess.fork(join(__dirname, 'imprimir.js'))
@@ -428,5 +438,16 @@ ipcMain.handle('imprimirRotulos', async (event, data) => {
   }
 })
 
+ipcMain.handle('crearDocumento', async (event, data) => {
+  event.preventDefault()
+  const { filePath } = await dialog.showSaveDialog({
+    title: 'Guardar archivo Excel',
+    defaultPath: 'tabla.xlsx',
+    filters: [{ name: 'Excel', extensions: ['xlsx'] }],
+  });
 
+  const child2 = utilityProcess.fork(join(__dirname, 'crearDocumentos.js'))
+  child2.postMessage({data:data, path:filePath});
+
+})
 

@@ -24,11 +24,6 @@ interface Descarte {
   extra?: number
 }
 
-interface InventarioActual {
-  inventario?: number
-  descarteEncerado: Descarte
-  descarteLavado: Descarte
-}
 
 interface FormState {
   predio: string
@@ -39,7 +34,6 @@ interface FormState {
   observaciones: string
   promedio: number
   canastillasVacias: string
-  inventarioActual: InventarioActual
   descarteLavado: Descarte
   descarteEncerado: Descarte
   numeroRemision: string
@@ -59,11 +53,6 @@ export const crear_request_guardar = (formState): FormState => {
     observaciones: formState.observaciones,
     promedio: parseFloat(formState.kilos) / parseFloat(formState.canastillas),
     canastillasVacias: formState.canastillasVacias,
-    inventarioActual: {
-      inventario: Number(formState.canastillas),
-      descarteEncerado: { balin: 0, pareja: 0, extra: 0, descarteGeneral: 0 },
-      descarteLavado: { balin: 0, pareja: 0, descarteGeneral: 0 }
-    },
     descarteLavado: { balin: 0, pareja: 0, descarteGeneral: 0, descompuesta: 0, piel: 0, hojas: 0 },
     descarteEncerado: {
       balin: 0,

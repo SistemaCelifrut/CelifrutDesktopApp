@@ -43,10 +43,11 @@ export type lotesType = {
 
 export type historialLotesType = {
     documento: lotesType
+    user?: string
     fecha: string
     _id: string
-    operacionRealizada: string
-
+    operacionRealizada: string,
+    __v:number
 }
 
 type descarteLavadoType = {

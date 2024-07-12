@@ -9,7 +9,6 @@ import SideBar from './components/UI/SideBar'
 import { userType } from './types/login'
 
 import IngresoFruta from './components/inventarioYlogistica/ingresos/ingresoFruta/IngresoFruta'
-import CrearContenedor from './components/inventarioYlogistica/ingresos/crearContenedor/CrearContenedor'
 import InventarioFrutaSinProcesar from './components/inventarioYlogistica/inventarios/frutaSinProcesar/InventarioFrutaSinProcesar'
 import HistorialProcesado from './components/inventarioYlogistica/historiales/historialProcesado/HistorialProcesado'
 import HistorialDirectoNacional from './components/inventarioYlogistica/historiales/historialDirectoNacional/HistorialDirectoNacional'
@@ -18,7 +17,6 @@ import CalidadInterna from './components/calidad/ingresos/calidadInterna/Calidad
 import HistorialCalidadInterna from './components/calidad/historiales/historialCalidadInterna/HistorialCalidadInterna'
 import IngresoClasificacionCalidad from './components/calidad/ingresos/clasificacionCalidad/IngresoClasificacionCalidad'
 import HistorialClasificacionCalidad from './components/calidad/historiales/historialClasificacionCalidad/HistorialClasificacionCalidad'
-import Clientes from './components/gestionDeCuentas/clientes/Clientes'
 import Contenedores from './components/inventarioYlogistica/historiales/contenedores/Contenedores'
 import ControlPlagas from './components/calidad/formularios/controlPlagas/ControlPlagas'
 import LimpiezaMensual from './components/calidad/formularios/limpiezaMensual/LimpiezaMensual'
@@ -32,7 +30,6 @@ import FormularioMulas from './components/transporte/formulatioInspecciones/insp
 import HistorialDescarte from './components/inventarioYlogistica/historiales/historialDescartes/HistorialDescarte'
 import ListaDeEmpaque from './components/inventarioYlogistica/historiales/listaDeEmpaque/ListaDeEmpaque'
 import Lotes from './components/inventarioYlogistica/historiales/lotes/Lotes'
-import Proveedores from './components/gestionDeCuentas/proveedores/Proveedores'
 import VolanteCalidad from './components/calidad/formularios/volanteCalidad/VolanteCalidad'
 // import HistorialProgramacionMula from './components/transporte/historialInspecciones/historialProgramacionMula/HistorialProgramacionMula'
 import Cuentas from './components/gestionDeCuentas/crearCuentas/Cuentas'
@@ -52,6 +49,11 @@ import ModificarSeriales from './components/sistema/modificarSeriales/ModificarS
 import EficienciaFruta from './components/indicadores/operaciones/EficienciaFruta/EficienciaFruta'
 import ReprocesoDescarte from './components/inventarioYlogistica/inventarios/reproceso descarte/ReprocesoDescarte'
 import InventarioDescarte from './components/inventarioYlogistica/inventarios/InventarioDescarte/InventarioDescarte'
+import CrearContenedor from './components/comercial/ingresos/crearContenedor/CrearContenedor'
+import Proveedores from './components/comercial/proveedores/Proveedores'
+import Clientes from './components/comercial/clientes/Clientes'
+import PrecioLimon from './components/comercial/precioLimon/PrecioLimon'
+import PrecioNaranja from './components/comercial/precioNaranja/PrecioNaranja'
 
 type OpenModalFunction = (messageType: string, message: string) => void;
 type MyContextType = {
@@ -181,7 +183,6 @@ function App(): JSX.Element {
                               {section === "main" && <Inicio />}
                               {/* Inventario y logistica */}
                               {section === "Inventario y Logística//Ingresos//Ingreso de fruta" && <IngresoFruta />}
-                              {section === "Inventario y Logística//Ingresos//Crear contenedor" && <CrearContenedor />}
                               {section === "Inventario y Logística//Inventarios//Fruta sin procesar" && <InventarioFrutaSinProcesar />}
                               {section === "Inventario y Logística//Inventarios//Orden de vaceo" && <OrdenDeVaceo />}
                               {section === "Inventario y Logística//Historiales//Fruta procesada" && <HistorialProcesado />}
@@ -210,8 +211,7 @@ function App(): JSX.Element {
 
 
                               {/* Gestion de cuentas */}
-                              {section === "Gestión de Cuentas//Clientes//Clientes" && <Clientes />}
-                              {section === "Gestión de Cuentas//Proveedores//Proveedores" && <Proveedores />}
+
                               {section === "Gestión de Cuentas//Ingresos//Crear cuenta" && <Cuentas />}
                               {section === "Gestión de Cuentas//Operarios//Operarios" && <Operario />}
 
@@ -235,6 +235,12 @@ function App(): JSX.Element {
 
                               {/* indicadores */}
                               {section === 'Indicadores//Operaciones//Eficiencía de la fruta' && <EficienciaFruta widthBar={widthBar} />}
+                              {/* Comercial */}
+                              {section === 'Comercial//Precios proveedor//Limon' && <PrecioLimon /> }
+                              {section === 'Comercial//Precios proveedor//Naranja' && <PrecioNaranja />}
+                              {section === "Comercial//Ingresos//Crear contenedor" && <CrearContenedor />}
+                              {section === "Comercial//Clientes//Clientes" && <Clientes />}
+                              {section === "Comercial//Proveedores//Proveedores" && <Proveedores />}
                             </div>
                           </div>
                         </div>

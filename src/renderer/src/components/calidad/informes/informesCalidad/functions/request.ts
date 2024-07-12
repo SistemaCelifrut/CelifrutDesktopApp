@@ -4,15 +4,9 @@ export const requestObject = (page): object => {
   return {
     data: {
       query: { enf: { $regex: '^E', $options: 'i' } },
-      select: {},
-      populate: {
-        path: 'predio',
-        select: 'PREDIO ICA'
-      },
-      sort: { fechaIngreso: -1 },
+      skip: (page - 1) * resultsPerPage,
       limit: resultsPerPage,
-      skip: (page - 1) * resultsPerPage
     },
-    action: 'getLotes'
+    action: 'get_lotes_informe_calidad'
   }
 }

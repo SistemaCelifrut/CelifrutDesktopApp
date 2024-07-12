@@ -17,7 +17,7 @@ export default function OrdenVaceo(): JSX.Element {
   const [lotesOriginal, setLotesOriginal] = useState<lotesType[]>([])
   const [ordenVaceo, setOrdenVaceo] = useState<string[]>([])
   const [lotesOrdenVaceo, setLotesOrdenVaceo] = useState<lotesType[]>([])
-
+  const [reload, setReload] = useState<boolean>(false);
 
   const obtenerData = async (): Promise<void> => {
     try {
@@ -46,7 +46,13 @@ export default function OrdenVaceo(): JSX.Element {
 
   useEffect(() => {
     obtenerData()
-  }, [])
+    window.api.reload(() => {
+      setReload(!reload)
+    });
+    return() => {
+      window.api.removeReload()
+    }
+  }, [reload])
 
   const handleAddOrdenVaceo = async (_id): Promise<void> => {
     try {

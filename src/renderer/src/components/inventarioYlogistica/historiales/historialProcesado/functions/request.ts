@@ -4,25 +4,19 @@ import { historialLotesType } from "@renderer/types/lotesType";
 export const requestModificarHistorial = (canastillas: number, propsModal: historialLotesType): object => {
   const promedio = propsModal.documento.promedio !== undefined ? propsModal.documento.promedio : 0;
   const request = {
-    data: {
-      inventario: canastillas,
-
-      query: {
-        _id: propsModal.documento._id,
-        $inc: {
-          kilosVaciados: -(canastillas * promedio)
-        }
-      },
-      historialLote: {
-        _id: propsModal._id,
-        $inc: {
-          "documento.$inc.kilosVaciados": -(canastillas * promedio)
-        }
-      }
+    _id: propsModal.documento._id,
+    kilosVaciados: -(canastillas * promedio),
+    inventario: canastillas,
+    historialLote: {
+      _idRecord: propsModal._id,
+      kilosHistorial: -(canastillas * promedio),
+      __vHistorial:propsModal.__v,
     },
+    __v:propsModal.documento.__v,
     action: 'modificarHistorialFrutaProcesada',
 
   }
+
 
   return request;
 
@@ -33,8 +27,10 @@ export const compararCanastillas = (canastillas: number, propsModal: historialLo
   return canastillas > propsCanastillasInt
 }
 export const requestData = (fechaInicio, fechaFin): object => {
-  const fechaMinima = new Date(0); // Fecha mínima (1 de enero de 1970)
-  const fechaActual = new Date(); // Fecha actual
+  const fechaActual = new Date(); 
+  const fechaMinima = new Date(fechaActual); 
+   // Restar 7 días a la fecha actual para obtener la fecha de una semana antes
+   fechaMinima.setDate(fechaActual.getDate() - 7);
   // Si fechaInicio es "" o null, usar fecha mínima
   if (!fechaInicio) {
     fechaInicio = fechaMinima;
@@ -60,7 +56,6 @@ export const requestData = (fechaInicio, fechaFin): object => {
         operacionRealizada: "vaciarLote"
       },
       fecha:{fechaInicio:fechaInicio, fechaFin:fechaFin},
-      limit: 50
     },
     action: 'obtenerHistorialLotes',
   }

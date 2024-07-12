@@ -8,9 +8,9 @@ export const sumatoriaDescartes = (data: lotesType[]): number => {
   const sumatoria = data.reduce(
     (acu1, lote) =>
       (acu1 +=
-        (lote.inventarioActual && lote.inventarioActual.descarteEncerado ? Object.values(lote.inventarioActual.descarteEncerado).reduce((acuEncerado, item) => (acuEncerado += item),0)  : 0)
+        (lote.inventarioActual && lote.descarteEncerado ? Object.values(lote.descarteEncerado).reduce((acuEncerado, item) => (acuEncerado += item),0)  : 0)
           + 
-        (lote.inventarioActual && lote.inventarioActual.descarteLavado ? Object.values(lote.inventarioActual.descarteLavado).reduce((acuLavado, item) => (acuLavado += item), 0) : 0)),
+        (lote.inventarioActual && lote.descarteLavado ? Object.values(lote.descarteLavado).reduce((acuLavado, item) => (acuLavado += item), 0) : 0)),
     0
   )
 

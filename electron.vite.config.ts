@@ -12,7 +12,8 @@ export default defineConfig({
         input: {
           index: resolve(__dirname, 'src/main/index.ts'),
           imprimir: resolve(__dirname, 'src/main/imprimir.js'),
-          imprimirPallet: resolve(__dirname, 'src/main/imprimirPallet.js')
+          imprimirPallet: resolve(__dirname, 'src/main/imprimirPallet.js'),
+          crearDocumentos: resolve(__dirname, 'src/main/crearDocumentos.js')
         }
       }
     }

@@ -2,7 +2,7 @@
 import {
   sumatoriaDescarteEspecifico,
   sumatoriaDescarteSeleccionado,
-  sumatoriaDescartes
+  // sumatoriaDescartes
 } from '../function/sumatorias'
 import { useEffect } from 'react'
 import { llavesVisualizar } from '../function/llaves'
@@ -23,7 +23,6 @@ export default function BotonesInventarioDescartes(props: propsType): JSX.Elemen
   return (
     <div className='inventario-descartes-botones-container'>
         <div className="inventario-descartes-botones-div-kilos-totales">
-          <h3>Kilos Totales: {sumatoriaDescartes(props.table).toLocaleString('es-ES')} Kg</h3>
           <h3>Kilos seleccionados: {sumatoriaDescarteSeleccionado(props.enfObj).toLocaleString('es-ES')} Kg</h3>
           {props.reprocesar && (
             <button onClick={(): void => props.procesar("Reprocesar el lote")} className='defaulButtonAgree'>
@@ -35,9 +34,9 @@ export default function BotonesInventarioDescartes(props: propsType): JSX.Elemen
               Reprocesar Celifrut
             </button>
           )}
-          <button onClick={(): void => props.procesar("Enviar descarte")} className='defaulButtonAgree'>
+          {/* <button onClick={(): void => props.procesar("Enviar descarte")} className='defaulButtonAgree'>
             Enviar
-          </button>
+          </button> */}
         </div>
         <div className="inventario-descartes-botones-div-kilos-totales">
           <div className="inventario-descartes-botones-div-kilos-totales-lavado">

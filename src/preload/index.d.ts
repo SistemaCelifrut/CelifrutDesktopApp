@@ -12,8 +12,10 @@ export interface Api {
   user: (datos) => Promise<serverResponse>
   server: (datos) => Promise<serverResponse>
   server2: (datos) => Promise<serverResponse>
+  crearDocumento: (datos) => void
   serverEmit: (data, callback) => any
   reload: (callback) => any
+  Descargar: (callback) => any
   removeReload: () => any
   removeServerEmit: (channel, callback) => void
 }

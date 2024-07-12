@@ -13,7 +13,7 @@ export default function TablaDescarteEncerado (props:propsType):JSX.Element{
         <table className="table-main">
         <thead>
             <tr>
-                <th>Descarte Lavado</th>
+                <th>Descarte Encerado</th>
                 <th></th>
             </tr>
         </thead>

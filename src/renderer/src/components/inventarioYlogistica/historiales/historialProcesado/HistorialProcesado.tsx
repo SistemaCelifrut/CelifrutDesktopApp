@@ -9,6 +9,7 @@ import ModificarHistorialProceso from './modals/ModificarHistorialProceso'
 import useAppContext from '@renderer/hooks/useAppContext'
 import { historialLotesType } from '@renderer/types/lotesType'
 import { requestData } from './functions/request'
+import { ordensarDataImprimir } from './functions/ordenarData'
 
 
 
@@ -22,6 +23,7 @@ export default function HistorialProcesado(): JSX.Element {
   const [table, dispatch] = useReducer(reducerHistorial, INITIAL_STATE_HISTORIAL_PROCESO)
   const [fechaInicio, SetFechaInicio] = useState("")
   const [fechaFin, SetFechaFin] = useState("")
+  const [reload, setReload] = useState<boolean>(false);
 
   const obtenerHistorialProceso = async (): Promise<void> => {
     try {
@@ -62,7 +64,18 @@ export default function HistorialProcesado(): JSX.Element {
 
   useEffect(() => {
     obtenerHistorialProceso()
-  }, [fechaInicio,fechaFin ])
+    window.api.reload(() => {
+      setReload(!reload)
+    });
+    window.api.Descargar(() => {
+      const dataOrdenada = ordensarDataImprimir(table)
+      const data = JSON.stringify(dataOrdenada)
+      window.api.crearDocumento(data)
+    })
+    return() => {
+      window.api.removeReload()
+    }
+  }, [fechaInicio,fechaFin, reload])
 
   useEffect(() => {
     dispatch({ type: 'filter', data: datosOriginales, filtro: '' })
