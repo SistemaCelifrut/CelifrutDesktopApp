@@ -10,6 +10,7 @@ import NavBarInventario from './utils/NavBarInventario'
 import { historialLotesType } from '@renderer/types/lotesType'
 import useAppContext from '@renderer/hooks/useAppContext'
 import { requestData } from './functions/request'
+import { ordensarDataImprimir } from './functions/ordenarDatos'
 
 
 
@@ -73,6 +74,11 @@ export default function HistorialDirectoNacional(): JSX.Element {
     window.api.reload(() => {
       setReload(!reload)
     });
+    window.api.Descargar(() => {
+      const dataOrdenada = ordensarDataImprimir(table)
+      const data = JSON.stringify(dataOrdenada)
+      window.api.crearDocumento(data)
+    })
     return() => {
       window.api.removeReload()
     }

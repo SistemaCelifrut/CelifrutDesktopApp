@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
-import { lotesType } from '@renderer/types/lotesType'
+import { descarteType } from '../types/types'
 
 
-export const INITIAL_STATE: lotesType[] = []
+export const INITIAL_STATE: descarteType[] = []
 
-export const reducer = (state: lotesType[], action: {data:lotesType[], type: string, filtro: string}): lotesType[] => {
+export const reducer = (state: descarteType[], action: {data:descarteType[], type: string, filtro: string}): descarteType[] => {
   switch (action.type) {
     case 'initialData':
       state = action.data

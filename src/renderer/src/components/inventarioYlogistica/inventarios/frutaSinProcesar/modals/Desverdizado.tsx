@@ -9,6 +9,8 @@ type vaciadoType = {
   closeDesverdizado: () => void
   propsModal: lotesType
   handleInfo: () => void
+  obtenerFruta: () => void
+
 }
 
 export default function Desverdizado(props: vaciadoType): JSX.Element {
@@ -37,9 +39,9 @@ export default function Desverdizado(props: vaciadoType): JSX.Element {
             action: 'desverdizado',
           }
           const response = await window.api.server2(request)
-          console.log(response)
           if (response.status === 200) {
             messageModal("success", "Fruta puesta a desverdizar!")
+            props.obtenerFruta();
           } else {
             messageModal("error", `Error ${response.status}: ${response.message}`)
           }

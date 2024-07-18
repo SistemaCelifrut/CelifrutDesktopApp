@@ -23,8 +23,10 @@
     border-width: 2px;
     border-radius: 8px;
     padding: 8px;
-    font-size: 14px;
+    font-size: 16px;
     color: white;
+    width: 100%;
+
 }
 
 .inventario-descartes-botones-div-kilos-totales-lavado div{
@@ -97,4 +99,21 @@
 
 .inventario-descartes-tarjeta-descarte-lavado span{
     font-weight: bold;
+}
+.inventario-descartes-botones-div-formulario-envio{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.inventario-descartes-botones-div-formulario-envio-div{
+    display: flex;
+    justify-content: space-between;
+}
+
+.inventario-descartes-botones-div-formulario-envio-div input{
+    border-radius: 8px;
+    height: 30px;
+    color: black;
+    padding-left: 2px;
 }

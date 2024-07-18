@@ -17,11 +17,11 @@ export default function FormularioProgramacionMula(props: porpsType): JSX.Elemen
   const { messageModal } = useAppContext();
   const [state, setState] = useState<formularioInspeccionMulaType>(initialData);
   const [contenedorSelect, setContenedorSelect] = useState<string>('');
-  useEffect(()=>{dataContenedor()},[props.modificar])
+  useEffect(() => { dataContenedor() }, [props.modificar])
 
-  const dataContenedor = ():void => {
-    if(props.modificar && props.contenedor !== undefined){
-      const formData = {...state}
+  const dataContenedor = (): void => {
+    if (props.modificar && props.contenedor !== undefined) {
+      const formData = { ...state }
       formData.placa = props.contenedor.formularioInspeccionMula?.placa
       formData.trailer = props.contenedor.formularioInspeccionMula?.trailer
       formData.conductor = props.contenedor.formularioInspeccionMula?.conductor
@@ -37,17 +37,17 @@ export default function FormularioProgramacionMula(props: porpsType): JSX.Elemen
       setState(formData)
       setContenedorSelect(String(props.contenedor._id))
     } else {
-      const formData = {...state}
+      const formData = { ...state }
       formData.placa = ""
       formData.trailer = ""
       formData.conductor = ""
-      formData.cedula =""
+      formData.cedula = ""
       formData.celular = ""
       formData.color = ""
-      formData.modelo =""
+      formData.modelo = ""
       formData.marca = ""
-      formData.prof =""
-      formData.puerto =""
+      formData.prof = ""
+      formData.puerto = ""
       formData.naviera = ""
       formData.agenciaAduanas = ""
       setState(formData)
@@ -107,12 +107,16 @@ export default function FormularioProgramacionMula(props: porpsType): JSX.Elemen
         <div>
           <label>Contenedores</label>
           <select className='defaultSelect' onChange={(e): void => setContenedorSelect(e.target.value)}>
-            <option value="">Contendores</option>
+            <option value="">Contenedores</option>
             {props.contenedores?.map(item => (
-              <option key={item._id} value={item._id}>{item.infoContenedor?.clienteInfo &&
-                item.numeroContenedor + " - " + item.infoContenedor?.clienteInfo?.CLIENTE}</option>
+              <option key={item._id} value={item._id}>
+                {item.infoContenedor?.clienteInfo && typeof item.infoContenedor.clienteInfo === 'object' &&
+                  `${item.numeroContenedor} - ${item.infoContenedor.clienteInfo.CLIENTE}`
+                }
+              </option>
             ))}
           </select>
+
         </div>
         {Object.keys(state).map((key, index) => (
           <div key={key}>

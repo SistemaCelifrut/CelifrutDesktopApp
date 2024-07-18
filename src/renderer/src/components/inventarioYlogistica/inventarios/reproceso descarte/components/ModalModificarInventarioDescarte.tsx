@@ -18,11 +18,11 @@ export default function ModalModificarInventarioDescarte(props: propsType): JSX.
     const [formStateEncerado, setFormStateEncerado] = useState(formInitEncerado);
     useEffect(()=>{
         if(props.loteSeleccionado !== undefined &&
-            props.loteSeleccionado.inventarioActual?.descarteEncerado &&
-            props.loteSeleccionado.inventarioActual?.descarteLavado
+            props.loteSeleccionado.descarteEncerado &&
+            props.loteSeleccionado.descarteLavado
         ){
-            const formDataLavado = props.loteSeleccionado.inventarioActual?.descarteLavado
-            const formDataEncerado = props.loteSeleccionado.inventarioActual?.descarteEncerado
+            const formDataLavado = props.loteSeleccionado.descarteLavado
+            const formDataEncerado = props.loteSeleccionado.descarteEncerado
 
             setFormStateEncerado({...formDataEncerado})
             setFormStateLavado({...formDataLavado})

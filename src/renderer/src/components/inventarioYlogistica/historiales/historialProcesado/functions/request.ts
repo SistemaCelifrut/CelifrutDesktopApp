@@ -16,16 +16,14 @@ export const requestModificarHistorial = (canastillas: number, propsModal: histo
     action: 'modificarHistorialFrutaProcesada',
 
   }
-
-
   return request;
-
 }
 export const compararCanastillas = (canastillas: number, propsModal: historialLotesType): boolean => {
   const propsCanastillasInt = propsModal.documento.kilosVaciados && propsModal.documento.promedio ?
     propsModal.documento.kilosVaciados / propsModal.documento.promedio : 0
   return canastillas > propsCanastillasInt
 }
+
 export const requestData = (fechaInicio, fechaFin): object => {
   const fechaActual = new Date(); 
   const fechaMinima = new Date(fechaActual); 

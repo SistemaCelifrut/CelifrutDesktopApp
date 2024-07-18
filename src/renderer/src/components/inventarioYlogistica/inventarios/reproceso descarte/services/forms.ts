@@ -12,3 +12,21 @@ export const formInitEncerado = {
     extra: 0,
     suelo: 0
 }
+
+export const formDespachoInit = {
+    nombreCliente:'',
+    placa:'',
+    nombreConductor:'',
+    telefono:'',
+    cedula:'',
+    remision:''
+}
+
+export const formDespachoLabels = {
+    nombreCliente:'Nombre del cliente',
+    placa:'Placa',
+    nombreConductor:'Nombre confuctor',
+    telefono:'Telefono',
+    cedula:'Cedula',
+    remision:'Remisión'
+}

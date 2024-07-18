@@ -5,20 +5,14 @@ import TableInventarioDesverdizado from '../tables/TableInventarioDesverdizado'
 import BotonesInventarioDesverdizado from '../utils/BotonesInventarioDesverdizado'
 import { createPortal } from 'react-dom'
 import DesverdizadoSetParametrosModal from '../modals/DesverdizadoSetParametrosModal'
-import DesverdizadoFInalizarDesverdizado from '../modals/DesverdizadoFInalizarDesverdizado'
-import DesverdizadoProcesarModal from '../modals/DesverdizadoProcesarModal'
 import useAppContext from '@renderer/hooks/useAppContext'
 import { lotesType } from '@renderer/types/lotesType'
+import ConfirmacionModal from '@renderer/messages/ConfirmacionModal'
 
 type propsType = {
   filtro: string
 }
-
 const request = {
-  data:{
-    select: { promedio:1, enf:1, desverdizado:1, kilosVaciados:1},
-    sort:{"desverdizado.fechaIngreso": -1}
-  },
   action: 'getInventarioDesverdizado'
 };
 
@@ -29,11 +23,14 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
   const [titleTable, setTitleTable] = useState('Lotes')
   const [showButton, setShowButton] = useState<string>('')
   const [showModalParametros, setShowModalParametros] = useState<boolean>(false)
-  const [showModalFinalizar, setShowModalFinalizar] = useState<boolean>(false)
-  const [showModalProcesar, setShowModalProcesar] = useState<boolean>(false)
   const [render, setRender] = useState<boolean>(false)
 
   const [table, dispatch] = useReducer(reducer, INITIAL_STATE)
+  const [reload, setReload] = useState<boolean>(false);
+  //modal de confimacion
+  const [confirm, setConfirm] = useState<boolean>(false)
+  const [message,] = useState<string>('¿Desea finalizar el desverdizado?')
+  const [showConfirmation, setShowConfirmation] = useState<boolean>(false)
 
 
   const obtenerFruta = async (): Promise<void> => {
@@ -48,24 +45,19 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
         messageModal("error", `Error ${frutaActual.status}: ${frutaActual.message}`);
       }
     } catch (e: unknown) {
-     messageModal("error", `Error ${e}`)
-    }
-  }
-  const handleServerEmit = async (data): Promise<void> => {
-    if (data.fn === "procesoLote") {
-      await obtenerFruta()
+      messageModal("error", `Error ${e}`)
     }
   }
   useEffect(() => {
     obtenerFruta()
-    window.api.serverEmit('serverEmit', handleServerEmit)
-    // Función de limpieza
+    window.api.reload(() => {
+      setReload(!reload)
+    });
     return () => {
-      window.api.removeServerEmit('serverEmit', handleServerEmit)
+      window.api.removeReload()
     }
 
-  }, [])
-
+  }, [reload])
   const clickLote = (e): void => {
     const enf = e.target.value
     const lote: lotesType | undefined = table.find((item) => item.enf === enf)
@@ -73,7 +65,7 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
       setPropsModal(lote)
     }
     if (e.target.checked) {
-      setTitleTable(enf + ' ' +  (lote?.predio?.PREDIO || ""))
+      setTitleTable(enf + ' ' + (lote?.predio?.PREDIO || ""))
       if (lote?.desverdizado?.fechaFinalizar) {
         setShowButton('finalizado')
       } else {
@@ -81,27 +73,45 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
       }
     }
   }
-
   const closeParametros = (): void => {
     setShowModalParametros(!showModalParametros)
   }
-
-  const closeFinalizarDesverdizado = (): void => {
-    setShowModalFinalizar(!showModalFinalizar)
-  }
-
-  const closeProcesarDesverdizado = (): void => {
-    setShowModalProcesar(!showModalProcesar)
-  }
-  const handleInfo = ():void => {
+  const handleInfo = (): void => {
     setPropsModal(predios)
     setTitleTable("Lotes")
+  }
+  const finalizar = async (): Promise<void> => {
+    try {
+      const request = {
+        _id: propsModal._id,
+        __v: propsModal.__v,
+        action: 'set_finalizar_desverdizado',
+      }
+      const response = await window.api.server2(request)
+
+      if (response.status == 200) {
+        messageModal("success", "Desverdizado finalizado!");
+      } else {
+        messageModal("error", "Error enviando los datos a el servidor!")
+      }
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        messageModal("error", e.message)
+      }
+    } finally {
+      handleInfo();
+    }
   }
 
   useEffect(() => {
     dispatch({ type: 'filter', data: datosOriginales, filtro: props.filtro })
   }, [props.filtro])
-
+  useEffect(() => {
+    if (confirm) {
+      finalizar();
+      setConfirm(false)
+    }
+  }, [confirm]);
   return (
     <div>
       <BotonesInventarioDesverdizado
@@ -109,8 +119,7 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
         table={table}
         showButton={showButton}
         closeParametros={closeParametros}
-        closeFinalizarDesverdizado={closeFinalizarDesverdizado}
-        closeProcesarDesverdizado={closeProcesarDesverdizado}
+        setShowConfirmation={setShowConfirmation}
       />
 
       <TableInventarioDesverdizado
@@ -128,24 +137,9 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
           />,
           document.body
         )}
-      {showModalFinalizar &&
-        createPortal(
-          <DesverdizadoFInalizarDesverdizado
-            closeFinalizarDesverdizado={closeFinalizarDesverdizado}
-            propsModal={propsModal}
-            handleInfo={handleInfo}
-          />,
-          document.body
-        )}
-      {showModalProcesar &&
-        createPortal(
-          <DesverdizadoProcesarModal
-            closeProcesarDesverdizado={closeProcesarDesverdizado}
-            propsModal={propsModal}
-            handleInfo={handleInfo}
-          />,
-          document.body
-        )}
+
+      {showConfirmation && <ConfirmacionModal message={message} setConfirmation={setConfirm} setShowConfirmationModal={setShowConfirmation} />}
+
     </div>
   )
 }

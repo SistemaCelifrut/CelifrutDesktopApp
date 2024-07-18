@@ -18,6 +18,7 @@ import { io } from 'socket.io-client'
 import { clientesServerResponseType } from './types/login'
 import updater from 'electron-updater'
 import appIcon from "../../build/Celifrut.ico?asset"
+import { exec } from 'child_process'
 
 let theme: 'Dark' | 'Ligth' = 'Ligth'
 let cargo = ''
@@ -188,6 +189,7 @@ app.whenReady().then(() => {
       theme = 'Ligth'
     }
   })
+
 
 
   createLoginWindow()

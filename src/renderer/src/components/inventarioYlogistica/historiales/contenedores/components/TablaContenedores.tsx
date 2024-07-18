@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { es } from 'date-fns/locale';
 
+
 type propsType = {
     data: contenedoresType[]
 }
@@ -45,7 +46,7 @@ export default function TablaContenedores(props: propsType): JSX.Element {
                                 {contenedor.numeroContenedor}
                             </td>
                             <td>
-                                {contenedor.infoContenedor?.clienteInfo?.CLIENTE}
+                            {contenedor.infoContenedor && typeof contenedor.infoContenedor.clienteInfo === 'object' ? contenedor.infoContenedor.clienteInfo.CLIENTE : ''}
                             </td>
                             <td>
                                 {format(contenedor.infoContenedor?.fechaCreacion ?

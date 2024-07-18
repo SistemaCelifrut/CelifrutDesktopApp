@@ -133,6 +133,7 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
       {showDesverdizadoModal &&
         createPortal(
           <Desverdizado
+            obtenerFruta={obtenerFruta}
             handleInfo={handleInfo}
             closeDesverdizado={closeDesverdizado}
             propsModal={propsModal} />,

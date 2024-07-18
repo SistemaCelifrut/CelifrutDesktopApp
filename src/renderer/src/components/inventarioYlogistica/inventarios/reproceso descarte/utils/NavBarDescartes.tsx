@@ -6,20 +6,19 @@ type propsType = {
 }
 
 export default function NavBarDescartes(props: propsType): JSX.Element {
-  const [search, setSearch] = useState<string>('')
 
   const handleText = (data: string): void => {
-    setSearch(data)
     props.handleFilter(data)
   }
 
   return (
     <div className="navBar">
-        <input
-          type="text"
-          placeholder='Buscar...'
-          value={search}
-          onChange={(e): void => handleText(e.target.value)}/>
+      <select onChange={(e): void => handleText(e.target.value)} >
+        <option value="">Tipo de fruta</option>
+        <option value="Naranja">Naranja</option>
+        <option value="Limon">Limon</option>
+      </select>
     </div>
+  
   )
 }

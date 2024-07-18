@@ -55,7 +55,7 @@ export default function ActivarFunciones(): JSX.Element {
                     <option value="">Contenedores</option>
                     {contenedores.map(item => (
                         <option key={item._id} value={item._id}>
-                            {item.numeroContenedor + "--" + item.infoContenedor?.clienteInfo?.CLIENTE}
+                            {`${item.numeroContenedor} -- ${typeof item.infoContenedor?.clienteInfo === 'object' ? item.infoContenedor.clienteInfo.CLIENTE : ''}`}
                         </option>
                     ))}
                 </select>

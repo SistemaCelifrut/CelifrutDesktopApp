@@ -29,6 +29,7 @@ export default function TableHistorialDirectoNacional(props: propsType): JSX.Ele
               <td>{item.documento.directoNacional && item.documento.directoNacional.toFixed(2)}</td>
               <td>{item.documento.tipoFruta}</td>
               <td>{format(new Date(item.fecha), 'dd/MM/yyyy HH:mm', { locale: es })}</td>
+              <td>{item.user && item.user}</td>
             </tr>
           ))}
       </tbody>

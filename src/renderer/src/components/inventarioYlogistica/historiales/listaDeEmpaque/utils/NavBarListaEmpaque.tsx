@@ -15,8 +15,8 @@ export default function NavBarListaEmpaque(props: propsType): JSX.Element {
         <option>Contenedores</option>
         {props.contenedores.length > 0 && props.contenedores.map((item) => (
           <option key={item._id} value={item._id}>
-            {item.numeroContenedor} - 
-            {item.infoContenedor && item.infoContenedor.clienteInfo ? item.infoContenedor.clienteInfo.CLIENTE : 'Nombre no disponible'}
+            {item.numeroContenedor} -
+            {item.infoContenedor && typeof item.infoContenedor.clienteInfo === 'object' ? item.infoContenedor.clienteInfo.CLIENTE : 'Nombre no disponible'}
           </option>
         ))}
       </select>

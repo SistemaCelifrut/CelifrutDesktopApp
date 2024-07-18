@@ -52,9 +52,7 @@ export default function TablePrincipalGeneral(props: propsType): JSX.Element {
       <h3>Total</h3>
       <div className='listaEmpaque-table-containter-tipo'>
         <span className="font-bold">
-          {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
-            ? 'Cajas: '
-            : 'Sacos: '}
+          { 'Cajas: '}
         </span>
         {total}
       </div>
@@ -66,21 +64,15 @@ export default function TablePrincipalGeneral(props: propsType): JSX.Element {
           <div className='listaEmpaque-table-show-items' >
             <div>
               <span >Calidad 1:</span> {calidad[1]}{' '}
-              {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
-                ? 'Cajas '
-                : 'Sacos '}
+              {'Cajas '}
             </div>
             <div>
               <span>Calidad 1.5:</span> {calidad['1.5']}{' '}
-              {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
-                ? 'Cajas '
-                : 'Sacos '}
+              {'Cajas'}
             </div>
             <div>
               <span>Calidad 2:</span> {calidad['2']}{' '}
-              {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
-                ? 'Cajas '
-                : 'Sacos '}
+              {'Cajas '}
             </div>
           </div>
         </div>
@@ -95,18 +87,14 @@ export default function TablePrincipalGeneral(props: propsType): JSX.Element {
             <div className="listaEmpaque-table-show-items"><span>Calibre {item}:</span> </div>
             <div>
               <span> {calibre[item]}{' '}</span>
-              {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
-                ? 'Cajas '
-                : 'Sacos '}
+              { 'Cajas '}
             </div>
           </div>
         ))}
       <hr />
       <h3>
         Tipo{' '}
-        {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
-          ? 'Cajas: '
-          : 'Sacos: '}
+        {'Cajas: '}
       </h3>
       {tipoCaja !== null &&
         Object.keys(tipoCaja).map((item) => (
@@ -115,15 +103,11 @@ export default function TablePrincipalGeneral(props: propsType): JSX.Element {
           className="listaEmpaque-table-containter-tipo">
             <div className='listaEmpaque-table-show-items'>
               <span>Tipo de{' '}
-              {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
-                ? 'Cajas: '
-                : 'Sacos: '}{' '}
+              { 'Cajas: '}{' '}
               {item}</span>
             </div>
             <div>
-              {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja'
-                ? 'Cajas '
-                : 'Sacos '}
+              {'Cajas '}
               {tipoCaja[item]}
             </div>
           </div>

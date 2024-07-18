@@ -21,9 +21,9 @@ export default function PredioCard(props: propsType): JSX.Element {
                 <div className="orden-vaciado-tarjeta-nombre-predio-div">
                     <p>{props.lote.tipoFruta}</p>
                     {Object.prototype.hasOwnProperty.call(props.lote, "desverdizado") ? 
-                        <p> Canastillas: {Number(props.lote?.canastillas)}</p> :
+                        <p> Canastillas: {Number(props.lote?.inventario)}</p> :
                         <p>Canastillas: {Number(props.lote?.inventario)}</p> 
-                    }
+                    }   
                       {Object.prototype.hasOwnProperty.call(props.lote, "desverdizado") ? 
                         <p>Canastillas: {(Number(props.lote?.inventario) * Number(props.lote.promedio)).toLocaleString('es-CO')} Kg</p> :
                         <p> Canastillas: {(Number(props.lote?.inventario) * Number(props.lote.promedio)).toLocaleString('es-CO')} Kg</p>

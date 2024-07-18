@@ -1,11 +1,11 @@
 /* eslint-disable prettier/prettier */
-import { lotesType } from '@renderer/types/lotesType'
 import { llavesVisualizar } from '../function/llaves'
 import { useEffect } from 'react'
 import { PiNotePencilDuotone } from "react-icons/pi";
+import { descarteType } from '../types/types';
 
 type propsType = {
-  lote: lotesType
+  lote: descarteType
   seleccionarItems: (e: unknown) => void
   seleccionarVariosItems: (items: unknown) => void
   respawn: boolean
@@ -15,19 +15,19 @@ type propsType = {
 
 export default function TarjetaInvetarioDescartes(props: propsType): JSX.Element {
   if (props.lote) {
-    // const seleccionarLote = (e): void => {
-    //   const buttons = document.getElementsByClassName(props.lote._id + 'descarteCheckbox')
-    //   if (e.target.checked) {
-    //     for (const i of buttons) {
-    //       ; (i as HTMLInputElement).checked = true
-    //     }
-    //   } else {
-    //     for (const i of buttons) {
-    //       ; (i as HTMLInputElement).checked = false
-    //     }
-    //   }
-    //   props.seleccionarVariosItems(buttons)
-    // }
+    const seleccionarLote = (e): void => {
+      const buttons = document.getElementsByClassName(props.lote._id + 'descarteCheckbox')
+      if (e.target.checked) {
+        for (const i of buttons) {
+          ; (i as HTMLInputElement).checked = true
+        }
+      } else {
+        for (const i of buttons) {
+          ; (i as HTMLInputElement).checked = false
+        }
+      }
+      props.seleccionarVariosItems(buttons)
+    }
 
     useEffect(() => {
       const buttons = document.querySelectorAll('input')
@@ -46,7 +46,7 @@ export default function TarjetaInvetarioDescartes(props: propsType): JSX.Element
         <div className="inventario-descartes-tarjeta-info-div">
           <div className="inventario-descartes-tarjeta-info-div2">
             <div className="inventario-descartes-tarjeta-info-div-checkbox">
-              {/* <input type="checkbox" onClick={seleccionarLote} /> */}
+              <input type="checkbox" onClick={seleccionarLote} />
               <h4>{props.lote.enf}</h4>
             </div><h5>{props.lote.predio && props.lote.predio.PREDIO}
             </h5>

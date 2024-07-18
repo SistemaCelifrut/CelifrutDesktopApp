@@ -17,12 +17,18 @@ export default function Contenedores(): JSX.Element {
   },[])
 
   useEffect(() => {
-    const dataFiltrada = dataOriginal.filter(item => (
-        String(item.numeroContenedor).startsWith(filtro) ||
-        item.infoContenedor?.clienteInfo?.CLIENTE.startsWith(filtro.toUpperCase())
-        ))
-    setData(dataFiltrada)
-  },[filtro])
+    const dataFiltrada = dataOriginal.filter(item => {
+        if (typeof item.infoContenedor?.clienteInfo === 'object') {
+            return (
+                String(item.numeroContenedor).startsWith(filtro) ||
+                item.infoContenedor.clienteInfo.CLIENTE.startsWith(filtro.toUpperCase())
+            );
+        }
+        return false; // O cualquier lógica que desees para manejar el caso de clienteInfo no siendo un objeto
+    });
+    setData(dataFiltrada);
+}, [filtro]);
+
 
   const obtenerContenedores = async (): Promise<void> => {
     try {

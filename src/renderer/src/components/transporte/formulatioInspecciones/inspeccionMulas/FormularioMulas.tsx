@@ -35,14 +35,14 @@ const FormularioMulas: React.FC = () => {
     const { name, checked } = event.target;
     setFormState({
       ...formState,
-      [name]:{...formState[name],cumple:checked}
+      [name]: { ...formState[name], cumple: checked }
     });
   };
-  const handleChangeObservaciones  = (event): void =>{
+  const handleChangeObservaciones = (event): void => {
     const { name, value } = event.target;
     setFormState({
       ...formState,
-      [name]:{...formState[name],observaciones:value}
+      [name]: { ...formState[name], observaciones: value }
     });
   }
   const handleSubmit = async (event): Promise<void> => {
@@ -50,11 +50,11 @@ const FormularioMulas: React.FC = () => {
     try {
       const sendData = send_data(formState, responsable, contenedorSelect);
       const response = await window.api.server(sendData);
-      if(response.status !== 200) 
+      if (response.status !== 200)
         throw new Error(response.message)
-      messageModal("success","datos guardados con exito!")
-    } catch(e){
-      if(e instanceof Error){
+      messageModal("success", "datos guardados con exito!")
+    } catch (e) {
+      if (e instanceof Error) {
         messageModal("error", e.message)
       }
     }
@@ -72,22 +72,29 @@ const FormularioMulas: React.FC = () => {
         <div>
           <label>Contenedores</label>
           <select className='defaultSelect'
-            onChange={(e): void => setContenedorSelect(contenedores?.find(item => item._id === e.target.value))}>
-            <option value="">Contendores</option>
+            onChange={(e): void => {
+              const selectedContenedor = contenedores?.find(item => item._id === e.target.value);
+              setContenedorSelect(selectedContenedor);
+            }}>
+            <option value="">Contenedores</option>
             {contenedores && contenedores?.map(item => (
-              <option key={item._id} value={item._id}>{item.infoContenedor?.clienteInfo &&
-                item.numeroContenedor + " - " + item.infoContenedor?.clienteInfo?.CLIENTE}</option>
+              <option key={item._id} value={item._id}>
+                {item.infoContenedor?.clienteInfo && typeof item.infoContenedor.clienteInfo === 'object' &&
+                  `${item.numeroContenedor} - ${item.infoContenedor.clienteInfo.CLIENTE}`
+                }
+              </option>
             ))}
           </select>
+
         </div>
         <div>
           {contenedorSelect !== undefined && <ShowDataContenedores contenedorSelect={contenedorSelect} />}
         </div>
         <div>
-          <FormularioInspeccion 
+          <FormularioInspeccion
             formState={formState}
-            handleChangeCheckBoxk={handleChangeCheckBoxk} 
-            handleChangeObservaciones={handleChangeObservaciones}/>
+            handleChangeCheckBoxk={handleChangeCheckBoxk}
+            handleChangeObservaciones={handleChangeObservaciones} />
         </div>
         <div className='formulario-inspeccionMula-div-button'>
           <button className='formulario-inspeccionMula-button'>Guardar</button>

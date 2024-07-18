@@ -12,6 +12,7 @@ files:
 asarUnpack:
   - resources/**
   - tsclibnet.dll
+  - docs/build/**
 afterSign: build/notarize.js
 win:
   executableName: Celifrut

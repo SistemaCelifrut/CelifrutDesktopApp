@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 export const requestLotes = {
-  action: 'getInventario'
+  action: 'getInventario_orden_vaceo'
 }
 
 export const requestOrdenVaceo = {

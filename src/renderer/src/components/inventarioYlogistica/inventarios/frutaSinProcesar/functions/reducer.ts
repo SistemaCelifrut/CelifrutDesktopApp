@@ -10,9 +10,7 @@ export const predios: lotesType = {
   kilosVaciados: 0,
   inventario: 0,
   desverdizado: {
-    canastillas: 0,
     canastillasIngreso: 0,
-    kilos: 0,
     kilosIngreso: 0,
     cuartoDesverdizado: '',
   },

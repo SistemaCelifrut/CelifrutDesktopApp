@@ -9,13 +9,11 @@ export const documentoInit: historialLotesType = {
   _id: "",
   fecha: "",
   operacionRealizada: "",
+  __v:0,
   documento:{
     directoNacional:0,
     enf:"",
     fechaIngreso:"",
-    inventarioActual:{
-      inventario: 0
-    },
     kilosVaciados: 0,
     observaciones: "",
     predio:{
@@ -25,8 +23,7 @@ export const documentoInit: historialLotesType = {
     },
     promedio: 0,
     tipoFruta:"",
-    _id:""
-
+    _id:"",
   }
 }
 

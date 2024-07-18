@@ -59,10 +59,7 @@ export default function FiltrosListaEmpaque(props: propsType): JSX.Element {
               <>
                 <option value={'predio'}>Predios</option>
                 <option value={'pallet'}>
-                  {props.contenedor && props.contenedor.infoContenedor &&
-                    props.contenedor.infoContenedor.tipoEmpaque === 'Caja'
-                    ? 'Pallets'
-                    : 'Estibas'}
+                  {'Caja'}
                 </option>
               </>
             )}

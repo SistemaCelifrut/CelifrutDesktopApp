@@ -17,12 +17,12 @@ export default function ModalModificarFrutaSinProcesar(props: propsType): JSX.El
     const [formState, setFormState] = useState<number>(0);
 
     useEffect(()=>{
-        if(props.loteSeleccionado !== undefined &&
-            props.loteSeleccionado.inventarioActual && 
-            props.loteSeleccionado.inventarioActual.inventario
-         ){
-            setFormState(props.loteSeleccionado.inventarioActual?.inventario)
-        }
+        // if(props.loteSeleccionado !== undefined &&
+        //     props.loteSeleccionado.inventarioActual && 
+        //     props.loteSeleccionado.inventarioActual.inventario
+        //  ){
+        //     setFormState(props.loteSeleccionado.inventarioActual?.inventario)
+        // }
     },[])
 
     const handleGuardar = async (e): Promise<void> => {

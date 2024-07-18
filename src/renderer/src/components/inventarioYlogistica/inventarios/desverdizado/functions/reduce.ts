@@ -11,13 +11,8 @@ export const predios: lotesType = {
     predio: { ICA: '', PREDIO: '' },
     fechaIngreso: '',
     kilosVaciados: 0,
-    inventarioActual: {
-      inventario: 0
-    },
     desverdizado: {
-      canastillas: 0,
       canastillasIngreso: 0,
-      kilos: 0,
       kilosIngreso: 0,
       cuartoDesverdizado: '',
       fechaIngreso:''

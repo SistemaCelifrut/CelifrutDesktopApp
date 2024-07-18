@@ -5,7 +5,7 @@ export type contenedoresType = {
   _id?: string
   numeroContenedor?: number
   pallets?: palletType[]
-  infoContenedor?: infoContendorType
+  infoContenedor: infoContendorType
   formularioInspeccionMula?: formularioInspeccionMulaType
   __v?: number
 }

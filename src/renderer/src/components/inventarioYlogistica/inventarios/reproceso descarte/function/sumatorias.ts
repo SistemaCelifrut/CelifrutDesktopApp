@@ -1,16 +1,18 @@
 /* eslint-disable prettier/prettier */
 
-import { lotesType } from "@renderer/types/lotesType"
+import { descarteType } from "../types/types"
 
-export const sumatoriaDescartes = (data: lotesType[]): number => {
+
+
+export const sumatoriaDescartes = (data: descarteType[]): number => {
   if (!data) return 0
 
   const sumatoria = data.reduce(
     (acu1, lote) =>
       (acu1 +=
-        (lote.inventarioActual && lote.descarteEncerado ? Object.values(lote.descarteEncerado).reduce((acuEncerado, item) => (acuEncerado += item),0)  : 0)
+        (Object.values(lote.descarteEncerado).reduce((acuEncerado, item) => (acuEncerado += item),0))
           + 
-        (lote.inventarioActual && lote.descarteLavado ? Object.values(lote.descarteLavado).reduce((acuLavado, item) => (acuLavado += item), 0) : 0)),
+        (Object.values(lote.descarteLavado).reduce((acuLavado, item) => (acuLavado += item), 0))),
     0
   )
 
@@ -18,13 +20,13 @@ export const sumatoriaDescartes = (data: lotesType[]): number => {
 }
 
 export const sumatoriaDescarteEspecifico = (
-  data: lotesType[],
+  data: descarteType[],
   descarte: string,
   tipoDescarte: string
 ):number => {
   if (!data) return 0
 
-  const sumatoria = data.reduce((acu, lote) => (acu += lote.inventarioActual ? lote.inventarioActual[descarte][tipoDescarte] : 0), 0)
+  const sumatoria = data.reduce((acu, lote) => (acu += lote[descarte][tipoDescarte]), 0)
 
   return sumatoria
 }

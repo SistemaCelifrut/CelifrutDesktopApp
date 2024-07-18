@@ -6,7 +6,7 @@ import { useState } from "react"
 import useAppContext from "@renderer/hooks/useAppContext"
 
 type propsType = {
-    constenedores: contenedoresType[] 
+    constenedores: contenedoresType[]
 }
 export default function IngresarPallet(props: propsType): JSX.Element {
     const { messageModal } = useAppContext();
@@ -28,20 +28,19 @@ export default function IngresarPallet(props: propsType): JSX.Element {
     return (
         <div className='funciones-div-tipoProceso'>
             <h3>Agregar pallet</h3>
-            <select className='defaultSelect' 
-            onChange={(e): void => setContenedorSeleccionado(props.constenedores.find(item => item._id === e.target.value))}
-            
-            
+            <select className='defaultSelect'
+                onChange={(e): void => setContenedorSeleccionado(props.constenedores.find(item => item._id === e.target.value))}
             >
                 <option value="">Contenedores</option>
-                { props.constenedores.map(item => (
+                {props.constenedores.map(item => (
                     <option key={item._id} value={item._id}>
-                        {item.numeroContenedor + "--" + item.infoContenedor?.clienteInfo?.CLIENTE}
+                        {`${item.numeroContenedor} -- ${typeof item.infoContenedor?.clienteInfo === 'object' ? item.infoContenedor.clienteInfo.CLIENTE : ''
+                            }`}
                     </option>
                 ))}
             </select>
             <div className="funciones-div-tipoProceso-div-action">
-                <button className='defaulButtonAgree'  onClick={handle_add_pallet}>
+                <button className='defaulButtonAgree' onClick={handle_add_pallet}>
                     Agregar
                 </button>
             </div>

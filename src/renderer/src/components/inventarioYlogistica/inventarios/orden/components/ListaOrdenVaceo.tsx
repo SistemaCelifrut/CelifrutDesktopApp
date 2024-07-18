@@ -39,7 +39,6 @@ export default function ListaOrdenVaceo(props: propsType): JSX.Element {
       if(props.lotesOrdenVaceo.length === 0){
         throw new Error("Error: no hay lista de orden de vaceo");
       }
-      console.log(props.lotesOrdenVaceo[0])
       const req = requestVaciar(props.lotesOrdenVaceo[0])
       const response = await window.api.server2(req);
       if(response.status !== 200){

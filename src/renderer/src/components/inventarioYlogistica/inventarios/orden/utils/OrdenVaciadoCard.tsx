@@ -3,8 +3,7 @@ import { lotesType } from "@renderer/types/lotesType"
 import "../css/ordenVaciadoCard.css"
 import { format } from "date-fns"
 import { ImCancelCircle } from "react-icons/im";
-import { useContext } from "react";
-import { userContext } from "@renderer/App";
+
 
 type propsType = {
   lote: lotesType
@@ -13,7 +12,6 @@ type propsType = {
 }
 
 export default function OrdenVaciadoCard(props: propsType): JSX.Element {
-  const user = useContext(userContext);
   return (
     <div className="orden-vaciado-card-container">
       <div className="orden-vaciado-card-container-div-index">
@@ -28,11 +26,11 @@ export default function OrdenVaciadoCard(props: propsType): JSX.Element {
         <div className="orden-vaciado-card-container-div-info">
           <p>{props.lote.tipoFruta}</p>
           {Object.prototype.hasOwnProperty.call(props.lote, "desverdizado") ?
-            <p> Canastillas: {Number(props.lote?.canastillas)}</p> :
+            <p> Canastillas: {Number(props.lote?.inventario)}</p> :
             <p>Canastillas: {Number(props.lote?.inventario)}</p>
           }
           {Object.prototype.hasOwnProperty.call(props.lote, "desverdizado") ?
-            <p>Canastillas: {(Number(props.lote?.kilos)).toLocaleString('es-CO')} Kg</p> :
+            <p>Canastillas: {(Number(props.lote?.inventario) * Number(props.lote.promedio)).toLocaleString('es-CO')} Kg</p> :
             <p> Canastillas: {(Number(props.lote?.inventario) * Number(props.lote.promedio)).toLocaleString('es-CO')} Kg</p>
           }
           {Object.prototype.hasOwnProperty.call(props.lote, "desverdizado") &&

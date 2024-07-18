@@ -43,8 +43,7 @@ export default function TablePallets(props: propsType): JSX.Element {
           <thead>
             <tr>
               <th>
-                {props.contenedor && props.contenedor.infoContenedor?.tipoEmpaque === 'Caja' ?
-                  'Pallet: ' : 'Estiba: '}
+                {'Caja'}
                 {props.filtro === '' ? index + 1 : Number(props.filtro) + 1}
               </th>
               <th>
