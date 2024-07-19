@@ -1,36 +1,24 @@
 /* eslint-disable prettier/prettier */
 
+import { predioType } from "@renderer/components/inventarioYlogistica/inventarios/reproceso descarte/types/types"
+import { filtrotype } from "../functions/filtroProceso"
+
 type propsType = {
-  handleFiltro: (tipoFiltro, elemento) => void
-  prediosData: string[]
-  setEf1: (e) => void
-  setFiltroPredio: (e) => void
-  setCantidad: (e) => void
+  prediosData: predioType[]
+  buscar: () => void
+  filtro: filtrotype
+  handleChangeFiltro:  (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>)  => void
 }
 
 export default function FiltrosFilas(props: propsType): JSX.Element {
 
-  const handleTipoFruta = (e): void => {
-    props.handleFiltro("tipoFruta", e.target.value)
-  }
-  const handleFechaInicio = (e): void => {
-    props.handleFiltro('fechaInicio', e.target.value)
-  }
-  const handleFechaFin = (e): void => {
-    props.handleFiltro('fechaFin', e.target.value)
-  }
-  const handleMinRendimiento = (e): void => {
-    props.handleFiltro('minRendimiento', e.target.value)
-  }
-  const handleMaxRendimiento = (e): void => {
-    props.handleFiltro('maxRendimiento', e.target.value)
-  }
+
 
   return (
     <div className="filtroContainer">
       <label>
         <p>Tipo de fruta</p>
-        <select onChange={handleTipoFruta}>
+        <select name="tipoFruta" onChange={props.handleChangeFiltro} value={props.filtro.tipoFruta}>
           <option value="">Tipo de fruta</option>
           <option value="Naranja">Naranja</option>
           <option value="Limon">Limon</option>
@@ -38,47 +26,49 @@ export default function FiltrosFilas(props: propsType): JSX.Element {
       </label>
       <label>
         <p>Nombre predio</p>
-        <select onChange={(e): void => props.setFiltroPredio(e.target.value)}>
+        <select name="predio" onChange={props.handleChangeFiltro} value={props.filtro.predio}>
           <option value="">Nombre predios</option>
           {props.prediosData.map((item, index) => (
-            <option key={item + index} value={item}>{item}</option>
+            <option key={item._id + index} value={item._id}>{item.PREDIO}</option>
           ))}
         </select>
       </label>
       <label>
         <p>Codigo de lote</p>
-        <input type="text" placeholder="EF1-" onChange={(e): void => props.setEf1(e.target.value)} />
+        <input value={props.filtro.enf} type="text" placeholder="EF1-" name="enf" onChange={props.handleChangeFiltro}/>
       </label>
       <label>
         <p>Fecha Incio</p>
-        <input type="date" onChange={handleFechaInicio} />
+        <input type="date" name="fechaInicio" value={props.filtro.fechaInicio} onChange={props.handleChangeFiltro} />
       </label>
 
       <label>
         <p>Feca fin</p>
-        <input type="date" onChange={handleFechaFin} />
+        <input type="date" name="fechaFin" value={props.filtro.fechaFin} onChange={props.handleChangeFiltro} />
       </label>
 
 
       <label>
         <p>Rendimiento</p>
         <div>
-          <input onChange={handleMinRendimiento} type="number" placeholder="min" /> - <input onChange={handleMaxRendimiento} type="number" placeholder="max" />
+          <input type="number" placeholder="min" name="rendimientoMin" value={Number(props.filtro.rendimientoMin)}  onChange={props.handleChangeFiltro}/> 
+           - 
+          <input  type="number" placeholder="max" name="rendimientoMax" value={Number(props.filtro.rendimientoMax)}  onChange={props.handleChangeFiltro}/>
         </div>
       </label>
 
       <label>
         <p>Cantidad de datos</p>
-        <input onChange={(e): void => props.setCantidad(Number(e.target.value))} type="number" min={0} />
+        <input  type="number" min={0}  name="limit" value={Number(props.filtro.limit)}  onChange={props.handleChangeFiltro}/>
       </label>
 
       <label className="lotes-filtros-columnas-label">
-        <input type="checkbox" onChange={(): void => props.setCantidad(Number(999999999999999))}/>
+        <input type="checkbox" name="todosLosDatos" checked={props.filtro.todosLosDatos} onChange={props.handleChangeFiltro}/>
         Todos los datos
-
       </label>
-
-
+      <label>
+        <button onClick={():void => props.buscar()}>Buscar</button>
+      </label>
     </div>
   )
 }

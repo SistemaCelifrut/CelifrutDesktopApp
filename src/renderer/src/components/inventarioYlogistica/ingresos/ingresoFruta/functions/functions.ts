@@ -66,9 +66,6 @@ export const crear_request_guardar = (formState): FormState => {
 }
 
 export const request_predios = {
-  data: {
-    query: {}
-  },
   action: 'getProveedores',
 }
 

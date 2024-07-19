@@ -26,9 +26,9 @@ export type lotesType = {
     urlInformeCalidad?: string;
     desverdizado?: desverdizadoType;
     contenedores?: string[];
-    calidad1?: number;
-    calidad15?: number;
-    calidad2?: number;
+    calidad1: number;
+    calidad15: number;
+    calidad2: number;
     __v?: number;
     clasificacionCalidad?: string;
     numeroRemision?: string;
@@ -119,13 +119,13 @@ type calidadType = {
 };
 
 type desverdizadoType = {
-    canastillasIngreso?: number;
-    kilosIngreso?: number;
-    cuartoDesverdizado?: string;
-    fechaIngreso?: string;
-    fechaFinalizar?: string;
+    canastillasIngreso: number;
+    kilosIngreso: number;
+    cuartoDesverdizado: string;
+    fechaIngreso: string;
+    fechaFinalizar: string;
     _id?: string;
-    parametros?: parametrosDesverdizadoType[];
+    parametros: parametrosDesverdizadoType[];
 };
 
 type parametrosDesverdizadoType = {

@@ -46,75 +46,79 @@ export default function TableInfoLotes(props: propsType): JSX.Element {
         <tbody>
           {Array.isArray(props.data) && props.data.map((lote, index) => (
             lote && typeof lote === 'object' && typeof lote !== undefined ?
-            <tr className={`${index % 2 === 0 ? 'fondo-par' : 'fondo-impar'}`} key={index}>
-              <td>{lote.predio?.PREDIO ? lote.predio.PREDIO : lote.predio?.PREDIO}</td>
-              <td>{lote.enf}</td>
-              <td>{format(lote.fechaIngreso ? new Date(lote.fechaIngreso) : new Date(), 'dd/MM/yyyy HH:mm', { locale: es })}</td>
+              <tr className={`${index % 2 === 0 ? 'fondo-par' : 'fondo-impar'}`} key={index}>
+                <td>{lote.enf}</td>
+                <td>{lote.predio?.PREDIO ? lote.predio.PREDIO : lote.predio?.PREDIO}</td>
+                <td>{format(lote.fechaIngreso ? new Date(lote.fechaIngreso) : new Date(), 'dd/MM/yyyy HH:mm', { locale: es })}</td>
 
-              <td>{lote.tipoFruta}</td>
-              {Object.keys(props.columnVisibility).map((item, index2) => {
-                if (props.columnVisibility[item]) {
-                  if(item === 'descarteLavado' || item === 'descarteEncerado'){
-                    return (
-                      <td 
-                        key={lote + item} 
-                        onClick={(): void => handleDetails(index, index2)}>
+                <td>{lote.tipoFruta}</td>
+                {Object.keys(props.columnVisibility).map((item, index2) => {
+                  if (props.columnVisibility[item]) {
+                    if (item === 'descarteLavado' || item === 'descarteEncerado') {
+                      return (
+                        <td
+                          key={lote + item}
+                          onClick={(): void => handleDetails(index, index2)}>
 
-                      {showDetailDescarte && (index === Number(indice1) && (index2 === Number(indice2))) ? 
-                     <td>{
-                      typeof lote !== 'undefined' && lote[item] !== undefined ? Object.keys(lote[item as string]).map(descarte => (
-                        <p key={descarte}>{descarte}: {lote[item as string][descarte]}</p>
-                      )) : null
-                    }</td>
-                    : 
-                      Object.keys(lote[item as string]).reduce((acu, descarte) => acu += lote[item as string][descarte], 0).toFixed(2)} Kg
-                    </td>
-                    )
-                  } else if( item === 'contenedores'){
-                   
+                          {showDetailDescarte && (index === Number(indice1) && (index2 === Number(indice2))) ?
+                            <td>{
+                              typeof lote !== 'undefined' && lote[item] !== undefined ? Object.keys(lote[item as string]).map(descarte => (
+                                <p key={descarte}>{descarte}: {lote[item as string][descarte]}</p>
+                              )) : null
+                            }</td>
+                            :
+                            Object.keys(lote[item as string]).reduce((acu, descarte) => acu += lote[item as string][descarte], 0).toFixed(2)} Kg
+                        </td>
+                      )
+                    } else if (item === 'contenedores') {
+
                       return <td key={lote + item} >
-                      {lote.contenedores?.reduce((acu, cont) => {
+                        {lote.contenedores?.reduce((acu, cont) => {
                           if (props.numeroContenedor) {
-                              acu +=  props.numeroContenedor[cont] + ' - ';
+                            acu += props.numeroContenedor[cont] + ' - ';
                           }
                           return acu;
-                      }, '')}
-                  </td>
-                    
-                  } else if(item === 'exportacion'){
-                    return (
-                      <td 
-                        key={lote + item} 
-                        onClick={(): void => handleDetails(index, index2)}>
+                        }, '')}
+                      </td>
 
-                      {showDetailDescarte && (index === Number(indice1) && (index2 === Number(indice2))) ? 
-                     <td>{
-                        <div className="lote-proceso-tabla-exportacion-div">
-                          <p> Calidad 1: {lote.calidad1}Kg</p>
-                          <p> Calidad 1.5: {lote.calidad15}Kg</p>
-                          <p> Calidad 2: {lote.calidad2}Kg</p>
-                        </div>
-           
-                    }</td>
-                    : 
-                    lote && lote.calidad1 !== undefined && lote.calidad15 !== undefined && lote.calidad2 !== undefined ? 
-                    (lote.calidad1 + lote.calidad15 + lote.calidad2).toFixed(2) + ' Kg' : 0 + 'Kg'} 
-                    </td>
-                    )
+                    } else if (item === 'exportacion') {
+                      return (
+                        <td
+                          key={lote + item}
+                          onClick={(): void => handleDetails(index, index2)}>
+
+                          {showDetailDescarte && (index === Number(indice1) && (index2 === Number(indice2))) ?
+                            <td>{
+                              <div className="lote-proceso-tabla-exportacion-div">
+                                <p> Calidad 1: {lote.calidad1}Kg</p>
+                                <p> Calidad 1.5: {lote.calidad15}Kg</p>
+                                <p> Calidad 2: {lote.calidad2}Kg</p>
+                              </div>
+
+                            }</td>
+                            :
+                            lote && lote.calidad1 !== undefined && lote.calidad15 !== undefined && lote.calidad2 !== undefined ?
+                              (lote.calidad1 + lote.calidad15 + lote.calidad2).toFixed(2) + ' Kg' : 0 + 'Kg'}
+                        </td>
+                      )
+                    } else if (item === 'desverdizado') {
+                      return(<td key={lote + item}>
+                        {lote.desverdizado ? lote.desverdizado?.kilosIngreso : 0}
+                      </td>)
+                    }
+                    else {
+                      return (
+                        <td key={lote + item}>
+                          {typeof lote[item] === 'number' ? lote[item].toFixed(2) : lote[item]}
+                        </td>
+                      )
+                    }
+                  } else {
+                    return null
                   }
-                  else {
-                  return (
-                    <td key={lote + item}>
-                      {typeof lote[item] === 'number' ? lote[item].toFixed(2) : lote[item]}
-                    </td>
-                  )
-                  }
-                }else{
-                  return null
-                }
-              })}
-            </tr>
-         : <div key={index}></div> ))}
+                })}
+              </tr>
+              : <div key={index}></div>))}
         </tbody>
       </table>
     </div>

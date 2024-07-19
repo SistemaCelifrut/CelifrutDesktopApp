@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import Chart from 'chart.js/auto';
-import { filtroType } from '../type/types';
 import { useContext, useEffect, useRef } from 'react';
 import { themeContext } from '@renderer/App';
 import { datosGraficas } from '../functions/functions';
@@ -8,7 +7,6 @@ import { lotesType } from '@renderer/types/lotesType';
 
 type propsType = {
     data: lotesType[]
-    filtro: filtroType
 }
 export default function GraficaLineal(props: propsType): JSX.Element {
     const chartRef = useRef<Chart<'line', unknown> | null>(null);

@@ -21,11 +21,19 @@ export default function IngresoFruta(): JSX.Element {
     setEnf(enf.response);
   }
   const obtenerPredios = async (): Promise<void> => {
-    const response = await window.api.server2(request_predios)
-    const data1 = handleServerResponse(response, messageModal)
+    try {
+      const response = await window.api.server2(request_predios)
+      if(response.status !== 200) throw new Error(`Cose ${response.status}: ${response.message}`) 
+      const data1 = handleServerResponse(response, messageModal)
 
-    if (Array.isArray(data1) && data1.length > 0 && '_id' in data1[0]) {
-      setPrediosData(data1 as proveedoresType[]);
+      if (Array.isArray(data1) && data1.length > 0 && '_id' in data1[0]) {
+        setPrediosData(data1 as proveedoresType[]);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        messageModal("error", `${err.message}`)
+
+      }
     }
   }
   useEffect(() => {
@@ -34,7 +42,7 @@ export default function IngresoFruta(): JSX.Element {
     window.api.reload(() => {
       setReload(!reload)
     });
-    return() => {
+    return () => {
       window.api.removeReload()
     }
 
@@ -61,7 +69,7 @@ export default function IngresoFruta(): JSX.Element {
         messageModal("error", 'Seleccione el tipo de fruta del lote')
         return
       }
-      const data = {...datos, enf:enf}
+      const data = { ...datos, enf: enf }
       const request = {
         data: data,
         action: 'guardarLote',

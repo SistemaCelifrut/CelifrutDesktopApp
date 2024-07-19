@@ -1,28 +1,52 @@
 /* eslint-disable prettier/prettier */
 export type consultaType = {
-    tipoFruta?: string
-    fechaIngreso?: {
-        $gte?: Date
-        $lt?: Date
-    }
-    rendimiento?: {
-        $gte?: number
-        $lt?: number
-    }
+  tipoFruta?: string
+  fechaIngreso?: {
+    $gte?: Date
+    $lt?: Date
+  }
+  rendimiento?: {
+    $gte?: number
+    $lt?: number
+  }
 }
 
+export type filtrotype = {
+  tipoFruta: string
+  predio: string
+  enf: string
+  fechaInicio: string
+  fechaFin: string
+  rendimientoMin: string
+  rendimientoMax: string
+  limit:string
+  todosLosDatos:boolean
+}
+
+export const filtroInit = {
+  tipoFruta: '',
+  predio: '',
+  enf: '',
+  fechaInicio: '',
+  fechaFin:'',
+  rendimientoMin: '',
+  rendimientoMax: '',
+  limit:'',
+  todosLosDatos: false,
+
+}
 export const crear_filtro = (filtro): consultaType => {
   const consulta: consultaType = {}
   if (filtro.tipoFruta !== '') {
     consulta.tipoFruta = filtro.tipoFruta
   }
 
-  if (filtro.fechaIngreso.$gte !== null  ) {
+  if (filtro.fechaIngreso.$gte !== null) {
     consulta.fechaIngreso = {};
     if (filtro.fechaIngreso.$gte !== null) {
       consulta.fechaIngreso.$gte = filtro.fechaIngreso.$gte;
       consulta.fechaIngreso.$lt = new Date();
-    } 
+    }
     if (filtro.fechaIngreso.$lt !== null) {
       consulta.fechaIngreso.$lt = filtro.fechaIngreso.$lt;
     } else {

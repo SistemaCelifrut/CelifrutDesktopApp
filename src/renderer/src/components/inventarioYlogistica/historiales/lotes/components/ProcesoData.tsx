@@ -4,18 +4,19 @@ import { dataContext } from "@renderer/App"
 import { useContext, useEffect, useState } from "react"
 import FiltrosColumnas from "../utils/FiltrosColumnas"
 import FiltrosFilas from "../utils/FiltrosFilas"
-import { filtroColumnasType, filtroType } from "../type/types"
-import { filtrosColumnasObj } from "../functions/functions"
+import { filtroColumnasType } from "../type/types"
+import { filtrosColumnasObj, ordenarDataExcel } from "../functions/functions"
 import GraficasBarras from "../utils/GraficasBarras"
 import GraficaLineal from "../utils/GraficaLineal"
 import GraficaCircular from "../utils/GraficaCircular"
 import TableInfoLotes from "../table/TableInfoLotes"
 import PromediosProceso from "../utils/PromediosProceso"
-import { crear_filtro } from "../functions/filtroProceso"
+import { filtroInit, filtrotype } from "../functions/filtroProceso"
 import { lotesType } from "@renderer/types/lotesType"
 import useAppContext from "@renderer/hooks/useAppContext"
-import { numeroContenedorType, requestContenedores, requestLotes, requestProveedor } from "../functions/request"
+import { numeroContenedorType, requestLotes, requestProveedor } from "../functions/request"
 import TotalesProceso from "../utils/TotalesProceso"
+import { predioType } from "@renderer/components/inventarioYlogistica/inventarios/reproceso descarte/types/types"
 
 export default function ProcesoData(): JSX.Element {
     const { messageModal } = useAppContext();
@@ -24,83 +25,68 @@ export default function ProcesoData(): JSX.Element {
         throw new Error("Error informes context data global")
     }
     const [columnVisibility, setColumnVisibility] = useState<filtroColumnasType>(filtrosColumnasObj)
-    const [filtro, setFiltro] = useState<filtroType>({ tipoFruta: '', fechaIngreso: { $gte: null, $lt: null }, rendimiento: { $gte: '', $lt: '' }, nombrePredio: '', cantidad: '' })
-    const [prediosData, setPrediosData] = useState<string[]>([])
-    const [ef1, setEf1] = useState<string>(dataGlobal.dataComponentes)
+    const [filtro, setFiltro] = useState<filtrotype>(filtroInit)
+    const [prediosData, setPrediosData] = useState<predioType[]>([])
+    // const [ef1, setEf1] = useState<string>(dataGlobal.dataComponentes)
     const [tipoGraficas, setTipoGraficas] = useState<string>('')
     const [data, setData] = useState<lotesType[]>([])
-    const [dataOriginal, setDataOriginal] = useState<lotesType[]>([])
-    const [filtroPredio, setFiltroPredio] = useState<string>('');
-    const [cantidad, setCantidad] = useState<number>(50);
     const [numeroContenedor, setNumeroContenedor] = useState<numeroContenedorType>()
+    //vuelve a pedir los datos al servidor
+    const [reload, setReload] = useState<boolean>(false);
 
     useEffect(() => {
-        obtenerData()
-        window.api.serverEmit('serverEmit', handleServerEmit)
-        // Función de limpieza
+        const saved = localStorage.getItem("lotes_filtro_rows");
+        const savedCol = localStorage.getItem("lotes_filtro_col");
+        if (saved) {
+            setFiltro(JSON.parse(saved))
+        }
+        if (savedCol) {
+            setColumnVisibility(JSON.parse(savedCol))
+        }
+        window.api.reload(() => {
+            setReload(!reload)
+        });
+        window.api.Descargar(() => {
+            const dataOrdenada = ordenarDataExcel(data, columnVisibility, numeroContenedor)
+            const dataR = JSON.stringify(dataOrdenada)
+            window.api.crearDocumento(dataR)
+          })
         return () => {
-            window.api.removeServerEmit('serverEmit', handleServerEmit)
+            window.api.removeReload()
         }
-    }, [filtro, cantidad])
-
-    useEffect(() => {
-        let filteredData = dataOriginal;
-
-        if (ef1 !== '') {
-            filteredData = filteredData.filter(item => item.enf && item.enf.startsWith(ef1.toUpperCase()));
-        }
-
-        if (filtroPredio !== '') {
-            filteredData = filteredData.filter(item => item.predio?.PREDIO && item.predio?.PREDIO.includes(filtroPredio));
-        }
-
-        setData(filteredData);
-    }, [ef1, filtroPredio])
+    }, [reload])
 
     const obtenerData = async (): Promise<void> => {
         try {
+            //Se buscan los proveedores si no se han descargado aun
             if (prediosData.length === 0) {
-                const response = await window.api.server(requestProveedor);
-                const nombrePredio = await response.data.map((item) => item.PREDIO)
-                setPrediosData(nombrePredio)
+                const response = await window.api.server2(requestProveedor);
+                if (response.status !== 200) throw new Error(`Code ${response.status}: ${response.message}`)
+                setPrediosData(response.data)
             }
-            const filtro_request = crear_filtro(filtro);
-            const request = requestLotes(filtro_request, cantidad)
-            const datosLotes = await window.api.server(request);
+            const request = requestLotes(filtro)
+            const datosLotes = await window.api.server2(request);
             if (datosLotes.status !== 200)
                 throw new Error(datosLotes.message)
             //se vana obtener los datos para traer los contenedores
             const contenedores: string[] = []
-            datosLotes.data.forEach(element => {
+            datosLotes.data.lotes.forEach(element => {
                 element.contenedores.forEach(contenedor => contenedores.push(contenedor))
             })
-            const contenedoresSet = new Set(contenedores)
-            const cont = [...contenedoresSet]
-            const requestC = requestContenedores(cont)
-            const responseContenedores = await window.api.server(requestC)
             const objCont = {}
-            cont.forEach(element => {
-                const contenedorEncontrado = responseContenedores.data.find(item => item._id === element)
-                if(contenedorEncontrado)
-                    objCont[element] = contenedorEncontrado.numeroContenedor
+            datosLotes.data.contenedores.map(element => {
+                objCont[element._id] = element.numeroContenedor
             });
+
+            console.log(objCont)
             setNumeroContenedor(objCont)
-            setDataOriginal(datosLotes.data)
-            if (ef1 === '') {
-                setData(datosLotes.data)
-            }
-            else if (ef1 !== '') {
-                setData(() => datosLotes.data.filter(item => item._id.toLowerCase().includes(ef1.toLowerCase())))
-            }
+            setData(datosLotes.data.lotes)
+            console.log(datosLotes.data.lotes)
+
         } catch (e: unknown) {
             if (e instanceof Error) {
-                messageModal("error", `Error: ${e.message}`);
+                messageModal("error", `${e.message}`);
             }
-        }
-    }
-    const handleServerEmit = async (data): Promise<void> => {
-        if (data.fn === "vaciado" || data.fn === "ingresoLote" || data.fn === "procesoLote" || data.fn === "descartesToDescktop") {
-            await obtenerData()
         }
     }
     const handleChange = (e): void => {
@@ -109,32 +95,55 @@ export default function ProcesoData(): JSX.Element {
             [e.target.value]: e.target.checked,
         });
     }
-    const handleFiltro = (filtroCase, elementoFiltro): void => {
-        if (filtroCase === 'tipoFruta') {
-            setFiltro({ ...filtro, tipoFruta: elementoFiltro })
-        } else if (filtroCase === 'fechaInicio') {
-            const nuevoFiltro: filtroType = JSON.parse(JSON.stringify(filtro))
-            nuevoFiltro.fechaIngreso.$gte = new Date(elementoFiltro)
-            setFiltro(nuevoFiltro)
-        } else if (filtroCase === 'fechaFin') {
-            const nuevoFiltro: filtroType = JSON.parse(JSON.stringify(filtro))
-            const fecha = new Date(elementoFiltro)
-            fecha.setUTCHours(23);
-            fecha.setUTCMinutes(59);
-            fecha.setUTCSeconds(59);
-            nuevoFiltro.fechaIngreso.$lt = fecha
-            setFiltro(nuevoFiltro)
-        } else if (filtroCase === 'minRendimiento') {
-            const nuevoFiltro: filtroType = JSON.parse(JSON.stringify(filtro))
-            nuevoFiltro.rendimiento.$gte = elementoFiltro
-            setFiltro(nuevoFiltro)
-        } else if (filtroCase === 'maxRendimiento') {
-            const nuevoFiltro: filtroType = JSON.parse(JSON.stringify(filtro))
-            nuevoFiltro.rendimiento.$lt = elementoFiltro
-            setFiltro(nuevoFiltro)
-        }
+    // const handleFiltro = (filtroCase, elementoFiltro): void => {
+    //     if (filtroCase === 'tipoFruta') {
+    //         setFiltro({ ...filtro, tipoFruta: elementoFiltro })
+    //     } else if (filtroCase === 'fechaInicio') {
+    //         const nuevoFiltro: filtroType = JSON.parse(JSON.stringify(filtro))
+    //         nuevoFiltro.fechaIngreso.$gte = new Date(elementoFiltro)
+    //         setFiltro(nuevoFiltro)
+    //     } else if (filtroCase === 'fechaFin') {
+    //         const nuevoFiltro: filtroType = JSON.parse(JSON.stringify(filtro))
+    //         const fecha = new Date(elementoFiltro)
+    //         fecha.setUTCHours(23);
+    //         fecha.setUTCMinutes(59);
+    //         fecha.setUTCSeconds(59);
+    //         nuevoFiltro.fechaIngreso.$lt = fecha
+    //         setFiltro(nuevoFiltro)
+    //     } else if (filtroCase === 'minRendimiento') {
+    //         const nuevoFiltro: filtroType = JSON.parse(JSON.stringify(filtro))
+    //         nuevoFiltro.rendimiento.$gte = elementoFiltro
+    //         setFiltro(nuevoFiltro)
+    //     } else if (filtroCase === 'maxRendimiento') {
+    //         const nuevoFiltro: filtroType = JSON.parse(JSON.stringify(filtro))
+    //         nuevoFiltro.rendimiento.$lt = elementoFiltro
+    //         setFiltro(nuevoFiltro)
+    //     }
+    // }
+    const buscar = (): void => {
+        localStorage.setItem("lotes_filtro_rows", JSON.stringify(filtro))
+        localStorage.setItem("lotes_filtro_col", JSON.stringify(columnVisibility))
+        obtenerData()
     }
+    const handleChangeFiltro = (event): void => {
+        const { name, value, checked } = event.target;
 
+        if (name === 'todosLosDatos') {
+            console.log(checked)
+            setFiltro({
+                ...filtro,
+                [name]: checked,
+            });
+        } else {
+            const uppercaseValue = name === 'enf' ? value.toUpperCase().trim() : value;
+
+            setFiltro({
+                ...filtro,
+                [name]: String(uppercaseValue),
+            });
+        }
+
+    };
     return (
         <div className="componentContainer">
             <div>
@@ -146,11 +155,10 @@ export default function ProcesoData(): JSX.Element {
                 </div>
                 <div>
                     <FiltrosFilas
-                        handleFiltro={handleFiltro}
+                        filtro={filtro}
                         prediosData={prediosData}
-                        setEf1={setEf1}
-                        setFiltroPredio={setFiltroPredio}
-                        setCantidad={setCantidad}
+                        buscar={buscar}
+                        handleChangeFiltro={handleChangeFiltro}
                     />
                     <div className="m-2">
                     </div>
@@ -171,7 +179,7 @@ export default function ProcesoData(): JSX.Element {
             </div>
             <div className="lotes-grafica-container">
                 {tipoGraficas === 'barras' && <GraficasBarras data={data} />}
-                {tipoGraficas === 'lineal' && <GraficaLineal data={data} filtro={filtro} />}
+                {tipoGraficas === 'lineal' && <GraficaLineal data={data} />}
                 {tipoGraficas === 'circular' && <GraficaCircular data={data} />}
             </div>
             <div>

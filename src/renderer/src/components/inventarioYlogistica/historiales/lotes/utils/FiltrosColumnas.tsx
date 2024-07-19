@@ -12,7 +12,7 @@ export default function FiltrosColumnas(props:propsType): JSX.Element {
         <div className="lotes-filtros-columnas-div">
             {Object.keys(props.columnVisibility).map(item => (
                 <label key={item} className="lotes-filtros-columnas-label">
-                    <input type="checkbox" value={item} onClick={props.handleChange}/>
+                    <input type="checkbox" value={item} onClick={props.handleChange} checked={props.columnVisibility[item]} />
                     <p>{KEYS_FILTROS_COL[item]}</p>
                 </label>
             ))}
