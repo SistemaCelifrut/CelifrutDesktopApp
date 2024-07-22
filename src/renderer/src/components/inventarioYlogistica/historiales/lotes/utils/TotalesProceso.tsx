@@ -28,12 +28,9 @@ export default function TotalesProceso(props: propsType): JSX.Element {
                             return (<p key={index}>{KEYS_FILTROS_COL[item]}: {totalExportacion(props.data).toLocaleString()}</p>)
                         } else if(item === 'desverdizado'){
                             return (<p key={index}>{KEYS_FILTROS_COL[item]}: {totalDataDesverdizado(props.data).toLocaleString()} </p>)
-                        }
-                        else {
+                        } else {
                             return (<p key={index}>{KEYS_FILTROS_COL[item]}: {totalData(props.data, item).toLocaleString()}</p>)
-
                         }
-
                     })}
                 </div>
             </div>
