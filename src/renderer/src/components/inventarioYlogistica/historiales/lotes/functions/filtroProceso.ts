@@ -23,6 +23,20 @@ export type filtrotype = {
   todosLosDatos:boolean
 }
 
+export type filtroCalidadType = {
+  busqueda:string
+  tipoFruta: string
+  predio: string
+  enf: string
+  fechaInicio: string
+  fechaFin: string
+  criterio: string
+  umbralMin: string
+  umbralMax: string
+  limit:string
+  todosLosDatos:boolean
+}
+
 export const filtroInit = {
   tipoFruta: '',
   predio: '',
@@ -33,7 +47,19 @@ export const filtroInit = {
   rendimientoMax: '',
   limit:'',
   todosLosDatos: false,
-
+}
+export const filtroCalidadInit: filtroCalidadType = {
+  busqueda:'calidad',
+  tipoFruta:'',
+  predio: '',
+  enf: '',
+  fechaInicio: '',
+  fechaFin:'',
+  criterio:'',
+  umbralMin:'',
+  umbralMax: '',
+  limit:'',
+  todosLosDatos: false,
 }
 export const crear_filtro = (filtro): consultaType => {
   const consulta: consultaType = {}

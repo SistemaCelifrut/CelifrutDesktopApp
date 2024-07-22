@@ -77,12 +77,8 @@ export default function ProcesoData(): JSX.Element {
             datosLotes.data.contenedores.map(element => {
                 objCont[element._id] = element.numeroContenedor
             });
-
-            console.log(objCont)
             setNumeroContenedor(objCont)
             setData(datosLotes.data.lotes)
-            console.log(datosLotes.data.lotes)
-
         } catch (e: unknown) {
             if (e instanceof Error) {
                 messageModal("error", `${e.message}`);
@@ -95,31 +91,6 @@ export default function ProcesoData(): JSX.Element {
             [e.target.value]: e.target.checked,
         });
     }
-    // const handleFiltro = (filtroCase, elementoFiltro): void => {
-    //     if (filtroCase === 'tipoFruta') {
-    //         setFiltro({ ...filtro, tipoFruta: elementoFiltro })
-    //     } else if (filtroCase === 'fechaInicio') {
-    //         const nuevoFiltro: filtroType = JSON.parse(JSON.stringify(filtro))
-    //         nuevoFiltro.fechaIngreso.$gte = new Date(elementoFiltro)
-    //         setFiltro(nuevoFiltro)
-    //     } else if (filtroCase === 'fechaFin') {
-    //         const nuevoFiltro: filtroType = JSON.parse(JSON.stringify(filtro))
-    //         const fecha = new Date(elementoFiltro)
-    //         fecha.setUTCHours(23);
-    //         fecha.setUTCMinutes(59);
-    //         fecha.setUTCSeconds(59);
-    //         nuevoFiltro.fechaIngreso.$lt = fecha
-    //         setFiltro(nuevoFiltro)
-    //     } else if (filtroCase === 'minRendimiento') {
-    //         const nuevoFiltro: filtroType = JSON.parse(JSON.stringify(filtro))
-    //         nuevoFiltro.rendimiento.$gte = elementoFiltro
-    //         setFiltro(nuevoFiltro)
-    //     } else if (filtroCase === 'maxRendimiento') {
-    //         const nuevoFiltro: filtroType = JSON.parse(JSON.stringify(filtro))
-    //         nuevoFiltro.rendimiento.$lt = elementoFiltro
-    //         setFiltro(nuevoFiltro)
-    //     }
-    // }
     const buscar = (): void => {
         localStorage.setItem("lotes_filtro_rows", JSON.stringify(filtro))
         localStorage.setItem("lotes_filtro_col", JSON.stringify(columnVisibility))
@@ -127,7 +98,6 @@ export default function ProcesoData(): JSX.Element {
     }
     const handleChangeFiltro = (event): void => {
         const { name, value, checked } = event.target;
-
         if (name === 'todosLosDatos') {
             console.log(checked)
             setFiltro({
@@ -136,7 +106,6 @@ export default function ProcesoData(): JSX.Element {
             });
         } else {
             const uppercaseValue = name === 'enf' ? value.toUpperCase().trim() : value;
-
             setFiltro({
                 ...filtro,
                 [name]: String(uppercaseValue),

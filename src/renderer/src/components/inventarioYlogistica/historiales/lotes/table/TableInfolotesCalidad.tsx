@@ -44,22 +44,33 @@ export default function TableInfolotesCalidad(props: propsType): JSX.Element {
                                     <td>{format(lote.fechaIngreso ? new Date(lote.fechaIngreso) : new Date(), 'dd/MM/yyyy HH:mm', { locale: es })}</td>
 
                                     <td>
-                                        {lote.calidad && 
-                                        Object.prototype.hasOwnProperty.call(lote.calidad.calidadInterna, 'fecha') && 
-                                        format(lote.calidad.calidadInterna ? new Date(lote.calidad.calidadInterna.fecha) : 
-                                        new Date(),  'dd/MM/yyyy HH:mm', { locale: es })}
+                                        {lote.calidad &&
+                                            Object.prototype.hasOwnProperty.call(lote.calidad.calidadInterna, 'fecha') &&
+                                            format(lote.calidad.calidadInterna ? new Date(lote.calidad.calidadInterna.fecha) :
+                                                new Date(), 'dd/MM/yyyy HH:mm', { locale: es })}
                                     </td>
                                     <td>{lote.tipoFruta}</td>
                                     {Object.keys(props.columnVisibility).map((item, index) => {
                                         if (props.columnVisibility[item]) {
+                                           if(['acidez', 'brix', 'ratio'].includes(item)){
                                             return (
                                                 <td key={index + item}>
-                                                    {lote.calidad && 
-                                                    lote.calidad.calidadInterna && 
-                                                    lote.calidad.calidadInterna[item] !== null ? 
-                                                    lote.calidad.calidadInterna[item].toFixed(2) : 0}
+                                                    {lote.calidad &&
+                                                        lote.calidad.calidadInterna &&
+                                                        lote.calidad.calidadInterna[item] !== null ?
+                                                        lote.calidad.calidadInterna[item].toFixed(2) : 0} %
                                                 </td>
                                             )
+                                           } else {
+                                            return(
+                                                <td key={index + item}>
+                                                {lote.calidad &&
+                                                    lote.calidad.calidadInterna &&
+                                                    lote.calidad.calidadInterna[item] !== null ?
+                                                    lote.calidad.calidadInterna[item].toFixed(2) : 0} gr
+                                            </td>
+                                            )
+                                           }
                                         } else {
                                             return null
                                         }
