@@ -171,6 +171,18 @@ export const promedio = (datos: lotesType[], llave): number => {
   const promedio = sumatoria / datos.length
   return promedio
 }
+export const promedioDesverdizado = (datos: lotesType[]): number => {
+  const sumatoria = datos.reduce((acu, item) => {
+    if(item.desverdizado){
+      return acu += Number(item.desverdizado?.kilosIngreso)
+    } else {
+      return acu += 0
+    }
+  }, 0);
+  const promedio = sumatoria / datos.length
+  console.log(promedio)
+  return promedio
+}
 export const promedioDescartes = (datos: lotesType[], llave): number => {
   const sumatoria = datos.reduce(
     (acu, kilos) =>
