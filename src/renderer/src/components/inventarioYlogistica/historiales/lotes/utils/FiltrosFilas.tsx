@@ -11,9 +11,6 @@ type propsType = {
 }
 
 export default function FiltrosFilas(props: propsType): JSX.Element {
-
-
-
   return (
     <div className="filtroContainer">
       <label>

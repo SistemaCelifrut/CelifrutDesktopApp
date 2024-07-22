@@ -1,229 +1,99 @@
 /* eslint-disable prettier/prettier */
 import { useEffect, useState } from "react"
-import { filtroCalidadType, filtroColumnasCalidadType } from "../type/types"
+import { filtroColumnasCalidadType } from "../type/types"
 import { KEY_FILTRO_COL_CALIDAD, filtrosColumnasObjCalidad } from "../functions/constantes"
 import FiltroFilasCalidad from "../utils/FiltrosFilasCalidad"
 import TableInfolotesCalidad from "../table/TableInfolotesCalidad"
 import PromediosCalidad from "../utils/PromediosCalidad"
 import GraficasBarrasCalidad from "../utils/GraficasBarrasCalidad"
 import GraficasLinealCalidad from "../utils/GraficaLinealCalidad"
-import { crear_filtro } from "../functions/filtroProceso"
+import { filtroCalidadInit, filtroCalidadType } from "../functions/filtroProceso"
 import { lotesType } from "@renderer/types/lotesType"
+import useAppContext from "@renderer/hooks/useAppContext"
+import { requestLotes, requestProveedor } from "../functions/request"
+import { predioType } from "@renderer/components/inventarioYlogistica/inventarios/reproceso descarte/types/types"
 
 export default function CalidadData(): JSX.Element {
+  const { messageModal } = useAppContext();
+
   const [columnVisibility, setColumnVisibility] = useState<filtroColumnasCalidadType>(filtrosColumnasObjCalidad)
-  const [filtro, setFiltro] = useState<filtroCalidadType>({ tipoFruta: '', fechaIngreso: { $gte: null, $lt: null }, nombrePredio: '', rendimiento: { $gte: "", $lt: "" }, cantidad: '', tipoDato: {} })
-  const [prediosData, setPrediosData] = useState<string[]>([])
-  const [ef1, setEf1] = useState<string>('')
+  const [filtro, setFiltro] = useState<filtroCalidadType>(filtroCalidadInit)
+  const [prediosData, setPrediosData] = useState<predioType[]>([])
   const [data, setData] = useState<lotesType[]>([])
   const [tipoGraficas, setTipoGraficas] = useState<string>('')
-  const [filtroPredio, setFiltroPredio] = useState<string>('');
-  const [cantidad, setCantidad] = useState<number>(50);
-  const [dataOriginal, setDataOriginal] = useState<lotesType[]>([])
-  const [ordenar, seteOrdenar] = useState<object>({ "fechaIngreso": -1 })
+  //vuelve a pedir los datos al servidor
+  const [reload, setReload] = useState<boolean>(false);
 
   useEffect(() => {
-
-    obtenerData()
-    window.api.serverEmit('serverEmit', handleServerEmit)
-    // Función de limpieza
+    const saved = localStorage.getItem("lotes_filtro_rows_calidad");
+    const savedCol = localStorage.getItem("lotes_filtro_col_calidad");
+    if (saved) {
+        setFiltro(JSON.parse(saved))
+    }
+    if (savedCol) {
+        setColumnVisibility(JSON.parse(savedCol))
+    }
+    window.api.reload(() => {
+      setReload(!reload)
+    });
+    window.api.Descargar(() => {
+      // const dataOrdenada = ordenarDataExcel(data, columnVisibility, numeroContenedor)
+      // const dataR = JSON.stringify(dataOrdenada)
+      // window.api.crearDocumento(dataR)
+    })
     return () => {
-      window.api.removeServerEmit('serverEmit', handleServerEmit)
+      window.api.removeReload()
     }
 
-  }, [filtro, cantidad])
+  }, [reload])
 
-  useEffect(() => {
-    let filteredData = dataOriginal;
-
-    if (ef1 !== '') {
-      filteredData = filteredData.filter(item => item.enf && item.enf.startsWith(ef1.toUpperCase()));
-    }
-
-    if (filtroPredio !== '') {
-      filteredData = filteredData.filter(item => item.predio?.PREDIO && item.predio?.PREDIO.includes(filtroPredio));
-    }
-
-    setData(filteredData);
-  }, [ef1, filtroPredio])
   const obtenerData = async (): Promise<void> => {
-    if (prediosData.length === 0) {
-      const requestProveedor = {
-        data: {
-          query: {},
-        },
-        collection: 'proveedors',
-        action: 'obtenerProveedores',
-        query: 'proceso'
-      };
-      const response = await window.api.server(requestProveedor);
-      const nombrePredio = await response.data.map((item) => item.PREDIO)
-      setPrediosData(nombrePredio)
-    }
-    const filtro_request = crear_filtro(filtro);
-    const request = {
-      data: {
-        query: { ...filtro_request, enf: { $regex: '^E', $options: 'i' } },
-        select: {},
-        populate: {
-          path: 'predio',
-          select: 'PREDIO ICA'
-        },
-        sort: ordenar,
-        limit: cantidad,
-      },
-      collection: 'lotes',
-      action: 'getLotes',
-      query: 'proceso'
-    };
-    const datosLotes = await window.api.server(request);
-    setDataOriginal(datosLotes.data)
-
-    if (ef1 === '') {
+    try {
+      //Se buscan los proveedores si no se han descargado aun
+      if (prediosData.length === 0) {
+        const response = await window.api.server2(requestProveedor);
+        if (response.status !== 200) throw new Error(`Code ${response.status}: ${response.message}`)
+        setPrediosData(response.data)
+      }
+      const request = requestLotes(filtro)
+      const datosLotes = await window.api.server2(request);
+      if (datosLotes.status !== 200)
+        throw new Error(datosLotes.message)
       setData(datosLotes.data)
-    }
-    else if (ef1 !== '') {
-      setData(() => datosLotes.data.filter(item => item._id.toLowerCase().includes(ef1.toLowerCase())))
-    }
-    // const dataGrafica = datosGraficas(datosLotes.data)
-    // setDataGrafica(dataGrafica)
-  }
-  const handleServerEmit = async (data): Promise<void> => {
-    if (data.fn === "ingresoLote" || data.fn === "procesoLote") {
-      await obtenerData()
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        messageModal("error", `${e.message}`);
+      }
     }
   }
-
   const handleChange = (e): void => {
     setColumnVisibility({
       ...columnVisibility,
       [e.target.value]: e.target.checked,
     });
   }
-  const handleFiltro = (filtroCase, elementoFiltro): void => {
-    if (filtroCase === 'tipoFruta') {
-      setFiltro({ ...filtro, tipoFruta: elementoFiltro })
-    }
-    else if (filtroCase === 'fechaInicio') {
-      if (elementoFiltro === "") {
-        const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-        nuevoFiltro.fechaIngreso.$gte = null
-        setFiltro(nuevoFiltro)
-      }
-      else {
-        const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-        nuevoFiltro.fechaIngreso.$gte = new Date(elementoFiltro)
-        setFiltro(nuevoFiltro)
-      }
-
-    }
-    else if (filtroCase === 'fechaFin') {
-      if (elementoFiltro === "") {
-        const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-        nuevoFiltro.fechaIngreso.$lt = new Date();
-        setFiltro(nuevoFiltro)
-      } else {
-        const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-        const fecha = new Date(elementoFiltro)
-        fecha.setUTCHours(23);
-        fecha.setUTCMinutes(59);
-        fecha.setUTCSeconds(59);
-        nuevoFiltro.fechaIngreso.$lt = fecha
-        setFiltro(nuevoFiltro)
-      }
-    }
-    else if (filtroCase === 'acidezMin') {
-      const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-      if (nuevoFiltro.tipoDato.acidez && Object.prototype.hasOwnProperty.call(nuevoFiltro.tipoDato.acidez, "$gte")) {
-        nuevoFiltro.tipoDato.acidez.$gte = elementoFiltro
-      } else {
-        nuevoFiltro.tipoDato = {}
-        nuevoFiltro.tipoDato.acidez = { $gte: '', $lt: '' }
-        nuevoFiltro.tipoDato.acidez.$gte = elementoFiltro
-      }
-      setFiltro(nuevoFiltro)
-    }
-    else if (filtroCase === 'brixMin') {
-      const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-      if (nuevoFiltro.tipoDato.brix && Object.prototype.hasOwnProperty.call(nuevoFiltro.tipoDato.brix, "$gte")) {
-        nuevoFiltro.tipoDato.brix.$gte = elementoFiltro
-      } else {
-        nuevoFiltro.tipoDato = {}
-        nuevoFiltro.tipoDato.brix = { $gte: '', $lt: '' }
-        nuevoFiltro.tipoDato.brix.$gte = elementoFiltro
-      }
-      setFiltro(nuevoFiltro)
-    }
-    else if (filtroCase === 'ratioMin') {
-      const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-      if (nuevoFiltro.tipoDato.ratio && Object.prototype.hasOwnProperty.call(nuevoFiltro.tipoDato.ratio, "$gte")) {
-        nuevoFiltro.tipoDato.ratio.$gte = elementoFiltro
-      } else {
-        nuevoFiltro.tipoDato = {}
-        nuevoFiltro.tipoDato.ratio = { $gte: '', $lt: '' }
-        nuevoFiltro.tipoDato.ratio.$gte = elementoFiltro
-      }
-      setFiltro(nuevoFiltro)
-    }
-    else if (filtroCase === 'pesoMin') {
-      const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-      if (nuevoFiltro.tipoDato.peso && Object.prototype.hasOwnProperty.call(nuevoFiltro.tipoDato.peso, "$gte")) {
-        nuevoFiltro.tipoDato.peso.$gte = elementoFiltro
-      } else {
-        nuevoFiltro.tipoDato = {}
-        nuevoFiltro.tipoDato.peso = { $gte: '', $lt: '' }
-        nuevoFiltro.tipoDato.peso.$gte = elementoFiltro
-      }
-      setFiltro(nuevoFiltro)
-    }
-    else if (filtroCase === 'zumoMin') {
-      const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-      if (nuevoFiltro.tipoDato.zumo && Object.prototype.hasOwnProperty.call(nuevoFiltro.tipoDato.zumo, "$gte")) {
-        nuevoFiltro.tipoDato.zumo.$gte = elementoFiltro
-      } else {
-        nuevoFiltro.tipoDato = {}
-        nuevoFiltro.tipoDato.zumo = { $gte: '', $lt: '' }
-        nuevoFiltro.tipoDato.zumo.$gte = elementoFiltro
-      }
-      setFiltro(nuevoFiltro)
-    }
-
-    else if (filtroCase === 'acidezMax') {
-      const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-      if (nuevoFiltro.tipoDato.acidez && Object.prototype.hasOwnProperty.call(nuevoFiltro.tipoDato.acidez, "$lt")) {
-        nuevoFiltro.tipoDato.acidez.$lt = elementoFiltro
-        setFiltro(nuevoFiltro)
-      }
-    }
-    else if (filtroCase === 'brixMax') {
-      const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-      if (nuevoFiltro.tipoDato.brix && Object.prototype.hasOwnProperty.call(nuevoFiltro.tipoDato.brix, "$lt")) {
-        nuevoFiltro.tipoDato.brix.$lt = elementoFiltro
-        setFiltro(nuevoFiltro)
-      }
-    }
-    else if (filtroCase === 'ratioMax') {
-      const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-      if (nuevoFiltro.tipoDato.ratio && Object.prototype.hasOwnProperty.call(nuevoFiltro.tipoDato.ratio, "$lt")) {
-        nuevoFiltro.tipoDato.ratio.$lt = elementoFiltro
-        setFiltro(nuevoFiltro)
-      }
-    }
-    else if (filtroCase === 'pesoMax') {
-      const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-      if (nuevoFiltro.tipoDato.peso && Object.prototype.hasOwnProperty.call(nuevoFiltro.tipoDato.peso, "$lt")) {
-        nuevoFiltro.tipoDato.peso.$lt = elementoFiltro
-        setFiltro(nuevoFiltro)
-      }
-    }
-    else if (filtroCase === 'zumoMax') {
-      const nuevoFiltro: filtroCalidadType = JSON.parse(JSON.stringify(filtro))
-      if (nuevoFiltro.tipoDato.zumo && Object.prototype.hasOwnProperty.call(nuevoFiltro.tipoDato.zumo, "$lt")) {
-        nuevoFiltro.tipoDato.zumo.$lt = elementoFiltro
-        setFiltro(nuevoFiltro)
-      }
-    }
+  const buscar = (): void => {
+    localStorage.setItem("lotes_filtro_rows_calidad", JSON.stringify(filtro))
+    localStorage.setItem("lotes_filtro_col_calidad", JSON.stringify(columnVisibility))
+    obtenerData()
   }
+  const handleChangeFiltro = (event): void => {
+    const { name, value, checked } = event.target;
+    if (name === 'todosLosDatos') {
+      console.log(checked)
+      setFiltro({
+        ...filtro,
+        [name]: checked,
+      });
+    } else {
+      const uppercaseValue = name === 'enf' ? value.toUpperCase().trim() : value;
+      setFiltro({
+        ...filtro,
+        [name]: String(uppercaseValue),
+      });
+    }
+
+  };
   return (
     <div className="componentContainer">
       <div><h2>Lotes calidad</h2></div>
@@ -232,7 +102,7 @@ export default function CalidadData(): JSX.Element {
           <div className="lotes-filtros-columnas-div">
             {Object.keys(columnVisibility).map(item => (
               <label key={item} className="lotes-filtros-columnas-label">
-                <input type="checkbox" value={item} onClick={handleChange} />
+                <input type="checkbox" value={item} onClick={handleChange} checked={columnVisibility[item]} />
                 <p>{KEY_FILTRO_COL_CALIDAD[item]}</p>
               </label>
             ))}
@@ -240,12 +110,11 @@ export default function CalidadData(): JSX.Element {
         </div>
         <div>
           <FiltroFilasCalidad
-            handleFiltro={handleFiltro}
+            filtro={filtro}
             prediosData={prediosData}
-            setEf1={setEf1}
-            seteOrdenar={seteOrdenar}
-            setCantidad={setCantidad}
-            setFiltroPredio={setFiltroPredio} />
+            buscar={buscar}
+            handleChangeFiltro={handleChangeFiltro}
+          />
         </div>
       </div>
       <div>
