@@ -15,11 +15,16 @@ export const predios: lotesType = {
       canastillasIngreso: 0,
       kilosIngreso: 0,
       cuartoDesverdizado: '',
-      fechaIngreso:''
+      fechaFinalizar:'',
+      fechaIngreso:'',
+      parametros:[]
     },
     observaciones: '',
     tipoFruta: '',
     promedio: 0,
+    calidad1:0,
+    calidad15:0,
+    calidad2:0,
     directoNacional: 0, // Agrega esta línea
   };
 

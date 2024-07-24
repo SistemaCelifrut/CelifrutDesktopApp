@@ -281,3 +281,23 @@ export const ordenarDataExcel = (data: lotesType[], columns, contenedores): obje
   })
   return arrOut
 }
+export const ordenarDataExcelCalidad = (data: lotesType[]): object[] => {
+  const arrOut = data.map(item => {
+    const outObj = {
+      "EF1": item.enf,
+      predio: item.predio?.PREDIO,
+      "Fecha de ingreso": item.fechaIngreso,
+      "Fecha calidad interna": item.calidad?.calidadInterna?.fecha,
+      "Tipo de fruta": item.tipoFruta,
+      "Acidez": item.calidad?.calidadInterna?.acidez,
+      "Brix": item.calidad?.calidadInterna?.brix,
+      "Ratio": item.calidad?.calidadInterna?.ratio,
+      "Peso": item.calidad?.calidadInterna?.peso,
+      "Zumo": item.calidad?.calidadInterna?.zumo,
+    }
+    return outObj
+
+  })
+  return arrOut
+
+}

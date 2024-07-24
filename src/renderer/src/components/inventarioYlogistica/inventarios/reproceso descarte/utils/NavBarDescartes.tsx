@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-import { useState } from 'react'
 
 type propsType = {
   handleFilter: (data: string) => void

@@ -42,12 +42,6 @@ export default function FiltroFilasCalidad(props: propsType): JSX.Element {
         <p>Fecha Fin</p>
         <input type="date" name="fechaFin" value={props.filtro.fechaFin} onChange={props.handleChangeFiltro} />
       </label>
-      <label >
-        <p>Cantidad-lotes</p>
-        <div>
-          <input type="number" min={0} />
-        </div>
-      </label>
       <label>
         <p>Criterios</p>
         <select onChange={props.handleChangeFiltro} value={props.filtro.criterio} name="criterio">

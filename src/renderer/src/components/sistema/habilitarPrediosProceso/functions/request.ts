@@ -7,17 +7,7 @@ const nextDay = new Date(startOfDay);
 nextDay.setDate(startOfDay.getDate() + 1);
 
 export const requestLotesVaciados = {
-    data:{
-        query:{ 
-          operacionRealizada: "vaciarLote"
-        },
-        select : { },
-        sort:{fecha: -1},
-        limit:180
-      },
-      collection:'historialLotes',
-      action: 'obtenerHistorialLotes',
-      query: 'proceso'
+  action: 'obtenerHistorialLotes',
 }
 
 export const requestHabilitarDescarte = (loteDescarte): object => {
@@ -27,7 +17,7 @@ export const requestHabilitarDescarte = (loteDescarte): object => {
     },
     collection:'variablesDesktop',
     action: 'modificar_sistema',
-    query: 'modificar_predio_proceso_descartes',
+    query: 'obtenerHistorialLotes',
   }
 }
 export const requestHabilitarListaEmpaque = (loteListaEmpaque): object => {
@@ -37,6 +27,6 @@ export const requestHabilitarListaEmpaque = (loteListaEmpaque): object => {
     },
     collection:'variablesDesktop',
     action: 'modificar_sistema',
-    query: 'modificar_predio_proceso_descartes',
+    query: 'modificar_predio_proceso_listaEmpaque',
   }
 }

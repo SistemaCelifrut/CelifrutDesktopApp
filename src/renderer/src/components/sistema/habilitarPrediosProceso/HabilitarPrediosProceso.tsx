@@ -15,10 +15,11 @@ export default function HabilitarPrediosProceso(): JSX.Element {
     }, [])
     const obtenerLotesVaciados = async (): Promise<void> => {
         try {
-            const response = await window.api.server(requestLotesVaciados)
+            const response = await window.api.server2(requestLotesVaciados)
             if (response.status !== 200) {
                 throw new Error(response.message);
             }
+            console.log(response)
             const ids = response.data.map(item => item.documento._id);
             const idsSet = new Set(ids)
             const idsArr = [...idsSet]
