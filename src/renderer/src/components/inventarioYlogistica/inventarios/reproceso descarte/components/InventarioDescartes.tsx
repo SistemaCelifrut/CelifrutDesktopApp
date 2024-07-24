@@ -45,7 +45,7 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
   useEffect(() => {
     if (message === 'Reprocesar el lote') {
       reprocesarPredio()
-    } else if(message === 'Reprocesar como Celifrut'){
+    } else if (message === 'Reprocesar como Celifrut') {
       reprocesarCelifrut()
     }
   }, [confirm]);
@@ -146,7 +146,7 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
         _id: _id,
         query: objRequestDescarte,
         inventario: objRequest,
-        action: 'reprocesar_predio',
+        action: 'reprocesar_predio'
       }
       const response = await window.api.server2(request)
       if (response.status !== 200) {
@@ -163,6 +163,7 @@ export default function InventarioDescartes(props: propsType): JSX.Element {
       setMessage('')
       obtenerFruta()
       setShowConfirmation(false)
+      reset()
     }
   };
   const reprocesarCelifrut = async (): Promise<void> => {

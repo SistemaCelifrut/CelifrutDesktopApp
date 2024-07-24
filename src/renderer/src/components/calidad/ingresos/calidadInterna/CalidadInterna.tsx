@@ -11,7 +11,7 @@ import useAppContext from '@renderer/hooks/useAppContext';
 export default function CalidadInterna(): JSX.Element {
   const {messageModal} = useAppContext();
   const [lotesData, setLotesData] = useState([])
-  const [lote, setLote] = useState<lotesType>({_id:"",enf:"",})
+  const [lote, setLote] = useState<lotesType>()
   const [reload, setReload] = useState<boolean>(false);
 
   const interval = async (): Promise<void> => {
@@ -40,7 +40,7 @@ export default function CalidadInterna(): JSX.Element {
       <NavCalidadInternaForm lotesData={lotesData} setLote={setLote} />
       <h2>Ingreso calidad interna</h2>
       <div>
-        <PruebasCalidadInterna interval={interval} lote={lote} setLotesData={setLotesData} />
+       {lote && <PruebasCalidadInterna interval={interval} lote={lote} setLotesData={setLotesData} />}
       </div>
     </div>
   )

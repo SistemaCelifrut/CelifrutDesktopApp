@@ -31,6 +31,7 @@ export default function HistorialProcesado(): JSX.Element {
       const frutaActual = await window.api.server2(request)
       if (frutaActual.status === 200) {
         setDatosOriginales(frutaActual.data)
+        console.log(frutaActual)
         dispatch({ type: 'initialData', data: frutaActual.data, filtro: '' })
       } else {
         messageModal("error", `Error ${frutaActual.status}: ${frutaActual.message}`)

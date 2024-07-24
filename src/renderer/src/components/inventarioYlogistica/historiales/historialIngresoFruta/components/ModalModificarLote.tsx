@@ -4,37 +4,37 @@ import { formInit } from "../services/form";
 import { proveedoresType } from "@renderer/types/proveedoresType";
 import useAppContext from "@renderer/hooks/useAppContext";
 import { request_guardar_cambios, request_predios } from "../services/request";
-import { lotesType } from "@renderer/types/lotesType";
 import { formatDate } from "../services/date";
+import { recordLotesType } from "@renderer/types/recorLotesType";
 
 type propsType = {
     handleModificar: () => void
-    loteSeleccionado: lotesType | undefined
+    loteSeleccionado: recordLotesType | undefined
     showModal: boolean
 }
 
 export default function ModalModificarLote(props:propsType): JSX.Element {
-    const { messageModal, user } = useAppContext()
+    const { messageModal } = useAppContext()
     const [formState, setFormState] = useState(formInit);
     const [prediosDatos, setPrediosData] = useState<proveedoresType[]>([])
     useEffect(() => { obtenerProveedores() }, [])
     useEffect(()=>{
         if(props.loteSeleccionado !== undefined){
             const formData = {...formState}
-            formData.enf = String(props.loteSeleccionado.enf)
-            formData.predio = String(props.loteSeleccionado.predio?._id)
-            formData.canastillas = String(props.loteSeleccionado.canastillas)
-            formData.kilos = Number(props.loteSeleccionado.kilos)
-            formData.fechaIngreso = props.loteSeleccionado.fechaIngreso ? formatDate(props.loteSeleccionado.fechaIngreso) : formatDate(new Date())
-            formData.observaciones = String(props.loteSeleccionado.observaciones)
-            formData.placa = String(props.loteSeleccionado.placa)
-            formData.tipoFruta = String(props.loteSeleccionado.tipoFruta)
+            formData.enf = String(props.loteSeleccionado.documento.enf)
+            formData.predio = String(props.loteSeleccionado.documento.predio?._id)
+            formData.canastillas = String(props.loteSeleccionado.documento.canastillas)
+            formData.kilos = Number(props.loteSeleccionado.documento.kilos)
+            formData.fechaIngreso = props.loteSeleccionado.documento.fechaIngreso ? formatDate(props.loteSeleccionado.documento.fechaIngreso) : formatDate(new Date())
+            formData.observaciones = String(props.loteSeleccionado.documento.observaciones)
+            formData.placa = String(props.loteSeleccionado.documento.placa)
+            formData.tipoFruta = String(props.loteSeleccionado.documento.tipoFruta)
             setFormState(formData)
         }
     },[props.showModal])
     const obtenerProveedores = async (): Promise<void> => {
         try {
-            const response = await window.api.server(request_predios)
+            const response = await window.api.server2(request_predios)
             if (response.status !== 200)
                 throw new Error(response.message)
             setPrediosData(response.data)
@@ -57,8 +57,8 @@ export default function ModalModificarLote(props:propsType): JSX.Element {
         e.preventDefault()
 
         try{
-            const request = request_guardar_cambios(props.loteSeleccionado, formState, user)
-            const response = await window.api.server(request)
+            const request = request_guardar_cambios(props.loteSeleccionado, formState)
+            const response = await window.api.server2(request)
             if(response.status !== 200)
                 throw new Error(response.message)
             props.handleModificar();

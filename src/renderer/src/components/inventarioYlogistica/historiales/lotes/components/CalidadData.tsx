@@ -12,6 +12,7 @@ import { lotesType } from "@renderer/types/lotesType"
 import useAppContext from "@renderer/hooks/useAppContext"
 import { requestLotes, requestProveedor } from "../functions/request"
 import { predioType } from "@renderer/components/inventarioYlogistica/inventarios/reproceso descarte/types/types"
+import { ordenarDataExcelCalidad } from "../functions/functions"
 
 export default function CalidadData(): JSX.Element {
   const { messageModal } = useAppContext();
@@ -37,9 +38,9 @@ export default function CalidadData(): JSX.Element {
       setReload(!reload)
     });
     window.api.Descargar(() => {
-      // const dataOrdenada = ordenarDataExcel(data, columnVisibility, numeroContenedor)
-      // const dataR = JSON.stringify(dataOrdenada)
-      // window.api.crearDocumento(dataR)
+      const dataOrdenada = ordenarDataExcelCalidad(data)
+      const dataR = JSON.stringify(dataOrdenada)
+      window.api.crearDocumento(dataR)
     })
     return () => {
       window.api.removeReload()

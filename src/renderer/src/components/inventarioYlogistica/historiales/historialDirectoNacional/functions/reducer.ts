@@ -24,6 +24,9 @@ export const documentoInit: historialLotesType = {
     promedio: 0,
     tipoFruta:"",
     _id:"",
+    calidad1:0,
+    calidad15:0,
+    calidad2:0,
   }
 }
 
