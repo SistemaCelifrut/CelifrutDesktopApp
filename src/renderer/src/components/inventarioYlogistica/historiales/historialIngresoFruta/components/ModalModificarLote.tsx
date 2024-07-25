@@ -4,13 +4,13 @@ import { formInit } from "../services/form";
 import { proveedoresType } from "@renderer/types/proveedoresType";
 import useAppContext from "@renderer/hooks/useAppContext";
 import { request_guardar_cambios, request_predios } from "../services/request";
-import { formatDate } from "../services/date";
 import { recordLotesType } from "@renderer/types/recorLotesType";
 
 type propsType = {
     handleModificar: () => void
     loteSeleccionado: recordLotesType | undefined
     showModal: boolean
+    obtenerData: () => void
 }
 
 export default function ModalModificarLote(props:propsType): JSX.Element {
@@ -25,7 +25,6 @@ export default function ModalModificarLote(props:propsType): JSX.Element {
             formData.predio = String(props.loteSeleccionado.documento.predio?._id)
             formData.canastillas = String(props.loteSeleccionado.documento.canastillas)
             formData.kilos = Number(props.loteSeleccionado.documento.kilos)
-            formData.fechaIngreso = props.loteSeleccionado.documento.fechaIngreso ? formatDate(props.loteSeleccionado.documento.fechaIngreso) : formatDate(new Date())
             formData.observaciones = String(props.loteSeleccionado.documento.observaciones)
             formData.placa = String(props.loteSeleccionado.documento.placa)
             formData.tipoFruta = String(props.loteSeleccionado.documento.tipoFruta)
@@ -55,7 +54,6 @@ export default function ModalModificarLote(props:propsType): JSX.Element {
     };
     const handleGuardar = async (e): Promise<void> => {
         e.preventDefault()
-
         try{
             const request = request_guardar_cambios(props.loteSeleccionado, formState)
             const response = await window.api.server2(request)
@@ -63,10 +61,12 @@ export default function ModalModificarLote(props:propsType): JSX.Element {
                 throw new Error(response.message)
             props.handleModificar();
             messageModal("success","Datos modificados con exito")
+            props.obtenerData()
         } catch(e){
             if(e instanceof Error)
                 messageModal("error",e.message)
         }
+        
     }
     return (
         <div className="fondo-modal">
@@ -87,7 +87,7 @@ export default function ModalModificarLote(props:propsType): JSX.Element {
                                 onChange={handleChange}
                                 required
                                 value={formState.predio}
-                                name='nombrePredio'>
+                                name='predio'>
                                 <option value="">Predios</option>
                                 {prediosDatos.map((item, index) => (
                                     <option key={item.PREDIO && item.PREDIO + index} value={item._id}>{item.PREDIO}</option>
@@ -101,10 +101,6 @@ export default function ModalModificarLote(props:propsType): JSX.Element {
                         <div >
                             <label>Kilos</label>
                             <input type="text" onChange={handleChange} name="kilos" value={formState.kilos} required />
-                        </div>
-                        <div >
-                            <label>Fecha ingreso</label>
-                            <input type="date" onChange={handleChange} name="fechaIngreso" value={formState.fechaIngreso} required />
                         </div>
                         <div>
                             <label>Tipo fruta</label>

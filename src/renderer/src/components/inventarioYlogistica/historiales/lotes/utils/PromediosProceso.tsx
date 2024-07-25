@@ -31,7 +31,7 @@ export default function PromediosProceso(props: propsType): JSX.Element {
                             return (<p key={index}>{KEYS_FILTROS_COL[item]}: {promedioDesverdizado(props.data).toFixed(2)}</p>)
                         }
                         else {
-                            return (<p key={index}>{KEYS_FILTROS_COL[item]}: {promedioDescartes(props.data, item).toFixed(2)}</p>)
+                            return (<p key={index}>{KEYS_FILTROS_COL[item]}: {promedio(props.data, item).toFixed(2)}</p>)
                         }
 
                     })}

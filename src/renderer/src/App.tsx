@@ -47,7 +47,6 @@ import SistemaExportacionLotes from './components/sistema/exportacionLotesData/S
 import ModificarSeriales from './components/sistema/modificarSeriales/ModificarSeriales'
 import EficienciaFruta from './components/indicadores/operaciones/EficienciaFruta/EficienciaFruta'
 import ReprocesoDescarte from './components/inventarioYlogistica/inventarios/reproceso descarte/ReprocesoDescarte'
-import InventarioDescarte from './components/inventarioYlogistica/inventarios/InventarioDescarte/InventarioDescarte'
 import CrearContenedor from './components/comercial/ingresos/crearContenedor/CrearContenedor'
 import Proveedores from './components/comercial/proveedores/Proveedores'
 import Clientes from './components/comercial/clientes/Clientes'
@@ -190,7 +189,6 @@ function App(): JSX.Element {
                               {section === "Inventario y Logística//Historiales//Directo nacional" && <HistorialDirectoNacional />}
                               {section === "Inventario y Logística//Inventarios//Desverdizado" && <Desverdizado />}
                               {section === "Inventario y Logística//Inventarios//Reproceso Descarte" && <ReprocesoDescarte />}
-                              {section === "Inventario y Logística//Inventarios//Descarte" && <InventarioDescarte />}
                               {section === "Inventario y Logística//Historiales//Contenedores" && <Contenedores />}
                               {section === "Inventario y Logística//Historiales//Ingreso fruta" && <HistorialIngresoFruta />}
                               {section === "Inventario y Logística//Historiales//Descarte" && <HistorialDescarte />}

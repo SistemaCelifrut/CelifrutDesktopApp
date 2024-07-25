@@ -4,7 +4,6 @@ export const formInit = {
     predio:'',
     canastillas:'',
     kilos:0,
-    fechaIngreso:'',
     tipoFruta:'',
     observaciones:'',
     placa:''
