@@ -17,17 +17,17 @@ const HistorialIngresoFruta = (): JSX.Element => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [loteSeleccionado, setLoteSeleccionado] = useState<recordLotesType>()
   //vuelve a pedir los datos al servidor
-  const [reload, setReload] = useState<boolean>(false);
 
   useEffect(() => {
     obtenerData()
     window.api.reload(() => {
-      setReload(!reload)
+      obtenerData()
+
     });
     return () => {
       window.api.removeReload()
     }
-  }, [reload])
+  }, [])
 
 
   const obtenerData = async (): Promise<void> => {
@@ -36,6 +36,7 @@ const HistorialIngresoFruta = (): JSX.Element => {
       const response = await window.api.server2(request)
       if (response.status !== 200)
         throw new Error(response.message)
+      console.log(response)
       setData([...response.data])
     } catch (e) {
       if (e instanceof Error)
@@ -69,6 +70,7 @@ const HistorialIngresoFruta = (): JSX.Element => {
       </div>
       {showModal &&
         <ModalModificarLote
+          obtenerData={obtenerData}
           showModal={showModal}
           loteSeleccionado={loteSeleccionado}
           handleModificar={handleModificar} />}
