@@ -9,11 +9,12 @@ type propsType = {
     handleModificar: () => void
     loteSeleccionado: lotesType | undefined
     showModal: boolean
+    obtenerData: () => void
 
 }
 
 export default function ModalModificarHistorialCalidadInterna(props:propsType): JSX.Element {
-    const { messageModal, user } = useAppContext()
+    const { messageModal } = useAppContext()
     const [formState, setFormState] = useState(formInit);
     useEffect(()=>{
         if(props.loteSeleccionado !== undefined){
@@ -31,9 +32,7 @@ export default function ModalModificarHistorialCalidadInterna(props:propsType): 
     },[props.showModal])
     const handleChange = (event): void => {
         const { name, value } = event.target;
-
         const uppercaseValue = name === 'placa' ? value.toUpperCase() : value;
-
         setFormState({
             ...formState,
             [name]: uppercaseValue,
@@ -42,12 +41,13 @@ export default function ModalModificarHistorialCalidadInterna(props:propsType): 
     const handleGuardar = async (e): Promise<void> => {
         e.preventDefault()
         try{
-            const request = request_guardar_cambios(props.loteSeleccionado, formState, user)
-            const response = await window.api.server(request)
+            const request = request_guardar_cambios(props.loteSeleccionado, formState)
+            const response = await window.api.server2(request)
             if(response.status !== 200)
                 throw new Error(response.message)
             props.handleModificar();
             messageModal("success","Datos modificados con exito")
+            props.obtenerData();
         } catch(e){
             if(e instanceof Error)
                 messageModal("error",e.message)

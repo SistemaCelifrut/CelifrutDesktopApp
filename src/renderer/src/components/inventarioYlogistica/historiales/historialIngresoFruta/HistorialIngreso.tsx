@@ -22,21 +22,17 @@ const HistorialIngresoFruta = (): JSX.Element => {
     obtenerData()
     window.api.reload(() => {
       obtenerData()
-
     });
     return () => {
       window.api.removeReload()
     }
   }, [])
-
-
   const obtenerData = async (): Promise<void> => {
     try {
       const request = requestLotes(page)
       const response = await window.api.server2(request)
       if (response.status !== 200)
         throw new Error(response.message)
-      console.log(response)
       setData([...response.data])
     } catch (e) {
       if (e instanceof Error)
