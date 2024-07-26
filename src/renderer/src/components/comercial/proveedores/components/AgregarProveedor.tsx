@@ -25,44 +25,38 @@ export default function AgregarProveedor(props: propsType): JSX.Element {
             formData.PROVEEDORES = String(props.proveedor.PROVEEDORES)
             formData.GGN = String(props.proveedor.GGN)
             formData["FECHA VENCIMIENTO GGN"] = String(props.proveedor["FECHA VENCIMIENTO GGN"])
-            formData.activo = props.proveedor.activo ? true : false
             formData.L = String(props.proveedor.L)
             formData.N = String(props.proveedor.N)
             formData.M = String(props.proveedor.M)
             setFormState(formData)
-         } else {
-            const formData = { ...formState };
-            formData["CODIGO INTERNO"] = ""
-            formData.PREDIO = ""
-            formData.ICA = ""
-            formData.DEPARTAMENTO = ""
-            formData.PROVEEDORES = ""
-            formData.GGN = ""
-            formData["FECHA VENCIMIENTO GGN"] = ""
-            formData.activo = false
-            formData.L = String("")
-            formData.N = String("")
-            formData.M = String("")
-            setFormState(formData)
-         }
+        } else {
+            setFormState(initFormState)
+        }
 
     }
     const handleChange = (event): void => {
-        const { name, value } = event.target;
-        setFormState({
-            ...formState,
-            [name]: value,
-        });
+        const { name, value, checked } = event.target;
+        if (['N', 'L', 'M'].includes(name)) {
+            setFormState({
+                ...formState,
+                [name]: checked,
+            });
+        } else {
+            setFormState({
+                ...formState,
+                [name]: value,
+            });
+        }
+
     };
-    const handleGuardar = async (): Promise<void> => {
+    const handleGuardar = async (e): Promise<void> => {
+        e.preventDefault()
         try {
             const request = {
-                collection: 'proveedors',
                 action: 'addProveedor',
-                query: 'proceso',
                 data: formState
             }
-            const response = await window.api.server(request)
+            const response = await window.api.server2(request)
             if (response.status !== 200)
                 throw new Error(response.message)
             messageModal("success", "Usuario guardado con exito")
@@ -72,23 +66,22 @@ export default function AgregarProveedor(props: propsType): JSX.Element {
                 messageModal("error", e.message)
         }
     }
-    const handleModificar = async (): Promise<void> => {
-        try{
+    const handleModificar = async (e): Promise<void> => {
+        e.preventDefault()
+        try {
             const request = {
-                collection: 'proveedors',
-                action: 'putProveedor',
-                query: 'proceso',
+                action: 'modificar_proveedor',
                 data: formState,
                 _id: props.proveedor?._id
             }
-            const response = await window.api.server(request)
+            const response = await window.api.server2(request)
             if (response.status !== 200)
                 throw new Error(response.message)
             messageModal("success", "Proveedor modificado con exito")
             props.handleChange()
-        }catch(e){
-            if( e instanceof Error)
-                messageModal("error",e.message)
+        } catch (e) {
+            if (e instanceof Error)
+                messageModal("error", e.message)
         }
     }
     return (
@@ -116,7 +109,6 @@ export default function AgregarProveedor(props: propsType): JSX.Element {
                                 type="checkbox"
                                 className="form-radio"
                                 name="N"
-                                value="X"
                                 checked={formState.N ? true : false}
                                 onChange={handleChange}
                             />
@@ -161,21 +153,7 @@ export default function AgregarProveedor(props: propsType): JSX.Element {
                     <label>Vencimiento</label>
                     <input type="text" onChange={handleChange} name="FECHA VENCIMIENTO GGN" value={formState["FECHA VENCIMIENTO GGN"]} required />
                 </div>
-                <div>
-                    <label>Estado</label>
-                    <select
-                        onChange={handleChange}
-                        name='activo'
-                        required
-                        value={String(formState.activo)}
-                        className='defaultSelect'
-                    >
-                        <option value="true"></option>
-                        <option value="true">Activo</option>
-                        <option value="false">Inactivo</option>
 
-                    </select>
-                </div>
                 <div className="agregar-usuario-guardar-boton-div">
                     {props.modificar ?
                         <button className="defaulButtonAgree" onClick={handleModificar}>Modificar</button>

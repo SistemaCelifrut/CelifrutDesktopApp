@@ -15,47 +15,38 @@ export default function Proveedores(): JSX.Element {
     const [modificar, setModificar] = useState<boolean>(false)
     const [proveedor, setProveedor] = useState<proveedoresType>()
     useEffect(() => {
-        obtenerProveedores()
-        window.api.serverEmit('serverEmit', handleServerEmit)
-
-        // Función de limpieza
-        return () => {
-            window.api.removeServerEmit('serverEmit', handleServerEmit)
-        }
-    }, [])
-    useEffect(() => {
-        if(filtro !== ''){
+        if (filtro !== '') {
             const dataFilter = dataOriginal.filter(
                 item => item.PREDIO?.toLowerCase().startsWith(filtro.toLowerCase())
-                        || item["CODIGO INTERNO"]?.startsWith(filtro))
+                    || item["CODIGO INTERNO"]?.startsWith(filtro))
             setData(dataFilter)
-        }else{
+        } else {
             setData(dataOriginal)
         }
     }, [filtro])
+    useEffect(() => {
+        obtenerProveedores()
+        window.api.reload(() => {
+            obtenerProveedores()
+        });
+        return () => {
+            window.api.removeReload()
+        }
+    }, [])
     const obtenerProveedores = async (): Promise<void> => {
         try {
             const request = {
-                data: {
-                    query: {},
-                },
-                collection: 'proveedors',
-                action: 'obtenerProveedores',
-                query: 'proceso'
+                action: 'getProveedores',
             };
-            const response = await window.api.server(request);
+            const response = await window.api.server2(request);
             if (response.status !== 200)
                 throw new Error(response.message)
             setData(response.data)
             setDataOriginal(response.data)
+            console.log(response)
         } catch (e) {
             if (e instanceof Error)
                 messageModal("error", e.message)
-        }
-    }
-    const handleServerEmit = async (data): Promise<void> => {
-        if (data.fn === "cambio-proveedor") {
-            await obtenerProveedores()
         }
     }
     const handleChange = (): void => {
@@ -72,32 +63,40 @@ export default function Proveedores(): JSX.Element {
         setProveedor(proveedorInfo)
     }
     return (
-            <div className="componentContainer">
-                <div className="navBar"></div>
-                <h2>Proveedores</h2>
-                <hr />
-                <div className='filtroContainer'>
-                    <div className='div-filter-actions'>
-                        <button onClick={handleChange}>
-                            Agregar Proveedor
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9z" /><path d="M15 12h-6" /><path d="M12 9v6" /></svg>
+        <div className="componentContainer">
+            <div className="navBar"></div>
+            <h2>Proveedores</h2>
+            <hr />
+            <div className='filtroContainer'>
+                <div className='div-filter-actions'>
+                    <button onClick={handleChange}>
+                        { opciones === "agregar" ? "Volver" : "Agregar Proveedor"}
+                        {opciones === "agregar" ? 
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13 14l-4 -4l4 -4" /><path d="M8 14l-4 -4l4 -4" /><path d="M9 10h7a4 4 0 1 1 0 8h-1" /></svg>
+                        :
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9z" /><path d="M15 12h-6" /><path d="M12 9v6" /></svg>
+                        }
                         </button>
-                        <input type="text" placeholder='Buscar...' onChange={(e): void => setFiltro(e.target.value)} />
-                    </div>
+                    <input type="text" placeholder='Buscar...' onChange={(e): void => setFiltro(e.target.value)} />
                 </div>
-
-                {opciones === "inicio" &&
-                    <TableProveedores data={data}  handleModificar={handleModificar}/>}
-
-                {opciones === "agregar" &&
-                    <AgregarProveedor
-                        proveedor={proveedor}
-                        handleChange={handleChange}
-                        modificar={modificar}
-                    />
-                }
-
             </div>
+
+            {opciones === "inicio" &&
+                <TableProveedores 
+                    data={data} 
+                    handleModificar={handleModificar} 
+                    obtenerProveedores={obtenerProveedores} 
+                />}
+
+            {opciones === "agregar" &&
+                <AgregarProveedor
+                    proveedor={proveedor}
+                    handleChange={handleChange}
+                    modificar={modificar}
+                />
+            }
+
+        </div>
 
 
     )

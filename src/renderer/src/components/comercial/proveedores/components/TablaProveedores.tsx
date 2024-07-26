@@ -4,11 +4,11 @@ import ConfirmacionModal from "@renderer/messages/ConfirmacionModal";
 import { proveedoresType } from "@renderer/types/proveedoresType"
 import { useEffect, useState } from "react";
 import { PiNotePencilDuotone } from "react-icons/pi";
-import { RiDeleteBin5Fill } from "react-icons/ri";
 
 type propsType = {
     data: proveedoresType[]
     handleModificar: (proveedor) => void
+    obtenerProveedores: () => void
 }
 export default function TableProveedores(props: propsType): JSX.Element {
     const {messageModal} = useAppContext()
@@ -25,23 +25,20 @@ export default function TableProveedores(props: propsType): JSX.Element {
     }, [confirm]);
     const handleEliminar = (proveedor): void => {
         setShowConfirmacion(true)
-        setMessage("¿Desea eliminar el usuario seleccionado?")
+        setMessage("¿Desea cambiar el estado del proveedor seleccionado?")
         setProveedoeDataSeleccionado(proveedor)
     }
     const eliminar = async (): Promise<void> => {
         try {
             const request = {
-                collection: 'proveedors',
-                action: 'deleteProveedores',
-                query: 'proceso',
-                data: proveedorDataSeleccionado?._id
+                action: 'inactivar_Proveesdor',
+                _id: proveedorDataSeleccionado?._id
             }
-            console.log(request)
-            const response = await window.api.server(request);
+            const response = await window.api.server2(request);
             if(response.status !== 200)
                 throw new Error(response.message)
             messageModal("success","Proveedor eliminado con exito")
-            console.log(response)
+            props.obtenerProveedores()
         } catch (e) {
             if (e instanceof Error)
                 messageModal("error", e.message)
@@ -70,10 +67,18 @@ export default function TableProveedores(props: propsType): JSX.Element {
                             <td>{proveedor.PROVEEDORES}</td>
                             <td>{proveedor.GGN}</td>
                             <td>{proveedor["FECHA VENCIMIENTO GGN"]}</td>
-                            <td>{proveedor.activo ? "Activo" : "Inactivo"}</td>
+                            <td>
+                            <button style={{ color: "red" }} onClick={():void => handleEliminar(proveedor)}>
+                                {proveedor.activo ? 
+                                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="green" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" /></svg>
+                                :
+                                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="red" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" /></svg>
+                            }
+                            </button>
+
+                            </td>
                             <td>
                                 <button style={{ color: "blue" }} onClick={():void => props.handleModificar(proveedor)}><PiNotePencilDuotone /></button>
-                                <button style={{ color: "red" }} onClick={():void => handleEliminar(proveedor)}><RiDeleteBin5Fill /></button>
                             </td>
                         </tr>
                     ))}
