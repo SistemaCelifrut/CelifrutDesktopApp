@@ -2,7 +2,7 @@
 
 import { filtroColumnasType } from "../type/types"
 import { KEYS_FILTROS_COL } from "../functions/constantes"
-import { promedio, promedioDescartes, promedioDesverdizado, promedioExportacion } from "../functions/functions"
+import { promedio, promedioDesverdizado, promedioExportacion } from "../functions/functions"
 import { lotesType } from "@renderer/types/lotesType"
 
 type propsType = {

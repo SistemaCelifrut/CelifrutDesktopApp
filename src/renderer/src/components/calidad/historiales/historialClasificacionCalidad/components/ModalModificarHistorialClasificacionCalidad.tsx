@@ -13,7 +13,7 @@ type propsType = {
 
 }
 export default function ModalModificarHistorialClasificacionCalidad(props: propsType): JSX.Element {
-    const { messageModal, user } = useAppContext()
+    const { messageModal } = useAppContext()
     const [formulario, setFormulario] = useState<object>({})
     const [formState, setFormState] = useState(objetoLimonNaranja);
 
@@ -31,7 +31,7 @@ export default function ModalModificarHistorialClasificacionCalidad(props: props
                     props.loteSeleccionado.calidad.clasificacionCalidad !== undefined &&
                     item !== "fecha"
                 ) {
-                    formData[item] = props.loteSeleccionado.calidad?.clasificacionCalidad[item]
+                    formData[item] = (props.loteSeleccionado.calidad?.clasificacionCalidad[item] * 100).toFixed(2)
 
                 }
             })
@@ -52,8 +52,8 @@ export default function ModalModificarHistorialClasificacionCalidad(props: props
             if (!check_data_100(formState)) {
                 throw new Error("Erros la suma de los defectos no da 100%")
             }
-            const request = request_guardar_cambios(props.loteSeleccionado, formState, user)
-            const response = await window.api.server(request)
+            const request = request_guardar_cambios(props.loteSeleccionado, formState)
+            const response = await window.api.server2(request)
             if (response.status !== 200)
                 throw new Error(response.message)
             props.handleModificar();

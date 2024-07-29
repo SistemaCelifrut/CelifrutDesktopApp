@@ -113,9 +113,14 @@ type calidadType = {
         variegacion: number;
         verdeManzna: number;
         otrasPlagas: number;
+        sombra: number,
+        wood: number,
         fecha: string;
     };
-    fotosCalidad?: { [key: string]: string };
+    fotosCalidad?: { 
+        fechaIngreso: string
+        [key: string]: string
+    };
 };
 
 type desverdizadoType = {

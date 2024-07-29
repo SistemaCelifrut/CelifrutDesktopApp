@@ -24,7 +24,7 @@ export default function HistorialCalidadInterna(): JSX.Element {
     return() => {
       window.api.removeReload()
     }
-  }, [])
+  }, [page])
   const obtenerData = async (): Promise<void> => {
     try {
       const request = requestData(page)
