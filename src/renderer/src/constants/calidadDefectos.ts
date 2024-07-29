@@ -25,3 +25,10 @@ export const dataDefectos = {
     verdeManzana: 'Verde Manzana',
     wood: 'Wood Pocket'
 };
+
+export const dataCalidadInterna = {
+    brix: "Brix",
+    acidez:"Acidez",
+    ratio:"Ratio",
+    zumo:"Zumo"
+}

@@ -51,7 +51,7 @@ export default function TablaHistorialClasificacionCalidad(props: propsType): JS
                                     return (
                                         <div key={lote._id + item} className="historial-clasificacion-calidad-elementos-div">
                                             <h3>{objeto[item]}</h3>
-                                            <h4>{lote.calidad?.clasificacionCalidad[item]}%</h4>
+                                            <h4>{(lote.calidad?.clasificacionCalidad[item] * 100).toFixed(3)}%</h4>
                                         </div>
                                     )
                                 } else { return null }

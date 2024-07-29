@@ -79,9 +79,7 @@ export const objetoLimonNaranja = {
 
 
 export const check_data_100 = (formState: {[key: string]: number}): boolean => {
-  console.log(formState)
   const sum = Object.values(formState).reduce((acu: number, item: number) => acu += item, 0)
-  console.log(sum)
   if(sum === 100) return true
   else return false
 }
