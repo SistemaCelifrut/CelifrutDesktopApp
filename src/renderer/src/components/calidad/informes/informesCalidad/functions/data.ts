@@ -23,3 +23,27 @@ export function totalLote(lote:lotesType):number{
     const descarte = totalDescarte(lote);
     return lote.calidad1 + lote.calidad15 + lote.calidad2 + descarte
 }
+export function getDataToInformeCalidad(lote:lotesType):void | null{
+    if(!lote) return null
+    const outArr: (string | number)[][] = [];
+    const fila1: (string | number)[] = [];
+    
+    fila1.push(lote.tipoFruta);
+    fila1.push(lote.tipoFruta === 'Limon' ? "Tahiti" : "Naranja");
+    
+    outArr.push(fila1);
+
+    const fila2: (string | number)[] = [];
+
+}
+export const dataInformeInit = {
+    datosGenerales:[],
+    resultadosExportacion:[],
+    resultadosDescarte:[],
+}
+
+export type dataInformeType = {
+    datosGenerales:string[];
+    resultadosExportacion: (string | number)[];
+    resultadosDescarte:(string | number)[];
+}

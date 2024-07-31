@@ -5,13 +5,13 @@ import { proveedoresType } from "./proveedoresType";
 /* eslint-disable @typescript-eslint/ban-types */
 export type lotesType = {
     _id: string;
-    enf?: string;
-    predio?: proveedoresType;
-    canastillas?: string;
-    tipoFruta?: string;
-    observaciones?: string;
-    kilos?: number;
-    placa?: string;
+    enf: string;
+    predio: proveedoresType;
+    canastillas: string;
+    tipoFruta: string;
+    observaciones: string;
+    kilos: number;
+    placa: string;
     kilosVaciados?: number;
     promedio?: number;
     rendimiento?: number;
@@ -20,7 +20,7 @@ export type lotesType = {
     descarteEncerado?: descarteEnceradoType;
     directoNacional?: number;
     informeEnviado?: boolean;
-    fechaIngreso?: string;
+    fechaIngreso: string;
     calidad?: calidadType;
     frutaNacional?: number;
     urlInformeCalidad?: string;

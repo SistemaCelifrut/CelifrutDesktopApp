@@ -7,9 +7,10 @@ import { contenedoresType } from '@renderer/types/contenedoresType';
 import ViewInformeDatosGenerales from './ViewInformeDatosGenerales';
 import ViewInformeResultados from './ViewInformeResultados';
 import ViewInformeDescarte from './ViewInformeDescarte';
-import { obtenerPorcentage, totalLote } from '../functions/data';
+import { dataInformeInit, dataInformeType, obtenerPorcentage, totalLote } from '../functions/data';
 import ViewInformeObservaciones from './ViewInformeObservaciones';
-
+import ViewInformeFotos from './ViewInformeFotos';
+import { totalPrecios } from '../functions/totalPrecios'
 type propsType = {
     handleVolverTabla: () => void
     loteSeleccionado: lotesType | undefined
@@ -17,9 +18,13 @@ type propsType = {
 export default function ViewInformeData(props: propsType): JSX.Element {
     const { messageModal } = useAppContext();
     const [contenedores, setContenedores] = useState<contenedoresType[]>([]);
+    const [dataInforme, setDataInforme] = useState<dataInformeType>(dataInformeInit)
     useEffect(() => {
-        if (props.loteSeleccionado) buscarContenedores()
-
+        if (props.loteSeleccionado &&
+            props.loteSeleccionado.contenedores &&
+            props.loteSeleccionado.contenedores?.length > 0) {
+            buscarContenedores()
+        }
     }, [props.loteSeleccionado])
 
     const buscarContenedores = async (): Promise<void> => {
@@ -33,6 +38,9 @@ export default function ViewInformeData(props: propsType): JSX.Element {
                 messageModal("error", `${err.message}`)
             }
         }
+    }
+    const crearInforme = ():void => {
+        console.log(dataInforme)
     }
     //si el lote es indefinido
     if (props.loteSeleccionado === undefined) {
@@ -48,8 +56,16 @@ export default function ViewInformeData(props: propsType): JSX.Element {
             <button className="defaulButtonAgree" onClick={props.handleVolverTabla}>Regresar</button>
             <div className="container-informe-calidad-lote">
                 <h2>Informe de calidad para el productor</h2>
-                <ViewInformeDatosGenerales contenedores={contenedores} loteSeleccionado={props.loteSeleccionado} />
-                <table>
+                <hr />
+                <ViewInformeDatosGenerales 
+                    setDataInforme={setDataInforme}
+                    contenedores={contenedores} 
+                    loteSeleccionado={props.loteSeleccionado} />
+                <hr />
+                <div className='informe-calidad-lote-div'>
+                    <h3>Resultados</h3>
+                </div>
+                <table className='table-main'>
                     <thead>
                         <tr>
                             <th>Clasificacion</th>
@@ -61,8 +77,8 @@ export default function ViewInformeData(props: propsType): JSX.Element {
                     </thead>
                     <tbody>
                         <ViewInformeResultados loteSeleccionado={props.loteSeleccionado} />
-                        <ViewInformeDescarte loteSeleccionado={props.loteSeleccionado} />
-                        <tr>
+                        <ViewInformeDescarte loteSeleccionado={props.loteSeleccionado}/>
+                        <tr className='fondo-impar'>
                             <td>Total</td>
                             <td>
                                 {totalLote(props.loteSeleccionado).toFixed(2)} Kg
@@ -73,10 +89,33 @@ export default function ViewInformeData(props: propsType): JSX.Element {
                                     (props.loteSeleccionado.kilos ?? 1)
                                 ).toFixed(2)}%
                             </td>
+                            <td></td>
+                            <td>
+                                {
+                                    new Intl.NumberFormat('es-CO', {
+                                        style: 'currency',
+                                        currency: 'COP',
+                                        minimumFractionDigits: 0,
+                                        maximumFractionDigits: 0
+                                    }).format(totalPrecios(props.loteSeleccionado))
+                                }
+                            </td>
                         </tr>
                     </tbody>
                 </table>
+                <div className='informe-calidad-lote-div'>
+                    <h3>Observaciones</h3>
+                </div>
                 <ViewInformeObservaciones loteSeleccionado={props.loteSeleccionado} />
+                <div className='informe-calidad-lote-div'>
+                    <h3>Evidencias fotograficas</h3>
+                </div>
+                <div>
+                    <ViewInformeFotos loteSeleccionado={props.loteSeleccionado} />
+                </div>
+                <div className='informe-calidad-lote-div'>
+                    <button className='defaulButtonAgree' onClick={crearInforme}>Generar informe</button>
+                </div>
             </div>
         </div>
     )

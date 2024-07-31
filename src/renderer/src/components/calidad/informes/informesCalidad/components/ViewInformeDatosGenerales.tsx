@@ -3,15 +3,16 @@ import { contenedoresType } from "@renderer/types/contenedoresType";
 import { lotesType } from "@renderer/types/lotesType"
 import { format } from "date-fns"
 import { es } from 'date-fns/locale';
-
+import '../css/informesDatosGeneral.css'
 type propsType = {
     loteSeleccionado: lotesType
     contenedores: contenedoresType[]
+    setDataInforme: (e) => void
 }
 
 export default function ViewInformeDatosGenerales(props: propsType): JSX.Element {
     return (
-        <div>
+        <div className="view-informes-datos-general-container">
             <div>
                 <p>Clase de Fruta: <span>{props.loteSeleccionado.tipoFruta}</span></p>
                 <p>Variedad:</p>
@@ -43,9 +44,6 @@ export default function ViewInformeDatosGenerales(props: propsType): JSX.Element
                             props.contenedores.reduce((acu, cont) => (acu += cont.numeroContenedor + "-"), ' ')
                         }
                     </span></p>
-            </div>
-            <div>
-                <h3>Resultados</h3>
             </div>
         </div>
     )

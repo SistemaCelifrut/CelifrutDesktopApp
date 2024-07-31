@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 const startOfDay = new Date();
 startOfDay.setDate(startOfDay.getDate() - 1);
-startOfDay.setHours(0,0,0,0);
+startOfDay.setHours(0, 0, 0, 0);
 
 const nextDay = new Date(startOfDay);
 nextDay.setDate(startOfDay.getDate() + 1);
@@ -12,20 +12,16 @@ export const requestLotesVaciados = {
 
 export const requestHabilitarDescarte = (loteDescarte): object => {
   return {
-    data:{
-      lote: loteDescarte?.documento,
-    },
-    collection:'variablesDesktop',
-    action: 'modificar_sistema',
-    query: 'obtenerHistorialLotes',
+    data: loteDescarte?.documento,
+    action: 'modificar_predio_proceso_descarte',
   }
 }
 export const requestHabilitarListaEmpaque = (loteListaEmpaque): object => {
   return {
-    data:{
+    data: {
       lote: loteListaEmpaque?.documento,
     },
-    collection:'variablesDesktop',
+    collection: 'variablesDesktop',
     action: 'modificar_sistema',
     query: 'modificar_predio_proceso_listaEmpaque',
   }
