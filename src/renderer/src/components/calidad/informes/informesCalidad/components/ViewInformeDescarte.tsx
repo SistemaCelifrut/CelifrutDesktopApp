@@ -3,6 +3,7 @@
 import { dataDefectos } from "@renderer/constants/calidadDefectos"
 import { lotesType } from "@renderer/types/lotesType"
 import { obtenerPorcentage, totalDescarte } from "../functions/data";
+import MostrarPrecios from "./MostrarPrecios";
 
 type propsType = {
     loteSeleccionado: lotesType
@@ -10,7 +11,6 @@ type propsType = {
 
 export default function ViewInformeDescarte(props: propsType): JSX.Element {
     const clasificacionCalidad = props.loteSeleccionado?.calidad?.clasificacionCalidad;
-
     if (!clasificacionCalidad) {
         return <div>No hay datos de clasificación de calidad disponibles.</div>;
     }
@@ -22,7 +22,7 @@ export default function ViewInformeDescarte(props: propsType): JSX.Element {
                     return null
                 } else {
                     return (
-                        <tr key={key}>
+                        <tr key={key} >
                             <td>{dataDefectos[key] || key}</td>
                             <td>
                                 {(
@@ -32,6 +32,11 @@ export default function ViewInformeDescarte(props: propsType): JSX.Element {
                                 ).toFixed(2)} Kg
                             </td>
                             <td>{((value as number) * 100).toFixed(2)}%</td>
+                            <MostrarPrecios
+                                loteSeleccionado={props.loteSeleccionado}
+                                tipoPrecio="descarte"
+                                kilosFruta={((props.loteSeleccionado.descarteLavado?.descarteGeneral ?? 0) +
+                                    (props.loteSeleccionado.descarteEncerado?.descarteGeneral ?? 0))} />
                         </tr>
                     )
                 }
@@ -45,6 +50,10 @@ export default function ViewInformeDescarte(props: propsType): JSX.Element {
                     (props.loteSeleccionado.descarteEncerado?.extra ?? 0),
                     props.loteSeleccionado.kilos ?? 1).toFixed(2)} %
                 </td>
+                <MostrarPrecios
+                    loteSeleccionado={props.loteSeleccionado}
+                    tipoPrecio="descarte"
+                    kilosFruta={(props.loteSeleccionado.descarteEncerado?.extra ?? 0)} />
             </tr>
             <tr>
                 <td>Fruta con diámetro Ecuatorial inferior a lo requerido (Balín)</td>
@@ -61,6 +70,10 @@ export default function ViewInformeDescarte(props: propsType): JSX.Element {
                         (props.loteSeleccionado.kilos ?? 1)
                     ).toFixed(2)}%
                 </td>
+                <MostrarPrecios
+                    loteSeleccionado={props.loteSeleccionado}
+                    tipoPrecio="descarte"
+                    kilosFruta={(props.loteSeleccionado.descarteLavado?.balin ?? 0)} />
             </tr>
             <tr>
                 <td>Fruta con diámetro Ecuatorial inferior a lo requerido (Pareja)</td>
@@ -77,6 +90,12 @@ export default function ViewInformeDescarte(props: propsType): JSX.Element {
                         (props.loteSeleccionado.kilos ?? 1)
                     ).toFixed(2)}%
                 </td>
+                <MostrarPrecios
+                    loteSeleccionado={props.loteSeleccionado}
+                    tipoPrecio="descarte"
+                    kilosFruta={((props.loteSeleccionado.descarteEncerado?.pareja ?? 0)
+                        + (props.loteSeleccionado.descarteLavado?.pareja ?? 0)
+                    )} />
             </tr>
             <tr>
                 <td>Descompuesta  (Geotrichum, daños mecánicos, oleocelosis severa, hongos, fruta rajada).</td>
@@ -93,6 +112,10 @@ export default function ViewInformeDescarte(props: propsType): JSX.Element {
                         (props.loteSeleccionado.kilos ?? 1)
                     ).toFixed(2)}%
                 </td>
+                <MostrarPrecios
+                    loteSeleccionado={props.loteSeleccionado}
+                    tipoPrecio="descarte"
+                    kilosFruta={0} />
             </tr>
             <tr>
                 <td>Hojas</td>
@@ -103,6 +126,10 @@ export default function ViewInformeDescarte(props: propsType): JSX.Element {
                     (props.loteSeleccionado.descarteLavado?.hojas ?? 0),
                     props.loteSeleccionado.kilos ?? 1).toFixed(2)} %
                 </td>
+                <MostrarPrecios
+                    loteSeleccionado={props.loteSeleccionado}
+                    tipoPrecio="descarte"
+                    kilosFruta={0} />
             </tr>
             <tr>
                 <td>Fruta nacional</td>
@@ -125,6 +152,10 @@ export default function ViewInformeDescarte(props: propsType): JSX.Element {
                         (props.loteSeleccionado.kilos ?? 1)
                     ).toFixed(2)}%
                 </td>
+                <MostrarPrecios
+                    loteSeleccionado={props.loteSeleccionado}
+                    tipoPrecio="descarte"
+                    kilosFruta={totalDescarte(props.loteSeleccionado)} />
             </tr>
         </>
     )

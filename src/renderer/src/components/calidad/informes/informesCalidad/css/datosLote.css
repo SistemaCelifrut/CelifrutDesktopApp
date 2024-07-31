@@ -1,7 +1,27 @@
 .container-informe-calidad-lote{
-    background-color: aliceblue;
+    background-color: rgb(212, 212, 212);
     color: black;
     margin: 0.75rem;
     border-radius: 15px;
+    padding: 0.75rem;
+}
+.container-informe-calidad-lote hr{
+    color: black;
+    border: none;
+    height: 2px;
+    background-color: black;
+    width: 100%;
+}
+
+.informe-calidad-lote-div{
+    background-color: rgb(255, 255, 255);
+    border-radius: 15px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    border-radius: 15px;
     padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
 }

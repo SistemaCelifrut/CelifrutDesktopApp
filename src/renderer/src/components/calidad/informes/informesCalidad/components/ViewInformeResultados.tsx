@@ -1,41 +1,45 @@
 /* eslint-disable prettier/prettier */
 import { lotesType } from "@renderer/types/lotesType"
 import { obtenerPorcentage } from "../functions/data"
+import MostrarPrecios from "./MostrarPrecios"
 
 type propsType = {
     loteSeleccionado: lotesType
 }
 
 export default function ViewInformeResultados(props: propsType): JSX.Element {
+    const data = {
+        calidad1: {
+            label: "Exportación Tipo 1:",
+            tipo: 1
+        },
+        calidad15: {
+            label: "Exportación Tipo Caribe: ",
+            tipo: 15
+        },
+        calidad2: {
+            label: "Exportación Tipo 2: ",
+            tipo: 2
+        },
+    }
     return (
         <>
-            <tr>
-                <td>Exportación Tipo 1: </td>
-                <td>{props.loteSeleccionado.calidad1}</td>
-                <td>{
-                    props.loteSeleccionado.kilos &&
-                    obtenerPorcentage(props.loteSeleccionado.calidad1, props.loteSeleccionado.kilos).toFixed(2)
-                }% </td>
+            {Object.keys(data).map(key => (
+                <tr key={key}>
+                    <td>{data[key].label}</td>
+                    <td>{props.loteSeleccionado[key]}</td>
+                    <td>{
+                        props.loteSeleccionado.kilos &&
+                        obtenerPorcentage(props.loteSeleccionado[key], props.loteSeleccionado.kilos).toFixed(2)
+                    }% </td>
+                    <MostrarPrecios
+                        loteSeleccionado={props.loteSeleccionado}
+                        tipoPrecio={data[key].tipo}
+                        kilosFruta={props.loteSeleccionado[key]}
+                    />
+                </tr>
+            ))}
 
-            </tr>
-            <tr>
-                <td>Exportación Tipo Caribe: </td>
-                <td>{props.loteSeleccionado.calidad15}</td>
-                <td>{
-                    props.loteSeleccionado.kilos &&
-                    obtenerPorcentage(props.loteSeleccionado.calidad15, props.loteSeleccionado.kilos).toFixed(2)
-                }% </td>
-
-            </tr>
-            <tr>
-                <td>Exportación Tipo 2: </td>
-                <td>{props.loteSeleccionado.calidad2}</td>
-                <td>{
-                    props.loteSeleccionado.kilos &&
-                    obtenerPorcentage(props.loteSeleccionado.calidad2, props.loteSeleccionado.kilos).toFixed(2)
-                }% </td>
-
-            </tr>
         </>
     )
 }
