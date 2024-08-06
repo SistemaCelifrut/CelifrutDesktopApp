@@ -7,7 +7,7 @@ import "../../../../../css/modal-style.css"
 
 type vaciadoType = {
   closeDesverdizado: () => void
-  propsModal: lotesType
+  propsModal: lotesType | undefined
   handleInfo: () => void
   obtenerFruta: () => void
 
@@ -18,7 +18,16 @@ export default function Desverdizado(props: vaciadoType): JSX.Element {
   const [canastillas, setCanastillas] = useState<number>(0)
   const [cuartoDesverdizado, setCuartoDesverdizado] = useState<string>('')
 
+  if(props.propsModal === undefined){
+    messageModal("error", "No se ha seleccionado ningun lote")
+    props.closeDesverdizado()
+    return(
+      <div></div>
+    )
+  }
+
   const vaciar = async (): Promise<void> => {
+    if(props.propsModal === undefined) return
     try {
       const canastillasInt = canastillas
       const propsCanastillasInt = props.propsModal.inventario ? props.propsModal.inventario : 0

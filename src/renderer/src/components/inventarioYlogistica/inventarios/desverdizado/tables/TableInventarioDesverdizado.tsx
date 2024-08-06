@@ -9,7 +9,7 @@ type propsType = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   clickLote: (e: any) => void
   render: boolean
-  propsModal: lotesType
+  propsModal: lotesType | undefined
 }
 
 export default function TableInventarioDesverdizado(props: propsType):JSX.Element {

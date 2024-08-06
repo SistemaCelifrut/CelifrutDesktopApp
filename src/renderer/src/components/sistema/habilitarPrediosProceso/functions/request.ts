@@ -18,11 +18,8 @@ export const requestHabilitarDescarte = (loteDescarte): object => {
 }
 export const requestHabilitarListaEmpaque = (loteListaEmpaque): object => {
   return {
-    data: {
-      lote: loteListaEmpaque?.documento,
-    },
-    collection: 'variablesDesktop',
-    action: 'modificar_sistema',
-    query: 'modificar_predio_proceso_listaEmpaque',
+    data: loteListaEmpaque?.documento,
+    action: 'modificar_predio_proceso_listaEmpaque',
+
   }
 }

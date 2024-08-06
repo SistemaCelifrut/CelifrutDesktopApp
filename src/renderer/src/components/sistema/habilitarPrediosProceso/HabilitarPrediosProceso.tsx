@@ -49,7 +49,7 @@ export default function HabilitarPrediosProceso(): JSX.Element {
     const handleHabilitarPrediolistaEmpaque = async (): Promise<void> => {
         try {
             const request = requestHabilitarListaEmpaque(loteListaEmpaque)
-              const response = await window.api.server(request);
+              const response = await window.api.server2(request);
               if(response.status !== 200){
                 throw new Error(response.message)
               }

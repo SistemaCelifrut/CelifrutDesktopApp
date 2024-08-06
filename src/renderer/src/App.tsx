@@ -7,53 +7,8 @@ import { themeType } from './env'
 import SideBar from './components/UI/SideBar'
 // import Login from './components/Login/Login'
 import { userType } from './types/login'
-
-import IngresoFruta from './components/inventarioYlogistica/ingresos/ingresoFruta/IngresoFruta'
-import InventarioFrutaSinProcesar from './components/inventarioYlogistica/inventarios/frutaSinProcesar/InventarioFrutaSinProcesar'
-import HistorialProcesado from './components/inventarioYlogistica/historiales/historialProcesado/HistorialProcesado'
-import HistorialDirectoNacional from './components/inventarioYlogistica/historiales/historialDirectoNacional/HistorialDirectoNacional'
-import Desverdizado from './components/inventarioYlogistica/inventarios/desverdizado/Desverdizado'
-import CalidadInterna from './components/calidad/ingresos/calidadInterna/CalidadInterna'
-import HistorialCalidadInterna from './components/calidad/historiales/historialCalidadInterna/HistorialCalidadInterna'
-import IngresoClasificacionCalidad from './components/calidad/ingresos/clasificacionCalidad/IngresoClasificacionCalidad'
-import HistorialClasificacionCalidad from './components/calidad/historiales/historialClasificacionCalidad/HistorialClasificacionCalidad'
-import Contenedores from './components/inventarioYlogistica/historiales/contenedores/Contenedores'
-import ControlPlagas from './components/calidad/formularios/controlPlagas/ControlPlagas'
-import LimpiezaMensual from './components/calidad/formularios/limpiezaMensual/LimpiezaMensual'
-import LimpiezaPostCosecha from './components/calidad/formularios/limpiezaPostCosecha/LimpiezaPostCosecha'
-import HigienePersonal from './components/calidad/formularios/higienePersonal/HigienePersonal'
-// import HistorialVehiculos from './components/transporte/historialInspecciones/historialFormularioInspeccionVehiculos/HistorialVehiculos'
-import Informes from './components/calidad/informes/informesCalidad/Informes'
-import HistorialIngresoFruta from './components/inventarioYlogistica/historiales/historialIngresoFruta/HistorialIngreso'
-import FormularioMulas from './components/transporte/formulatioInspecciones/inspeccionMulas/FormularioMulas'
-// import HistorialFormulario from './components/transporte/historialInspecciones/historialFormularioInspeccionMulas/HistorialFormulario'
-import HistorialDescarte from './components/inventarioYlogistica/historiales/historialDescartes/HistorialDescarte'
-import ListaDeEmpaque from './components/inventarioYlogistica/historiales/listaDeEmpaque/ListaDeEmpaque'
-import Lotes from './components/inventarioYlogistica/historiales/lotes/Lotes'
-import VolanteCalidad from './components/calidad/formularios/volanteCalidad/VolanteCalidad'
-// import HistorialProgramacionMula from './components/transporte/historialInspecciones/historialProgramacionMula/HistorialProgramacionMula'
-import Cuentas from './components/gestionDeCuentas/crearCuentas/Cuentas'
-import Inicio from './components/Inicio'
 import MessagesComponent from './messages/MessagesComponent'
-import VariablesProceso from './components/sistema/variablesDelSistema/VariablesProceso'
-import HabilitarPrediosProceso from './components/sistema/habilitarPrediosProceso/HabilitarPrediosProceso'
-import OrdenDeVaceo from './components/inventarioYlogistica/inventarios/orden/OrdenDeVaceo'
-import ActivarFunciones from './components/sistema/activarFunciones/ActivarFunciones'
-import IngresoSistemaDescartes from './components/sistema/ingresarDescartes/IngresoSistemaDescartes'
-import Operario from './components/gestionDeCuentas/operarios/Operario'
-import ProgramacionMula from './components/transporte/formulatioInspecciones/programacionMulas/ProgramacionMula'
-// import DescarteEnceradoSistema from './components/sistema/descarteEncerado/DescarteEnceradoSistema'
-import SistemaExportacionLotes from './components/sistema/exportacionLotesData/SistemaExportacionLotes'
-import ModificarSeriales from './components/sistema/modificarSeriales/ModificarSeriales'
-import EficienciaFruta from './components/indicadores/operaciones/EficienciaFruta/EficienciaFruta'
-import ReprocesoDescarte from './components/inventarioYlogistica/inventarios/reproceso descarte/ReprocesoDescarte'
-import CrearContenedor from './components/comercial/ingresos/crearContenedor/CrearContenedor'
-import Proveedores from './components/comercial/proveedores/Proveedores'
-import Clientes from './components/comercial/clientes/Clientes'
-import PrecioLimon from './components/comercial/precioLimon/PrecioLimon'
-import PrecioNaranja from './components/comercial/precioNaranja/PrecioNaranja'
-import DescarteLavadoSistema from './components/proceso/aplicaciones/descarteLavado/DescarteLavadoSistema'
-import DescarteEnceradoSistema from './components/proceso/aplicaciones/descarteEncerado/DescarteEnceradoSistema'
+import Ventana from './components/UI/Ventana'
 
 type OpenModalFunction = (messageType: string, message: string) => void;
 type MyContextType = {
@@ -138,12 +93,6 @@ function App(): JSX.Element {
 
     }
   }
-  // const loggin = (data: boolean): void => {
-  //   setIsLogin(data)
-  // }
-  // const getUser = (data: userType): void => {
-  //   setUser(data)
-  // }
   const seleccionWindow = (data: string): void => {
     setSection(data)
   }
@@ -179,73 +128,7 @@ function App(): JSX.Element {
                               seleccionWindow={seleccionWindow} 
                               handleSideBarWidth={handleSideBarWidth} 
                               showSideBar={showSideBar} />
-                            <div className={` flex justify-center w-full h-full overflow-auto `}>
-                              {section === "main" && <Inicio />}
-                              {/* Inventario y logistica */}
-                              {section === "Inventario y Logística//Ingresos//Ingreso de fruta" && <IngresoFruta />}
-                              {section === "Inventario y Logística//Inventarios//Fruta sin procesar" && <InventarioFrutaSinProcesar />}
-                              {section === "Inventario y Logística//Inventarios//Orden de vaceo" && <OrdenDeVaceo />}
-                              {section === "Inventario y Logística//Historiales//Fruta procesada" && <HistorialProcesado />}
-                              {section === "Inventario y Logística//Historiales//Directo nacional" && <HistorialDirectoNacional />}
-                              {section === "Inventario y Logística//Inventarios//Desverdizado" && <Desverdizado />}
-                              {section === "Inventario y Logística//Inventarios//Reproceso Descarte" && <ReprocesoDescarte />}
-                              {section === "Inventario y Logística//Historiales//Contenedores" && <Contenedores />}
-                              {section === "Inventario y Logística//Historiales//Ingreso fruta" && <HistorialIngresoFruta />}
-                              {section === "Inventario y Logística//Historiales//Descarte" && <HistorialDescarte />}
-                              {section === "Inventario y Logística//Historiales//Lista de empaque" && <ListaDeEmpaque />}
-                              {section === "Inventario y Logística//Historiales//Lotes" && <Lotes />}
-
-
-                              {/* Calidad */}
-                              {section === "Calidad//Ingresos//Calidad interna" && <CalidadInterna />}
-                              {section === "Calidad//Historiales//Calidad interna" && <HistorialCalidadInterna />}
-                              {section === "Calidad//Ingresos//Clasificacion calidad" && <IngresoClasificacionCalidad />}
-                              {section === "Calidad//Historiales//Clasificacion calidad" && <HistorialClasificacionCalidad />}
-                              {section === "Calidad//Formularios//Control plagas" && <ControlPlagas />} 
-                              {section === "Calidad//Formularios//Higiene personal" && <HigienePersonal />} 
-                              {section === "Calidad//Formularios//Limpieza mensual" && <LimpiezaMensual />} 
-                              {section === "Calidad//Formularios//Limpieza post cosecha" && <LimpiezaPostCosecha />} 
-                              {section === "Calidad//Formularios//Volante calidad" && <VolanteCalidad />} 
-                              {section === "Calidad//Informes//Informe proveedor" && <Informes />}
-
-
-                              {/* Gestion de cuentas */}
-
-                              {section === "Gestión de Cuentas//Ingresos//Crear cuenta" && <Cuentas />}
-                              {section === "Gestión de Cuentas//Operarios//Operarios" && <Operario />}
-
-                              {/* Transporte */}
-                              {/* {section === 'Transporte//Historiales//Inspeccion camiones' && <HistorialVehiculos />} */}
-                              {/* {section === "Transporte//Historiales//Inspeccion tractomulas" && <HistorialFormulario />} */}
-                              {section === "Transporte//Formularios//Tractomulas" && <FormularioMulas />}
-                              {section === "Transporte//Formularios//Programación tractomulas" && <ProgramacionMula />}
-                              {/* {section === "Transporte//Historiales//Historial programación tractomula" && <HistorialProgramacionMula/>} */}
-
-
-                              {/* Sistema */}
-                              {section === 'Sistema//Proceso//Variables del Proceso' && <VariablesProceso />}
-                              {section === 'Sistema//Proceso//Habilitar predios proceso' && <HabilitarPrediosProceso />}
-                              {section === 'Sistema//Proceso//Funciones' && <ActivarFunciones />}
-                              {section === 'Sistema//Proceso//Ingreso descartes' && <IngresoSistemaDescartes />}
-                              {/* {section === 'Sistema//Proceso//Descarte lavado' && <DescarteLavadoSistema />} */}
-                              {/* {section === 'Sistema//Proceso//Descarte encerado' && <DescarteEnceradoSistema />} */}
-                              {section === 'Sistema//Proceso//Exportación lotes' && <SistemaExportacionLotes />}
-                              {section === 'Sistema//Proceso//Modificar serial lotes' && <ModificarSeriales />}
-
-                              {/* indicadores */}
-                              {section === 'Indicadores//Operaciones//Eficiencía de la fruta' && <EficienciaFruta widthBar={widthBar} />}
-                              {/* Comercial */}
-                              {section === 'Comercial//Precios proveedor//Limon' && <PrecioLimon /> }
-                              {section === 'Comercial//Precios proveedor//Naranja' && <PrecioNaranja />}
-                              {section === "Comercial//Ingresos//Crear contenedor" && <CrearContenedor />}
-                              {section === "Comercial//Clientes//Clientes" && <Clientes />}
-                              {section === "Comercial//Proveedores//Proveedores" && <Proveedores />}
-
-                              {/* proceso */}
-                              {section === 'Proceso//Aplicaciones//Descarte Lavado' && <DescarteLavadoSistema /> }
-                              {section === 'Proceso//Aplicaciones//Descarte Encerado' && <DescarteEnceradoSistema /> }
-
-                            </div>
+                            <Ventana section={section} widthBar={widthBar} />
                           </div>
                         </div>
                       {/* )} */}

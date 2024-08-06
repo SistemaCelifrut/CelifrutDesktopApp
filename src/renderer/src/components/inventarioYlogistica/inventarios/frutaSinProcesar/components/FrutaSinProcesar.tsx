@@ -1,10 +1,9 @@
 /* eslint-disable prettier/prettier */
 import TableFrutaSinProcesar from '../tables/TableFrutaSinProcesar'
 import { useEffect, useReducer, useState } from 'react'
-import { INITIAL_STATE, predios, reducer } from '../functions/reducer'
+import { INITIAL_STATE, reducer } from '../functions/reducer'
 import BotonesAccionFrutaSinProcesar from '../utils/BotonesAccionFrutaSinProcesar'
 import { createPortal } from 'react-dom'
-import Vaciado from '../modals/Vaciado'
 import Directo from '../modals/Directo'
 import Desverdizado from '../modals/Desverdizado'
 import useAppContext from '@renderer/hooks/useAppContext'
@@ -19,7 +18,7 @@ const request = {
 
 export default function FrutaSinProcesar(props: propsType): JSX.Element {
   const { messageModal } = useAppContext();
-  const [propsModal, setPropsModal] = useState<lotesType>(predios)
+  const [propsModal, setPropsModal] = useState<lotesType>()
   const [titleTable, setTitleTable] = useState('Lotes')
   const [datosOriginales, setDatosOriginales] = useState([])
   //states de los modales
@@ -82,7 +81,7 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
     setShowDesverdizadoModal(!showDesverdizadoModal)
   }
   const handleInfo = (): void => {
-    setPropsModal(predios)
+    setPropsModal(undefined)
     setTitleTable("Lotes")
   }
   useEffect(() => {
@@ -103,14 +102,7 @@ export default function FrutaSinProcesar(props: propsType): JSX.Element {
         clickLote={clickLote}
         propsModal={propsModal}
       />
-      {showVaciarModal &&
-        createPortal(
-          <Vaciado
-            closeVaciado={closeVaciado}
-            propsModal={propsModal}
-            handleInfo={handleInfo} />,
-          document.body
-        )}
+
       {showDirectoModal &&
         createPortal(
           <Directo

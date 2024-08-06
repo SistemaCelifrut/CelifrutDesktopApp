@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useEffect, useReducer, useState } from 'react'
-import { INITIAL_STATE_HISTORIAL_PROCESO, documentoInit, reducerHistorial } from './functions/reducer'
+import { INITIAL_STATE_HISTORIAL_PROCESO, reducerHistorial } from './functions/reducer'
 import { createPortal } from 'react-dom'
 import { format } from 'date-fns'
 import TableHistorialDirectoNacional from './tables/TableHistorialDirectoNacional'
@@ -19,7 +19,7 @@ export default function HistorialDirectoNacional(): JSX.Element {
   const [datosOriginales, setDatosOriginales] = useState([])
   const [titleTable, setTitleTable] = useState('Historial directo nacional')
   const [showModal, setShowModal] = useState<boolean>(false)
-  const [propsModal, setPropsModal] = useState<historialLotesType>(documentoInit)
+  const [propsModal, setPropsModal] = useState<historialLotesType>()
   const [showModificar, setShowModificar] = useState<boolean>(false)
   const [filtro, setFiltro] = useState<string>('')
   const [table, dispatch] = useReducer(reducerHistorial, INITIAL_STATE_HISTORIAL_PROCESO)
