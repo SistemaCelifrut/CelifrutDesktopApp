@@ -2,31 +2,6 @@
 import { lotesType } from '@renderer/types/lotesType';
 import { format } from 'date-fns'
 
-export const predios: lotesType = {
-  _id: '',
-  enf: '',
-  predio: { ICA: '', PREDIO: '' },
-  fechaIngreso: '',
-  kilosVaciados: 0,
-  inventario: 0,
-  desverdizado: {
-    canastillasIngreso: 0,
-    kilosIngreso: 0,
-    cuartoDesverdizado: '',
-    fechaFinalizar:'',
-    fechaIngreso:'',
-    parametros:[]
-  },
-  observaciones: '',
-  tipoFruta: '',
-  promedio: 0,
-  calidad1:0,
-  calidad15:0,
-  calidad2:0,
-  directoNacional: 0, // Agrega esta línea
-};
-
-
 
 export const INITIAL_STATE: lotesType[] = []
 

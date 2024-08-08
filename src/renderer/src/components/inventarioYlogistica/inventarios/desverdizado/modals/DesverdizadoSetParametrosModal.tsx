@@ -5,7 +5,7 @@ import { lotesType } from '@renderer/types/lotesType'
 
 type vaciadoType = {
   closeParametros: () => void
-  propsModal: lotesType
+  propsModal: lotesType | undefined
   handleInfo: () => void
 
 }
@@ -17,8 +17,18 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType): JSX.
   const [dioxido, setDioxido] = useState<number>(0)
   const [humedad, setHumedad] = useState<number>(0)
 
+  if (props.propsModal === undefined) {
+    messageModal("error", "No se ha seleccionado lote");
+    props.closeParametros()
+    return (
+      <div></div>
+    )
+  }
+
   const guardar = async (): Promise<void> => {
     try {
+      if (props.propsModal === undefined) throw new Error("No se ha seleccionado lote")
+
       const parametros = {
         temperatura: temperatura,
         etileno: etileno,
@@ -28,11 +38,11 @@ export default function DesverdizadoSetParametrosModal(props: vaciadoType): JSX.
 
       }
       const request = {
-        __v:props.propsModal.__v,
-        _id:props.propsModal._id,
+        __v: props.propsModal.__v,
+        _id: props.propsModal._id,
         data: parametros,
         action: 'set_parametros_desverdizado',
- 
+
       }
       const response = await window.api.server2(request)
       if (response.status === 200) {

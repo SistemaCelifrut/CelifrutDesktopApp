@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useEffect, useReducer, useState } from 'react'
-import { INITIAL_STATE_HISTORIAL_PROCESO, documentoInit, reducerHistorial } from './functions/reducer'
+import { INITIAL_STATE_HISTORIAL_PROCESO, reducerHistorial } from './functions/reducer'
 import { createPortal } from 'react-dom'
 import TableHistorialProcesado from './tables/TableHistorialProcesado'
 import BotonesAccionHistorialFrutaProcesada from './utils/BotonesAccionHistorialFrutaProcesada'
@@ -18,7 +18,7 @@ export default function HistorialProcesado(): JSX.Element {
   const [datosOriginales, setDatosOriginales] = useState([])
   const [titleTable, setTitleTable] = useState('Historial Lotes Procesados')
   const [showModal, setShowModal] = useState<boolean>(false)
-  const [propsModal, setPropsModal] = useState<historialLotesType>(documentoInit)
+  const [propsModal, setPropsModal] = useState<historialLotesType>()
   const [showModificar, setShowModificar] = useState<boolean>(false)
   const [table, dispatch] = useReducer(reducerHistorial, INITIAL_STATE_HISTORIAL_PROCESO)
   const [fechaInicio, SetFechaInicio] = useState("")

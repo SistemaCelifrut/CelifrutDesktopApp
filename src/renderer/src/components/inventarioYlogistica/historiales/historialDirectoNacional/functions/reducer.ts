@@ -5,30 +5,6 @@ import { format } from 'date-fns'
 
 export const INITIAL_STATE_HISTORIAL_PROCESO: historialLotesType[] = []
 
-export const documentoInit: historialLotesType = {
-  _id: "",
-  fecha: "",
-  operacionRealizada: "",
-  __v:0,
-  documento:{
-    directoNacional:0,
-    enf:"",
-    fechaIngreso:"",
-    kilosVaciados: 0,
-    observaciones: "",
-    predio:{
-      _id:"",
-      ICA:"",
-      PREDIO:""
-    },
-    promedio: 0,
-    tipoFruta:"",
-    _id:"",
-    calidad1:0,
-    calidad15:0,
-    calidad2:0,
-  }
-}
 
 export const reducerHistorial = (
   state: historialLotesType[],

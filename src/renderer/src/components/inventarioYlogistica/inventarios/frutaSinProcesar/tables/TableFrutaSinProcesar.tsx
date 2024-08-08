@@ -6,7 +6,7 @@ import { es } from 'date-fns/locale';
 
 type propsType = {
   table: lotesType[]
-  propsModal: lotesType
+  propsModal: lotesType | undefined
   clickLote: (e) => void
 }
 

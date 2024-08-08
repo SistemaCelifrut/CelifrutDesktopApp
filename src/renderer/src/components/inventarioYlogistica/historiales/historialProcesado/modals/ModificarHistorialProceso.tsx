@@ -7,16 +7,22 @@ import { compararCanastillas, requestModificarHistorial } from '../functions/req
 
 type vaciadoType = {
     closeModal: () => void
-    propsModal: historialLotesType
+    propsModal: historialLotesType | undefined
     obtenerHistorialProceso: () => Promise<void>
   }
 
 export default function ModificarHistorialProceso(props: vaciadoType): JSX.Element {
   const {messageModal} = useAppContext();
   const [canastillas, setCanastillas] = useState<number>(0)
-
+  if(props.propsModal === undefined){
+    messageModal("error","No se ha seleccionado predio")
+    return(
+      <div></div>
+    )
+  }
   const modificar = async (): Promise<void> => {
     try {
+      if(props.propsModal === undefined) throw new Error("No se ha seleccionado predio")
         const checkCanastillas = compararCanastillas(Number(canastillas), props.propsModal)
         if(checkCanastillas){
           throw new Error("Error en el numero de canastillas")

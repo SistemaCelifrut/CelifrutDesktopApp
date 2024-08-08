@@ -7,7 +7,7 @@ import { contenedoresType } from '@renderer/types/contenedoresType';
 import ViewInformeDatosGenerales from './ViewInformeDatosGenerales';
 import ViewInformeResultados from './ViewInformeResultados';
 import ViewInformeDescarte from './ViewInformeDescarte';
-import { dataInformeInit, dataInformeType, obtenerPorcentage, totalLote } from '../functions/data';
+import { dataInformeInit, dataInformeType, getDataToInformeCalidad, obtenerPorcentage, totalLote } from '../functions/data';
 import ViewInformeObservaciones from './ViewInformeObservaciones';
 import ViewInformeFotos from './ViewInformeFotos';
 import { totalPrecios } from '../functions/totalPrecios'
@@ -18,7 +18,7 @@ type propsType = {
 export default function ViewInformeData(props: propsType): JSX.Element {
     const { messageModal } = useAppContext();
     const [contenedores, setContenedores] = useState<contenedoresType[]>([]);
-    const [dataInforme, setDataInforme] = useState<dataInformeType>(dataInformeInit)
+    const [, setDataInforme] = useState<dataInformeType>(dataInformeInit)
     useEffect(() => {
         if (props.loteSeleccionado &&
             props.loteSeleccionado.contenedores &&
@@ -39,8 +39,10 @@ export default function ViewInformeData(props: propsType): JSX.Element {
             }
         }
     }
-    const crearInforme = ():void => {
-        console.log(dataInforme)
+    const crearInforme = (): void => {
+        if (props.loteSeleccionado) {
+            getDataToInformeCalidad(props.loteSeleccionado, contenedores)
+        }
     }
     //si el lote es indefinido
     if (props.loteSeleccionado === undefined) {
@@ -57,9 +59,9 @@ export default function ViewInformeData(props: propsType): JSX.Element {
             <div className="container-informe-calidad-lote">
                 <h2>Informe de calidad para el productor</h2>
                 <hr />
-                <ViewInformeDatosGenerales 
+                <ViewInformeDatosGenerales
                     setDataInforme={setDataInforme}
-                    contenedores={contenedores} 
+                    contenedores={contenedores}
                     loteSeleccionado={props.loteSeleccionado} />
                 <hr />
                 <div className='informe-calidad-lote-div'>
@@ -77,7 +79,7 @@ export default function ViewInformeData(props: propsType): JSX.Element {
                     </thead>
                     <tbody>
                         <ViewInformeResultados loteSeleccionado={props.loteSeleccionado} />
-                        <ViewInformeDescarte loteSeleccionado={props.loteSeleccionado}/>
+                        <ViewInformeDescarte loteSeleccionado={props.loteSeleccionado} />
                         <tr className='fondo-impar'>
                             <td>Total</td>
                             <td>

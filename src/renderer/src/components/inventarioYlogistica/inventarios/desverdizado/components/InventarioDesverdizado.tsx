@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useEffect, useReducer, useState } from 'react'
-import { INITIAL_STATE, predios, reducer } from '../functions/reduce'
+import { INITIAL_STATE, reducer } from '../functions/reduce'
 import TableInventarioDesverdizado from '../tables/TableInventarioDesverdizado'
 import BotonesInventarioDesverdizado from '../utils/BotonesInventarioDesverdizado'
 import { createPortal } from 'react-dom'
@@ -19,7 +19,7 @@ const request = {
 export default function InventarioDesverdizado(props: propsType): JSX.Element {
   const { messageModal } = useAppContext();
   const [datosOriginales, setDatosOriginales] = useState([])
-  const [propsModal, setPropsModal] = useState<lotesType>(predios)
+  const [propsModal, setPropsModal] = useState<lotesType>()
   const [titleTable, setTitleTable] = useState('Lotes')
   const [showButton, setShowButton] = useState<string>('')
   const [showModalParametros, setShowModalParametros] = useState<boolean>(false)
@@ -77,11 +77,12 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
     setShowModalParametros(!showModalParametros)
   }
   const handleInfo = (): void => {
-    setPropsModal(predios)
+    setPropsModal(undefined)
     setTitleTable("Lotes")
   }
   const finalizar = async (): Promise<void> => {
     try {
+      if(propsModal === undefined) throw new Error("No se ha seleccionado ningun lote")
       const request = {
         _id: propsModal._id,
         __v: propsModal.__v,
@@ -94,7 +95,7 @@ export default function InventarioDesverdizado(props: propsType): JSX.Element {
       } else {
         messageModal("error", "Error enviando los datos a el servidor!")
       }
-    } catch (e: unknown) {
+    } catch (e) {
       if (e instanceof Error) {
         messageModal("error", e.message)
       }

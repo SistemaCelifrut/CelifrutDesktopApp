@@ -42,7 +42,7 @@ export default function TableHistorialCalidadInterna(props: propsType): JSX.Elem
             <td>{lote.calidad?.calidadInterna?.ratio ?
               lote.calidad?.calidadInterna?.ratio.toLocaleString('es-ES') : 0}</td>
             <td>{lote.calidad?.calidadInterna?.zumo ?
-              (lote.calidad?.calidadInterna?.zumo / 100).toLocaleString('es-ES') + "%" : "0%"}</td>
+              ((lote.calidad?.calidadInterna?.zumo / lote.calidad?.calidadInterna?.peso)*100).toLocaleString('es-ES') + "%" : "0%"}</td>
             <td>{format(lote.calidad?.calidadInterna?.fecha ?
               new Date(lote.calidad?.calidadInterna?.fecha) : new Date(),  'dd/MM/yyyy HH:mm', { locale: es })}</td>
             <td>

@@ -7,13 +7,13 @@ import "../../../../../css/modal-style.css"
 
 type vaciadoType = {
   closeDirecto: () => void
-  propsModal: lotesType
+  propsModal: lotesType | undefined
   handleInfo: () => void
   obtenerFruta: () => void
 }
 
 export default function Directo(props: vaciadoType): JSX.Element {
-  const { theme, messageModal } = useAppContext();
+  const { messageModal } = useAppContext();
   const [canastillas, setCanastillas] = useState<number>(0)
   const [placa, setPlaca] = useState<string>('')
   const [nombreConductor, setNombreConductor] = useState<string>('')
@@ -21,7 +21,16 @@ export default function Directo(props: vaciadoType): JSX.Element {
   const [cedula, setCedula] = useState<string>('')
   const [remision, setRemision] = useState<string>('')
 
+  if(props.propsModal === undefined){
+    messageModal("error", "No se ha seleccionado lote")
+    props.closeDirecto()
+    return(
+      <div></div>
+    )
+  }
+
   const directoNacional = async (): Promise<void> => {
+    if(props.propsModal === undefined) return
     try {
       const canastillasInt = canastillas
       const propsCanastillasInt = props.propsModal.inventario ? props.propsModal.inventario : 0
@@ -66,7 +75,7 @@ export default function Directo(props: vaciadoType): JSX.Element {
     <div className="fondo-modal">
       <div className="modal-container">
         <div className='modal-header-danger'>
-          <h2 className={`${theme === 'Dark' ? 'text-white' : 'text-black'} text-lg font-semibold`}>{props.propsModal.predio && props.propsModal.predio.PREDIO}</h2>
+          <h2 >{props.propsModal.predio && props.propsModal.predio.PREDIO}</h2>
         </div>
         <div className='modal-container-body'>
           <p>Numero de canastillas en inventario: {props.propsModal.inventario && props.propsModal.inventario}</p>
