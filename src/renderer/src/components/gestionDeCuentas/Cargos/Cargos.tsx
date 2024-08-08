@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import TablaCargos from "./components/TablaCargos";
 import { cargoType } from "@renderer/types/cargos";
 import CrearCargo from "./components/CrearCargo";
+import './styles/styles.css';
 
 export default function Cargos(): JSX.Element {
     const { messageModal } = useAppContext();

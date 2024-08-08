@@ -2,7 +2,7 @@
 export const initFormState = {
     usuario:'',
     contrasenna:'',
-    cargo:0,
+    cargo:'',
     nombre:'',
     apellido:'',
     genero:'',
@@ -11,15 +11,15 @@ export const initFormState = {
     telefono:'',
     email:'',
     estado:'',
-    permisos:[],
-    permisos_id:[],
+
+
 
 }
 
 export interface formStateType {
     usuario: string;
     contrasenna: string;
-    cargo: number;
+    cargo: string;
     nombre: string; // ¿Quizás quisiste decir 'nombre'?
     apellido: string;
     genero: string;
@@ -28,6 +28,5 @@ export interface formStateType {
     telefono: string;
     email: string;
     estado: string;
-    permisos: number[]; // Un arreglo de números (puedes ajustar el tipo según tus necesidades)
 }
 

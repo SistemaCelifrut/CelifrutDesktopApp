@@ -45,11 +45,11 @@ type propsType = {
     widthBar: number
 }
 export default function Ventana(props:propsType): JSX.Element{
-    return (
-        <div className={` flex justify-center w-full h-full overflow-auto `}>
-            <Cargos />
-        </div>
-    )
+    // return (
+    //     <div className={` flex justify-center w-full h-full overflow-auto `}>
+    //         <Cargos />
+    //     </div>
+    // )
     return(
         <div className={` flex justify-center w-full h-full overflow-auto `}>
         {props.section === "main" && <Inicio />}
